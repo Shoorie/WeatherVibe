@@ -2,10 +2,14 @@
 .gradle/
 build/
 local.properties
+*.apk
+*.ap_
+*.dex
 
 # IDE
 .idea/
 *.iml
+.cxx/
 
 # Kotlin
 *.class

@@ -1,18 +1,20 @@
 # Android/Gradle
-.gradle/
 build/
+.gradle/
 local.properties
 *.apk
 *.ap_
+*.aab
 *.dex
+*.bin
+*.class
+*.jar
+*.aar
 
 # IDE
 .idea/
 *.iml
 .cxx/
-
-# Kotlin
-*.class
 
 # OS
 .DS_Store

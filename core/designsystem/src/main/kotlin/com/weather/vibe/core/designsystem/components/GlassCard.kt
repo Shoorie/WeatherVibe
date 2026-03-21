@@ -3,6 +3,7 @@ package com.weather.vibe.core.designsystem.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 @Composable
 fun GlassCard(
   modifier: Modifier = Modifier,
+  contentPadding: PaddingValues = PaddingValues(PaddingMedium),
   content: @Composable ColumnScope.() -> Unit
 ) {
 
@@ -36,7 +38,7 @@ fun GlassCard(
       .clip(shapes.card)
       .drawBehind { drawRect(surfaceColor) }
       .border(BorderThickness, colors.outline, shapes.card)
-      .padding(PaddingMedium),
+      .padding(contentPadding),
     content = content
   )
 }

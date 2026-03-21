@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
@@ -15,6 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.GlassCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
@@ -28,8 +30,13 @@ internal fun HourlyForecastRow(
   modifier: Modifier = Modifier,
   hourlyForecasts: List<HourlyWeather>
 ) {
-  GlassCard(modifier = modifier.fillMaxWidth()) {
+  GlassCard(
+    modifier = modifier.fillMaxWidth(),
+    contentPadding = PaddingValues(vertical = PaddingMedium)
+  ) {
     Text(
+      modifier = Modifier
+        .padding(horizontal = PaddingMedium),
       text = hourlyForecastTitle(),
       style = typography.titleSmall,
       color = colors.onSurfaceVariant
@@ -39,7 +46,7 @@ internal fun HourlyForecastRow(
     Spacer(modifier = Modifier.height(PaddingSmall))
     LazyRow(
       horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
-      contentPadding = PaddingValues(horizontal = PaddingExtraSmall)
+      contentPadding = PaddingValues(horizontal = PaddingMedium)
     ) {
       itemsIndexed(hourlyForecasts) { index, hourly ->
         HourlyForecastItem(

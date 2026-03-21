@@ -90,9 +90,12 @@ private fun HomeContent(
   searchState: SearchState,
   dispatch: (HomeAction) -> Unit
 ) {
-  val colors = colors
+
   val backgroundBrush = Brush.verticalGradient(
-    listOf(colors.backgroundGradientStart, colors.backgroundGradientEnd)
+    listOf(
+      colors.backgroundGradientStart,
+      colors.backgroundGradientEnd
+    )
   )
 
   Box(
@@ -171,7 +174,6 @@ private fun LocationHeader(
   onRefresh: () -> Unit,
   onSearchToggle: () -> Unit
 ) {
-  val colors = colors
   Row(
     modifier = modifier
       .fillMaxWidth()
@@ -298,7 +300,6 @@ private fun ErrorContent(
   error: String,
   onRetry: () -> Unit
 ) {
-  val colors = colors
   Column(
     modifier = modifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,

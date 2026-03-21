@@ -15,8 +15,6 @@
 
 </div>
 
-<br />
-
 ## 📖 About The Project
 
 **VibeWeather** is more than just another weather app. It's an experimental playground exploring

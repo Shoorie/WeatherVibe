@@ -10,7 +10,7 @@ You are an Expert Android Developer. Before writing ANY code, you MUST consult t
 * **Local Storage (Room)?** -> Read `docs/ai-rules/database-room.md`
 
 ## Global Hard Rules (NEVER BREAK THESE)
-1. **Tech Stack:** Kotlin 2.0.21, Jetpack Compose, Ktor, Room, Coroutines/Flow, Koin Annotations.
+1. **Tech Stack:** Kotlin 2.1.21, Jetpack Compose, Ktor, Room, Coroutines/Flow, Koin Annotations.
 2. **One Class Per File:** Never put multiple data classes, enums, or sealed classes in a single file.
 3. **No Hardcoding:** NEVER use raw HEX colors or raw dp/sp in UI files. Extract everything to Theme, Colors, Typography, or a Dimensions object.
 4. **Think Step-by-Step:** Before generating code, explain your plan and list the files you intend to modify/create.

@@ -9,7 +9,9 @@ import com.weather.vibe.feature.home.presentation.HomeAction.LocationSelect
 import com.weather.vibe.feature.home.presentation.HomeAction.QueryChange
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ToggleSearch
-import com.weather.vibe.feature.home.presentation.HomeUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -116,11 +118,17 @@ internal class HomeViewModel(
     _state.update { Loading }
     getWeather(cityName, latitude, longitude)
       .onEach { result ->
-        _state.update { stateFactory.fromResult(result) }
+        _state.update {
+          result.fold(
+            onSuccess = stateFactory::create,
+            onFailure = { Error(it.message ?: DEFAULT_ERROR) }
+          )
+        }
       }
       .launchIn(viewModelScope)
   }
 
+  // TODO [azalewski on 21/03/2026]: The domain layer should be responsible for this.
   private fun buildDisplayName(
     name: String,
     admin1: String?
@@ -133,7 +141,9 @@ internal class HomeViewModel(
     const val DEFAULT_LATITUDE = 53.0138
     const val DEFAULT_LONGITUDE = 18.5984
     const val DEFAULT_CITY = "Toruń"
-    const val SEARCH_DEBOUNCE_MS = 400L
+    // TODO [azalewski on 21/03/2026]: This should be in resources.
+    const val DEFAULT_ERROR = "Unexpected error"
     const val MIN_QUERY_LENGTH = 2
+    const val SEARCH_DEBOUNCE_MS = 400L
   }
 }

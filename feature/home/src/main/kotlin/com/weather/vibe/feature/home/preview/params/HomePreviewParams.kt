@@ -1,7 +1,7 @@
-package com.weather.vibe.feature.home.preview
+package com.weather.vibe.feature.home.preview.params
 
 import androidx.compose.runtime.Immutable
-import com.weather.vibe.feature.home.presentation.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.SearchState
 
 @Immutable

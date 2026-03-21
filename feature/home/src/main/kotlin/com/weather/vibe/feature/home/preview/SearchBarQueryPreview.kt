@@ -2,7 +2,7 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 
-internal class SearchBarQueryPreviewParameterProvider :
+internal class SearchBarQueryPreview :
   PreviewParameterProvider<String> {
 
   private val typedQuery = "Warsz"

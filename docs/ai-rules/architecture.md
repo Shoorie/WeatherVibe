@@ -191,3 +191,48 @@ internal sealed interface FeatureEvent {
   data class ShowSnackbar(val message: String) : FeatureEvent
 }
 ```
+
+---
+
+## 10. StateFactory Pattern (Fat Factory)
+The factory is responsible for ALL data transformation from domain models to display-ready
+UI models. Composables receive pre-formatted strings - they never perform formatting logic.
+
+### Rules:
+* **Private helper methods** per UI section: `createHeader()`, `createItems()`, etc.
+* **Private formatting utilities*.
+* **UI model classes** live in `presentation/model/` - one file per class, `@Immutable`,
+  alphabetically ordered constructor params.
+* **Loaded state** holds UI models directly (not raw domain models).
+
+### Factory Template:
+```kotlin
+@Factory
+internal class FeatureStateFactory {
+
+  fun createFrom(data: DomainData): Loaded = 
+    Loaded(
+      header = createHeader(data),
+      items = createItems(data.items)
+    )
+
+  private fun createHeader(data: DomainData): HeaderUiModel =
+    HeaderUiModel(
+      title = data.title,
+      subtitle = formatDate(data.date)
+    )
+
+  private fun createItems(
+    items: List<DomainItem>
+  ): List<ItemUiModel> =
+    items.map { item ->
+      ItemUiModel(
+        label = item.name,
+        value = formatValue(item.rawValue)
+      )
+    }
+
+  private fun formatDate(date: String): String = ...
+  private fun formatValue(value: Double): String = ...
+}
+```

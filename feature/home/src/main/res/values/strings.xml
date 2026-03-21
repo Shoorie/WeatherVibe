@@ -20,4 +20,15 @@
   <string name="precipitation_value_format">%1$d%%</string>
   <string name="temperature_format">%1$d°</string>
   <string name="temperature_range_separator"> / </string>
+  <string name="feels_like_label">Feels like %1$s</string>
+  <string name="sunrise_label">Sunrise</string>
+  <string name="sunset_label">Sunset</string>
+  <string name="uv_index_label">UV Index</string>
+  <string name="cloud_cover_label">Cloud Cover</string>
+  <string name="dew_point_label">Dew Point</string>
+  <string name="pressure_label">Pressure</string>
+  <string name="visibility_label">Visibility</string>
+  <string name="wind_gusts_label">Wind Gusts</string>
+  <string name="rainfall_label">Rainfall</string>
+  <string name="wind_speed_max_label">Max Wind</string>
 </resources>

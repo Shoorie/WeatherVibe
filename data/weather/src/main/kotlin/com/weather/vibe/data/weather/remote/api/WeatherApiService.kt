@@ -24,8 +24,12 @@ internal class WeatherApiService(private val httpClient: HttpClient) {
   private companion object {
     const val BASE_URL = "https://api.open-meteo.com/v1/forecast"
     const val HOURLY_VARIABLES =
-      "temperature_2m,relative_humidity_2m,weathercode,windspeed_10m,precipitation_probability"
+      "apparent_temperature,cloudcover,dewpoint_2m,precipitation," +
+        "precipitation_probability,relative_humidity_2m,surface_pressure," +
+        "temperature_2m,visibility,weathercode,windgusts_10m,windspeed_10m"
     const val DAILY_VARIABLES =
-      "weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+      "precipitation_probability_max,precipitation_sum,sunrise,sunset," +
+        "temperature_2m_max,temperature_2m_min,uv_index_max,weathercode," +
+        "windgusts_10m_max,windspeed_10m_max"
   }
 }

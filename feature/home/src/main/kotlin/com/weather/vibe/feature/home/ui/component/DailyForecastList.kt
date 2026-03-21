@@ -14,14 +14,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.weather.model.DailyWeather
-import com.weather.vibe.feature.home.preview.DailyForecastListPreviewParameterProvider
+import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.preview.DailyForecastListPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.dailyForecastTitle
 
 @Composable
 internal fun DailyForecastList(
   modifier: Modifier = Modifier,
-  dailyForecasts: List<DailyWeather>
+  dailyForecasts: List<DailyForecastUiState>
 ) {
   GlassCard(modifier = modifier.fillMaxWidth()) {
     Text(
@@ -32,7 +32,7 @@ internal fun DailyForecastList(
     Spacer(modifier = Modifier.height(PaddingSmall))
     HorizontalDivider(color = colors.outline)
     dailyForecasts.forEachIndexed { index, daily ->
-      DailyForecastItem(dailyWeather = daily)
+      DailyForecastItem(state = daily)
       if (index < dailyForecasts.lastIndex) {
         HorizontalDivider(color = colors.outline)
       }
@@ -43,8 +43,8 @@ internal fun DailyForecastList(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(DailyForecastListPreviewParameterProvider::class)
-  forecasts: List<DailyWeather>
+  @PreviewParameter(DailyForecastListPreview::class)
+  forecasts: List<DailyForecastUiState>
 ) {
   WeatherVibeTheme {
     DailyForecastList(dailyForecasts = forecasts)

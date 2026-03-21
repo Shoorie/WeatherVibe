@@ -39,21 +39,22 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.weather.model.LocationResult
-import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.feature.home.presentation.HomeAction
 import com.weather.vibe.feature.home.presentation.HomeAction.DismissSearch
 import com.weather.vibe.feature.home.presentation.HomeAction.LocationSelect
 import com.weather.vibe.feature.home.presentation.HomeAction.QueryChange
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ToggleSearch
-import com.weather.vibe.feature.home.presentation.HomeUiState
-import com.weather.vibe.feature.home.presentation.HomeUiState.Error
-import com.weather.vibe.feature.home.presentation.HomeUiState.Loaded
-import com.weather.vibe.feature.home.presentation.HomeUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.SearchState
-import com.weather.vibe.feature.home.preview.HomePreviewParameterProvider
-import com.weather.vibe.feature.home.preview.HomePreviewParams
+import com.weather.vibe.feature.home.presentation.state.HeaderUiState
+import com.weather.vibe.feature.home.preview.HomePreview
+import com.weather.vibe.feature.home.preview.params.HomePreviewParams
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.noResultsFound
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
@@ -62,12 +63,10 @@ import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
 import com.weather.vibe.feature.home.ui.component.LocationSearchBar
+import com.weather.vibe.feature.home.ui.component.SunriseSunsetCard
 import com.weather.vibe.feature.home.ui.component.LocationSearchResults
 import com.weather.vibe.feature.home.ui.component.WeatherMetricsGrid
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
 fun HomeScreen() {
@@ -110,7 +109,7 @@ private fun HomeContent(
         onRetry = { dispatch(RefreshClick) }
       )
       is Loaded -> WeatherContent(
-        weatherData = state.weatherData,
+        state = state,
         onRefresh = { dispatch(RefreshClick) },
         onSearchToggle = { dispatch(ToggleSearch) }
       )
@@ -132,7 +131,7 @@ private fun HomeContent(
 @Composable
 private fun WeatherContent(
   modifier: Modifier = Modifier,
-  weatherData: WeatherData,
+  state: Loaded,
   onRefresh: () -> Unit,
   onSearchToggle: () -> Unit
 ) {
@@ -144,25 +143,19 @@ private fun WeatherContent(
   ) {
     item {
       LocationHeader(
-        cityName = weatherData.cityName,
+        state = state.header,
         onRefresh = onRefresh,
         onSearchToggle = onSearchToggle
       )
     }
-    item { CurrentWeatherSection(weatherData = weatherData) }
-    item { HourlyForecastRow(hourlyForecasts = weatherData.hourlyForecast) }
+    item { CurrentWeatherSection(state = state.currentWeather) }
+    item { HourlyForecastRow(hourlyForecasts = state.hourlyForecast) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
-    item { DailyForecastList(dailyForecasts = weatherData.dailyForecast) }
+    item { DailyForecastList(dailyForecasts = state.dailyForecast) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
-    item {
-      WeatherMetricsGrid(
-        humidity = weatherData.humidity,
-        windSpeed = weatherData.windSpeed,
-        windDirection = weatherData.windDirection,
-        precipitationProbability = weatherData.hourlyForecast
-          .firstOrNull()?.precipitationProbability ?: 0
-      )
-    }
+    item { SunriseSunsetCard(state = state.sunriseSunset) }
+    item { Spacer(modifier = Modifier.height(PaddingSmall)) }
+    item { WeatherMetricsGrid(state = state.metrics) }
     item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }
   }
 }
@@ -170,7 +163,7 @@ private fun WeatherContent(
 @Composable
 private fun LocationHeader(
   modifier: Modifier = Modifier,
-  cityName: String,
+  state: HeaderUiState,
   onRefresh: () -> Unit,
   onSearchToggle: () -> Unit
 ) {
@@ -183,12 +176,12 @@ private fun LocationHeader(
   ) {
     Column(modifier = Modifier.weight(1f)) {
       Text(
-        text = cityName,
+        text = state.cityName,
         style = typography.headlineLarge,
         color = colors.onBackground
       )
       Text(
-        text = currentDateLabel(),
+        text = state.dateLabel,
         style = typography.bodyMedium,
         color = colors.onSurfaceVariant
       )
@@ -305,7 +298,10 @@ private fun ErrorContent(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center
   ) {
-    Text(text = "\u26A1", style = typography.displaySmall)
+    Text(
+      text = Emojis.error(),
+      style = typography.displaySmall
+    )
     Spacer(modifier = Modifier.height(PaddingMedium))
     Text(
       text = error,
@@ -325,16 +321,10 @@ private fun ErrorContent(
   }
 }
 
-private fun currentDateLabel(): String = runCatching {
-  LocalDate.now().format(
-    DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.ENGLISH)
-  )
-}.getOrDefault("")
-
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(HomePreviewParameterProvider::class)
+  @PreviewParameter(HomePreview::class)
   params: HomePreviewParams
 ) {
   WeatherVibeTheme {

@@ -3,7 +3,7 @@ package com.weather.vibe.feature.home.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.domain.weather.model.LocationResult
 
-internal class SearchResultsPreviewParameterProvider :
+internal class SearchResultsPreview :
   PreviewParameterProvider<List<LocationResult>> {
 
   private val polishCities: List<LocationResult> = listOf(

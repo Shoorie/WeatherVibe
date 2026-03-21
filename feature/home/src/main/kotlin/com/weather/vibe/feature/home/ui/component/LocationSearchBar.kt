@@ -35,7 +35,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.preview.SearchBarQueryPreviewParameterProvider
+import com.weather.vibe.feature.home.preview.SearchBarQueryPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.closeSearchContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchHint
 
@@ -109,7 +109,7 @@ internal fun LocationSearchBar(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(SearchBarQueryPreviewParameterProvider::class)
+  @PreviewParameter(SearchBarQueryPreview::class)
   query: String
 ) {
   WeatherVibeTheme {

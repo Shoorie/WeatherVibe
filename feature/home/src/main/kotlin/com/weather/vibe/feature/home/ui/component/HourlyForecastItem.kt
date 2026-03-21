@@ -17,18 +17,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.HourlyItemWidth
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.weather.model.HourlyWeather
-import com.weather.vibe.feature.home.preview.HourlyWeatherPreviewParameterProvider
+import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.preview.HourlyForecastPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.nowLabel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import kotlin.math.roundToInt
 
 @Composable
 internal fun HourlyForecastItem(
   modifier: Modifier = Modifier,
-  hourlyWeather: HourlyWeather,
-  isCurrentHour: Boolean = false
+  state: HourlyForecastUiState
 ) {
   Column(
     modifier = modifier
@@ -38,18 +34,18 @@ internal fun HourlyForecastItem(
     verticalArrangement = Arrangement.SpaceEvenly
   ) {
     Text(
-      text = if (isCurrentHour) nowLabel()
-        else hourlyWeather.time.toHourLabel(),
+      text = if (state.isCurrentHour) nowLabel() else state.timeLabel,
       style = typography.labelSmall,
-      color = if (isCurrentHour) colors.accent else colors.onSurfaceVariant,
+      color = if (state.isCurrentHour) colors.accent
+        else colors.onSurfaceVariant,
       textAlign = TextAlign.Center
     )
     Text(
-      text = hourlyWeather.condition.emoji,
+      text = state.conditionEmoji,
       fontSize = EmojiSizeMedium
     )
     Text(
-      text = "${hourlyWeather.temperature.roundToInt()}°",
+      text = state.temperature,
       style = typography.bodyMedium,
       color = colors.onBackground,
       textAlign = TextAlign.Center
@@ -57,24 +53,13 @@ internal fun HourlyForecastItem(
   }
 }
 
-private fun String.toHourLabel(): String = runCatching {
-  val dateTime = LocalDateTime.parse(
-    this,
-    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-  )
-  dateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-}.getOrDefault(this)
-
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(HourlyWeatherPreviewParameterProvider::class)
-  hourlyWeather: HourlyWeather
+  @PreviewParameter(HourlyForecastPreview::class)
+  state: HourlyForecastUiState
 ) {
   WeatherVibeTheme {
-    HourlyForecastItem(
-      hourlyWeather = hourlyWeather,
-      isCurrentHour = false
-    )
+    HourlyForecastItem(state = state)
   }
 }

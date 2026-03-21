@@ -10,7 +10,8 @@
 4. [Constructor Parameter Order (CRITICAL)](#4-constructor-parameter-order-critical)
 5. [Class Member Order](#5-class-member-order)
 6. [Clean Imports](#6-clean-imports)
-7. [Nullability & Safety](#7-nullability--safety)
+7. [No Hardcoded Values](#7-no-hardcoded-values)
+8. [Nullability & Safety](#8-nullability--safety)
 
 ---
 
@@ -92,7 +93,13 @@ Organize class members in the following strict order:
 
 ---
 
-## 7. Nullability & Safety
+## 7. No Hardcoded Values
+* **FORBIDDEN:** Never use raw hardcoded strings, format patterns, symbols, or magic numbers
+  inline in code. Extract them to a `private companion object` with named constants.
+
+---
+
+## 8. Nullability & Safety
 * Prefer `val` over `var` whenever possible.
 * Use Kotlin's null-safety features (`?.`, `?:`, `let`) instead of force-unwrapping (`!!`).
 * For Composables, use nullable types only when the data is truly optional.

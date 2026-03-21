@@ -19,7 +19,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.weather.model.LocationResult
-import com.weather.vibe.feature.home.preview.SearchResultsPreviewParameterProvider
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis
+import com.weather.vibe.feature.home.preview.SearchResultsPreview
 
 @Composable
 internal fun LocationSearchResults(
@@ -70,12 +71,13 @@ private fun LocationResultItem(
       }
     }
     Text(
-      text = "\uD83D\uDCCD",
+      text = Emojis.locationPin(),
       style = typography.bodyMedium
     )
   }
 }
 
+// TODO [azalewski on 21/03/2026]: This logic should not be there.
 private fun buildSubtitle(admin1: String?, country: String): String =
   buildString {
     if (!admin1.isNullOrEmpty()) append(admin1)
@@ -88,7 +90,7 @@ private fun buildSubtitle(admin1: String?, country: String): String =
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(SearchResultsPreviewParameterProvider::class)
+  @PreviewParameter(SearchResultsPreview::class)
   results: List<LocationResult>
 ) {
   WeatherVibeTheme {

@@ -16,17 +16,13 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.weather.model.DailyWeather
-import com.weather.vibe.feature.home.preview.DailyWeatherPreviewParameterProvider
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-import kotlin.math.roundToInt
+import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.preview.DailyForecastPreview
 
 @Composable
 internal fun DailyForecastItem(
   modifier: Modifier = Modifier,
-  dailyWeather: DailyWeather
+  state: DailyForecastUiState
 ) {
   Row(
     modifier = modifier
@@ -36,13 +32,13 @@ internal fun DailyForecastItem(
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
     Text(
-      text = dailyWeather.date.toDayLabel(),
+      text = state.dayLabel,
       style = typography.bodyMedium,
       color = colors.onBackground,
       modifier = Modifier.weight(1f)
     )
     Text(
-      text = dailyWeather.condition.emoji,
+      text = state.conditionEmoji,
       fontSize = EmojiSizeSmall,
       modifier = Modifier.weight(1f),
       textAlign = TextAlign.Center
@@ -53,12 +49,12 @@ internal fun DailyForecastItem(
       verticalAlignment = Alignment.CenterVertically
     ) {
       Text(
-        text = "${dailyWeather.maxTemperature.roundToInt()}°",
+        text = state.maxTemperature,
         style = typography.bodyMedium,
         color = colors.onBackground
       )
       Text(
-        text = " / ${dailyWeather.minTemperature.roundToInt()}°",
+        text = " / ${state.minTemperature}",
         style = typography.bodyMedium,
         color = colors.onSurfaceVariant
       )
@@ -66,19 +62,13 @@ internal fun DailyForecastItem(
   }
 }
 
-private fun String.toDayLabel(): String = runCatching {
-  val date = LocalDate.parse(this)
-  if (date == LocalDate.now()) "Today"
-  else date.format(DateTimeFormatter.ofPattern("EEE", Locale.ENGLISH))
-}.getOrDefault(this)
-
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(DailyWeatherPreviewParameterProvider::class)
-  dailyWeather: DailyWeather
+  @PreviewParameter(DailyForecastPreview::class)
+  state: DailyForecastUiState
 ) {
   WeatherVibeTheme {
-    DailyForecastItem(dailyWeather = dailyWeather)
+    DailyForecastItem(state = state)
   }
 }

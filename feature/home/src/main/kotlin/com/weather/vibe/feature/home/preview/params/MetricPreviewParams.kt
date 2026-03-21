@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.preview
+package com.weather.vibe.feature.home.preview.params
 
 import androidx.compose.runtime.Immutable
 

@@ -22,15 +22,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.weather.model.DailyWeather
-import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.feature.home.preview.WeatherDataPreviewParameterProvider
-import kotlin.math.roundToInt
+import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
+import com.weather.vibe.feature.home.preview.CurrentWeatherPreview
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.feelsLikeLabel
 
 @Composable
 internal fun CurrentWeatherSection(
   modifier: Modifier = Modifier,
-  weatherData: WeatherData
+  state: CurrentWeatherUiState
 ) {
   Column(
     modifier = modifier
@@ -39,51 +38,59 @@ internal fun CurrentWeatherSection(
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     Text(
-      text = weatherData.condition.emoji,
+      text = state.conditionEmoji,
       fontSize = EmojiSizeLarge
     )
 
     Spacer(modifier = Modifier.height(PaddingSmall))
 
     Text(
-      text = "${weatherData.currentTemperature.roundToInt()}°",
+      text = state.currentTemperature,
       style = typography.displayLarge,
       color = colors.onBackground,
       textAlign = TextAlign.Center
     )
 
+    Text(
+      text = feelsLikeLabel(state.feelsLikeTemperature),
+      style = typography.bodySmall,
+      color = colors.onSurfaceVariant
+    )
+
     Spacer(modifier = Modifier.height(PaddingExtraSmall))
 
     Text(
-      text = weatherData.condition.label,
+      text = state.conditionLabel,
       style = typography.titleMedium,
       color = colors.onSurfaceVariant
     )
 
     Spacer(modifier = Modifier.height(PaddingMedium))
 
-    weatherData.dailyForecast.firstOrNull()?.let { today ->
-      HighLowTemperatureRow(today = today)
-    }
+    HighLowTemperatureRow(
+      highTemperature = state.highTemperature,
+      lowTemperature = state.lowTemperature
+    )
   }
 }
 
 @Composable
 private fun HighLowTemperatureRow(
   modifier: Modifier = Modifier,
-  today: DailyWeather
+  highTemperature: String,
+  lowTemperature: String
 ) {
   Row(
     modifier = modifier,
     horizontalArrangement = Arrangement.spacedBy(PaddingMedium)
   ) {
     Text(
-      text = "H: ${today.maxTemperature.roundToInt()}°",
+      text = "H: $highTemperature",
       style = typography.bodyMedium,
       color = colors.onSurfaceVariant
     )
     Text(
-      text = "L: ${today.minTemperature.roundToInt()}°",
+      text = "L: $lowTemperature",
       style = typography.bodyMedium,
       color = colors.onSurfaceVariant
     )
@@ -93,10 +100,10 @@ private fun HighLowTemperatureRow(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(WeatherDataPreviewParameterProvider::class)
-  weatherData: WeatherData
+  @PreviewParameter(CurrentWeatherPreview::class)
+  state: CurrentWeatherUiState
 ) {
   WeatherVibeTheme {
-    CurrentWeatherSection(weatherData = weatherData)
+    CurrentWeatherSection(state = state)
   }
 }

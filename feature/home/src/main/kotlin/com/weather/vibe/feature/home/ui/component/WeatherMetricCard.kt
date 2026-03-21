@@ -16,8 +16,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.preview.MetricPreviewParameterProvider
-import com.weather.vibe.feature.home.preview.MetricPreviewParams
+import com.weather.vibe.feature.home.preview.MetricPreview
+import com.weather.vibe.feature.home.preview.params.MetricPreviewParams
 
 @Composable
 internal fun WeatherMetricCard(
@@ -53,7 +53,7 @@ internal fun WeatherMetricCard(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(MetricPreviewParameterProvider::class)
+  @PreviewParameter(MetricPreview::class)
   params: MetricPreviewParams
 ) {
   WeatherVibeTheme {

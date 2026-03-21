@@ -1,11 +1,24 @@
-# Jetpack Compose & UI Guidelines (CRITICAL RULES)
+# 🎨 Jetpack Compose & UI Guidelines (CRITICAL RULES)
 
-This project focuses on **Highly Modular, Resource-Injected UI** with a strict separation between Layout and Data.
+> **Core Principle:** This project focuses on **Highly Modular, Resource-Injected UI** with a
+> strict separation between Layout and Data.
+
+## 📋 Table of Contents
+1. [Design System & Theming — Token-Based Architecture](#1-design-system--theming--token-based-architecture-critical)
+2. [Resource Management (The Wrapper Pattern)](#2-resource-management-the-wrapper-pattern)
+3. [Aggressive Component Splitting](#3-aggressive-component-splitting)
+4. [The Modifier Rule](#4-the-modifier-rule)
+5. [Previews & External Mock Data (CRITICAL)](#5-previews--external-mock-data-critical)
+6. [Stateless vs Stateful](#6-stateless-vs-stateful)
+
+---
 
 ## 1. Design System & Theming — Token-Based Architecture (CRITICAL)
-* **Location:** All theme-related files MUST live in the `:core:designsystem` module, package `com.[company].[app].core.designsystem.theme`.
+* **Location:** All theme-related files MUST live in the `:core:designsystem` module, package
+  `com.[company].[app].core.designsystem.theme`.
 * **FORBIDDEN:** NEVER create theme files inside `:feature` modules.
-* **Separation of Concerns:** The Design System MUST be split into separate files. NEVER dump everything into a single `Theme.kt` file.
+* **Separation of Concerns:** The Design System MUST be split into separate files. NEVER dump
+  everything into a single `Theme.kt` file.
 
 ### A. The File Structure (CRITICAL)
 You must distribute the theme logic across the following files:
@@ -53,7 +66,6 @@ fun AppTheme(content: @Composable () -> Unit) {
 }
 
 object AppTheme {
-  
   val colors: AppColors
     @Composable 
     @ReadOnlyComposable
@@ -72,10 +84,13 @@ object AppTheme {
 ```
 
 ### B. Usage in Composables (CRITICAL - Static Imports ONLY)
-* **FORBIDDEN:** Do NOT declare local variables for colors/typography (e.g., `val colors = AppTheme.colors`).
-* **FORBIDDEN:** Do NOT use the `AppTheme.` prefix in your UI layouts (e.g., `AppTheme.colors.onBackground`).
+* **FORBIDDEN:** Do NOT declare local variables for colors/typography (e.g., `val colors = 
+  AppTheme.colors`).
+* **FORBIDDEN:** Do NOT use the `AppTheme.` prefix in your UI layouts (e.g.,
+  `AppTheme.colors.onBackground`).
 * **FORBIDDEN:** Do NOT use `MaterialTheme.colorScheme.xxx`.
-* **Rule:** You MUST statically import `colors`, `typography`, and `shapes` from the `AppTheme` object so they can be used directly as `colors.onBackground`.
+* **Rule:** You MUST statically import `colors`, `typography`, and `shapes` from the `AppTheme`
+  object so they can be used directly as `colors.onBackground`.
 * **Dimensions:** You MUST also use static imports from `AppDimens` to avoid prefixing.
 
 ```kotlin
@@ -98,43 +113,52 @@ internal fun MyComponent(modifier: Modifier = Modifier) {
 }
 ```
 
+---
+
 ## 2. Resource Management (The Wrapper Pattern)
-* **FORBIDDEN:** Never use `stringResource(R.string.xyz)` or `painterResource(R.drawable.xyz)` directly inside your Composable layout.
-* **The Pattern:** For every screen, create a `internal object` resource wrapper in the feature's package.
-* **Clean Imports (CRITICAL):** Do NOT use prefixes like `Resources.Texts.title()`. Use Kotlin's static import feature to import functions directly for maximum readability.
+* **FORBIDDEN:** Never use `stringResource(R.string.xyz)` or `painterResource(R.drawable.xyz)`
+  directly inside your Composable layout.
+* **The Pattern:** For every screen, create an `internal object` resource wrapper in the feature's
+  package.
+* **Clean Imports (CRITICAL):** Do NOT use prefixes like `Resources.Texts.title()`. Use Kotlin's
+  static import feature to import functions directly for maximum readability.
 
 ```kotlin
 internal object FeatureResources {
+  object Painters {
+    @Composable
+    fun icon(): Painter = painterResource(id = R.drawable.ic_feature)
+  }
 
-    object Painters {
-
-        @Composable
-        fun icon(): Painter =
-          painterResource(id = R.drawable.ic_feature)
-    }
-
-    object Texts {
-
-        @Composable
-        fun title(): String =
-          stringResource(R.string.txt_feature_title)
-    }
+  object Texts {
+    @Composable
+    fun title(): String = stringResource(R.string.txt_feature_title)
+  }
 }
 ```
 
+---
+
 ## 3. Aggressive Component Splitting
 * **Strict Limit:** A single Composable function MUST NOT exceed 60 lines of code.
-* Break down EVERY UI screen into small, private, reusable functions. Extract Headers, Lists, and Cards immediately.
+* Break down EVERY UI screen into small, private, reusable functions. Extract Headers, Lists,
+  and Cards immediately.
+
+---
 
 ## 4. The Modifier Rule
-* The `modifier: Modifier = Modifier` MUST ALWAYS be the FIRST optional parameter in every Composable
-function signature. Pass it down to the root layout of the component.
+* The `modifier: Modifier = Modifier` MUST ALWAYS be the FIRST optional parameter in every
+  Composable function signature. Pass it down to the root layout of the component.
+
+---
 
 ## 5. Previews & External Mock Data (CRITICAL)
 * Every Stateless component MUST have a `@PreviewLightDark` function.
 * **FORBIDDEN:** Do NOT include functional callbacks (lambdas/actions) in `PreviewParams`.
-* **Rule:** `PreviewParams` should only contain visual data (Strings, Booleans, Domain Models). Pass empty lambdas `{}` directly in the `@Preview` function.
-* **Location:** Each provider MUST live in its own file inside a `preview/` sub-package (e.g., `feature/home/preview/HomePreviewParameterProvider.kt`).
+* **Rule:** `PreviewParams` should only contain visual data (Strings, Booleans, Domain Models).
+  Pass empty lambdas `{}` directly in the `@Preview` function.
+* **Location:** Each provider MUST live in its own file inside a `preview/` sub-package
+  (e.g., `feature/home/preview/HomePreviewParameterProvider.kt`).
 
 ### A. Universal Preview Params Template (Data Only)
 **File:** `feature/[name]/preview/[Component]PreviewParams.kt`
@@ -147,13 +171,13 @@ internal data class FeaturePreviewParams(
 )
 ```
 
-### B. Universal Preview Provider Template (CRITICAL — follow this exact style)
+### B. Universal Preview Provider Template
 **File:** `feature/[name]/preview/[Component]PreviewParameterProvider.kt`
 
 **CRITICAL Rules:**
 * Every preview value MUST be extracted into a named `private val` with a descriptive name.
 * **FORBIDDEN:** Do NOT inline preview data directly inside `sequenceOf(...)`.
-* The `override val values` MUST only reference the named properties - it serves as a clean table of contents.
+* The `override val values` MUST only reference the named properties.
 * Each named val describes the preview scenario (e.g., `loading`, `error`).
 
 ```kotlin
@@ -189,7 +213,7 @@ private fun Preview(
   @PreviewParameter(FeaturePreviewParameterProvider::class)
   params: FeaturePreviewParams
 ) {
-  WeatherVibeTheme {
+  AppTheme {
     StatelessFeatureScreen(
       modifier = Modifier.fillMaxWidth(),
       params = params,
@@ -200,6 +224,10 @@ private fun Preview(
 }
 ```
 
+---
+
 ## 6. Stateless vs Stateful
-* **Stateful Composable:** Responsible for collecting state from the ViewModel and passing it to the Stateless version.
-* **Stateless Composable:** Takes raw data and lambda callbacks. This version MUST have the `@Preview` and use `Resources` injection.
+* **Stateful Composable:** Responsible for collecting state from the ViewModel and passing it
+  to the Stateless version.
+* **Stateless Composable:** Takes raw data and lambda callbacks. This version MUST have the
+  `@Preview` and use `Resources` injection.

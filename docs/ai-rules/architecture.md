@@ -65,9 +65,16 @@ UI-to-ViewModel communication is restricted to a single entry point.
 * **Public API:** The only public function allowed is `fun dispatch(action: FeatureAction)`.
 * **Handling:** Use an exhaustive `when` block to map actions to private functions.
 * **Naming:** Private handler functions MUST be named `onXxx` matching the action name.
-  Use **present tense** (e.g., `onRefreshClick`, NOT `onRefreshClicked`).
 * **Static Imports:** **REQUIRED** for sealed interface members in `when` blocks for maximum
   readability: `is Click -> onClick()`.
+
+### 🔠 MVI Grammar & Naming (CRITICAL)
+Actions and Events follow a strict tense rule to distinguish between **intentions** and **results**.
+
+| Component | Tense | Meaning | Correct Examples | Incorrect Examples |
+| :--- | :--- | :--- | :--- | :--- |
+| **Action** | **Present** | "I want this to happen" | `RefreshClick`, `ReceiveResult` | `Refreshed`, `ResultReceived` |
+| **Event** | **Present** | "Do this UI side effect" | `NavigateToDetails`, `ShowToast` | `NavigatedToDetails`, `ToastShown` |
 
 ---
 
@@ -77,7 +84,7 @@ Use Cases serve as the safety boundary for asynchronous operations.
 * **Standard:** Use Cases MUST return `Flow<Result<T>>` using the `flow { }.catch { }` pattern.
 * **Safety:** `Flow.catch` ensures `CancellationException` is not swallowed, preventing
   Coroutine "freezing" or breaking structural concurrency.
-* **FORBIDDEN:** Do not use `runCatching` inside Use Cases.
+* **FORBIDDEN:** Do NOT use `runCatching` inside Use Cases.
 
 ### Use Case Template:
 ```kotlin
@@ -292,6 +299,7 @@ Before finalizing architectural changes, verify:
 5. [ ] **DI:** Are you using Koin Annotations (`@Factory`, `@Single`, `@KoinViewModel`)?
 6. [ ] **UDF:** Is state updated ONLY via `_state.update { ... }`?
 7. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
-8. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
-9. [ ] **Use Case:** Returns `Flow<Result<T>>` and uses `catch { }` for safety?
-10. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?
+8. [ ] **MVI Tense:** Are both Actions and Events using Present Tense?
+9. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
+10. [ ] **Use Case:** Returns `Flow<Result<T>>` and uses `catch { }` for safety?
+11. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?

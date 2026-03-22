@@ -2,7 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 internal sealed interface HomeAction {
 
-  data class LocationResultReceived(
+  data class ReceiveLocationResult(
     val cityName: String,
     val latitude: Double,
     val longitude: Double

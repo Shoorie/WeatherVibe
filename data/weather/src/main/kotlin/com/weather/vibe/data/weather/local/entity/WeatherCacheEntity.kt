@@ -7,13 +7,13 @@ import androidx.room.PrimaryKey
 data class WeatherCacheEntity(
   @PrimaryKey val locationId: String,
   val cityName: String,
-  val currentTemperature: Double,
   val currentConditionName: String,
-  val windSpeed: Double,
-  val windDirection: Double,
+  val currentTemperature: Double,
+  val dailyForecastJson: String,
+  val hourlyForecastJson: String,
   val humidity: Int,
   val isDay: Boolean,
-  val hourlyForecastJson: String,
-  val dailyForecastJson: String,
-  val lastUpdated: Long
+  val lastUpdated: Long,
+  val windDirection: Double,
+  val windSpeed: Double
 )

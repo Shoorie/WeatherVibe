@@ -1,13 +1,12 @@
 package com.weather.vibe.feature.search.ui
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.feature.search.R
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class SearchResources(private val context: Context) {
+internal class SearchResources {
 
   object Emojis {
     fun clock(): String = "\uD83D\uDD58"

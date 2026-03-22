@@ -29,6 +29,8 @@
 ## 2. Entity & DAO Standards
 * **Location:** Define entities in `data/local/entity` and DAOs in `data/local/dao`.
 * **Naming:** All entity classes MUST have the `Entity` suffix (e.g., `UserEntity`, `PostEntity`).
+* **Constructor Order:** `@PrimaryKey` fields MUST come first, then remaining fields sorted
+  alphabetically. This is an exception to the global alphabetical-only rule from `code-style.md`.
 * **DAOs:** * Use `suspend` functions for one-shot operations (Insert, Update, Delete).
     * Return `Flow<T>` or `Flow<List<T>>` for observable queries to ensure UDF
       (Unidirectional Data Flow).
@@ -86,6 +88,6 @@ Before finalizing database changes, verify:
 4. [ ] **Mapping:** Do Entities remain strictly within the `:data` module? (Used mappers?)
 5. [ ] **TypeConverters:** Only used for primitive-like custom types (Enums, Dates)?
 6. [ ] **UDF:** Are write operations `suspend` and read operations observable?
-8. [ ] **DI:** Are DAOs and the Database provider annotated with `@Single`?
-9. [ ] **Constraints:** Are `@ForeignKey` used where appropriate for data integrity?
-10. [ ] **Threading:** Are DAO operations called from `Dispatchers.IO` (usually via Repository)?
+7. [ ] **DI:** Are DAOs and the Database provider annotated with `@Single`?
+8. [ ] **Constraints:** Are `@ForeignKey` used where appropriate for data integrity?
+9. [ ] **Threading:** Are DAO operations called from `Dispatchers.IO` (usually via Repository)?

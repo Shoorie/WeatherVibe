@@ -12,6 +12,9 @@ internal class HomeResources(private val context: Context) {
   fun cloudCover(): String =
     context.getString(R.string.cloud_cover_label)
 
+  fun dayLengthFormat(hours: Int, minutes: Int): String =
+    context.getString(R.string.day_length_format, hours, minutes)
+
   fun defaultError(): String =
     context.getString(R.string.error_unexpected)
 
@@ -59,9 +62,15 @@ internal class HomeResources(private val context: Context) {
     fun eye(): String = "\uD83D\uDC41\uFE0F"
     fun gauge(): String = "\uD83D\uDD36"
     fun humidity(): String = "\uD83D\uDCA7"
+    fun moon(): String = "\uD83C\uDF19"
+    fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
+    fun partlyCloudy(): String = "\u26C5"
     fun precipitation(): String = "\uD83C\uDF02"
     fun rainfall(): String = "\uD83C\uDF27\uFE0F"
+    fun snow(): String = "\u2744\uFE0F"
+    fun sunny(): String = "\u2600\uFE0F"
     fun sunrise(): String = "\uD83C\uDF05"
+    fun sunShower(): String = "\uD83C\uDF26\uFE0F"
     fun sunset(): String = "\uD83C\uDF07"
     fun uvIndex(): String = "\u2600\uFE0F"
     fun wind(): String = "\uD83D\uDCA8"
@@ -72,8 +81,24 @@ internal class HomeResources(private val context: Context) {
   object Texts {
 
     @Composable
+    fun atmosphereSectionTitle(): String =
+      stringResource(R.string.atmosphere_section_title)
+
+    @Composable
+    fun backContentDescription(): String =
+      stringResource(R.string.back_content_description)
+
+    @Composable
+    fun conditionsSectionTitle(): String =
+      stringResource(R.string.conditions_section_title)
+
+    @Composable
     fun dailyForecastTitle(): String =
       stringResource(R.string.daily_forecast_title)
+
+    @Composable
+    fun dayLengthLabel(): String =
+      stringResource(R.string.day_length_label)
 
     @Composable
     fun feelsLikeLabel(temperature: String): String =
@@ -114,5 +139,13 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun tryAgainContentDescription(): String =
       stringResource(R.string.try_again_content_description)
+
+    @Composable
+    fun weatherDetailsTitle(): String =
+      stringResource(R.string.weather_details_title)
+
+    @Composable
+    fun windSectionTitle(): String =
+      stringResource(R.string.wind_section_title)
   }
 }

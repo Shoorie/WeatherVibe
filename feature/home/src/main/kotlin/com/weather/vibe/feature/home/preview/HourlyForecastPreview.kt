@@ -2,13 +2,15 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.moon
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
 
 internal class HourlyForecastPreview :
   PreviewParameterProvider<HourlyForecastUiState> {
 
   private val currentHour: HourlyForecastUiState =
     HourlyForecastUiState(
-      conditionEmoji = "⛅",
+      conditionEmoji = partlyCloudy(),
       isCurrentHour = true,
       temperature = "21°",
       timeLabel = "14:00"
@@ -16,7 +18,7 @@ internal class HourlyForecastPreview :
 
   private val regularHour: HourlyForecastUiState =
     HourlyForecastUiState(
-      conditionEmoji = "🌙",
+      conditionEmoji = moon(),
       isCurrentHour = false,
       temperature = "-3°",
       timeLabel = "02:00"

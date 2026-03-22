@@ -7,3 +7,6 @@ object HomeRoute
 
 @Serializable
 object SearchRoute
+
+@Serializable
+object WeatherDetailsRoute

@@ -9,9 +9,10 @@
 3. [File Structure & Separation](#3-file-structure--separation)
 4. [Constructor Parameter Order (CRITICAL)](#4-constructor-parameter-order-critical)
 5. [Class Member Order](#5-class-member-order)
-6. [Clean Imports](#6-clean-imports)
+6. [Clean Imports & Hygiene (NO LEFTOVERS)](#6-clean-imports--hygiene-no-leftovers)
 7. [No Hardcoded Values](#7-no-hardcoded-values)
 8. [Nullability & Safety](#8-nullability--safety)
+9. [Self-Verification Checklist](#9-self-verification-checklist)
 
 ---
 
@@ -85,11 +86,14 @@ Organize class members in the following strict order:
 
 ---
 
-## 6. Clean Imports
+## 6. Clean Imports & Hygiene (NO LEFTOVERS)
 * **FORBIDDEN:** Avoid wildcard imports (`import com.example.*`).
 * **Static Imports:** Use static imports for members of Sealed Classes, Enums, and Resource Wrappers
   to keep the logic clean (e.g., `is Loaded -> ...` instead of `is State.Loaded -> ...`).
 * **Unused Imports:** Always remove unused imports before finalizing a file.
+* **Dead Code:** Delete unused variables, functions, and commented-out code blocks.
+* **Resources:** If you rename or delete a feature, ensure corresponding `strings.xml` or drawables
+  are also removed if no longer used.
 
 ---
 
@@ -103,3 +107,19 @@ Organize class members in the following strict order:
 * Prefer `val` over `var` whenever possible.
 * Use Kotlin's null-safety features (`?.`, `?:`, `let`) instead of force-unwrapping (`!!`).
 * For Composables, use nullable types only when the data is truly optional.
+
+---
+
+## 9. Self-Verification Checklist
+Before finalizing code changes, verify:
+
+1. [ ] **Indentation:** Exactly 2 spaces used throughout?
+2. [ ] **Line Length:** All lines under 100 characters?
+3. [ ] **One Concept Per File:** Are all classes/interfaces in their own files?
+4. [ ] **Constructor Sorting:** Are constructor parameters sorted alphabetically?
+5. [ ] **Member Order:** Are class members in the correct strict order?
+6. [ ] **Imports:** No wildcards? All unused imports removed?
+7. [ ] **Hardcoding:** No raw strings/numbers? (Used `companion object` constants?)
+8. [ ] **Naming:** Concise names used? (No `Impl`, matching file names for Composables?)
+9. [ ] **Hygiene:** All dead code, commented-out blocks, and unused resources removed?
+10. [ ] **Null Safety:** No `!!` used?

@@ -10,6 +10,7 @@
 4. [The Modifier Rule](#4-the-modifier-rule)
 5. [Previews & External Mock Data (CRITICAL)](#5-previews--external-mock-data-critical)
 6. [Stateless vs Stateful](#6-stateless-vs-stateful)
+7. [Self-Verification Checklist](#7-self-verification-checklist)
 
 ---
 
@@ -231,3 +232,19 @@ private fun Preview(
   to the Stateless version.
 * **Stateless Composable:** Takes raw data and lambda callbacks. This version MUST have the
   `@Preview` and use `Resources` injection.
+
+---
+
+## 7. Self-Verification Checklist
+Before finalizing UI changes, verify:
+
+1. [ ] **Theming:** No colors/typography accessed via `MaterialTheme` or `AppTheme.colors`?
+2. [ ] **Static Imports:** Are `colors`, `typography`, and `PaddingXxx` statically imported?
+3. [ ] **Resources:** No raw `stringResource` or `painterResource` in layout code? (Used Resources wrapper?)
+4. [ ] **Complexity:** No Composable function exceeds 60 lines?
+5. [ ] **Modifiers:** Is `modifier: Modifier = Modifier` the first optional parameter?
+6. [ ] **Previews:** Does every stateless Composable have a `@PreviewLightDark`?
+7. [ ] **PreviewProvider:** All preview values extracted to named `private val` properties?
+8. [ ] **PreviewParams:** Only data included? (Lambdas passed as `{}` in Preview function?)
+9. [ ] **State Separation:** Clear split between Stateful (VM collection) and Stateless (UI only)?
+10. [ ] **Stability:** Are all UI model classes annotated with `@Immutable`?

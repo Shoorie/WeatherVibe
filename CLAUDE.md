@@ -22,6 +22,8 @@
    Theme, Colors, Typography, or a Dimensions object.
 4. **Think Step-by-Step:** Before generating code, explain your plan and list the files you intend
    to modify/create.
+5. **Hygiene & Cleanup:** ALWAYS remove unused imports, dead code, unused resources (strings, 
+   drawables), and commented-out code before finishing. NO LEFTOVERS.
 
 ---
 

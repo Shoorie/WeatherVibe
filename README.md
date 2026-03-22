@@ -15,73 +15,82 @@
 
 </div>
 
+## 📋 Table of Contents
+* [About The Project](#-about-the-project)
+* [The Vibe Flow (AI Collaboration)](#-the-vibe-flow-ai-collaboration)
+* [Architecture & Tech Stack](#-architecture--tech-stack)
+* [The Architectural Constitution](#-the-architectural-constitution-ai-rules)
+* [Getting Started](#-getting-started)
+
+---
+
 ## 📖 About The Project
 
 **WeatherVibe** is more than just another weather app. It's an experimental playground exploring
 how **"Vibe Coding"** (human-AI pair programming) can produce enterprise-grade, scalable software
 when constrained by unbreakable architectural rules.
 
-Instead of letting AI hallucinate spaghetti code, this project is governed by a strict set of
-developer-defined rules. The result? A perfectly structured, highly modular Android application
-that feels both modern and robust.
-
 ### ✨ Key Features
 * **Real-time Weather Data:** Accurate forecasting powered by Open-Meteo API.
-* **Token-Based Design System:** A completely custom, resource-injected UI layer with zero
-  hardcoded colors or dimensions.
+* **Token-Based Design System:** A completely custom, resource-injected UI layer.
 * **Offline Support:** Robust local caching using Room database with relational mapping.
-* **Fluid Animations:** Smooth transitions and micro-interactions built with Jetpack Compose.
+* **Fluid Animations:** Smooth transitions and micro-interactions.
+
+---
+
+## 🌊 The Vibe Flow (AI Collaboration)
+
+This project isn't just "generated" by AI; it's **architected by humans and executed by AI**. We
+follow a strict cycle to ensure zero technical debt:
+
+1.  **Contextual Prompting:** The Developer defines the intent (e.g., "Add a new weather metric").
+2.  **Rule Enforcement:** The AI agent is forced to read our `docs/ai-rules/` before proposing code.
+3.  **Step-by-Step Thinking:** AI explains its plan and lists intended file changes.
+4.  **Human Verification:** The Developer reviews the "Vibe" and architectural alignment.
+5.  **Self-Correction:** AI runs through a checklist (Self-Verification) to ensure no rules were broken.
 
 ---
 
 ## 🏗️ Architecture & Tech Stack
 
 This project is a love letter to **Clean Architecture** and **Unidirectional Data Flow (UDF)**.
-It strictly separates business logic from presentation, ensuring maximum testability.
 
 ### The Stack
 * **UI:** Jetpack Compose (Strict Stateless/Stateful separation)
 * **Architecture:** MVI (Model-View-Intent) with strictly **Passive ViewModels**.
-* **Network:** Ktor Client + `kotlinx.serialization` (No Retrofit!).
-* **Local Storage:** Room Database (Relational schemas, no flat JSON dumps).
-* **Dependency Injection:** Koin (using KSP `@KoinViewModel` and `@Single` annotations).
-* **Asynchronous Programming:** Kotlin Coroutines & Flow (using `Flow.catch` safety patterns).
-
-### Modularization Strategy
-The project is sliced by features and layered by architecture into physical directories:
-* `:app` — The assembler and navigation hub.
-* `:core:designsystem` - Theme tokens, colors, typography.
-* `:core:network` - Ktor HTTP client configuration.
-* `:domain:[feature]` - Pure Kotlin business logic and Use Cases.
-* `:data:[feature]` - DTOs, Entities, and Repository implementations.
-* `:feature:[feature]` - Composables, ViewModels, and UI States.
+* **Network:** Ktor Client + `kotlinx.serialization`.
+* **Local Storage:** Room Database (Relational schemas).
+* **Dependency Injection:** Koin (using KSP Annotations).
 
 ### Module Dependency Graph
 ```mermaid
 graph TD
-  app[:app]
+  subgraph UI_Layer [Presentation]
+    feat_home[":feature:home"]
+    feat_search[":feature:search"]
+    app[":app"]
+  end
 
-  core_ds[:core:designsystem]
-  core_net[:core:network]
+  subgraph Domain_Layer [Business Logic]
+    domain_weather[":domain:weather"]
+    domain_loc[":domain:location"]
+  end
 
-  domain_loc[:domain:location]
-  domain_weather[:domain:weather]
+  subgraph Data_Layer [Implementation]
+    data_weather[":data:weather"]
+    data_loc[":data:location"]
+  end
 
-  data_loc[:data:location]
-  data_weather[:data:weather]
-
-  feat_home[:feature:home]
-  feat_search[:feature:search]
+  subgraph Core_Layer [Infrastructure]
+    core_ds[":core:designsystem"]
+    core_net[":core:network"]
+  end
 
   app --> feat_home
   app --> feat_search
   app --> data_loc
   app --> data_weather
-  app --> domain_loc
-  app --> domain_weather
-  app --> core_ds
-  app --> core_net
-
+  
   feat_home --> domain_weather
   feat_home --> core_ds
 
@@ -94,40 +103,44 @@ graph TD
 
   data_weather --> domain_weather
   data_weather --> core_net
+
+  classDef ui fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
+  classDef domain fill:#f1f8e9,stroke:#33691e,stroke-width:2px;
+  classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px;
+  classDef core fill:#f3e5f5,stroke:#4a148c,stroke-width:2px;
+
+  class app,feat_home,feat_search ui;
+  class domain_weather,domain_loc domain;
+  class data_weather,data_loc data;
+  class core_ds,core_net core;
 ```
 
 ---
 
-## 🤖 The "Vibe Coding" Manifesto
+## 🧱 The Architectural Constitution (AI Rules)
 
-This project was built using AI assistants natively within Android Studio (via Claude), but under
-a strict **Developer's Constitution**. Before generating any code, the AI agent is forced to read
-our `CLAUDE.md` root prompt, which enforces high-level architectural discipline.
+Every AI interaction is governed by these "unbreakable" laws. These files act as the 
+**System Prompt Extension** for any AI agent working on this repo.
 
-### The Constitution Files (Our AI Rules):
-Dive into the exact rules that guide the AI in this project:
-* 🏗️ [Architecture & State](docs/ai-rules/architecture.md) - Strict UDF and Passive ViewModels.
-* 🎨 [Compose UI Guidelines](docs/ai-rules/compose-ui.md) - Token-based theming and Stateless UI.
-* 🌐 [Network & Ktor](docs/ai-rules/network-ktor.md) - Zero DTO leakage and safe Flow mapping.
-* 💾 [Database & Room](docs/ai-rules/database-room.md) - Pure relational schemas.
-* 💅 [Code Style](docs/ai-rules/code-style.md) - 2-space indents, clean imports, strict formatting.
-* 📦 [Modularization](docs/ai-rules/modularization.md) - Namespace-driven directory structures.
+| Rule File | Core Responsibility | Key "Unbreakable" Laws |
+| :--- | :--- | :--- |
+| 🏗️ [Architecture](docs/ai-rules/architecture.md) | State & Logic | Passive ViewModels, Present Tense MVI, Result Handlers. |
+| 🎨 [Compose UI](docs/ai-rules/compose-ui.md) | UI & Theming | Token-Based UI, Static Imports, One Composable < 60 lines. |
+| 💅 [Code Style](docs/ai-rules/code-style.md) | Hygiene & Flow | 2-space Indents, Alphabetical Constructor Params, Named Args. |
+| 🌐 [Network](docs/ai-rules/network-ktor.md) | Data Sources | Zero DTO leakage, `Dispatchers.IO` wrapping, No Retrofit. |
+| 💾 [Database](docs/ai-rules/database-room.md) | Persistence | Relational Schemas, No JSON Blobs, Observable Flows. |
+| 📦 [Modularization](docs/ai-rules/modularization.md) | Structure | Namespace-Driven Directories, Strict Dependency Flow. |
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-* **Android Studio:** Ladybug Feature Drop (or newer)
-* **JDK:** Version 17+
-
-### Installation
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/VibeWeather.git](https://github.com/yourusername/WeatherVibe.git)
+   git clone https://github.com/azalewski/WeatherVibe.git
    ```
-2. Open the project in Android Studio.
-3. Build and run the app:
+2. Open in **Android Studio Ladybug** (or newer).
+3. Build and run:
    ```bash
    ./gradlew assembleDebug
    ```

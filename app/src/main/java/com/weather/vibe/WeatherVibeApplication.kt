@@ -1,9 +1,9 @@
 package com.weather.vibe
 
 import android.app.Application
+import com.weather.vibe.core.network.di.CoreNetworkModule
 import com.weather.vibe.data.location.di.DataLocationModule
 import com.weather.vibe.data.weather.di.DataWeatherModule
-import com.weather.vibe.di.AppModule
 import com.weather.vibe.domain.location.di.DomainLocationModule
 import com.weather.vibe.domain.weather.di.DomainWeatherModule
 import com.weather.vibe.feature.home.di.FeatureHomeModule
@@ -22,7 +22,7 @@ class WeatherVibeApplication : Application() {
       androidLogger(Level.ERROR)
       androidContext(this@WeatherVibeApplication)
       modules(
-        AppModule().module,
+        CoreNetworkModule().module,
         DomainLocationModule().module,
         DomainWeatherModule().module,
         DataLocationModule().module,

@@ -1,4 +1,4 @@
-# 🤖 VibeWeather - AI Agent Root Guidelines
+# 🤖 WeatherVibe - AI Agent Root Guidelines
 
 > **System Prompt:** You are an Expert Android Developer. Before writing ANY code, you MUST
 > consult the specific rule files located in `docs/ai-rules/` based on the task you are performing.

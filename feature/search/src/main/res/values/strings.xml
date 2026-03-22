@@ -1,6 +1,6 @@
 <resources>
-  <string name="search_hint">Szukaj miasta&#8230;</string>
-  <string name="close_search_content_description">Zamknij wyszukiwanie</string>
-  <string name="no_results_found">Nie znaleziono wyników dla \"%1$s\"</string>
-  <string name="recent_locations_title">Ostatnio wyszukiwane</string>
+  <string name="search_hint">Search for a city&#8230;</string>
+  <string name="close_search_content_description">Close search</string>
+  <string name="no_results_found">No results found for \"%1$s\"</string>
+  <string name="recent_locations_title">Recently searched</string>
 </resources>

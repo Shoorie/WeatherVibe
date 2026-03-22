@@ -6,7 +6,7 @@
 ## 📋 Table of Contents
 1. [Design System & Theming — Token-Based Architecture](#1-design-system--theming--token-based-architecture-critical)
 2. [Resource Management (The Wrapper Pattern)](#2-resource-management-the-wrapper-pattern)
-3. [Aggressive Component Splitting](#3-aggressive-component-splitting)
+3. [Aggressive Component Splitting & State Files](#3-aggressive-component-splitting--state-files)
 4. [The Modifier Rule](#4-the-modifier-rule)
 5. [Previews & External Mock Data (CRITICAL)](#5-previews--external-mock-data-critical)
 6. [Stateless vs Stateful](#6-stateless-vs-stateful)
@@ -140,10 +140,16 @@ internal object FeatureResources {
 
 ---
 
-## 3. Aggressive Component Splitting
+## 3. Aggressive Component Splitting & State Files
 * **Strict Limit:** A single Composable function MUST NOT exceed 60 lines of code.
-* Break down EVERY UI screen into small, private, reusable functions. Extract Headers, Lists,
-  and Cards immediately.
+* **Feature-Specific State Files (CRITICAL):** Specialized screen states MUST be extracted to 
+  their own separate files and MUST be prefixed with the Feature name to avoid collisions.
+  * **Correct:** `HomeEmptyState.kt`, `HomeErrorState.kt`, `HomeLoadingState.kt`.
+  * **Incorrect:** `EmptyState.kt`, `ErrorState.kt`.
+* **Pragmatic Rule:** Even if a state is simple (e.g., a centered spinner), extract it as 
+  `[Feature]LoadingState.kt` to maintain a clean top-level `when` structure.
+* **Previews:** Every single file containing a Composable (including states and placeholders)
+  MUST contain its own `@PreviewLightDark` function.
 
 ---
 
@@ -158,8 +164,7 @@ internal object FeatureResources {
 * **FORBIDDEN:** Do NOT include functional callbacks (lambdas/actions) in `PreviewParams`.
 * **Rule:** `PreviewParams` should only contain visual data (Strings, Booleans, Domain Models).
   Pass empty lambdas `{}` directly in the `@Preview` function.
-* **Location:** Each provider MUST live in its own file inside a `preview/` sub-package
-  (e.g., `feature/home/preview/HomePreviewParameterProvider.kt`).
+* **Location:** Each provider MUST live in its own file inside a `preview/` sub-package.
 
 ### A. Universal Preview Params Template (Data Only)
 **File:** `feature/[name]/preview/[Component]PreviewParams.kt`
@@ -179,7 +184,6 @@ internal data class FeaturePreviewParams(
 * Every preview value MUST be extracted into a named `private val` with a descriptive name.
 * **FORBIDDEN:** Do NOT inline preview data directly inside `sequenceOf(...)`.
 * The `override val values` MUST only reference the named properties.
-* Each named val describes the preview scenario (e.g., `loading`, `error`).
 
 ```kotlin
 internal class FeaturePreviewParameterProvider :
@@ -189,19 +193,10 @@ internal class FeaturePreviewParameterProvider :
     FeaturePreviewParams(title = "Short Title")
 
   private val loading : FeaturePreviewParams =
-    FeaturePreviewParams(
-      title = "Loading...",
-      isLoading = true
-    )
-
-  private val edgeCaseLongTitle : FeaturePreviewParams =
-    FeaturePreviewParams(
-      title = LoremIpsum(15).values.joinToString(" "),
-      subtitle = "Detailed subtitle description"
-    )
+    FeaturePreviewParams(title = "Loading...", isLoading = true)
 
   override val values: Sequence<FeaturePreviewParams> =
-    sequenceOf(base, loading, edgeCaseLongTitle)
+    sequenceOf(base, loading)
 }
 ```
 
@@ -242,9 +237,11 @@ Before finalizing UI changes, verify:
 2. [ ] **Static Imports:** Are `colors`, `typography`, and `PaddingXxx` statically imported?
 3. [ ] **Resources:** No raw `stringResource` or `painterResource` in layout code? (Used Resources wrapper?)
 4. [ ] **Complexity:** No Composable function exceeds 60 lines?
-5. [ ] **Modifiers:** Is `modifier: Modifier = Modifier` the first optional parameter?
-6. [ ] **Previews:** Does every stateless Composable have a `@PreviewLightDark`?
-7. [ ] **PreviewProvider:** All preview values extracted to named `private val` properties?
-8. [ ] **PreviewParams:** Only data included? (Lambdas passed as `{}` in Preview function?)
-9. [ ] **State Separation:** Clear split between Stateful (VM collection) and Stateless (UI only)?
-10. [ ] **Stability:** Are all UI model classes annotated with `@Immutable`?
+5. [ ] **Splitting:** Are specialized screen states (Empty, Error, Loading) in separate files?
+6. [ ] **Naming:** Are state files prefixed with the Feature name (e.g., `[Feature]EmptyState`)?
+7. [ ] **Previews:** Does EVERY file containing a Composable have its own `@PreviewLightDark`?
+8. [ ] **Modifiers:** Is `modifier: Modifier = Modifier` the first optional parameter?
+9. [ ] **PreviewProvider:** All preview values extracted to named `private val` properties?
+10. [ ] **PreviewParams:** Only data included? (Lambdas passed as `{}` in Preview function?)
+11. [ ] **State Separation:** Clear split between Stateful and Stateless?
+12. [ ] **Stability:** Are all UI model classes annotated with `@Immutable`?

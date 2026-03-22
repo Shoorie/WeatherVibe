@@ -9,9 +9,7 @@ internal class HourlyForecastListPreview :
   private val eightHours: List<HourlyForecastUiState> =
     List(8) { index ->
       HourlyForecastUiState(
-        conditionEmoji = listOf(
-          "⛅", "☁️", "🌤️", "☀️", "⛅", "🌧️", "☁️", "🌤️"
-        )[index],
+        conditionEmoji = listOf("⛅", "☁️", "🌤️", "☀️", "⛅", "🌧️", "☁️", "🌤️")[index],
         isCurrentHour = index == 0,
         temperature = "${18 + index}°",
         timeLabel = "${14 + index}:00"

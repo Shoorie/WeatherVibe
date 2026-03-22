@@ -40,7 +40,7 @@ Groups color tokens into meaningful UI concepts.
 * `@Immutable data class AppShapes(...)`
 
 #### `Dimens.kt` (Spacing & Sizing)
-* `object AppDimens { val PaddingMedium = 16.dp }`
+* e.g., `object AppDimens { val PaddingMedium = 16.dp }`
 
 #### `Theme.kt` (Provider & Accessor)
 Sets up `CompositionLocal` and wraps Material 3.
@@ -117,23 +117,42 @@ internal fun MyComponent(modifier: Modifier = Modifier) {
 ---
 
 ## 2. Resource Management (The Wrapper Pattern)
+* **FORBIDDEN (CRITICAL):** NO user-facing strings or labels can be hardcoded as raw Strings 
+  in code (including ViewModels, States, or Factories).
 * **FORBIDDEN:** Never use `stringResource(R.string.xyz)` or `painterResource(R.drawable.xyz)`
   directly inside your Composable layout.
-* **The Pattern:** For every screen, create an `internal object` resource wrapper in the feature's
-  package.
+* **The Pattern:** For every screen, create an `internal class` resource wrapper 
+  annotated with `@Factory` (e.g., `FeatureResources.kt`).
+* **Non-Composable Usage (CRITICAL):** If resources are needed outside Composables (e.g., 
+  in ViewModels), the wrapper MUST take `Context` in its constructor and provide regular 
+  functions (not `@Composable`) that use `context.getString()`.
+* **Rule:** All strings MUST be defined in `strings.xml` and accessed ONLY through the wrapper.
 * **Clean Imports (CRITICAL):** Do NOT use prefixes like `Resources.Texts.title()`. Use Kotlin's
   static import feature to import functions directly for maximum readability.
 
+### Wrapper Example:
 ```kotlin
-internal object FeatureResources {
-  object Painters {
-    @Composable
-    fun icon(): Painter = painterResource(id = R.drawable.ic_feature)
-  }
+@Factory
+internal class FeatureResources(private val context: Context) {
 
-  object Texts {
-    @Composable
-    fun title(): String = stringResource(R.string.txt_feature_title)
+  // 1. Regular function for non-composable usage (e.g., ViewModels/Factories)
+  fun defaultError(): String = 
+    context.getString(R.string.error)
+
+    object Painters {
+      
+      @Composable
+      fun icon(): Painter =
+        painterResource(id = R.drawable.ic_feature)
+    }
+
+
+    object Texts {
+    
+      // 2. @Composable functions for UI usage
+      @Composable
+      fun title(): String = 
+        stringResource(R.string.home_title)
   }
 }
 ```
@@ -184,6 +203,7 @@ internal data class FeaturePreviewParams(
 * Every preview value MUST be extracted into a named `private val` with a descriptive name.
 * **FORBIDDEN:** Do NOT inline preview data directly inside `sequenceOf(...)`.
 * The `override val values` MUST only reference the named properties.
+* Each named val describes the preview scenario (e.g., `loading`, `error`).
 
 ```kotlin
 internal class FeaturePreviewParameterProvider :
@@ -193,10 +213,19 @@ internal class FeaturePreviewParameterProvider :
     FeaturePreviewParams(title = "Short Title")
 
   private val loading : FeaturePreviewParams =
-    FeaturePreviewParams(title = "Loading...", isLoading = true)
+    FeaturePreviewParams(
+      title = "Loading...",
+      isLoading = true
+    )
+
+  private val edgeCaseLongTitle : FeaturePreviewParams =
+    FeaturePreviewParams(
+      title = LoremIpsum(15).values.joinToString(" "),
+      subtitle = "Detailed subtitle description"
+    )
 
   override val values: Sequence<FeaturePreviewParams> =
-    sequenceOf(base, loading)
+    sequenceOf(base, loading, edgeCaseLongTitle)
 }
 ```
 
@@ -235,13 +264,15 @@ Before finalizing UI changes, verify:
 
 1. [ ] **Theming:** No colors/typography accessed via `MaterialTheme` or `AppTheme.colors`?
 2. [ ] **Static Imports:** Are `colors`, `typography`, and `PaddingXxx` statically imported?
-3. [ ] **Resources:** No raw `stringResource` or `painterResource` in layout code? (Used Resources wrapper?)
-4. [ ] **Complexity:** No Composable function exceeds 60 lines?
-5. [ ] **Splitting:** Are specialized screen states (Empty, Error, Loading) in separate files?
-6. [ ] **Naming:** Are state files prefixed with the Feature name (e.g., `[Feature]EmptyState`)?
-7. [ ] **Previews:** Does EVERY file containing a Composable have its own `@PreviewLightDark`?
-8. [ ] **Modifiers:** Is `modifier: Modifier = Modifier` the first optional parameter?
-9. [ ] **PreviewProvider:** All preview values extracted to named `private val` properties?
-10. [ ] **PreviewParams:** Only data included? (Lambdas passed as `{}` in Preview function?)
-11. [ ] **State Separation:** Clear split between Stateful and Stateless?
-12. [ ] **Stability:** Are all UI model classes annotated with `@Immutable`?
+3. [ ] **Resources (Strings):** Are ALL user-facing strings in `strings.xml`? No hardcoded Strings?
+4. [ ] **Resources (Wrapper):** Are strings accessed ONLY through the Feature's Resource Wrapper?
+5. [ ] **Non-Composable Resources:** Are resources used in ViewModels provided via `context.getString()`?
+6. [ ] **Complexity:** No Composable function exceeds 60 lines?
+7. [ ] **Splitting:** Are specialized screen states in separate files?
+8. [ ] **Naming:** Are state files prefixed with the Feature name (e.g., `FeatureEmptyState`)?
+9. [ ] **Previews:** Does EVERY file containing a Composable have its own `@PreviewLightDark`?
+10. [ ] **Modifiers:** Is `modifier: Modifier = Modifier` the first optional parameter?
+11. [ ] **PreviewProvider:** All preview values extracted to named `private val` properties?
+12. [ ] **PreviewParams:** Only data included? (Lambdas passed as `{}` in Preview function?)
+13. [ ] **State Separation:** Clear split between Stateful and Stateless?
+14. [ ] **Stability:** Are all UI model classes and `PreviewParams` annotated with `@Immutable`?

@@ -12,6 +12,9 @@ internal class HomeResources(private val context: Context) {
   fun cloudCover(): String =
     context.getString(R.string.cloud_cover_label)
 
+  fun defaultError(): String =
+    context.getString(R.string.error_unexpected)
+
   fun dewPoint(): String =
     context.getString(R.string.dew_point_label)
 

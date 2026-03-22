@@ -9,12 +9,12 @@
   <string name="wind_speed_label">Wind Speed</string>
   <string name="direction_label">Direction</string>
   <string name="precipitation_label">Precipitation</string>
-  <string name="search_hint">Szukaj miasta&#8230;</string>
-  <string name="search_city_content_description">Szukaj miasta</string>
-  <string name="refresh_content_description">Odśwież</string>
-  <string name="close_search_content_description">Zamknij wyszukiwanie</string>
-  <string name="try_again_content_description">Spróbuj ponownie</string>
-  <string name="no_results_found">Nie znaleziono wyników dla \"%1$s\"</string>
+  <string name="search_hint">Search city&#8230;</string>
+  <string name="search_city_content_description">Search city</string>
+  <string name="refresh_content_description">Refresh</string>
+  <string name="close_search_content_description">Close search</string>
+  <string name="try_again_content_description">Try again</string>
+  <string name="no_results_found">No results found for \"%1$s\"</string>
   <string name="humidity_value_format">%1$d%%</string>
   <string name="wind_speed_value_format">%1$d km/h</string>
   <string name="precipitation_value_format">%1$d%%</string>
@@ -31,4 +31,5 @@
   <string name="wind_gusts_label">Wind Gusts</string>
   <string name="rainfall_label">Rainfall</string>
   <string name="wind_speed_max_label">Max Wind</string>
+  <string name="error_unexpected">An unexpected error occurred</string>
 </resources>

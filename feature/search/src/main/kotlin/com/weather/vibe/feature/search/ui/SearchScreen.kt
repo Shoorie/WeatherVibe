@@ -47,7 +47,8 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
 import com.weather.vibe.feature.search.preview.SearchPreview
 import com.weather.vibe.feature.search.preview.params.SearchPreviewParams
-import com.weather.vibe.feature.search.ui.SearchResources.Emojis
+import com.weather.vibe.feature.search.ui.SearchResources.Emojis.clock
+import com.weather.vibe.feature.search.ui.SearchResources.Emojis.locationPin
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.noResultsFound
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.recentLocationsTitle
 import com.weather.vibe.feature.search.ui.component.LocationItem
@@ -130,7 +131,7 @@ private fun SearchStateContent(
     is Searching -> SearchingIndicator(modifier)
     is Results -> LocationList(
       modifier = modifier,
-      emoji = Emojis.locationPin(),
+      emoji = locationPin(),
       locations = state.locations,
       onLocationClick = onLocationClick
     )
@@ -160,7 +161,7 @@ private fun RecentsSection(
       modifier = Modifier.padding(vertical = PaddingSmall)
     )
     LocationList(
-      emoji = Emojis.clock(),
+      emoji = clock(),
       locations = locations,
       onLocationClick = onLocationClick
     )

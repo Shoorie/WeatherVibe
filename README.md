@@ -124,12 +124,12 @@ Every AI interaction is governed by these "unbreakable" laws. These files act as
 
 | Rule File | Core Responsibility | Key "Unbreakable" Laws |
 | :--- | :--- | :--- |
-| 🏗️ [Architecture](docs/ai-rules/architecture.md) | State & Logic | Passive ViewModels, Present Tense MVI, Result Handlers. |
-| 🎨 [Compose UI](docs/ai-rules/compose-ui.md) | UI & Theming | Token-Based UI, Static Imports, One Composable < 60 lines. |
-| 💅 [Code Style](docs/ai-rules/code-style.md) | Hygiene & Flow | 2-space Indents, Alphabetical Constructor Params, Named Args. |
-| 🌐 [Network](docs/ai-rules/network-ktor.md) | Data Sources | Zero DTO leakage, `Dispatchers.IO` wrapping, No Retrofit. |
-| 💾 [Database](docs/ai-rules/database-room.md) | Persistence | Relational Schemas, No JSON Blobs, Observable Flows. |
-| 📦 [Modularization](docs/ai-rules/modularization.md) | Structure | Namespace-Driven Directories, Strict Dependency Flow. |
+| 🏗️ [Architecture](docs/ai-rules/architecture.md) | Logic & State | **Passive ViewModels** & Result-driven Clean Architecture. |
+| 🎨 [Compose UI](docs/ai-rules/compose-ui.md) | Presentation | **Token-based Design System** with Atomic Components. |
+| 💅 [Code Style](docs/ai-rules/code-style.md) | Hygiene | **Strict Formatting** & Mandatory Named Arguments. |
+| 🌐 [Network](docs/ai-rules/network-ktor.md) | External API | **Strict Data Boundaries** & Ktor Implementation. |
+| 💾 [Database](docs/ai-rules/database-room.md) | Persistence | **Relational Mapping** over flat JSON persistence. |
+| 📦 [Modularization](docs/ai-rules/modularization.md) | Structure | **Namespace-driven** layered feature modules. |
 
 ---
 

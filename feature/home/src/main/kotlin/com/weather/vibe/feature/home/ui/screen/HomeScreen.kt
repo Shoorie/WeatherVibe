@@ -38,7 +38,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.HomeAction
-import com.weather.vibe.feature.home.presentation.HomeAction.LocationResultReceived
+import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -47,7 +47,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.error
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
@@ -76,7 +76,7 @@ fun HomeScreen(
       && selectedLongitude != null
     ) {
       viewModel.dispatch(
-        LocationResultReceived(
+        ReceiveLocationResult(
           cityName = selectedCityName,
           latitude = selectedLatitude,
           longitude = selectedLongitude
@@ -226,7 +226,7 @@ private fun ErrorContent(
     verticalArrangement = Arrangement.Center
   ) {
     Text(
-      text = Emojis.error(),
+      text = error(),
       style = typography.displaySmall
     )
     Spacer(modifier = Modifier.height(PaddingMedium))

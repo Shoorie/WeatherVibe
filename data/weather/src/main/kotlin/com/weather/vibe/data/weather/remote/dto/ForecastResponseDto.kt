@@ -9,9 +9,18 @@ data class ForecastResponseDto(
   @SerialName("current_weather")
   val currentWeather: CurrentWeatherDto? = null,
 
-  val latitude: Double,
-  val longitude: Double,
-  val timezone: String,
+  @SerialName("daily")
+  val daily: DailyDataDto? = null,
+
+  @SerialName("hourly")
   val hourly: HourlyDataDto? = null,
-  val daily: DailyDataDto? = null
+
+  @SerialName("latitude")
+  val latitude: Double,
+
+  @SerialName("longitude")
+  val longitude: Double,
+
+  @SerialName("timezone")
+  val timezone: String,
 )

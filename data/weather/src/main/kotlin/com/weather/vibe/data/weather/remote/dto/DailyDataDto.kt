@@ -12,23 +12,30 @@ data class DailyDataDto(
   @SerialName("precipitation_sum")
   val precipitationSum: List<Double> = emptyList(),
 
+  @SerialName("sunrise")
+  val sunrise: List<String> = emptyList(),
+
+  @SerialName("sunset")
+  val sunset: List<String> = emptyList(),
+
   @SerialName("temperature_2m_max")
   val temperature2mMax: List<Double> = emptyList(),
 
   @SerialName("temperature_2m_min")
   val temperature2mMin: List<Double> = emptyList(),
 
+  @SerialName("time")
+  val time: List<String> = emptyList(),
+
   @SerialName("uv_index_max")
   val uvIndexMax: List<Double> = emptyList(),
+
+  @SerialName("weathercode")
+  val weathercode: List<Int> = emptyList(),
 
   @SerialName("windgusts_10m_max")
   val windgusts10mMax: List<Double> = emptyList(),
 
   @SerialName("windspeed_10m_max")
   val windspeed10mMax: List<Double> = emptyList(),
-
-  val sunrise: List<String> = emptyList(),
-  val sunset: List<String> = emptyList(),
-  val time: List<String> = emptyList(),
-  val weathercode: List<Int> = emptyList(),
 )

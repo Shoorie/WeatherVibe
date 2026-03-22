@@ -6,11 +6,21 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CurrentWeatherDto(
 
-  @SerialName("is_day") val isDay: Int,
+  @SerialName("is_day")
+  val isDay: Int,
+
+  @SerialName("temperature")
+  val temperature: Double,
+
+  @SerialName("time")
   val time: String,
 
-  val temperature: Double,
-  val windspeed: Double,
-  val winddirection: Double,
+  @SerialName("weathercode")
   val weathercode: Int,
+
+  @SerialName("winddirection")
+  val winddirection: Double,
+
+  @SerialName("windspeed")
+  val windspeed: Double,
 )

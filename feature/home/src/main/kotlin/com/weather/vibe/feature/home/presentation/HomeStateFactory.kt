@@ -9,6 +9,7 @@ import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
+import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -18,7 +19,8 @@ import kotlin.math.roundToInt
 
 @Factory
 internal class HomeStateFactory(
-  private val metricsStateFactory: MetricsStateFactory
+  private val metricsFactory: MetricsStateFactory,
+  private val resources: HomeResources
 ) {
 
   fun create(data: WeatherData): Loaded =
@@ -27,7 +29,7 @@ internal class HomeStateFactory(
       dailyForecast = createDailyForecast(data.dailyForecast),
       header = createHeader(data),
       hourlyForecast = createHourlyForecast(data.hourlyForecast),
-      metrics = metricsStateFactory.create(data),
+      metrics = metricsFactory.create(data),
       sunriseSunset = createSunriseSunset(data.dailyForecast)
     )
 
@@ -102,7 +104,7 @@ internal class HomeStateFactory(
   private fun formatDayLabel(date: String): String =
     runCatching {
       val parsed = LocalDate.parse(date)
-      if (parsed == LocalDate.now()) TODAY_LABEL
+      if (parsed == LocalDate.now()) resources.todayLabel()
       else parsed.format(ofPattern(DAY_FORMAT, Locale.ENGLISH))
     }.getOrDefault(date)
 
@@ -116,13 +118,11 @@ internal class HomeStateFactory(
     }.getOrDefault(isoTime)
   }
 
-  // TODO [azalewski on 21/03/2026]: Some strings should be moved to resources.
   private companion object {
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
     const val DEGREE_SYMBOL = "°"
     const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
-    const val TODAY_LABEL = "Today"
   }
 }

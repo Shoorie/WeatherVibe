@@ -29,12 +29,14 @@ internal class WeatherApiService(private val httpClient: HttpClient) {
       parameter("current_weather", true)
       parameter("hourly", HOURLY_VARIABLES)
       parameter("daily", DAILY_VARIABLES)
-      parameter("timezone", "auto")
-      parameter("forecast_days", 7)
+      parameter("timezone", TIMEZONE_AUTO)
+      parameter("forecast_days", FORECAST_DAYS)
     }.body()
 
   private companion object {
     const val BASE_URL = "https://api.open-meteo.com/v1/forecast"
+    const val FORECAST_DAYS = 7
+    const val TIMEZONE_AUTO = "auto"
     const val HOURLY_VARIABLES =
       "apparent_temperature,cloudcover,dewpoint_2m,precipitation," +
         "precipitation_probability,relative_humidity_2m,surface_pressure," +

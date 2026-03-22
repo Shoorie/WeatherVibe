@@ -25,6 +25,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.preview.CurrentWeatherPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.feelsLikeLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.highTempLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.lowTempLabel
 
 @Composable
 internal fun CurrentWeatherSection(
@@ -85,12 +87,12 @@ private fun HighLowTemperatureRow(
     horizontalArrangement = Arrangement.spacedBy(PaddingMedium)
   ) {
     Text(
-      text = "H: $highTemperature",
+      text = highTempLabel(highTemperature),
       style = typography.bodyMedium,
       color = colors.onSurfaceVariant
     )
     Text(
-      text = "L: $lowTemperature",
+      text = lowTempLabel(lowTemperature),
       style = typography.bodyMedium,
       color = colors.onSurfaceVariant
     )

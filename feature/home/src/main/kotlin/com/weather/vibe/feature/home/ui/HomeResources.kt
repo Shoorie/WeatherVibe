@@ -33,6 +33,9 @@ internal class HomeResources(private val context: Context) {
   fun rainfall(): String =
     context.getString(R.string.rainfall_label)
 
+  fun todayLabel(): String =
+    context.getString(R.string.today_label)
+
   fun uvIndex(): String =
     context.getString(R.string.uv_index_label)
 
@@ -77,8 +80,16 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.feels_like_label, temperature)
 
     @Composable
+    fun highTempLabel(temperature: String): String =
+      stringResource(R.string.high_temp_format, temperature)
+
+    @Composable
     fun hourlyForecastTitle(): String =
       stringResource(R.string.hourly_forecast_title)
+
+    @Composable
+    fun lowTempLabel(temperature: String): String =
+      stringResource(R.string.low_temp_format, temperature)
 
     @Composable
     fun nowLabel(): String =

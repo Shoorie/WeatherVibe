@@ -9,9 +9,12 @@
 
 **A beautifully crafted, highly modular Android weather application.** *Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
 
-  <br />
-
-  <img src="art/demo.gif" alt="WeatherVibe App Demo" width="300" />
+<p align="center">
+  <img src="art/screen1.png" width="22%" />
+  <img src="art/screen2.png" width="22%" />
+  <img src="art/screen3.png" width="22%" />
+  <img src="art/screen4.png" width="22%" />
+</p>
 
 </div>
 

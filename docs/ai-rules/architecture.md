@@ -13,6 +13,8 @@
 7. [Dependency Injection (Koin Annotations)](#7-dependency-injection-koin-annotations-only)
 8. [Typical ViewModel Structure Example](#8-typical-viewmodel-structure-example)
 9. [Typical State & Contract Example (MVI)](#9-typical-state--contract-example-mvi)
+10. [StateFactory Pattern (Fat Factory)](#10-statefactory-pattern-fat-factory)
+11. [Self-Verification Checklist](#11-self-verification-checklist)
 
 ---
 
@@ -277,3 +279,19 @@ internal class FeatureStateFactory {
   private fun formatValue(value: Double): String = ...
 }
 ```
+
+---
+
+## 11. Self-Verification Checklist
+Before finalizing architectural changes, verify:
+
+1. [ ] **Naming:** No `UseCase` or `Impl` suffixes in class names?
+2. [ ] **ViewModel:** Is it strictly passive? (No business logic/mapping inside?)
+3. [ ] **StateFactory:** Are all domain-to-ui transformations handled here?
+4. [ ] **Constructor:** Are all parameters sorted alphabetically?
+5. [ ] **DI:** Are you using Koin Annotations (`@Factory`, `@Single`, `@KoinViewModel`)?
+6. [ ] **UDF:** Is state updated ONLY via `_state.update { ... }`?
+7. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
+8. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
+9. [ ] **Use Case:** Returns `Flow<Result<T>>` and uses `catch { }` for safety?
+10. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?

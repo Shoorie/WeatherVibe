@@ -11,6 +11,7 @@
 5. [Data Mapping & Boundaries (THE GOLDEN RULE)](#5-data-mapping--boundaries-the-golden-rule)
 6. [Implementation Example (Universal Pattern)](#6-implementation-example-universal-pattern)
 7. [Clean Imports](#7-clean-imports)
+8. [Self-Verification Checklist](#8-self-verification-checklist)
 
 ---
 
@@ -76,3 +77,19 @@ internal class DefaultUserRepository(
 
 ## 7. Clean Imports
 * Always use static imports for constants or enum members to keep the network logic readable.
+
+---
+
+## 8. Self-Verification Checklist
+Before finalizing network-related changes, verify:
+
+1. [ ] **Tech Stack:** Only Ktor and kotlinx.serialization used? (No Retrofit/GSON?)
+2. [ ] **DTO Naming:** Do all DTOs have `Dto` or `Response` suffix?
+3. [ ] **SerialNames:** Is every field in DTOs annotated with `@SerialName`?
+4. [ ] **File Structure:** Is every DTO in its own separate file?
+5. [ ] **Threading:** Are network calls wrapped in `withContext(Dispatchers.IO)`?
+6. [ ] **Data Leakage:** Do DTOs remain strictly within the `:data` module?
+7. [ ] **Mappers:** Are there explicit mappers from DTO to Domain models?
+8. [ ] **Naming:** API implementation has `Default` prefix?
+9. [ ] **Koin:** Implementation annotated with `@Single`?
+10. [ ] **Serialization:** All DTOs marked with `@Serializable`?

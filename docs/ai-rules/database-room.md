@@ -10,6 +10,7 @@
 4. [Implementation Example (Relational POJO)](#4-implementation-example-relational-pojo)
 5. [Dependency Injection (Koin)](#5-dependency-injection-koin)
 6. [Migration Strategy](#6-migration-strategy)
+7. [Self-Verification Checklist](#7-self-verification-checklist)
 
 ---
 
@@ -51,7 +52,6 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import androidx.compose.runtime.Immutable
 
-@Immutable
 data class ParentWithChildren(
   @Embedded val parent: ParentEntity,
   
@@ -74,3 +74,18 @@ data class ParentWithChildren(
 ## 6. Migration Strategy
 * Always provide a versioning strategy. For new projects, start with version 1 and use
   `fallbackToDestructiveMigration()` only during the initial development phase.
+
+---
+
+## 7. Self-Verification Checklist
+Before finalizing database changes, verify:
+
+1. [ ] **Relational Design:** Is the data modeled relationally? (No JSON blobs in columns?)
+2. [ ] **Entity Naming:** Do all Entity classes have the `Entity` suffix?
+3. [ ] **DAOs:** Are read operations returning `Flow` for UDF?
+4. [ ] **Mapping:** Do Entities remain strictly within the `:data` module? (Used mappers?)
+5. [ ] **TypeConverters:** Only used for primitive-like custom types (Enums, Dates)?
+6. [ ] **UDF:** Are write operations `suspend` and read operations observable?
+8. [ ] **DI:** Are DAOs and the Database provider annotated with `@Single`?
+9. [ ] **Constraints:** Are `@ForeignKey` used where appropriate for data integrity?
+10. [ ] **Threading:** Are DAO operations called from `Dispatchers.IO` (usually via Repository)?

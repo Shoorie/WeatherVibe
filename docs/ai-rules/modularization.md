@@ -11,6 +11,7 @@
 4. [Strict Dependency Flow (DO NOT BREAK)](#4-strict-dependency-flow-do-not-break)
 5. [Internal Package Structure (CRITICAL)](#5-internal-package-structure-critical)
 6. [Module Creation Rules](#6-module-creation-rules)
+7. [Self-Verification Checklist](#7-self-verification-checklist)
 
 ---
 
@@ -115,3 +116,19 @@ When asked to "create a module":
 2. Add a `build.gradle.kts` using Kotlin DSL.
 3. Register the namespace in the root `settings.gradle.kts` (e.g., `include(":data:profile")`).
 4. Declare dependencies using Version Catalogs (`libs.xxx`).
+
+---
+
+## 7. Self-Verification Checklist
+Before finalizing modularization changes, verify:
+
+1. [ ] **Directory Structure:** Does the physical folder match the Gradle namespace?
+2. [ ] **Package Naming:** Does the Kotlin package name match the module path?
+3. [ ] **Dependency Flow:** Does the dependency follow the `feature -> domain <- data` rule?
+4. [ ] **Domain Purity:** Is the `:domain` module free of Android dependencies?
+5. [ ] **Data Boundaries:** Are DTOs and Entities strictly internal to `:data`?
+6. [ ] **Internal Packages:** Are files organized into correct sub-packages (mapper, dto, ui)?
+7. [ ] **No Cross-Feature Deps:** Does any `:feature` depend on another `:feature`? (Forbidden!)
+8. [ ] **Naming:** Do internal packages match the guidelines (e.g., `.remote.dto`, `.ui.screen`)?
+9. [ ] **Settings.gradle:** Is the new module correctly registered?
+10. [ ] **Namespace:** Is the `android { namespace = "..." }` correctly set in build.gradle.kts?

@@ -91,6 +91,47 @@ class FetchUserProfile(private val repository: UserRepository) {
 }
 ```
 
+### Result Handling in ViewModels
+When consuming `Flow<Result<T>>` from Use Cases, **extract handlers to named private methods**
+that read like prose. Never inline `onSuccess`/`onFailure` logic directly in flow operators.
+
+**Pattern:**
+```kotlin
+private fun loadData() {
+  fetchData()
+    .onEach(::onLoadDataResult)
+    .launchIn(viewModelScope)
+}
+
+private fun onLoadDataResult(result: Result<Data>) {
+  result
+    .onSuccess(::onLoadDataSuccess)
+    .onFailure(::onLoadDataError)
+}
+
+private fun onLoadDataSuccess(data: Data) {
+  _state.update { factory.createFrom(data) }
+}
+
+private fun onLoadDataError(throwable: Throwable) {
+  _state.update { Error(throwable.message.orEmpty()) }
+}
+```
+
+**Rules:**
+* Each handler MUST be a separate named function: `onXxxResult`, `onXxxSuccess`, `onXxxError`.
+* The naming follows the action: `loadData` → `onLoadDataResult` → `onLoadDataSuccess` /
+  `onLoadDataError`.
+* If the success handler is `suspend` (e.g., needs secondary data fetching), use
+  `result.getOrNull()` with early return instead of `onSuccess` (which doesn't accept suspend
+  lambdas):
+```kotlin
+private suspend fun onLoadDataResult(result: Result<Data>) {
+  val data = result.getOrNull() ?: return onLoadDataError()
+  onLoadDataSuccess(data)
+}
+```
+
 ---
 
 ## 6. Constructor Parameter Order (CRITICAL)

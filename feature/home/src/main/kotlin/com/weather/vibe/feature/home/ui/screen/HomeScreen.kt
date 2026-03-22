@@ -1,8 +1,6 @@
 package com.weather.vibe.feature.home.ui.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -38,58 +36,70 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.weather.model.LocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction
-import com.weather.vibe.feature.home.presentation.HomeAction.DismissSearch
-import com.weather.vibe.feature.home.presentation.HomeAction.LocationSelect
-import com.weather.vibe.feature.home.presentation.HomeAction.QueryChange
+import com.weather.vibe.feature.home.presentation.HomeAction.LocationResultReceived
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
-import com.weather.vibe.feature.home.presentation.HomeAction.ToggleSearch
+import com.weather.vibe.feature.home.presentation.HomeViewModel
+import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
-import com.weather.vibe.feature.home.presentation.HomeViewModel
-import com.weather.vibe.feature.home.presentation.SearchState
-import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.preview.params.HomePreviewParams
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.noResultsFound
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
-import com.weather.vibe.feature.home.ui.component.LocationSearchBar
 import com.weather.vibe.feature.home.ui.component.SunriseSunsetCard
-import com.weather.vibe.feature.home.ui.component.LocationSearchResults
 import com.weather.vibe.feature.home.ui.component.WeatherMetricsGrid
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+  onNavigateToSearch: () -> Unit = {},
+  selectedCityName: String? = null,
+  selectedLatitude: Double? = null,
+  selectedLongitude: Double? = null,
+  onSelectionConsumed: () -> Unit = {}
+) {
 
   val viewModel: HomeViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val searchState by viewModel.searchState.collectAsStateWithLifecycle()
+
+  LaunchedEffect(selectedCityName) {
+    if (selectedCityName != null
+      && selectedLatitude != null
+      && selectedLongitude != null
+    ) {
+      viewModel.dispatch(
+        LocationResultReceived(
+          cityName = selectedCityName,
+          latitude = selectedLatitude,
+          longitude = selectedLongitude
+        )
+      )
+      onSelectionConsumed()
+    }
+  }
 
   HomeContent(
     state = state,
-    searchState = searchState,
-    dispatch = viewModel::dispatch
+    dispatch = viewModel::dispatch,
+    onNavigateToSearch = onNavigateToSearch
   )
 }
 
 @Composable
-private fun HomeContent(
+internal fun HomeContent(
   modifier: Modifier = Modifier,
   state: HomeUiState,
-  searchState: SearchState,
-  dispatch: (HomeAction) -> Unit
+  dispatch: (HomeAction) -> Unit,
+  onNavigateToSearch: () -> Unit
 ) {
-
   val backgroundBrush = Brush.verticalGradient(
     listOf(
       colors.backgroundGradientStart,
@@ -110,19 +120,8 @@ private fun HomeContent(
       )
       is Loaded -> WeatherContent(
         state = state,
-        onRefresh = { dispatch(RefreshClick) },
-        onSearchToggle = { dispatch(ToggleSearch) }
-      )
-    }
-
-    if (searchState.isActive) {
-      SearchOverlay(
-        query = searchState.query,
-        results = searchState.results,
-        isSearching = searchState.isSearching,
-        onQueryChange = { dispatch(QueryChange(it)) },
-        onLocationSelected = { dispatch(LocationSelect(it)) },
-        onDismiss = { dispatch(DismissSearch) }
+        onNavigateToSearch = onNavigateToSearch,
+        onRefresh = { dispatch(RefreshClick) }
       )
     }
   }
@@ -132,8 +131,8 @@ private fun HomeContent(
 private fun WeatherContent(
   modifier: Modifier = Modifier,
   state: Loaded,
-  onRefresh: () -> Unit,
-  onSearchToggle: () -> Unit
+  onNavigateToSearch: () -> Unit,
+  onRefresh: () -> Unit
 ) {
   LazyColumn(
     modifier = modifier
@@ -144,8 +143,8 @@ private fun WeatherContent(
     item {
       LocationHeader(
         state = state.header,
-        onRefresh = onRefresh,
-        onSearchToggle = onSearchToggle
+        onNavigateToSearch = onNavigateToSearch,
+        onRefresh = onRefresh
       )
     }
     item { CurrentWeatherSection(state = state.currentWeather) }
@@ -164,8 +163,8 @@ private fun WeatherContent(
 private fun LocationHeader(
   modifier: Modifier = Modifier,
   state: HeaderUiState,
-  onRefresh: () -> Unit,
-  onSearchToggle: () -> Unit
+  onNavigateToSearch: () -> Unit,
+  onRefresh: () -> Unit
 ) {
   Row(
     modifier = modifier
@@ -186,7 +185,7 @@ private fun LocationHeader(
         color = colors.onSurfaceVariant
       )
     }
-    IconButton(onClick = onSearchToggle) {
+    IconButton(onClick = onNavigateToSearch) {
       Icon(
         imageVector = Icons.Default.Search,
         contentDescription = searchCityContentDescription(),
@@ -199,80 +198,6 @@ private fun LocationHeader(
         contentDescription = refreshContentDescription(),
         tint = colors.onSurfaceVariant
       )
-    }
-  }
-}
-
-@Composable
-private fun SearchOverlay(
-  modifier: Modifier = Modifier,
-  query: String,
-  results: List<LocationResult>,
-  isSearching: Boolean,
-  onQueryChange: (String) -> Unit,
-  onLocationSelected: (LocationResult) -> Unit,
-  onDismiss: () -> Unit
-) {
-
-  val interactionSource = remember { MutableInteractionSource() }
-  val backgroundBrush = Brush.verticalGradient(
-    listOf(
-      colors.backgroundGradientStart,
-      colors.backgroundGradientEnd
-    )
-  )
-
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(brush = backgroundBrush)
-      .clickable(
-        interactionSource = remember { MutableInteractionSource() },
-        indication = null,
-        onClick = onDismiss
-      )
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .statusBarsPadding()
-        .padding(PaddingMedium)
-        .clickable(
-          interactionSource = interactionSource,
-          indication = null,
-          onClick = {}
-        )
-    ) {
-      LocationSearchBar(
-        query = query,
-        onQueryChange = onQueryChange,
-        onDismiss = onDismiss
-      )
-      Spacer(modifier = Modifier.height(PaddingSmall))
-      when {
-        isSearching -> Box(
-          modifier = Modifier.fillMaxWidth(),
-          contentAlignment = Alignment.Center
-        ) {
-          CircularProgressIndicator(
-            color = colors.accent,
-            modifier = Modifier.padding(PaddingMedium)
-          )
-        }
-        results.isNotEmpty() -> LocationSearchResults(
-          results = results,
-          onLocationSelected = onLocationSelected
-        )
-        query.length >= 2 -> Text(
-          text = noResultsFound(query),
-          style = typography.bodyMedium,
-          color = colors.onSurfaceVariant,
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(PaddingMedium),
-          textAlign = TextAlign.Center
-        )
-      }
     }
   }
 }
@@ -330,8 +255,8 @@ private fun Preview(
   WeatherVibeTheme {
     HomeContent(
       state = params.state,
-      searchState = params.searchState,
-      dispatch = {}
+      dispatch = {},
+      onNavigateToSearch = {}
     )
   }
 }

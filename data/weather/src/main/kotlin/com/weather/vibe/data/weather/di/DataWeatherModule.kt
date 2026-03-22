@@ -14,7 +14,11 @@ class DataWeatherModule {
 
   @Single
   fun provideWeatherDatabase(context: Context): WeatherDatabase =
-    Room.databaseBuilder(context, WeatherDatabase::class.java, "weather.db").build()
+    Room.databaseBuilder(
+      context = context,
+      klass = WeatherDatabase::class.java,
+      name = "weather.db"
+    ).build()
 
   @Single
   fun provideWeatherCacheDao(database: WeatherDatabase): WeatherCacheDao =

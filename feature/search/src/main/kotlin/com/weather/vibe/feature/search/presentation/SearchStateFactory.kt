@@ -56,5 +56,9 @@ internal class SearchStateFactory {
   }
 
   private fun formatTemperature(value: Double): String =
-    "${value.roundToInt()}°"
+    "${value.roundToInt()}$DEGREE_SYMBOL"
+
+  private companion object {
+    const val DEGREE_SYMBOL = "°"
+  }
 }

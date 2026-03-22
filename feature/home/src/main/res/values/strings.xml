@@ -3,8 +3,8 @@
   <string name="daily_forecast_title">7-Day Forecast</string>
   <string name="now_label">Now</string>
   <string name="today_label">Today</string>
-  <string name="high_temp_format">H: %1$d°</string>
-  <string name="low_temp_format">L: %1$d°</string>
+  <string name="high_temp_format">H: %1$s</string>
+  <string name="low_temp_format">L: %1$s</string>
   <string name="humidity_label">Humidity</string>
   <string name="wind_speed_label">Wind Speed</string>
   <string name="direction_label">Direction</string>

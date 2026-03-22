@@ -5,14 +5,25 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LocationResultDto(
+
+  @SerialName("admin1")
   val admin1: String? = null,
+
+  @SerialName("country")
   val country: String? = null,
 
   @SerialName("country_code")
   val countryCode: String? = null,
 
+  @SerialName("id")
   val id: Long,
+
+  @SerialName("latitude")
   val latitude: Double,
+
+  @SerialName("longitude")
   val longitude: Double,
-  val name: String
+
+  @SerialName("name")
+  val name: String,
 )

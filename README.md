@@ -51,9 +51,50 @@ It strictly separates business logic from presentation, ensuring maximum testabi
 The project is sliced by features and layered by architecture into physical directories:
 * `:app` — The assembler and navigation hub.
 * `:core:designsystem` - Theme tokens, colors, typography.
+* `:core:network` - Ktor HTTP client configuration.
 * `:domain:[feature]` - Pure Kotlin business logic and Use Cases.
 * `:data:[feature]` - DTOs, Entities, and Repository implementations.
 * `:feature:[feature]` - Composables, ViewModels, and UI States.
+
+### Module Dependency Graph
+```mermaid
+graph TD
+  app[:app]
+
+  core_ds[:core:designsystem]
+  core_net[:core:network]
+
+  domain_loc[:domain:location]
+  domain_weather[:domain:weather]
+
+  data_loc[:data:location]
+  data_weather[:data:weather]
+
+  feat_home[:feature:home]
+  feat_search[:feature:search]
+
+  app --> feat_home
+  app --> feat_search
+  app --> data_loc
+  app --> data_weather
+  app --> domain_loc
+  app --> domain_weather
+  app --> core_ds
+  app --> core_net
+
+  feat_home --> domain_weather
+  feat_home --> core_ds
+
+  feat_search --> domain_loc
+  feat_search --> domain_weather
+  feat_search --> core_ds
+
+  data_loc --> domain_loc
+  data_loc --> core_net
+
+  data_weather --> domain_weather
+  data_weather --> core_net
+```
 
 ---
 

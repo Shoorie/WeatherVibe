@@ -23,4 +23,8 @@ object AppDimens {
   val EmojiSizeMedium = 22.sp
   val EmojiSizeSmall = 20.sp
   val EmojiSizeMetric = 24.sp
+
+  val SunArcHeight = 160.dp
+  val SunArcStrokeWidth = 3.dp
+  val SunDotRadius = 6.dp
 }

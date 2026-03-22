@@ -53,13 +53,13 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDes
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
+import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
-import com.weather.vibe.feature.home.ui.component.SunriseSunsetCard
-import com.weather.vibe.feature.home.ui.component.WeatherMetricsGrid
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
+  onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
   selectedCityName: String? = null,
   selectedLatitude: Double? = null,
@@ -89,6 +89,7 @@ fun HomeScreen(
   HomeContent(
     state = state,
     dispatch = viewModel::dispatch,
+    onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch
   )
 }
@@ -98,6 +99,7 @@ internal fun HomeContent(
   modifier: Modifier = Modifier,
   state: HomeUiState,
   dispatch: (HomeAction) -> Unit,
+  onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit
 ) {
   val backgroundBrush = Brush.verticalGradient(
@@ -120,6 +122,7 @@ internal fun HomeContent(
       )
       is Loaded -> WeatherContent(
         state = state,
+        onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onRefresh = { dispatch(RefreshClick) }
       )
@@ -131,6 +134,7 @@ internal fun HomeContent(
 private fun WeatherContent(
   modifier: Modifier = Modifier,
   state: Loaded,
+  onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onRefresh: () -> Unit
 ) {
@@ -152,9 +156,12 @@ private fun WeatherContent(
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item { DailyForecastList(dailyForecasts = state.dailyForecast) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
-    item { SunriseSunsetCard(state = state.sunriseSunset) }
-    item { Spacer(modifier = Modifier.height(PaddingSmall)) }
-    item { WeatherMetricsGrid(state = state.metrics) }
+    item {
+      DetailsPreviewCard(
+        previewItems = state.detailsSections.previewItems,
+        onClick = onNavigateToDetails
+      )
+    }
     item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }
   }
 }
@@ -258,6 +265,7 @@ private fun Preview(
     HomeContent(
       state = state,
       dispatch = {},
+      onNavigateToDetails = {},
       onNavigateToSearch = {}
     )
   }

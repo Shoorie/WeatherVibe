@@ -11,9 +11,9 @@ internal sealed interface HomeUiState {
   data class Loaded(
     val currentWeather: CurrentWeatherUiState,
     val dailyForecast: List<DailyForecastUiState>,
+    val detailsSections: DetailsSectionsUiState,
     val header: HeaderUiState,
     val hourlyForecast: List<HourlyForecastUiState>,
-    val metrics: MetricsUiState,
     val sunriseSunset: SunriseSunsetUiState
   ) : HomeUiState
 

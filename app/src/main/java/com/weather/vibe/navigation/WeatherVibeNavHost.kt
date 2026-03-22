@@ -2,6 +2,7 @@ package com.weather.vibe.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -9,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
+import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
 import com.weather.vibe.feature.search.ui.SearchScreen
 
 @Composable
@@ -28,11 +30,21 @@ fun WeatherVibeNavHost(
         .collectAsStateWithLifecycle()
 
       HomeScreen(
+        onNavigateToDetails = { navController.navigate(WeatherDetailsRoute) },
         onNavigateToSearch = { navController.navigate(SearchRoute) },
         selectedCityName = cityName,
         selectedLatitude = backStackEntry.savedStateHandle.get<Double>(KEY_LATITUDE),
         selectedLongitude = backStackEntry.savedStateHandle.get<Double>(KEY_LONGITUDE),
         onSelectionConsumed = { backStackEntry.savedStateHandle[KEY_CITY_NAME] = null }
+      )
+    }
+    composable<WeatherDetailsRoute> { backStackEntry ->
+      val homeEntry = remember(backStackEntry) {
+        navController.getBackStackEntry<HomeRoute>()
+      }
+      WeatherDetailsScreen(
+        onNavigateBack = { navController.popBackStack() },
+        viewModelStoreOwner = homeEntry
       )
     }
     composable<SearchRoute> {

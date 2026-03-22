@@ -2,13 +2,15 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.snow
 
 internal class DailyForecastPreview :
   PreviewParameterProvider<DailyForecastUiState> {
 
   private val warmDay: DailyForecastUiState =
     DailyForecastUiState(
-      conditionEmoji = "⛅",
+      conditionEmoji = partlyCloudy(),
       dayLabel = "Tue",
       maxTemperature = "22°",
       minTemperature = "14°"
@@ -16,7 +18,7 @@ internal class DailyForecastPreview :
 
   private val coldDay: DailyForecastUiState =
     DailyForecastUiState(
-      conditionEmoji = "❄️",
+      conditionEmoji = snow(),
       dayLabel = "Wed",
       maxTemperature = "-2°",
       minTemperature = "-10°"

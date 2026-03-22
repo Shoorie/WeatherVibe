@@ -11,6 +11,7 @@ import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter.ofPattern
@@ -27,9 +28,9 @@ internal class HomeStateFactory(
     Loaded(
       currentWeather = createCurrentWeather(data),
       dailyForecast = createDailyForecast(data.dailyForecast),
+      detailsSections = metricsFactory.create(data),
       header = createHeader(data),
       hourlyForecast = createHourlyForecast(data.hourlyForecast),
-      metrics = metricsFactory.create(data),
       sunriseSunset = createSunriseSunset(data.dailyForecast)
     )
 
@@ -82,9 +83,44 @@ internal class HomeStateFactory(
   ): SunriseSunsetUiState {
     val today = days.firstOrNull()
     return SunriseSunsetUiState(
+      dayLength = formatDayLength(today?.sunrise, today?.sunset),
+      sunProgress = calculateSunProgress(today?.sunrise, today?.sunset),
       sunriseTime = formatSunTime(today?.sunrise),
       sunsetTime = formatSunTime(today?.sunset)
     )
+  }
+
+  private fun calculateSunProgress(
+    sunrise: String?,
+    sunset: String?
+  ): Float {
+    if (sunrise.isNullOrEmpty() || sunset.isNullOrEmpty()) return 0f
+    return runCatching {
+      val formatter = ofPattern(TIME_INPUT_FORMAT)
+      val sunriseTime = LocalDateTime.parse(sunrise, formatter)
+      val sunsetTime = LocalDateTime.parse(sunset, formatter)
+      val now = LocalDateTime.now()
+      val dayMinutes = Duration.between(sunriseTime, sunsetTime).toMinutes().toFloat()
+      val elapsed = Duration.between(sunriseTime, now).toMinutes().toFloat()
+      (elapsed / dayMinutes).coerceIn(0f, 1f)
+    }.getOrDefault(0f)
+  }
+
+  private fun formatDayLength(
+    sunrise: String?,
+    sunset: String?
+  ): String {
+    if (sunrise.isNullOrEmpty() || sunset.isNullOrEmpty()) return ""
+    return runCatching {
+      val formatter = ofPattern(TIME_INPUT_FORMAT)
+      val sunriseTime = LocalDateTime.parse(sunrise, formatter)
+      val sunsetTime = LocalDateTime.parse(sunset, formatter)
+      val duration = Duration.between(sunriseTime, sunsetTime)
+      resources.dayLengthFormat(
+        duration.toHours().toInt(),
+        (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
+      )
+    }.getOrDefault("")
   }
 
   private fun formatTemperature(value: Double): String =
@@ -122,6 +158,7 @@ internal class HomeStateFactory(
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
     const val DEGREE_SYMBOL = "°"
+    const val MINUTES_PER_HOUR = 60
     const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
   }

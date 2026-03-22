@@ -163,8 +163,7 @@ internal class FeatureResources(private val context: Context) {
 * **Strict Limit:** A single Composable function MUST NOT exceed 60 lines of code.
 * **Feature-Specific State Files (CRITICAL):** Specialized screen states MUST be extracted to 
   their own separate files and MUST be prefixed with the Feature name to avoid collisions.
-  * **Correct:** `HomeEmptyState.kt`, `HomeErrorState.kt`, `HomeLoadingState.kt`.
-  * **Incorrect:** `EmptyState.kt`, `ErrorState.kt`.
+  * **Correct:** `FeatureEmptyState.kt`, `FeatureErrorState.kt`, `FeatureLoadingState.kt`.
 * **Pragmatic Rule:** Even if a state is simple (e.g., a centered spinner), extract it as 
   `[Feature]LoadingState.kt` to maintain a clean top-level `when` structure.
 * **Previews:** Every single file containing a Composable (including states and placeholders)

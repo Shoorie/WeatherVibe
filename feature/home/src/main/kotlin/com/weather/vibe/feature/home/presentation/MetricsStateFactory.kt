@@ -1,8 +1,8 @@
 package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
-import com.weather.vibe.feature.home.presentation.state.MetricsUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
@@ -23,27 +23,43 @@ import kotlin.math.roundToInt
 @Factory
 internal class MetricsStateFactory(private val resources: HomeResources) {
 
-  fun create(data: WeatherData): MetricsUiState {
+  fun create(data: WeatherData): DetailsSectionsUiState {
 
     val today = data.dailyForecast.firstOrNull()
-    val precipitation = data.hourlyForecast.firstOrNull()
+    val precipitationProb = data.hourlyForecast.firstOrNull()
       ?.precipitationProbability
 
-    return MetricsUiState(
-      items = listOf(
-        humidity(data.humidity),
-        windSpeed(data.windSpeed),
-        windDirection(data.windDirection),
-        precipitation(precipitation ?: 0),
-        uvIndex(today?.uvIndexMax ?: 0.0),
-        cloudCover(data.cloudCover),
-        pressure(data.surfacePressure),
-        visibility(data.visibility),
-        dewPoint(data.dewPoint),
-        windGusts(data.windGusts),
-        windSpeedMax(today?.windSpeedMax ?: 0.0),
-        rainfall(today?.precipitationSum ?: 0.0)
-      )
+    val windItems = listOf(
+      windSpeed(data.windSpeed),
+      windDirection(data.windDirection),
+      windGusts(data.windGusts),
+      windSpeedMax(today?.windSpeedMax ?: 0.0)
+    )
+
+    val atmosphereItems = listOf(
+      humidity(data.humidity),
+      pressure(data.surfacePressure),
+      dewPoint(data.dewPoint),
+      cloudCover(data.cloudCover)
+    )
+
+    val conditionsItems = listOf(
+      precipitation(precipitationProb ?: 0),
+      uvIndex(today?.uvIndexMax ?: 0.0),
+      visibility(data.visibility),
+      rainfall(today?.precipitationSum ?: 0.0)
+    )
+
+    return DetailsSectionsUiState(
+      atmosphere = atmosphereItems,
+      conditions = conditionsItems,
+      previewItems = listOf(
+        atmosphereItems[0],
+        windItems[0],
+        conditionsItems[1],
+        conditionsItems[0]
+      ),
+      wind = windItems
     )
   }
 

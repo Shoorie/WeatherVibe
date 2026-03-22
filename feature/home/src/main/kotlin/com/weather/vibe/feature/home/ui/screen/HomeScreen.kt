@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,7 +47,6 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
-import com.weather.vibe.feature.home.preview.params.HomePreviewParams
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
@@ -177,7 +177,9 @@ private fun LocationHeader(
       Text(
         text = state.cityName,
         style = typography.headlineLarge,
-        color = colors.onBackground
+        color = colors.onBackground,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
       )
       Text(
         text = state.dateLabel,
@@ -250,11 +252,11 @@ private fun ErrorContent(
 @Composable
 private fun Preview(
   @PreviewParameter(HomePreview::class)
-  params: HomePreviewParams
+  state: HomeUiState
 ) {
   WeatherVibeTheme {
     HomeContent(
-      state = params.state,
+      state = state,
       dispatch = {},
       onNavigateToSearch = {}
     )

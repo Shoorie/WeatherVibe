@@ -14,8 +14,6 @@ object AppDimens {
   val HourlyItemWidth = 68.dp
   val HourlyItemHeight = 96.dp
 
-  val MetricCardHeight = 100.dp
-
   val DividerThickness = 1.dp
   val BorderThickness = 1.dp
 

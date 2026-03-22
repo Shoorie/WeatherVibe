@@ -1,4 +1,4 @@
-# 🌤️ VibeWeather
+# 🌤️ WeatherVibe
 
 <div align="center">
 
@@ -11,13 +11,13 @@
 
   <br />
 
-  <img src="art/demo.gif" alt="VibeWeather App Demo" width="300" />
+  <img src="art/demo.gif" alt="WeatherVibe App Demo" width="300" />
 
 </div>
 
 ## 📖 About The Project
 
-**VibeWeather** is more than just another weather app. It's an experimental playground exploring
+**WeatherVibe** is more than just another weather app. It's an experimental playground exploring
 how **"Vibe Coding"** (human-AI pair programming) can produce enterprise-grade, scalable software
 when constrained by unbreakable architectural rules.
 
@@ -124,7 +124,7 @@ Dive into the exact rules that guide the AI in this project:
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/yourusername/VibeWeather.git](https://github.com/yourusername/VibeWeather.git)
+   git clone [https://github.com/yourusername/VibeWeather.git](https://github.com/yourusername/WeatherVibe.git)
    ```
 2. Open the project in Android Studio.
 3. Build and run the app:

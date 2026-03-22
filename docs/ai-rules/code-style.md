@@ -9,10 +9,11 @@
 3. [File Structure & Separation](#3-file-structure--separation)
 4. [Constructor Parameter Order (CRITICAL)](#4-constructor-parameter-order-critical)
 5. [Class Member Order](#5-class-member-order)
-6. [Clean Imports & Hygiene (NO LEFTOVERS)](#6-clean-imports--hygiene-no-leftovers)
-7. [No Hardcoded Values](#7-no-hardcoded-values)
-8. [Nullability & Safety](#8-nullability--safety)
-9. [Self-Verification Checklist](#9-self-verification-checklist)
+6. [Function & Constructor Calls (CRITICAL)](#6-function--constructor-calls-critical)
+7. [Clean Imports & Hygiene (NO LEFTOVERS)](#7-clean-imports--hygiene-no-leftovers)
+8. [No Hardcoded Values](#8-no-hardcoded-values)
+9. [Nullability & Safety](#9-nullability--safety)
+10. [Self-Verification Checklist](#10-self-verification-checklist)
 
 ---
 
@@ -86,7 +87,46 @@ Organize class members in the following strict order:
 
 ---
 
-## 6. Clean Imports & Hygiene (NO LEFTOVERS)
+## 6. Function & Constructor Calls (CRITICAL)
+To maximize readability and prevent errors due to parameter swapping:
+
+### A. Named Arguments Requirement
+**Named Arguments MUST be used for:**
+* **ALL** function or constructor calls with **more than 1 argument**.
+* **ALL** Literal arguments (**Boolean, Int, Double, String, etc.**) and **null** (even if it 
+  is the only argument).
+* **Exception:** Named arguments can be omitted for a single parameter if the function name 
+  clearly describes it (e.g., `delay(1000)`, `setAge(25)`).
+* **ALL** arguments where the meaning is not immediately obvious from the value itself.
+
+### B. Vertical Formatting (Multi-line)
+**Vertical Formatting (one parameter per line) MUST be used when:**
+* The call exceeds **100 characters**.
+* The call has **more than 2 arguments**.
+
+```kotlin
+// 1. Multi-argument call (Named + Vertical)
+val user = User(
+  age = 25,
+  city = "Toronto",
+  name = "Jan"
+)
+
+// 2. Two-argument call (Named + Single line if short)
+val pair = Point(x = 10, y = 20)
+
+// 3. Single Literal/Null argument (Named required)
+toggle(isEnabled = true)
+calculate(radius = 10.5)
+update(label = null)
+
+// 4. Clear Context Exception (No name needed)
+delay(1000)
+```
+
+---
+
+## 7. Clean Imports & Hygiene (NO LEFTOVERS)
 * **FORBIDDEN:** Avoid wildcard imports (`import com.example.*`).
 * **Static Imports:** Use static imports for members of Sealed Classes, Enums, and Resource Wrappers
   to keep the logic clean (e.g., `is Loaded -> ...` instead of `is State.Loaded -> ...`).
@@ -97,20 +137,20 @@ Organize class members in the following strict order:
 
 ---
 
-## 7. No Hardcoded Values
+## 8. No Hardcoded Values
 * **FORBIDDEN:** Never use raw hardcoded strings, format patterns, symbols, or magic numbers
   inline in code. Extract them to a `private companion object` with named constants.
 
 ---
 
-## 8. Nullability & Safety
+## 9. Nullability & Safety
 * Prefer `val` over `var` whenever possible.
 * Use Kotlin's null-safety features (`?.`, `?:`, `let`) instead of force-unwrapping (`!!`).
 * For Composables, use nullable types only when the data is truly optional.
 
 ---
 
-## 9. Self-Verification Checklist
+## 10. Self-Verification Checklist
 Before finalizing code changes, verify:
 
 1. [ ] **Indentation:** Exactly 2 spaces used throughout?
@@ -118,8 +158,10 @@ Before finalizing code changes, verify:
 3. [ ] **One Concept Per File:** Are all classes/interfaces in their own files?
 4. [ ] **Constructor Sorting:** Are constructor parameters sorted alphabetically?
 5. [ ] **Member Order:** Are class members in the correct strict order?
-6. [ ] **Imports:** No wildcards? All unused imports removed?
-7. [ ] **Hardcoding:** No raw strings/numbers? (Used `companion object` constants?)
-8. [ ] **Naming:** Concise names used? (No `Impl`, matching file names for Composables?)
-9. [ ] **Hygiene:** All dead code, commented-out blocks, and unused resources removed?
-10. [ ] **Null Safety:** No `!!` used?
+6. [ ] **Named Arguments:** Used for all literals (Boolean, Int, etc.), nulls, and calls > 1 argument?
+7. [ ] **Vertical Formatting:** Used for all calls > 2 arguments?
+8. [ ] **Imports:** No wildcards? All unused imports removed?
+9. [ ] **Hardcoding:** No raw strings/numbers? (Used `companion object` constants?)
+10. [ ] **Naming:** Concise names used? (No `Impl`, matching file names for Composables?)
+11. [ ] **Hygiene:** All dead code, commented-out blocks, and unused resources removed?
+12. [ ] **Null Safety:** No `!!` used?

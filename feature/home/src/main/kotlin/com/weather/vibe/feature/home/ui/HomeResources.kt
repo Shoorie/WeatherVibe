@@ -56,10 +56,6 @@ internal object HomeResources {
       stringResource(R.string.precipitation_label)
 
     @Composable
-    fun searchHint(): String =
-      stringResource(R.string.search_hint)
-
-    @Composable
     fun searchCityContentDescription(): String =
       stringResource(R.string.search_city_content_description)
 
@@ -68,16 +64,8 @@ internal object HomeResources {
       stringResource(R.string.refresh_content_description)
 
     @Composable
-    fun closeSearchContentDescription(): String =
-      stringResource(R.string.close_search_content_description)
-
-    @Composable
     fun tryAgainContentDescription(): String =
       stringResource(R.string.try_again_content_description)
-
-    @Composable
-    fun noResultsFound(query: String): String =
-      stringResource(R.string.no_results_found, query)
 
     @Composable
     fun feelsLikeLabel(temperature: String): String =

@@ -14,12 +14,18 @@ internal class DefaultWeatherRepository(
   private val dao: WeatherCacheDao
 ) : WeatherRepository {
 
+  override suspend fun getCurrentTemperature(
+    latitude: Double,
+    longitude: Double
+  ): Double =
+    apiService.getCurrentTemperature(latitude, longitude)
+
   override suspend fun getWeather(
     latitude: Double,
     longitude: Double,
     cityName: String
-  ): WeatherData {
-    return try {
+  ): WeatherData =
+    try {
       val response = apiService.getForecast(latitude, longitude)
       val weatherData = response.toWeatherData(cityName)
       dao.upsertWeather(weatherData.toCacheEntity())
@@ -28,5 +34,5 @@ internal class DefaultWeatherRepository(
       val locationId = "${latitude},${longitude}"
       dao.getWeather(locationId)?.toWeatherData() ?: throw e
     }
-  }
 }
+

@@ -1,11 +1,9 @@
 package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.weather.vibe.domain.weather.model.LocationResult
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
-import com.weather.vibe.feature.home.presentation.SearchState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -78,71 +76,10 @@ internal class HomePreview :
       )
     )
 
-  private val successWithSearch: HomePreviewParams =
-    HomePreviewParams(
-      state = Loaded(
-        currentWeather = CurrentWeatherUiState(
-          conditionEmoji = "⛅",
-          conditionLabel = "Partly Cloudy",
-          currentTemperature = "19°",
-          feelsLikeTemperature = "18°",
-          highTemperature = "19°",
-          lowTemperature = "19°"
-        ),
-        dailyForecast = emptyList(),
-        header = HeaderUiState(
-          cityName = "Toruń",
-          dateLabel = "Saturday, 21 March"
-        ),
-        hourlyForecast = emptyList(),
-        metrics = MetricsUiState(
-          cloudCoverValue = "80%",
-          dewPointValue = "15°",
-          humidityValue = "65%",
-          precipitationAmountValue = "0.0 mm",
-          precipitationValue = "0%",
-          pressureValue = "1008 hPa",
-          uvIndexValue = "5.0",
-          visibilityValue = "18 km",
-          windDirectionValue = "SW",
-          windGustsValue = "18 km/h",
-          windSpeedMaxValue = "22 km/h",
-          windSpeedValue = "12 km/h"
-        ),
-        sunriseSunset = SunriseSunsetUiState(
-          sunriseTime = "05:58",
-          sunsetTime = "17:42"
-        )
-      ),
-      searchState = SearchState(
-        isActive = true,
-        query = "Wars",
-        results = listOf(
-          LocationResult(
-            id = 1L,
-            name = "Warszawa",
-            latitude = 52.229,
-            longitude = 21.011,
-            country = "Polska",
-            admin1 = "Mazowieckie"
-          ),
-          LocationResult(
-            id = 2L,
-            name = "Wrocław",
-            latitude = 51.107,
-            longitude = 17.038,
-            country = "Polska",
-            admin1 = "Dolnośląskie"
-          )
-        )
-      )
-    )
-
   override val values: Sequence<HomePreviewParams> =
     sequenceOf(
       loadingState,
       errorState,
-      successWithForecast,
-      successWithSearch
+      successWithForecast
     )
 }

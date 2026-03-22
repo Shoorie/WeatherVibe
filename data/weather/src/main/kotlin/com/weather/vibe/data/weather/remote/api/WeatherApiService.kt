@@ -10,6 +10,18 @@ import org.koin.core.annotation.Single
 @Single
 internal class WeatherApiService(private val httpClient: HttpClient) {
 
+  suspend fun getCurrentTemperature(
+    latitude: Double,
+    longitude: Double
+  ): Double {
+    val response: ForecastResponseDto = httpClient.get(BASE_URL) {
+      parameter("latitude", latitude)
+      parameter("longitude", longitude)
+      parameter("current_weather", true)
+    }.body()
+    return response.currentWeather?.temperature ?: 0.0
+  }
+
   suspend fun getForecast(latitude: Double, longitude: Double): ForecastResponseDto =
     httpClient.get(BASE_URL) {
       parameter("latitude", latitude)

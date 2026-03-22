@@ -2,10 +2,8 @@ package com.weather.vibe.data.weather.mapper
 
 import com.weather.vibe.data.weather.local.entity.WeatherCacheEntity
 import com.weather.vibe.data.weather.remote.dto.ForecastResponseDto
-import com.weather.vibe.data.weather.remote.dto.LocationResultDto
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
-import com.weather.vibe.domain.weather.model.LocationResult
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherData
 import kotlinx.serialization.json.Json
@@ -28,7 +26,6 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
     windDirection = current.winddirection,
     windSpeed = current.windspeed
   )
-  val daily = daily
 
   val currentHourIndex = hourly.time
     .indexOfFirst { it.startsWith(current.time.take(13)) }
@@ -41,14 +38,11 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
     HourlyWeather(
       apparentTemperature = hourly.apparentTemperature.getOrElse(i) { 0.0 },
       cloudCover = hourly.cloudcover.getOrElse(i) { 0 },
-      condition = WeatherCondition.fromWmoCode(
-        hourly.weathercode.getOrElse(i) { 0 }
-      ),
+      condition = WeatherCondition.fromWmoCode(hourly.weathercode.getOrElse(i) { 0 }),
       dewPoint = hourly.dewpoint2m.getOrElse(i) { 0.0 },
       humidity = hourly.relativeHumidity2m.getOrElse(i) { 0 },
       precipitation = hourly.precipitation.getOrElse(i) { 0.0 },
-      precipitationProbability = hourly.precipitationProbability
-        .getOrElse(i) { 0 },
+      precipitationProbability = hourly.precipitationProbability.getOrElse(i) { 0 },
       surfacePressure = hourly.surfacePressure.getOrElse(i) { 0.0 },
       temperature = hourly.temperature2m.getOrElse(i) { 0.0 },
       time = hourly.time[i],
@@ -95,15 +89,11 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
     isDay = current.isDay == 1,
     latitude = latitude,
     longitude = longitude,
-    precipitation = hourly.precipitation
-      .getOrElse(currentHourIndex) { 0.0 },
-    surfacePressure = hourly.surfacePressure
-      .getOrElse(currentHourIndex) { 0.0 },
-    visibility = hourly.visibility
-      .getOrElse(currentHourIndex) { 0.0 },
+    precipitation = hourly.precipitation.getOrElse(currentHourIndex) { 0.0 },
+    surfacePressure = hourly.surfacePressure.getOrElse(currentHourIndex) { 0.0 },
+    visibility = hourly.visibility.getOrElse(currentHourIndex) { 0.0 },
     windDirection = current.winddirection,
-    windGusts = hourly.windgusts10m
-      .getOrElse(currentHourIndex) { 0.0 },
+    windGusts = hourly.windgusts10m.getOrElse(currentHourIndex) { 0.0 },
     windSpeed = current.windspeed
   )
 }
@@ -124,6 +114,7 @@ fun WeatherData.toCacheEntity(): WeatherCacheEntity =
   )
 
 fun WeatherCacheEntity.toWeatherData(): WeatherData {
+
   val hourlyList = runCatching {
     json.decodeFromString<List<HourlyWeather>>(hourlyForecastJson)
   }.getOrDefault(emptyList())
@@ -155,13 +146,3 @@ fun WeatherCacheEntity.toWeatherData(): WeatherData {
     windSpeed = windSpeed
   )
 }
-
-fun LocationResultDto.toLocationResult() =
-  LocationResult(
-    id = id,
-    name = name,
-    latitude = latitude,
-    longitude = longitude,
-    country = country ?: "",
-    admin1 = admin1
-  )

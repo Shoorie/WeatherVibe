@@ -127,12 +127,12 @@ Every AI interaction is governed by these "unbreakable" laws. These files act as
 
 | Rule File | Core Responsibility | Key "Unbreakable" Laws |
 | :--- | :--- | :--- |
-| 🏗️ [Architecture](docs/ai-rules/architecture.md) | Logic & State | **Passive ViewModels** & Result-driven Clean Architecture. |
-| 🎨 [Compose UI](docs/ai-rules/compose-ui.md) | Presentation | **Token-based Design System** with Atomic Components. |
-| 💅 [Code Style](docs/ai-rules/code-style.md) | Hygiene | **Strict Formatting** & Mandatory Named Arguments. |
-| 🌐 [Network](docs/ai-rules/network-ktor.md) | External API | **Strict Data Boundaries** & Ktor Implementation. |
-| 💾 [Database](docs/ai-rules/database-room.md) | Persistence | **Relational Mapping** over flat JSON persistence. |
-| 📦 [Modularization](docs/ai-rules/modularization.md) | Structure | **Namespace-driven** layered feature modules. |
+| 🏗️ [Architecture](.claude/skills/android-vibe-architect/references/architecture.md) | Logic & State | **Passive ViewModels** & Result-driven Clean Architecture. |
+| 🎨 [Compose UI](.claude/skills/android-vibe-architect/references/compose-ui.md) | Presentation | **Token-based Design System** with Atomic Components. |
+| 💅 [Code Style](.claude/skills/android-vibe-architect/references/code-style.md) | Hygiene | **Strict Formatting** & Mandatory Named Arguments. |
+| 🌐 [Network](.claude/skills/android-vibe-architect/references/network-ktor.md) | External API | **Strict Data Boundaries** & Ktor Implementation. |
+| 💾 [Database](.claude/skills/android-vibe-architect/references/database-room.md) | Persistence | **Relational Mapping** over flat JSON persistence. |
+| 📦 [Modularization](.claude/skills/android-vibe-architect/references/modularization.md) | Structure | **Namespace-driven** layered feature modules. |
 
 ---
 

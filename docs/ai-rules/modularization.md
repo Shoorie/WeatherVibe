@@ -11,8 +11,9 @@
 3. [Module Types & Structure (The Matrix)](#3-module-types--structure-the-matrix)
 4. [Strict Dependency Flow (DO NOT BREAK)](#4-strict-dependency-flow-do-not-break)
 5. [Internal Package Structure (CRITICAL)](#5-internal-package-structure-critical)
-6. [Module Creation Rules](#6-module-creation-rules)
-7. [Self-Verification Checklist](#7-self-verification-checklist)
+6. [Convention Plugins (build-logic/)](#6-convention-plugins-build-logic)
+7. [Module Creation Rules](#7-module-creation-rules)
+8. [Self-Verification Checklist](#8-self-verification-checklist)
 
 ---
 
@@ -123,19 +124,50 @@ specific sub-packages based on their responsibility.
 
 ---
 
-## 6. Module Creation Rules
+## 6. Convention Plugins (`build-logic/`)
+
+This project uses **convention plugins** (in `build-logic/convention/`) to eliminate
+boilerplate from `build.gradle.kts` files. Always apply them using Version Catalogs via
+`alias(libs.plugins.[namespace].android.[plugin])` in the `plugins {}` block. Never manually
+configure compileSdk, minSdk, Java/Kotlin options, or dependencies provided by the plugin.
+
+### Available Plugins (Prefix: `libs.plugins.[namespace].android.*`)
+
+| Suffix         | Use for                 | What it configures                                |
+|:---------------|:------------------------|:--------------------------------------------------|
+| `.library`     | All library modules     | `com.android.library` + Kotlin + SDK versions     |
+| `.application` | `:app` module only      | `com.android.application` + Kotlin + targetSdk    |
+| `.compose`     | Modules with Compose UI | Compose compiler + BOM + UI/Material 3 deps       |
+| `.feature`     | `:feature:*` modules    | library + compose + DI + lifecycle + coroutines   |
+| `.koin`        | Modules using Koin DI   | KSP + koin-annotations + koin-ksp-compiler        |
+| `.room`        | Modules using Room DB   | KSP + room-runtime/ktx/compiler + schema args     |
+| `.ktor`        | Modules calling APIs    | serialization + Ktor OkHttp/negotiation/json deps |
+
+### Plugin Combinations per Layer
+
+| Layer        | Plugins Required                      | Extra Manual Dependencies     |
+|:-------------|:--------------------------------------|:------------------------------|
+| `:feature:*` | `.feature`                            | `:domain:*` projects          |
+| `:domain:*`  | `.library`, `.koin`, serialization    | `koin-core`, coroutines, json |
+| `:data:*`    | `.library`, `.koin`, `.room`, `.ktor` | `koin-android`, `:domain:*`   |
+| `:core:*`    | `.library` + others as needed         | Varies by core module         |
+
+---
+
+## 7. Module Creation Rules
 
 When asked to "create a module":
 
 1. Create the physical directory structure matching the namespace
    (e.g., `mkdir -p data/profile/src/main/kotlin/...`).
-2. Add a `build.gradle.kts` using Kotlin DSL.
+2. Add a `build.gradle.kts` using the appropriate convention plugins (see section 6).
+   Only set `android { namespace = "..." }` and module-specific dependencies.
 3. Register the namespace in the root `settings.gradle.kts` (e.g., `include(":data:profile")`).
-4. Declare dependencies using Version Catalogs (`libs.xxx`).
+4. Declare module-specific dependencies using Version Catalogs (`libs.xxx`).
 
 ---
 
-## 7. Self-Verification Checklist
+## 8. Self-Verification Checklist
 
 Before finalizing modularization changes, verify:
 

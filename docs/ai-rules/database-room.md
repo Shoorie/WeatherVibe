@@ -4,7 +4,6 @@
 > for structured data is strictly forbidden.
 
 ## 📋 Table of Contents
-
 1. [Relational Schema Design (CRITICAL)](#1-relational-schema-design-critical)
 2. [Entity & DAO Standards](#2-entity--dao-standards)
 3. [Data Mapping & Boundaries](#3-data-mapping--boundaries)
@@ -16,7 +15,6 @@
 ---
 
 ## 1. Relational Schema Design (CRITICAL)
-
 * **FORBIDDEN:** Do NOT dump raw JSON payloads into database columns using `@TypeConverter`. This is
   an anti-pattern for data that can be modeled relationally.
 * **Normalization:** You MUST design a proper relational schema. Use multiple `@Entity` classes and
@@ -29,7 +27,6 @@
 ---
 
 ## 2. Entity & DAO Standards
-
 * **Location:** Define entities in `data/local/entity` and DAOs in `data/local/dao`.
 * **Naming:** All entity classes MUST have the `Entity` suffix (e.g., `UserEntity`, `PostEntity`).
 * **Constructor Order:** `@PrimaryKey` fields MUST come first, then remaining fields sorted
@@ -41,7 +38,6 @@
 ---
 
 ## 3. Data Mapping & Boundaries
-
 * **FORBIDDEN:** Never expose Room Entities to the `:domain` or `:feature` modules.
 * **Mappers:** You MUST create mappers in the `data/local/mapper` package to convert Entities to
   Domain Models.
@@ -51,7 +47,6 @@
 ---
 
 ## 4. Implementation Example (Relational POJO)
-
 When fetching a parent entity with its related children, use the following pattern:
 
 ```kotlin
@@ -59,9 +54,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import androidx.compose.runtime.Immutable
 
+@Immutable
 data class ParentWithChildren(
   @Embedded val parent: ParentEntity,
-
+  
   @Relation(
     parentColumn = "parentId",
     entityColumn = "ownerParentId"
@@ -73,21 +69,18 @@ data class ParentWithChildren(
 ---
 
 ## 5. Dependency Injection (Koin)
-
-* Annotate the Database provider with `@Single`.
-* Annotate every DAO with `@Single` to make them injectable into Repositories.
+* **Rule:** For detailed DI rules, see `docs/ai-rules/di-koin.md`.
+* **Requirement:** Database provider and all DAOs MUST use `@Single`.
 
 ---
 
 ## 6. Migration Strategy
-
 * Always provide a versioning strategy. For new projects, start with version 1 and use
   `fallbackToDestructiveMigration()` only during the initial development phase.
 
 ---
 
 ## 7. Self-Verification Checklist
-
 Before finalizing database changes, verify:
 
 1. [ ] **Relational Design:** Is the data modeled relationally? (No JSON blobs in columns?)
@@ -96,6 +89,7 @@ Before finalizing database changes, verify:
 4. [ ] **Mapping:** Do Entities remain strictly within the `:data` module? (Used mappers?)
 5. [ ] **TypeConverters:** Only used for primitive-like custom types (Enums, Dates)?
 6. [ ] **UDF:** Are write operations `suspend` and read operations observable?
-7. [ ] **DI:** Are DAOs and the Database provider annotated with `@Single`?
-8. [ ] **Constraints:** Are `@ForeignKey` used where appropriate for data integrity?
-9. [ ] **Threading:** Are DAO operations called from `Dispatchers.IO` (usually via Repository)?
+7. [ ] **Stability:** Are relational POJOs (like `ParentWithChildren`) annotated with `@Immutable`?
+8. [ ] **DI:** Are you following rules in `docs/ai-rules/di-koin.md`?
+9. [ ] **Constraints:** Are `@ForeignKey` used where appropriate for data integrity?
+10. [ ] **Threading:** Are DAO operations called from `Dispatchers.IO` (usually via Repository)?

@@ -7,7 +7,8 @@
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_&_MVI-success.svg)](#)
 [![Vibe Coding](https://img.shields.io/badge/Built_with-AI_&_Vibe_Coding-8A2BE2.svg)](#)
 
-**A beautifully crafted, highly modular Android weather application.** 
+**A beautifully crafted, highly modular Android weather application.**
+<br/>
 *Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
 
 <p align="center">

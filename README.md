@@ -7,7 +7,8 @@
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_&_MVI-success.svg)](#)
 [![Vibe Coding](https://img.shields.io/badge/Built_with-AI_&_Vibe_Coding-8A2BE2.svg)](#)
 
-**A beautifully crafted, highly modular Android weather application.** *Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
+**A beautifully crafted, highly modular Android weather application.** 
+*Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
 
 <p align="center">
   <img src="art/screen1.png" width="22%" />
@@ -43,8 +44,8 @@ when constrained by unbreakable architectural rules.
 
 ## 🌊 The Vibe Flow (AI Collaboration)
 
-This project isn't just "generated" by AI; it's **architected by humans and executed by AI**. We
-use a Claude Code skill (`.claude/skills/android-vibe-architect/`) that enforces architectural
+This project isn't just "generated" by AI; it's **architected by human and executed by AI**. 
+We use a Claude Code skill (`.claude/skills/android-vibe-architect/`) that enforces architectural
 rules at every step:
 
 1.  **Contextual Prompting:** The Developer defines the intent (e.g., "Add a new weather metric").

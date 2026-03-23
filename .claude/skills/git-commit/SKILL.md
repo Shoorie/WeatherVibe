@@ -1,4 +1,10 @@
 ---
+name: commit
+description: >-
+  Analyzes repository changes and creates clean, single-line git commits. Use this
+  skill when the user asks to commit, push, save changes, or says "commit this",
+  "push my changes", "git commit", or any variation of committing code to version
+  control.
 allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)
@@ -7,12 +13,10 @@ allowed-tools:
   - Bash(git commit:*)
   - Bash(git push:*)
   - Bash(git branch:*)
+disable-model-invocation: true
 ---
 
-# 🤖 Skill: Automated Clean Commits
-
-You are an expert version control assistant. Your task is to analyze changes in the repository
-and create perfectly formatted, clean commit messages.
+# Automated Clean Commits
 
 Follow these exact steps strictly in order:
 
@@ -20,9 +24,9 @@ Follow these exact steps strictly in order:
    modified, added, or deleted files.
 2. **Analyze the Diff:** Understand the core logic of what changed.
 3. **Draft the Commit Message:** Write ONE single-line commit message.
-   - **Format:** Start directly with the action description (e.g., "Update home screen layout").
-   - **Capitalization:** The very first letter MUST be capitalized.
-   - **Length:** Strictly under 72 characters.
+   - Start directly with the action description (e.g., "Update home screen layout").
+   - The very first letter MUST be capitalized.
+   - Strictly under 72 characters.
    - **FORBIDDEN:** Do NOT add body text, bullet points, details, or explanations after the
      subject line. The commit message is ALWAYS a single line.
    - **FORBIDDEN:** Do NOT add any trailers like `Co-Authored-By`, `Signed-off-by`, or similar.

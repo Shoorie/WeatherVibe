@@ -1,3 +1,14 @@
+---
+name: android-vibe-architect
+description: >-
+  Enforces Clean Architecture, MVI, Passive ViewModel, and strict code style rules
+  for Android/Kotlin development. Use this skill for ALL Kotlin coding tasks in this
+  project: creating features, writing ViewModels, building Compose UI, network calls
+  with Ktor, Room database operations, refactoring, code review, module creation, and
+  any file touching the :feature, :domain, :data, or :core layers. Also use when the
+  user mentions architecture, state management, DI, filters, theming, or code style.
+---
+
 # Android Vibe Architect
 
 ## Description

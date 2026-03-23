@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(xml|kt\\)$\")",
+      "WebFetch(domain:www.figma.com)",
+      "Bash(curl -s https://repo.maven.apache.org/maven2/io/insert-koin/koin-annotations/maven-metadata.xml)",
+      "Bash(curl -s https://repo.maven.apache.org/maven2/io/insert-koin/koin-ksp-compiler/maven-metadata.xml)",
+      "Bash(curl -s https://repo.maven.apache.org/maven2/io/insert-koin/)",
+      "Bash(curl -s https://repo.maven.apache.org/maven2/io/insert-koin/compiler/maven-metadata.xml)",
+      "Bash(curl -s https://repo.maven.apache.org/maven2/io/insert-koin/koin-annotations-jvm/maven-metadata.xml)",
+      "Bash(for v:*)",
+      "Bash(do echo:*)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(curl -s \"https://repo.maven.apache.org/maven2/io/ktor/ktor-client-okhttp/maven-metadata.xml\")",
+      "Bash(git -C /Users/azalewski/WeatherVibe show HEAD:feature/home/src/main/kotlin/com/weather/vibe/feature/home/HomeResources.kt)",
+      "Bash(git -C /Users/azalewski/WeatherVibe show HEAD:feature/home/src/main/kotlin/com/weather/vibe/feature/home/HomeScreen.kt)",
+      "Bash(git -C /Users/azalewski/WeatherVibe show HEAD:feature/home/src/main/kotlin/com/weather/vibe/feature/home/components/CurrentWeatherSection.kt)",
+      "Bash(git:*)",
+      "Bash(./gradlew :feature:search:assembleDebug)",
+      "Bash(find /Users/azalewski/WeatherVibe/feature/search/build -name *.kt -path */ksp/*)",
+      "Bash(./gradlew :feature:search:kspDebugKotlin)",
+      "Bash(find /Users/azalewski/WeatherVibe/feature -name *.kt -path */ksp/*)",
+      "Bash(./gradlew clean:*)",
+      "Bash(./gradlew :feature:search:kspDebugKotlin --info)",
+      "Bash(grep -l \"@Composable\" /Users/azalewski/WeatherVibe/feature/home/src/main/kotlin/com/weather/vibe/feature/home/ui/component/*.kt)",
+      "Bash(while read:*)",
+      "Read(//Users/azalewski/WeatherVibe/**)",
+      "Bash(done)",
+      "Bash(grep -l \"@Composable\" /Users/azalewski/WeatherVibe/feature/search/src/main/kotlin/com/weather/vibe/feature/search/ui/component/*.kt)",
+      "Bash(python3 /tmp/check_alpha.py)"
+    ]
+  }
+}

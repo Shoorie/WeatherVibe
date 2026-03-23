@@ -1,0 +1,23 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+
+[*.{kt,kts}]
+indent_size = 2
+max_line_length = 100
+
+[*.xml]
+indent_size = 4
+
+[*.{gradle,gradle.kts}]
+indent_size = 2
+
+[*.md]
+max_line_length = 100
+
+[*.{json,yml,yaml}]
+indent_size = 2

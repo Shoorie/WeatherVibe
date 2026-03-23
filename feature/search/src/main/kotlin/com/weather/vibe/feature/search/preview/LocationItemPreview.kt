@@ -2,13 +2,15 @@ package com.weather.vibe.feature.search.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.search.preview.params.LocationItemPreviewParams
+import com.weather.vibe.feature.search.ui.SearchResources.Emojis.clock
+import com.weather.vibe.feature.search.ui.SearchResources.Emojis.locationPin
 
 internal class LocationItemPreview :
   PreviewParameterProvider<LocationItemPreviewParams> {
 
   private val searchResult: LocationItemPreviewParams =
     LocationItemPreviewParams(
-      emoji = "\uD83D\uDCCD",
+      emoji = locationPin(),
       name = "Warszawa",
       subtitle = "Mazowieckie, Polska",
       temperature = "15°"
@@ -16,7 +18,7 @@ internal class LocationItemPreview :
 
   private val recentLocation: LocationItemPreviewParams =
     LocationItemPreviewParams(
-      emoji = "\uD83D\uDD58",
+      emoji = clock(),
       name = "Kraków",
       subtitle = "Małopolskie, Polska",
       temperature = "12°"
@@ -24,7 +26,7 @@ internal class LocationItemPreview :
 
   private val loadingTemperature: LocationItemPreviewParams =
     LocationItemPreviewParams(
-      emoji = "\uD83D\uDCCD",
+      emoji = locationPin(),
       name = "Berlin",
       subtitle = "Niemcy",
       temperature = null

@@ -4,14 +4,13 @@
 > **Passive ViewModels** and **Fat Domains**. Business logic must never reside in the UI layer.
 
 ## 📋 Table of Contents
-
 1. [Clean Architecture Layers & Naming Conventions](#1-clean-architecture-layers--naming-conventions)
 2. [The Passive ViewModel (Dumb ViewModel)](#2-the-passive-viewmodel-dumb-viewmodel)
 3. [State & Event Modeling (UDF)](#3-state--event-modeling-udf)
 4. [Dispatching Actions (MVI Pattern)](#4-dispatching-actions-mvi-pattern)
 5. [Use Case Boundaries & Error Handling](#5-use-case-boundaries--error-handling-flow--catch)
 6. [Constructor Parameter Order (CRITICAL)](#6-constructor-parameter-order-critical)
-7. [Dependency Injection (Koin Annotations)](#7-dependency-injection-koin-annotations-only)
+7. [Dependency Injection (Koin)](#7-dependency-injection-koin)
 8. [Typical ViewModel Structure Example](#8-typical-viewmodel-structure-example)
 9. [Typical State & Contract Example (MVI)](#9-typical-state--contract-example-mvi)
 10. [StateFactory Pattern (Fat Factory)](#10-statefactory-pattern-fat-factory)
@@ -20,7 +19,6 @@
 ---
 
 ## 1. Clean Architecture Layers & Naming Conventions
-
 Module structure and class naming must strictly reflect layer responsibilities.
 
 * **`:data`**: Network DTOs, Room Entities, DAOs, and Repository Implementations.
@@ -28,16 +26,14 @@ Module structure and class naming must strictly reflect layer responsibilities.
 * **`:feature` (UI)**: ViewModels, UI State, Events, Composables, and State Factories.
 
 ### 🚫 Forbidden Naming Patterns
-
-| Component   | Rule                                               | Correct Example         |
-|:------------|:---------------------------------------------------|:------------------------|
-| **UseCase** | **NEVER** append `UseCase`. Use action verbs.      | `FetchUserProfile`      |
-| **Repo**    | **NEVER** use `Impl` suffix. Use `Default` prefix. | `DefaultUserRepository` |
+| Component  | Rule                                              | Correct Example         |
+| :--------- | :------------------------------------------------ | :---------------------- |
+| **UseCase**| **NEVER** append `UseCase`. Use action verbs.     | `FetchUserProfile`      |
+| **Repo** | **NEVER** use `Impl` suffix. Use `Default` prefix.| `DefaultUserRepository` |
 
 ---
 
 ## 2. The Passive ViewModel (Dumb ViewModel)
-
 The ViewModel acts strictly as a **bridge**, not a logic provider.
 
 * **Rule:** ViewModels must not contain complex data transformations, filtering, or business
@@ -48,11 +44,9 @@ The ViewModel acts strictly as a **bridge**, not a logic provider.
 ---
 
 ## 3. State & Event Modeling (UDF)
-
 All data flows in a single direction (Unidirectional Data Flow).
 
 ### 🟦 UI State (`StateFlow`)
-
 * **Mutation:** Update state ONLY via `_state.update { ... }`.
   **FORBIDDEN:** Direct assignment like `_state.value = ...`.
 * **Stability:** The State class MUST be annotated with `@Immutable` (from Compose) or `@Stable`.
@@ -60,14 +54,12 @@ All data flows in a single direction (Unidirectional Data Flow).
   `Loaded`, `Error`). Do not use "Boolean Soup" (e.g., `isLoading`, `isError`).
 
 ### 🟨 UI Events/Effects (`Channel`)
-
 * Handle one-off events (navigation, toasts, dialogs) via a `Channel` and collect as a `Flow`.
 * `private val _event = Channel<FeatureEvent>()` -> `val event = _event.receiveAsFlow()`.
 
 ---
 
 ## 4. Dispatching Actions (MVI Pattern)
-
 UI-to-ViewModel communication is restricted to a single entry point.
 
 * **Public API:** The only public function allowed is `fun dispatch(action: FeatureAction)`.
@@ -77,18 +69,16 @@ UI-to-ViewModel communication is restricted to a single entry point.
   readability: `is Click -> onClick()`.
 
 ### 🔠 MVI Grammar & Naming (CRITICAL)
-
 Actions and Events follow a strict tense rule to distinguish between **intentions** and **results**.
 
-| Component  | Tense       | Meaning                  | Correct Examples                 | Incorrect Examples                 |
-|:-----------|:------------|:-------------------------|:---------------------------------|:-----------------------------------|
-| **Action** | **Present** | "I want this to happen"  | `RefreshClick`, `ReceiveResult`  | `Refreshed`, `ResultReceived`      |
-| **Event**  | **Present** | "Do this UI side effect" | `NavigateToDetails`, `ShowToast` | `NavigatedToDetails`, `ToastShown` |
+| Component | Tense | Meaning | Correct Examples | Incorrect Examples |
+| :--- | :--- | :--- | :--- | :--- |
+| **Action** | **Present** | "I want this to happen" | `RefreshClick`, `ReceiveResult` | `Refreshed`, `ResultReceived` |
+| **Event** | **Present** | "Do this UI side effect" | `NavigateToDetails`, `ShowToast` | `NavigatedToDetails`, `ToastShown` |
 
 ---
 
 ## 5. Use Case Boundaries & Error Handling (Flow + catch)
-
 Use Cases serve as the safety boundary for asynchronous operations.
 
 * **Standard:** Use Cases MUST return `Flow<Result<T>>` using the `flow { }.catch { }` pattern.
@@ -96,70 +86,9 @@ Use Cases serve as the safety boundary for asynchronous operations.
   Coroutine "freezing" or breaking structural concurrency.
 * **FORBIDDEN:** Do NOT use `runCatching` inside Use Cases.
 
-### Use Case Template:
-
-```kotlin
-@Factory
-class FetchUserProfile(private val repository: UserRepository) {
-
-  operator fun invoke(userId: String): Flow<Result<UserProfile>> =
-    flow {
-      val result = repository.fetchProfile(userId)
-      emit(Result.success(result))
-    }
-      .catch { emit(Result.failure(it)) }
-}
-```
-
-### Result Handling in ViewModels
-
-When consuming `Flow<Result<T>>` from Use Cases, **extract handlers to named private methods**
-that read like prose. Never inline `onSuccess`/`onFailure` logic directly in flow operators.
-
-**Pattern:**
-
-```kotlin
-private fun loadData() {
-  fetchData()
-    .onEach(::onLoadDataResult)
-    .launchIn(viewModelScope)
-}
-
-private fun onLoadDataResult(result: Result<Data>) {
-  result
-    .onSuccess(::onLoadDataSuccess)
-    .onFailure(::onLoadDataError)
-}
-
-private fun onLoadDataSuccess(data: Data) {
-  _state.update { factory.createFrom(data) }
-}
-
-private fun onLoadDataError(throwable: Throwable) {
-  _state.update { Error(throwable.message.orEmpty()) }
-}
-```
-
-**Rules:**
-
-* Each handler MUST be a separate named function: `onXxxResult`, `onXxxSuccess`, `onXxxError`.
-* The naming follows the action: `loadData` → `onLoadDataResult` → `onLoadDataSuccess` /
-  `onLoadDataError`.
-* If the success handler is `suspend` (e.g., needs secondary data fetching), use
-  `result.getOrNull()` with early return instead of `onSuccess` (which doesn't accept suspend
-  lambdas):
-
-```kotlin
-private suspend fun onLoadDataResult(result: Result<Data>) {
-  val data = result.getOrNull() ?: return onLoadDataError()
-  onLoadDataSuccess(data)
-}
-```
-
 ---
 
 ## 6. Constructor Parameter Order (CRITICAL)
-
 To maintain clean diffs and maximize scannability:
 
 > **Rule:** Constructor parameters in ALL classes (ViewModels, UseCases, Repositories,
@@ -176,17 +105,15 @@ internal class FeatureViewModel(
 
 ---
 
-## 7. Dependency Injection (Koin Annotations ONLY)
+## 7. Dependency Injection (Koin)
+Dependency injection is managed centrally using Koin Annotations.
 
-We exclusively use the KSP-based annotation approach for DI.
-
+* **Rule:** For detailed DI rules, see `docs/ai-rules/di-koin.md`.
 * **FORBIDDEN:** Writing manual `module { ... }` blocks is strictly prohibited.
-* **Requirement:** Use `@KoinViewModel`, `@Single`, `@Factory`, and rely on `@ComponentScan`.
 
 ---
 
 ## 8. Typical ViewModel Structure Example
-
 Use this as the blueprint for every new feature module:
 
 ```kotlin
@@ -197,7 +124,7 @@ internal class FeatureViewModel(
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<FeatureUiState>(Loading)
-  val state: StateFlow<FeatureUiState> = _state.asStateFlow()
+  val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
   private val _event = Channel<FeatureEvent>()
   val event: Flow<FeatureEvent> = _event.receiveAsFlow()
@@ -229,7 +156,6 @@ internal class FeatureViewModel(
 ---
 
 ## 9. Typical State & Contract Example (MVI)
-
 Model the UI contract in a single place (e.g., `UiContract.kt`).
 
 ```kotlin
@@ -264,12 +190,10 @@ internal sealed interface FeatureEvent {
 ---
 
 ## 10. StateFactory Pattern (Fat Factory)
-
 The factory is responsible for ALL data transformation from domain models to display-ready
 UI models. Composables receive pre-formatted strings - they never perform formatting logic.
 
 ### Rules:
-
 * **Private helper methods** per UI section: `createHeader()`, `createItems()`, etc.
 * **Private formatting utilities*.
 * **UI model classes** live in `presentation/model/` - one file per class, `@Immutable`,
@@ -277,12 +201,11 @@ UI models. Composables receive pre-formatted strings - they never perform format
 * **Loaded state** holds UI models directly (not raw domain models).
 
 ### Factory Template:
-
 ```kotlin
 @Factory
 internal class FeatureStateFactory {
 
-  fun createFrom(data: DomainData): Loaded =
+  fun createFrom(data: DomainData): Loaded = 
     Loaded(
       header = createHeader(data),
       items = createItems(data.items)
@@ -312,14 +235,13 @@ internal class FeatureStateFactory {
 ---
 
 ## 11. Self-Verification Checklist
-
 Before finalizing architectural changes, verify:
 
 1. [ ] **Naming:** No `UseCase` or `Impl` suffixes in class names?
 2. [ ] **ViewModel:** Is it strictly passive? (No business logic/mapping inside?)
 3. [ ] **StateFactory:** Are all domain-to-ui transformations handled here?
 4. [ ] **Constructor:** Are all parameters sorted alphabetically?
-5. [ ] **DI:** Are you using Koin Annotations (`@Factory`, `@Single`, `@KoinViewModel`)?
+5. [ ] **DI:** Are you following rules in `docs/ai-rules/di-koin.md`?
 6. [ ] **UDF:** Is state updated ONLY via `_state.update { ... }`?
 7. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
 8. [ ] **MVI Tense:** Are both Actions and Events using Present Tense?

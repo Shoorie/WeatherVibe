@@ -12,3 +12,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Local AI tools & environment settings
+settings.local.json

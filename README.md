@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4.svg?logo=android)](https://developer.android.com/jetpack/compose)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_&_MVI-success.svg)](#)
 [![Vibe Coding](https://img.shields.io/badge/Built_with-AI_&_Vibe_Coding-8A2BE2.svg)](#)
@@ -44,13 +44,16 @@ when constrained by unbreakable architectural rules.
 ## 🌊 The Vibe Flow (AI Collaboration)
 
 This project isn't just "generated" by AI; it's **architected by humans and executed by AI**. We
-follow a strict cycle to ensure zero technical debt:
+use a Claude Code skill (`.claude/skills/android-vibe-architect/`) that enforces architectural
+rules at every step:
 
 1.  **Contextual Prompting:** The Developer defines the intent (e.g., "Add a new weather metric").
-2.  **Rule Enforcement:** The AI agent is forced to read our `docs/ai-rules/` before proposing code.
+2.  **Skill Activation:** Claude Code loads the relevant rule files from the skill's `references/`
+    directory before proposing any code.
 3.  **Step-by-Step Thinking:** AI explains its plan and lists intended file changes.
 4.  **Human Verification:** The Developer reviews the "Vibe" and architectural alignment.
-5.  **Self-Correction:** AI runs through a checklist (Self-Verification) to ensure no rules were broken.
+5.  **Self-Correction:** AI runs through a checklist (Self-Verification) to ensure no rules were
+    broken.
 
 ---
 
@@ -122,17 +125,18 @@ graph TD
 
 ## 🧱 The Architectural Constitution (AI Rules)
 
-Every AI interaction is governed by these "unbreakable" laws. These files act as the 
-**System Prompt Extension** for any AI agent working on this repo.
+Every AI interaction is governed by these "unbreakable" laws. They live as a
+[Claude Code skill](.claude/skills/android-vibe-architect/) and act as the **System Prompt
+Extension** for any AI agent working on this repo.
 
 | Rule File | Core Responsibility | Key "Unbreakable" Laws |
 | :--- | :--- | :--- |
-| 🏗️ [Architecture](.claude/skills/android-vibe-architect/references/architecture.md) | Logic & State | **Passive ViewModels** & Result-driven Clean Architecture. |
-| 🎨 [Compose UI](.claude/skills/android-vibe-architect/references/compose-ui.md) | Presentation | **Token-based Design System** with Atomic Components. |
-| 💅 [Code Style](.claude/skills/android-vibe-architect/references/code-style.md) | Hygiene | **Strict Formatting** & Mandatory Named Arguments. |
-| 🌐 [Network](.claude/skills/android-vibe-architect/references/network-ktor.md) | External API | **Strict Data Boundaries** & Ktor Implementation. |
-| 💾 [Database](.claude/skills/android-vibe-architect/references/database-room.md) | Persistence | **Relational Mapping** over flat JSON persistence. |
-| 📦 [Modularization](.claude/skills/android-vibe-architect/references/modularization.md) | Structure | **Namespace-driven** layered feature modules. |
+| 🏗️ [Architecture](/.claude/skills/android-vibe-architect/references/architecture.md) | Logic & State | **Passive ViewModels** & Result-driven Clean Architecture. |
+| 🎨 [Compose UI](/.claude/skills/android-vibe-architect/references/compose-ui.md) | Presentation | **Token-based Design System** with Atomic Components. |
+| 💅 [Code Style](/.claude/skills/android-vibe-architect/references/code-style.md) | Hygiene | **Strict Formatting** & Mandatory Named Arguments. |
+| 🌐 [Network](/.claude/skills/android-vibe-architect/references/network-ktor.md) | External API | **Strict Data Boundaries** & Ktor Implementation. |
+| 💾 [Database](/.claude/skills/android-vibe-architect/references/database-room.md) | Persistence | **Relational Mapping** over flat JSON persistence. |
+| 📦 [Modularization](/.claude/skills/android-vibe-architect/references/modularization.md) | Structure | **Namespace-driven** layered feature modules. |
 
 ---
 

@@ -47,6 +47,12 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+
+# Gradle plugin artifacts (for build-logic compileOnly)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
@@ -60,3 +66,12 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# Plugins defined by this project
+weathervibe-android-application = { id = "weathervibe.android.application" }
+weathervibe-android-compose = { id = "weathervibe.android.compose" }
+weathervibe-android-feature = { id = "weathervibe.android.feature" }
+weathervibe-android-koin = { id = "weathervibe.android.koin" }
+weathervibe-android-ktor = { id = "weathervibe.android.ktor" }
+weathervibe-android-library = { id = "weathervibe.android.library" }
+weathervibe-android-room = { id = "weathervibe.android.room" }

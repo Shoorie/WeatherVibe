@@ -6,16 +6,16 @@ writing ViewModels, building UI, network calls, database operations, refactoring
 code review.
 
 ## Context Routing
-Before writing ANY code, read the relevant reference file(s) from `references/`:
+Before writing ANY code, read the relevant reference file(s) from `docs/ai-rules/`:
 
 | Task | Read |
 |---|---|
-| Formatting, naming, file structure | `references/code-style.md` |
-| Building UI, theming, Compose components | `references/compose-ui.md` |
-| ViewModels, state, use cases, MVI | `references/architecture.md` |
-| API calls (Ktor), DTOs, mappers | `references/network-ktor.md` |
-| Room DB, entities, DAOs | `references/database-room.md` |
-| Module creation, dependencies | `references/modularization.md` |
+| Formatting, naming, file structure | `docs/ai-rules/code-style.md` |
+| Building UI, theming, Compose components | `docs/ai-rules/compose-ui.md` |
+| ViewModels, state, use cases, MVI | `docs/ai-rules/architecture.md` |
+| API calls (Ktor), DTOs, mappers | `docs/ai-rules/network-ktor.md` |
+| Room DB, entities, DAOs | `docs/ai-rules/database-room.md` |
+| Module creation, dependencies | `docs/ai-rules/modularization.md` |
 
 Read ALL files that apply to the task. Most tasks require `code-style.md` + one or more others.
 
@@ -31,6 +31,7 @@ Read ALL files that apply to the task. Most tasks require `code-style.md` + one 
 1. Scope check: diff changes against the request. Revert anything not explicitly asked for.
 2. Pattern check: verify changes match the reference files AND existing codebase patterns.
 3. Run the Self-Verification Checklist from the relevant reference file(s).
+4. Hygiene check: remove all unused imports, dead code, and placeholders.
 
 ## Key Architecture Summary (quick reference)
 
@@ -47,11 +48,10 @@ Read ALL files that apply to the task. Most tasks require `code-style.md` + one 
 - Entities: `Entity` suffix
 
 ### ViewModel Pattern
-- Passive ViewModel —-delegates logic to use cases, state creation to StateFactory
+- Passive ViewModel — delegates logic to use cases, state creation to StateFactory
 - Single public entry: `fun dispatch(action: FeatureAction)`
-- State via `MutableStateFlow` + `_state.update { }`
-- Events via `Channel` + `receiveAsFlow()`
-- Actions & Events: present tense
+- Actions & Events: Present tense ONLY (e.g., `RefreshClick`, NOT `RefreshClicked`)
+- Result handling: Extracted to `onXxxResult/Success/Error` named methods
 
 ### Use Cases
 - Return `Flow<Result<T>>` with `flow { }.catch { }` pattern
@@ -61,9 +61,10 @@ Read ALL files that apply to the task. Most tasks require `code-style.md` + one 
 - Koin Annotations ONLY: `@KoinViewModel`, `@Factory`, `@Single`
 - NO manual `module { }` blocks
 
-### Compose
-- Static imports for `colors`, `typography`, `AppDimens`
-- Resource wrapper pattern for all strings/drawables
+### Compose & UI
+- Static imports for `colors`, `typography`, `AppDimens` (No prefixes!)
+- Resource wrapper pattern for all strings/drawables (No `stringResource` in layouts)
 - Max 60 lines per Composable
-- `modifier: Modifier = Modifier` always first optional param
+- Every state (Empty, Error, Loading) in its own prefixed file (e.g., `HomeEmptyState.kt`)
 - Every Composable file gets `@PreviewLightDark`
+- Named arguments for all calls > 1 argument or Literal/Null values

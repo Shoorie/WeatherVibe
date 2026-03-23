@@ -62,6 +62,7 @@ internal class HomeResources(private val context: Context) {
     fun eye(): String = "\uD83D\uDC41\uFE0F"
     fun gauge(): String = "\uD83D\uDD36"
     fun humidity(): String = "\uD83D\uDCA7"
+    fun locationPin(): String = "\uD83D\uDCCD"
     fun moon(): String = "\uD83C\uDF19"
     fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
     fun partlyCloudy(): String = "\u26C5"

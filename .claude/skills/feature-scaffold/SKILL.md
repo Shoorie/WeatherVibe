@@ -1,7 +1,7 @@
 ---
 name: feature-scaffold
 description: >-
-  Generates complete Android feature scaffold for WeatherVibe — creates all files for
+  Generates complete Android feature scaffold — creates all files for
   domain, data, and feature layers with correct patterns. Use this skill whenever the
   user wants to create a new feature, screen, or module: "scaffold X", "create feature X",
   "new screen for X", "add module X", "bootstrap feature X". Even if the user only says

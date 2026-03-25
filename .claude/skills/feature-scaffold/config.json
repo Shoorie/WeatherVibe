@@ -1,0 +1,6 @@
+{
+  "base_package": "com.weather.vibe",
+  "plugin_namespace": "weathervibe",
+  "theme_class": "WeatherVibeTheme",
+  "theme_package": "com.weather.vibe.core.designsystem.theme"
+}

@@ -11,12 +11,6 @@ description: >-
 
 # Android Vibe Architect
 
-## Description
-
-Use this skill for ALL Kotlin/Android coding tasks in this project: creating features,
-writing ViewModels, building UI, network calls, database operations, refactoring, and
-code review.
-
 ## Context Routing
 
 Before writing ANY code, read the relevant reference file(s) from `docs/ai-rules/`:
@@ -48,45 +42,3 @@ Read ALL files that apply to the task. Most tasks require `code-style.md` + one 
 2. Pattern check: verify changes match the reference files AND existing codebase patterns.
 3. Run the Self-Verification Checklist from the relevant reference file(s).
 4. Hygiene check: remove all unused imports, dead code, and placeholders.
-
-## Key Architecture Summary (quick reference)
-
-### Layers
-
-- `:domain` — Pure Kotlin: models, repository interfaces, use cases
-- `:data` — Ktor DTOs, Room entities, repository implementations, mappers
-- `:feature` — ViewModels, UI state, Compose screens, state factories
-- `:core` — Shared infra (designsystem, network, database)
-
-### Naming
-
-- Use cases: action verbs, NO `UseCase` suffix → `FetchUserProfile`
-- Repositories: `Default` prefix, NO `Impl` suffix → `DefaultUserRepository`
-- DTOs: `Dto` or `Response` suffix
-- Entities: `Entity` suffix
-
-### ViewModel Pattern
-
-- Passive ViewModel — delegates logic to use cases, state creation to StateFactory
-- Single public entry: `fun dispatch(action: FeatureAction)`
-- Actions & Events: Present tense ONLY (e.g., `RefreshClick`, NOT `RefreshClicked`)
-- Result handling: Extracted to `onXxxResult/Success/Error` named methods
-
-### Use Cases
-
-- Return `Flow<Result<T>>` with `flow { }.catch { }` pattern
-- NO `runCatching`
-
-### DI
-
-- Koin Annotations ONLY: `@KoinViewModel`, `@Factory`, `@Single`
-- NO manual `module { }` blocks
-
-### Compose & UI
-
-- Static imports for `colors`, `typography`, `AppDimens` (No prefixes!)
-- Resource wrapper pattern for all strings/drawables (No `stringResource` in layouts)
-- Max 60 lines per Composable
-- Every state (Empty, Error, Loading) in its own prefixed file (e.g., `HomeEmptyState.kt`)
-- Every Composable file gets `@PreviewLightDark`
-- Named arguments for all calls > 1 argument or Literal/Null values

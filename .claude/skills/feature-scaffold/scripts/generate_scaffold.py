@@ -1,27 +1,47 @@
 #!/usr/bin/env python3
-"""Android Feature Scaffold Generator — auto-detects project config.
+"""Android Feature Scaffold Generator.
 
 Usage:
     python3 generate_scaffold.py --name Profile --layers all
     python3 generate_scaffold.py --name Settings --layers feature
     python3 generate_scaffold.py --name Forecast --layers domain,data
+
+Config is read from config.json next to this script's parent SKILL.md.
+Falls back to auto-detection from existing project files if config.json is absent.
 """
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
 
 
 # ---------------------------------------------------------------------------
-# CONFIG AUTO-DETECTION
+# CONFIG
 # ---------------------------------------------------------------------------
 
-def detect_config(root: Path) -> dict:
-    """Auto-detect project config from existing Kotlin/Gradle files."""
+_REQUIRED_KEYS = ("base_package", "plugin_namespace", "theme_package", "theme_class")
+
+
+def load_config(root: Path) -> dict:
+    """Load config from config.json (preferred) or auto-detect from project files."""
+    config_path = Path(__file__).parent.parent / "config.json"
+    if config_path.exists():
+        cfg = json.loads(config_path.read_text())
+        missing = [k for k in _REQUIRED_KEYS if k not in cfg]
+        if missing:
+            print(f"Error: config.json is missing keys: {missing}", file=sys.stderr)
+            sys.exit(1)
+        return cfg
+
+    return _auto_detect(root)
+
+
+def _auto_detect(root: Path) -> dict:
+    """Fallback: detect config from existing Kotlin/Gradle files."""
     cfg = {}
 
-    # base_package + plugin_namespace from any feature build.gradle.kts
     for gradle in root.glob("feature/*/build.gradle.kts"):
         text = gradle.read_text()
         ns = re.search(r'namespace\s*=\s*"([^"]+)"', text)
@@ -35,7 +55,6 @@ def detect_config(root: Path) -> dict:
         if "base_package" in cfg and "plugin_namespace" in cfg:
             break
 
-    # theme_class + theme_package from any existing Screen.kt
     for kt in root.glob("feature/*/src/**/*Screen.kt"):
         text = kt.read_text()
         m = re.search(r'import ([\w.]+\.(\w+Theme))\b', text)
@@ -45,11 +64,10 @@ def detect_config(root: Path) -> dict:
             cfg["theme_class"] = m.group(2)
             break
 
-    missing = [k for k in ("base_package", "plugin_namespace", "theme_package", "theme_class")
-               if k not in cfg]
+    missing = [k for k in _REQUIRED_KEYS if k not in cfg]
     if missing:
-        print(f"Error: could not auto-detect: {missing}", file=sys.stderr)
-        print("Tip: ensure at least one feature module with a Screen.kt exists.", file=sys.stderr)
+        print(f"Error: could not detect: {missing}", file=sys.stderr)
+        print("Fix: fill in .claude/skills/feature-scaffold/config.json", file=sys.stderr)
         sys.exit(1)
 
     return cfg
@@ -802,7 +820,7 @@ def main():
         print(f"Error: unknown layers: {invalid}. Valid: all, domain, data, feature", file=sys.stderr)
         sys.exit(1)
 
-    cfg = detect_config(root)
+    cfg = load_config(root)
     print(f"\nScaffolding '{name}' [{', '.join(layers)}] in {root}")
     print(f"  package: {cfg['base_package']}  theme: {cfg['theme_class']}  plugins: {cfg['plugin_namespace']}.*\n")
 

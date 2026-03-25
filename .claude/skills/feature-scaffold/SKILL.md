@@ -21,5 +21,6 @@ python3 .claude/skills/feature-scaffold/scripts/generate_scaffold.py \
 - `--name` — PascalCase (e.g. `Settings`, `Forecast`, `UserProfile`)
 - `--layers` — default `all`; or comma-separated: `domain,data`
 
-The script creates all files and updates `settings.gradle.kts` automatically.
+The script reads config from `config.json` next to this SKILL.md (fill it in once per project).
+Falls back to auto-detection from existing project files if `config.json` is absent.
 Remind the user to fill in the TODOs and register the DI module in `:app`.

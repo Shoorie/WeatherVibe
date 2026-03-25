@@ -9,12 +9,11 @@
 3. [State & Event Modeling (UDF)](#3-state--event-modeling-udf)
 4. [Dispatching Actions (MVI Pattern)](#4-dispatching-actions-mvi-pattern)
 5. [Use Case Boundaries & Error Handling](#5-use-case-boundaries--error-handling-flow--catch)
-6. [Constructor Parameter Order (CRITICAL)](#6-constructor-parameter-order-critical)
-7. [Dependency Injection (Koin)](#7-dependency-injection-koin)
-8. [Typical ViewModel Structure Example](#8-typical-viewmodel-structure-example)
-9. [Typical State & Contract Example (MVI)](#9-typical-state--contract-example-mvi)
-10. [StateFactory Pattern (Fat Factory)](#10-statefactory-pattern-fat-factory)
-11. [Self-Verification Checklist](#11-self-verification-checklist)
+6. [Dependency Injection (Koin)](#7-dependency-injection-koin)
+7. [Typical ViewModel Structure Example](#8-typical-viewmodel-structure-example)
+8. [Typical State & Contract Example (MVI)](#9-typical-state--contract-example-mvi)
+9. [StateFactory Pattern (Fat Factory)](#10-statefactory-pattern-fat-factory)
+10. [Self-Verification Checklist](#11-self-verification-checklist)
 
 ---
 
@@ -88,24 +87,7 @@ Use Cases serve as the safety boundary for asynchronous operations.
 
 ---
 
-## 6. Constructor Parameter Order (CRITICAL)
-To maintain clean diffs and maximize scannability:
-
-> **Rule:** Constructor parameters in ALL classes (ViewModels, UseCases, Repositories,
-> Factories) **MUST** be sorted alphabetically by parameter name.
-
-```kotlin
-@KoinViewModel
-internal class FeatureViewModel(
-  private val fetchData: FetchData,
-  private val searchItems: SearchItems,
-  private val stateFactory: FeatureStateFactory
-) : ViewModel()
-```
-
----
-
-## 7. Dependency Injection (Koin)
+## 6. Dependency Injection (Koin)
 Dependency injection is managed centrally using Koin Annotations.
 
 * **Rule:** For detailed DI rules, see `docs/ai-rules/di-koin.md`.
@@ -113,7 +95,7 @@ Dependency injection is managed centrally using Koin Annotations.
 
 ---
 
-## 8. Typical ViewModel Structure Example
+## 7. Typical ViewModel Structure Example
 Use this as the blueprint for every new feature module:
 
 ```kotlin
@@ -155,7 +137,7 @@ internal class FeatureViewModel(
 
 ---
 
-## 9. Typical State & Contract Example (MVI)
+## 8. Typical State & Contract Example (MVI)
 Model the UI contract in a single place (e.g., `UiContract.kt`).
 
 ```kotlin
@@ -189,7 +171,7 @@ internal sealed interface FeatureEvent {
 
 ---
 
-## 10. StateFactory Pattern (Fat Factory)
+## 9. StateFactory Pattern (Fat Factory)
 The factory is responsible for ALL data transformation from domain models to display-ready
 UI models. Composables receive pre-formatted strings - they never perform formatting logic.
 
@@ -234,7 +216,7 @@ internal class FeatureStateFactory {
 
 ---
 
-## 11. Self-Verification Checklist
+## 10. Self-Verification Checklist
 Before finalizing architectural changes, verify:
 
 1. [ ] **Naming:** No `UseCase` or `Impl` suffixes in class names?

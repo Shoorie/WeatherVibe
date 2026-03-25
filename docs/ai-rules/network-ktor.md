@@ -11,8 +11,7 @@
 5. [Data Mapping & Boundaries (THE GOLDEN RULE)](#5-data-mapping--boundaries-the-golden-rule)
 6. [Dependency Injection (Koin)](#6-dependency-injection-koin)
 7. [Implementation Example (Universal Pattern)](#7-implementation-example-universal-pattern)
-8. [Clean Imports](#8-clean-imports)
-9. [Self-Verification Checklist](#9-self-verification-checklist)
+8. [Self-Verification Checklist](#9-self-verification-checklist)
 
 ---
 
@@ -75,12 +74,7 @@ internal class DefaultUserRepository(
 
 ---
 
-## 8. Clean Imports
-* Always use static imports for constants or enum members to keep the network logic readable.
-
----
-
-## 9. Self-Verification Checklist
+## 8. Self-Verification Checklist
 Before finalizing network-related changes, verify:
 
 1. [ ] **Tech Stack:** Only Ktor and kotlinx.serialization used?

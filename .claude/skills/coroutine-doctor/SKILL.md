@@ -27,35 +27,31 @@ python3 .claude/skills/coroutine-doctor/scripts/scan_coroutines.py --root <proje
 After the script, read flagged files to catch issues that static analysis can't detect:
 
 ### Cold vs Hot Flow misuse
+
 A cold `Flow` from `flow { }` is fine for one-shot operations (UseCase). But if multiple
 collectors subscribe to it, each gets an independent execution — this is usually a bug.
 Flag: `flow { }` stored as a class property and collected in multiple places. Fix: `shareIn`
 or `stateIn`.
 
 ### Missing `supervisorScope` for parallel operations
+
 When launching multiple coroutines in parallel with `async`, failure in one cancels all
 siblings unless wrapped in `supervisorScope`. Flag: `coroutineScope { launch {}; launch {} }`
 where each job is independent. Fix: `supervisorScope { ... }`.
 
 ### `runCatching` swallowing `CancellationException`
+
 `runCatching {}` catches ALL exceptions including `CancellationException`, breaking
 structured concurrency — the coroutine won't cancel properly.
-Fix: re-throw `CancellationException`:
-```kotlin
-runCatching { ... }.onFailure { if (it is CancellationException) throw it }
-// Or better: use try/catch with specific exception types
-```
-
-### `.first()` without timeout
-`flow.first()` suspends forever if the Flow never emits. Flag: `.first()` on a Flow from
-a repository or network source without a `withTimeout {}` wrapper.
 
 ### `StateFlow` vs `Channel` for Events
+
 One-shot events (navigation, toasts) must use `Channel`, not `StateFlow`. `StateFlow`
 replays the last value to new collectors — a new subscriber (e.g. after rotation) would
 re-trigger the navigation. Flag: `MutableStateFlow` whose type name contains `Event`.
 
 ### Lifecycle-unsafe collection
+
 `lifecycleScope.launch { flow.collect {} }` in Fragment/Activity without
 `repeatOnLifecycle` collects even in the background. Fix: `repeatOnLifecycle(STARTED)`.
 The project uses `collectAsStateWithLifecycle()` in Compose which handles this correctly —

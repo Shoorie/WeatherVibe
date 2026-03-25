@@ -12,7 +12,8 @@ description: >-
 ## Step 1 — Determine scope
 
 - **State class specified** (e.g. `SearchUiState`) → generate provider for that class only
-- **Screen/feature specified** (e.g. `feature/search`) → generate all missing providers for that feature
+- **Screen/feature specified** (e.g. `feature/search`) → generate all missing providers for that
+  feature
 - **No scope** → ask the user which state or screen to target
 
 ## Step 2 — Discover project conventions
@@ -21,11 +22,12 @@ Before generating anything, read the existing codebase to learn its patterns:
 
 1. **Find existing preview providers** — search for files matching `*Preview.kt` or
    `*PreviewProvider.kt` in the feature. Read 1–2 of them to understand:
-   - Package naming convention
-   - Class naming pattern (`XxxPreview` vs `XxxPreviewProvider` vs `XxxParams`)
-   - Whether there's a wrapper data class (e.g. `SearchPreviewParams`) or the state is used directly
-   - Visibility (`internal` vs `public`)
-   - Where files live (`preview/` package, `ui/preview/`, etc.)
+    - Package naming convention
+    - Class naming pattern (`XxxPreview` vs `XxxPreviewProvider` vs `XxxParams`)
+    - Whether there's a wrapper data class (e.g. `SearchPreviewParams`) or the state is used
+      directly
+    - Visibility (`internal` vs `public`)
+    - Where files live (`preview/` package, `ui/preview/`, etc.)
 
 2. **Find the target state class(es)** — read each `*UiState.kt` / `*State.kt` to understand
    all fields and their types
@@ -44,17 +46,17 @@ For each field, infer realistic values from the **field name** and **type**:
 
 ### Type rules
 
-| Field type | Strategy |
-|------------|----------|
-| `String` | Infer from name — see naming heuristics below |
+| Field type          | Strategy                                                            |
+|---------------------|---------------------------------------------------------------------|
+| `String`            | Infer from name — see naming heuristics below                       |
 | `Float` in `[0, 1]` | Progress/ratio — generate 2–3 variants (e.g. `0f`, `0.35f`, `0.8f`) |
-| `Float` other | Realistic domain value (speed, index, delta) |
-| `Double` | Like Float — use realistic domain value |
-| `Boolean` | Provide both `true` and `false` variants across preview instances |
-| `Int` | Infer from name (percentage → `65`, count → `3`, id → `1`) |
-| `Long` | Use as ID → `1L`, `2L`, etc. |
-| `List<T>` | Generate 4–7 items — enough to show scrolling behavior |
-| `T?` (nullable) | Provide both `null` and non-null variants across preview instances |
+| `Float` other       | Realistic domain value (speed, index, delta)                        |
+| `Double`            | Like Float — use realistic domain value                             |
+| `Boolean`           | Provide both `true` and `false` variants across preview instances   |
+| `Int`               | Infer from name (percentage → `65`, count → `3`, id → `1`)          |
+| `Long`              | Use as ID → `1L`, `2L`, etc.                                        |
+| `List<T>`           | Generate 4–7 items — enough to show scrolling behavior              |
+| `T?` (nullable)     | Provide both `null` and non-null variants across preview instances  |
 
 ### String naming heuristics
 
@@ -69,7 +71,8 @@ Infer the value from the field name's **semantic meaning**:
 - **Speed strings** → `"12 km/h"`, `"35 mph"`
 - **Distance strings** → `"24 km"`, `"8 mi"`
 - **Pressure strings** → `"1015 hPa"`
-- **Condition/status labels** → realistic domain values (`"Partly Cloudy"`, `"Connected"`, `"Pending"`)
+- **Condition/status labels** → realistic domain values (`"Partly Cloudy"`, `"Connected"`,
+  `"Pending"`)
 - **Error/message strings** → `"Network connection problem."`, `"Something went wrong."`
 - **Icon/emoji fields** → use resource helper methods if available; otherwise use a literal
 - **Generic label/title** → derive from the field name itself

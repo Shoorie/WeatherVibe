@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -68,12 +69,14 @@ internal fun WeatherDetailsContent(
   state: HomeUiState,
   onNavigateBack: () -> Unit
 ) {
-  val backgroundBrush = Brush.verticalGradient(
-    listOf(
-      colors.backgroundGradientStart,
-      colors.backgroundGradientEnd
+  val backgroundBrush = remember(colors.backgroundGradientStart, colors.backgroundGradientEnd) {
+    Brush.verticalGradient(
+      listOf(
+        colors.backgroundGradientStart,
+        colors.backgroundGradientEnd
+      )
     )
-  )
+  }
 
   Box(
     modifier = modifier

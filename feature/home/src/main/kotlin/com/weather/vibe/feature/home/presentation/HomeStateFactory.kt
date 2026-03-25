@@ -14,6 +14,7 @@ import org.koin.core.annotation.Factory
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -82,84 +83,90 @@ internal class HomeStateFactory(
     days: List<DailyWeather>
   ): SunriseSunsetUiState {
     val today = days.firstOrNull()
+    val sunriseTime = today?.sunrise?.parseDateTime()
+    val sunsetTime = today?.sunset?.parseDateTime()
     return SunriseSunsetUiState(
-      dayLength = formatDayLength(today?.sunrise, today?.sunset),
-      sunProgress = calculateSunProgress(today?.sunrise, today?.sunset),
+      dayLength = formatDayLength(sunriseTime, sunsetTime),
+      sunProgress = calculateSunProgress(sunriseTime, sunsetTime),
       sunriseTime = formatSunTime(today?.sunrise),
       sunsetTime = formatSunTime(today?.sunset)
     )
   }
 
+  private fun String.parseDateTime(): LocalDateTime? =
+    runCatching { LocalDateTime.parse(this, TIME_INPUT_FORMATTER) }.getOrNull()
+
   private fun calculateSunProgress(
-    sunrise: String?,
-    sunset: String?
+    sunrise: LocalDateTime?,
+    sunset: LocalDateTime?
   ): Float {
-    if (sunrise.isNullOrEmpty() || sunset.isNullOrEmpty()) return 0f
-    return runCatching {
-      val formatter = ofPattern(TIME_INPUT_FORMAT)
-      val sunriseTime = LocalDateTime.parse(sunrise, formatter)
-      val sunsetTime = LocalDateTime.parse(sunset, formatter)
-      val now = LocalDateTime.now()
-      val dayMinutes = Duration.between(sunriseTime, sunsetTime).toMinutes().toFloat()
-      val elapsed = Duration.between(sunriseTime, now).toMinutes().toFloat()
-      (elapsed / dayMinutes).coerceIn(0f, 1f)
-    }.getOrDefault(0f)
+    if (sunrise == null || sunset == null) return 0f
+    val now = LocalDateTime.now()
+    val dayMinutes = Duration.between(sunrise, sunset).toMinutes().toFloat()
+    val elapsed = Duration.between(sunrise, now).toMinutes().toFloat()
+    return (elapsed / dayMinutes).coerceIn(minimumValue = 0f, maximumValue = 1f)
   }
 
   private fun formatDayLength(
-    sunrise: String?,
-    sunset: String?
+    sunrise: LocalDateTime?,
+    sunset: LocalDateTime?
   ): String {
-    if (sunrise.isNullOrEmpty() || sunset.isNullOrEmpty()) return ""
-    return runCatching {
-      val formatter = ofPattern(TIME_INPUT_FORMAT)
-      val sunriseTime = LocalDateTime.parse(sunrise, formatter)
-      val sunsetTime = LocalDateTime.parse(sunset, formatter)
-      val duration = Duration.between(sunriseTime, sunsetTime)
-      resources.dayLengthFormat(
-        duration.toHours().toInt(),
-        (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
-      )
-    }.getOrDefault("")
+    if (sunrise == null || sunset == null) return ""
+    val duration = Duration.between(sunrise, sunset)
+    return resources.dayLengthFormat(
+      hours = duration.toHours().toInt(),
+      minutes = (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
+    )
   }
 
   private fun formatTemperature(value: Double): String =
     "${value.roundToInt()}$DEGREE_SYMBOL"
 
-  private fun formatDate(): String = runCatching {
-    LocalDate.now().format(ofPattern(DATE_FORMAT, Locale.ENGLISH))
-  }.getOrDefault("")
+  private fun formatDate(): String =
+    LocalDate.now().format(DATE_FORMATTER)
 
-  private fun formatHourLabel(time: String): String = runCatching {
-    LocalDateTime.parse(
-      /* text = */ time,
-      /* formatter = */ ofPattern(TIME_INPUT_FORMAT)
-    ).format(ofPattern(TIME_OUTPUT_FORMAT))
-  }.getOrDefault(time)
+  private fun formatHourLabel(time: String): String =
+    runCatching {
+      LocalDateTime
+        .parse(time, TIME_INPUT_FORMATTER)
+        .format(TIME_OUTPUT_FORMATTER)
+    }.getOrDefault(time)
 
   private fun formatDayLabel(date: String): String =
     runCatching {
       val parsed = LocalDate.parse(date)
       if (parsed == LocalDate.now()) resources.todayLabel()
-      else parsed.format(ofPattern(DAY_FORMAT, Locale.ENGLISH))
+      else parsed.format(DAY_FORMATTER)
     }.getOrDefault(date)
 
   private fun formatSunTime(isoTime: String?): String {
     if (isoTime.isNullOrEmpty()) return ""
     return runCatching {
-      LocalDateTime.parse(
-        /* text = */ isoTime,
-        /* formatter = */ ofPattern(TIME_INPUT_FORMAT)
-      ).format(ofPattern(TIME_OUTPUT_FORMAT))
+      LocalDateTime
+        .parse(isoTime, TIME_INPUT_FORMATTER)
+        .format(TIME_OUTPUT_FORMATTER)
     }.getOrDefault(isoTime)
   }
 
   private companion object {
+    
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
     const val DEGREE_SYMBOL = "°"
     const val MINUTES_PER_HOUR = 60
     const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
+
+    val DATE_FORMATTER: DateTimeFormatter? =
+      ofPattern(DATE_FORMAT, Locale.ENGLISH)
+
+    val DAY_FORMATTER: DateTimeFormatter? =
+      ofPattern(DAY_FORMAT, Locale.ENGLISH)
+
+    val TIME_INPUT_FORMATTER: DateTimeFormatter? =
+      ofPattern(TIME_INPUT_FORMAT)
+
+    val TIME_OUTPUT_FORMATTER: DateTimeFormatter? =
+      ofPattern(TIME_OUTPUT_FORMAT)
   }
 }

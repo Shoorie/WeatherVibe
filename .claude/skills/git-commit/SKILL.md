@@ -1,10 +1,8 @@
 ---
 name: commit
 description: >-
-  Analyzes repository changes and creates clean, single-line git commits. Use this
-  skill when the user asks to commit, push, save changes, or says "commit this",
-  "push my changes", "git commit", or any variation of committing code to version
-  control.
+  Creates clean single-line git commits. Use when user says: commit, push, save changes, "git commit",
+  or any variation of committing to version control.
 allowed-tools:
   - Bash(git status:*)
   - Bash(git diff:*)
@@ -18,21 +16,10 @@ disable-model-invocation: true
 
 # Automated Clean Commits
 
-Follow these exact steps strictly in order:
-
-1. **Inspect Changes:** Run `git diff` (and `git diff --staged` if needed) to see all currently
-   modified, added, or deleted files.
-2. **Analyze the Diff:** Understand the core logic of what changed.
-3. **Draft the Commit Message:** Write ONE single-line commit message.
-   - Start directly with the action description (e.g., "Update home screen layout").
-   - The very first letter MUST be capitalized.
-   - Strictly under 72 characters.
-   - **FORBIDDEN:** Do NOT add body text, bullet points, details, or explanations after the
-     subject line. The commit message is ALWAYS a single line.
-   - **FORBIDDEN:** Do NOT add any trailers like `Co-Authored-By`, `Signed-off-by`, or similar.
-     The commit must look like it was made entirely by the user.
-4. **Stage Changes:** Run `git add -A` to stage all current changes.
-5. **Execute Commit:** Run `git commit -m "Your single line message"`.
-   Use the `-m` flag with a single string. Do NOT use multi-line `-m` flags or `--trailer`.
-6. **Push to Remote:** Push the changes to the current remote branch. If the branch has no
-   upstream branch configured, set it using `git push -u origin <branch>`.
+1. **Inspect:** Run `git diff` and `git diff --staged`.
+2. **Analyze:** Understand the core change.
+3. **Draft message:** Single line, capitalized, under 72 chars. No body, no trailers, no
+   `Co-Authored-By`.
+4. **Stage:** `git add -A`
+5. **Commit:** `git commit -m "Your message"`
+6. **Push:** Push to current remote branch. If no upstream: `git push -u origin <branch>`.

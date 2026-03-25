@@ -48,7 +48,10 @@ internal fun HourlyForecastRow(
       horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall),
       contentPadding = PaddingValues(horizontal = PaddingMedium)
     ) {
-      items(hourlyForecasts, key = { it.timeLabel }) { hourly ->
+      items(
+        items = hourlyForecasts,
+        key = { it.timeLabel }
+      ) { hourly ->
         HourlyForecastItem(state = hourly)
       }
     }

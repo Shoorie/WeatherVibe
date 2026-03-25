@@ -46,26 +46,6 @@ shared `execute()` operator when the branches have grown complex or stateful.
 **Don't apply when:** only 2–3 cases unlikely to grow, or a sealed `when` already handles it
 cleanly.
 
-```kotlin
-// Smell: growing when in a service
-fun process(type: Type): Result = when (type) {
-  Type.A -> doComplexA()
-  Type.B -> doComplexB()
-  // new types keep arriving...
-}
-
-// Fix: Strategy interface
-fun interface Processor {
-  operator fun invoke(): Result
-}
-class ProcessorA : Processor {
-  override fun invoke() = doComplexA()
-}
-class ProcessorB : Processor {
-  override fun invoke() = doComplexB()
-}
-```
-
 ### Template Method
 
 **Apply when:** multiple functions/UseCases share a skeleton (setup → execute → teardown)
@@ -73,15 +53,6 @@ but differ in one or two steps.
 **Kotlin idiom:** abstract class with abstract `step()` functions, OR a higher-order function
 that accepts the varying step as a lambda (more functional, preferred).
 **Don't apply when:** steps vary so much that the shared skeleton is trivial.
-
-```kotlin
-// Functional Template Method — preferred in Kotlin
-suspend fun <T> executeWithRetry(
-  times: Int = 3,
-  action: suspend () -> T
-): T { /* retry logic */ return action()
-}
-```
 
 ### Decorator
 
@@ -92,33 +63,12 @@ override only the methods you want to augment.
 **Don't apply when:** you only need to add behaviour to one specific method — use extension function
 instead.
 
-```kotlin
-class LoggingRepository(
-  private val delegate: WeatherRepository
-) : WeatherRepository by delegate {
-  override suspend fun getWeather(...) = delegate.getWeather(...)
-  .also
-  { log("fetched weather") }
-}
-```
-
 ### Chain of Responsibility
 
 **Apply when:** sequential validation or processing pipeline where each step can short-circuit.
 **Kotlin idiom:** `List<Validator<T>>` with `firstOrNull { it.validate(input).isFailure }`,
 or a functional chain with `fold`.
 **Don't apply when:** there are only 2 sequential checks — just `if` is clearer.
-
-```kotlin
-fun interface Rule<T> {
-  fun check(input: T): Result<T>
-}
-
-fun <T> List<Rule<T>>.validate(input: T): Result<T> =
-  fold(Result.success(input)) { acc, rule ->
-    acc.mapCatching { rule.check(it).getOrThrow() }
-  }
-```
 
 ### Builder
 

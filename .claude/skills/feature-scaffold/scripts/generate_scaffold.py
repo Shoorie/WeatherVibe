@@ -1,21 +1,63 @@
 #!/usr/bin/env python3
-"""WeatherVibe Feature Scaffold Generator
+"""Android Feature Scaffold Generator — auto-detects project config.
 
 Usage:
-    python generate_scaffold.py --name Profile --layers all
-    python generate_scaffold.py --name Settings --layers feature
-    python generate_scaffold.py --name Forecast --layers domain,data
+    python3 generate_scaffold.py --name Profile --layers all
+    python3 generate_scaffold.py --name Settings --layers feature
+    python3 generate_scaffold.py --name Forecast --layers domain,data
 """
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
-BASE_PKG = "com.weather.vibe"
-THEME = "WeatherVibeTheme"
-THEME_PKG = "com.weather.vibe.core.designsystem.theme"
-PLUGIN_NS = "weathervibe"
 
+# ---------------------------------------------------------------------------
+# CONFIG AUTO-DETECTION
+# ---------------------------------------------------------------------------
+
+def detect_config(root: Path) -> dict:
+    """Auto-detect project config from existing Kotlin/Gradle files."""
+    cfg = {}
+
+    # base_package + plugin_namespace from any feature build.gradle.kts
+    for gradle in root.glob("feature/*/build.gradle.kts"):
+        text = gradle.read_text()
+        ns = re.search(r'namespace\s*=\s*"([^"]+)"', text)
+        if ns:
+            parts = ns.group(1).split(".feature.")
+            if len(parts) == 2:
+                cfg["base_package"] = parts[0]
+        plugin = re.search(r'alias\(libs\.plugins\.(\w+)\.android\.\w+\)', text)
+        if plugin:
+            cfg["plugin_namespace"] = plugin.group(1)
+        if "base_package" in cfg and "plugin_namespace" in cfg:
+            break
+
+    # theme_class + theme_package from any existing Screen.kt
+    for kt in root.glob("feature/*/src/**/*Screen.kt"):
+        text = kt.read_text()
+        m = re.search(r'import ([\w.]+\.(\w+Theme))\b', text)
+        if m:
+            full = m.group(1)
+            cfg["theme_package"] = full.rsplit(".", 1)[0]
+            cfg["theme_class"] = m.group(2)
+            break
+
+    missing = [k for k in ("base_package", "plugin_namespace", "theme_package", "theme_class")
+               if k not in cfg]
+    if missing:
+        print(f"Error: could not auto-detect: {missing}", file=sys.stderr)
+        print("Tip: ensure at least one feature module with a Screen.kt exists.", file=sys.stderr)
+        sys.exit(1)
+
+    return cfg
+
+
+# ---------------------------------------------------------------------------
+# HELPERS
+# ---------------------------------------------------------------------------
 
 def to_lower(name: str) -> str:
     return name.lower()
@@ -31,26 +73,29 @@ def write(path: Path, content: str, root: Path):
     print(f"  ✓ {path.relative_to(root)}")
 
 
-def src_path(layer: str, name: str, root: Path) -> Path:
+def src_path(layer: str, name: str, root: Path, base_pkg: str) -> Path:
     n = to_lower(name)
-    pkg_parts = BASE_PKG.split(".")
-    return root / layer / n / "src" / "main" / "kotlin" / Path(*pkg_parts) / layer / n
+    return root / layer / n / "src" / "main" / "kotlin" / Path(*base_pkg.split(".")) / layer / n
 
 
 # ---------------------------------------------------------------------------
 # FEATURE LAYER
 # ---------------------------------------------------------------------------
 
-def generate_feature(name: str, root: Path):
+def generate_feature(name: str, root: Path, cfg: dict):
     n = to_lower(name)
     N = pascal(name)
-    pkg = f"{BASE_PKG}.feature.{n}"
-    s = src_path("feature", name, root)
+    base_pkg = cfg["base_package"]
+    plugin_ns = cfg["plugin_namespace"]
+    theme = cfg["theme_class"]
+    theme_pkg = cfg["theme_package"]
+    pkg = f"{base_pkg}.feature.{n}"
+    s = src_path("feature", name, root, base_pkg)
     w = lambda path, content: write(path, content, root)
 
     w(root / "feature" / n / "build.gradle.kts", f"""
 plugins {{
-  alias(libs.plugins.{PLUGIN_NS}.android.feature)
+  alias(libs.plugins.{plugin_ns}.android.feature)
 }}
 
 android {{
@@ -134,7 +179,7 @@ internal data class {N}ItemUiState(
     w(s / "presentation" / f"{N}StateFactory.kt", f"""
 package {pkg}.presentation
 
-import com.weather.vibe.domain.{n}.model.{N}Item
+import {base_pkg}.domain.{n}.model.{N}Item
 import {pkg}.presentation.state.{N}ItemUiState
 import {pkg}.presentation.state.{N}UiState
 import org.koin.core.annotation.Factory
@@ -158,8 +203,8 @@ package {pkg}.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.{n}.model.{N}Item
-import com.weather.vibe.domain.{n}.usecase.Fetch{N}Data
+import {base_pkg}.domain.{n}.model.{N}Item
+import {base_pkg}.domain.{n}.usecase.Fetch{N}Data
 import {pkg}.presentation.{N}Action.RefreshClick
 import {pkg}.presentation.state.{N}UiState
 import {pkg}.presentation.state.{N}UiState.Loading
@@ -233,7 +278,7 @@ package {pkg}.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.weather.vibe.feature.{n}.R
+import {base_pkg}.feature.{n}.R
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -257,7 +302,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import {THEME_PKG}.{THEME}
+import {theme_pkg}.{theme}
 import {pkg}.presentation.{N}Action
 import {pkg}.presentation.{N}Event.NavigateBack
 import {pkg}.presentation.{N}ViewModel
@@ -313,7 +358,7 @@ private fun {N}LoadedContent(
 @PreviewLightDark
 @Composable
 private fun Preview() {{
-  {THEME} {{
+  {theme} {{
     {N}Content(
       state = Loading,
       dispatch = {{}}
@@ -332,8 +377,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import {THEME_PKG}.{THEME}
-import {THEME_PKG}.{THEME}.colors
+import {theme_pkg}.{theme}
+import {theme_pkg}.{theme}.colors
 
 @Composable
 internal fun {N}LoadingState(modifier: Modifier = Modifier) {{
@@ -348,7 +393,7 @@ internal fun {N}LoadingState(modifier: Modifier = Modifier) {{
 @PreviewLightDark
 @Composable
 private fun Preview() {{
-  {THEME} {{
+  {theme} {{
     {N}LoadingState()
   }}
 }}
@@ -366,10 +411,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import {THEME_PKG}.AppDimens.PaddingMedium
-import {THEME_PKG}.{THEME}
-import {THEME_PKG}.{THEME}.colors
-import {THEME_PKG}.{THEME}.typography
+import {theme_pkg}.AppDimens.PaddingMedium
+import {theme_pkg}.{theme}
+import {theme_pkg}.{theme}.colors
+import {theme_pkg}.{theme}.typography
 
 @Composable
 internal fun {N}ErrorState(
@@ -393,7 +438,7 @@ internal fun {N}ErrorState(
 @PreviewLightDark
 @Composable
 private fun Preview() {{
-  {THEME} {{
+  {theme} {{
     {N}ErrorState(message = "Something went wrong")
   }}
 }}
@@ -406,17 +451,19 @@ private fun Preview() {{
 # DOMAIN LAYER
 # ---------------------------------------------------------------------------
 
-def generate_domain(name: str, root: Path):
+def generate_domain(name: str, root: Path, cfg: dict):
     n = to_lower(name)
     N = pascal(name)
-    pkg = f"{BASE_PKG}.domain.{n}"
-    s = src_path("domain", name, root)
+    base_pkg = cfg["base_package"]
+    plugin_ns = cfg["plugin_namespace"]
+    pkg = f"{base_pkg}.domain.{n}"
+    s = src_path("domain", name, root, base_pkg)
     w = lambda path, content: write(path, content, root)
 
     w(root / "domain" / n / "build.gradle.kts", f"""
 plugins {{
-  alias(libs.plugins.{PLUGIN_NS}.android.library)
-  alias(libs.plugins.{PLUGIN_NS}.android.koin)
+  alias(libs.plugins.{plugin_ns}.android.library)
+  alias(libs.plugins.{plugin_ns}.android.koin)
   alias(libs.kotlin.serialization)
 }}
 
@@ -454,7 +501,7 @@ data class {N}Item(
     w(s / "repository" / f"{N}Repository.kt", f"""
 package {pkg}.repository
 
-import com.weather.vibe.domain.{n}.model.{N}Item
+import {pkg}.model.{N}Item
 
 interface {N}Repository {{
   suspend fun fetch{N}Items(): List<{N}Item>
@@ -464,8 +511,8 @@ interface {N}Repository {{
     w(s / "usecase" / f"Fetch{N}Data.kt", f"""
 package {pkg}.usecase
 
-import com.weather.vibe.domain.{n}.model.{N}Item
-import com.weather.vibe.domain.{n}.repository.{N}Repository
+import {pkg}.model.{N}Item
+import {pkg}.repository.{N}Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -490,19 +537,22 @@ class Fetch{N}Data(private val repository: {N}Repository) {{
 # DATA LAYER
 # ---------------------------------------------------------------------------
 
-def generate_data(name: str, root: Path):
+def generate_data(name: str, root: Path, cfg: dict):
     n = to_lower(name)
     N = pascal(name)
-    pkg = f"{BASE_PKG}.data.{n}"
-    s = src_path("data", name, root)
+    base_pkg = cfg["base_package"]
+    plugin_ns = cfg["plugin_namespace"]
+    pkg = f"{base_pkg}.data.{n}"
+    domain_pkg = f"{base_pkg}.domain.{n}"
+    s = src_path("data", name, root, base_pkg)
     w = lambda path, content: write(path, content, root)
 
     w(root / "data" / n / "build.gradle.kts", f"""
 plugins {{
-  alias(libs.plugins.{PLUGIN_NS}.android.library)
-  alias(libs.plugins.{PLUGIN_NS}.android.koin)
-  alias(libs.plugins.{PLUGIN_NS}.android.room)
-  alias(libs.plugins.{PLUGIN_NS}.android.ktor)
+  alias(libs.plugins.{plugin_ns}.android.library)
+  alias(libs.plugins.{plugin_ns}.android.koin)
+  alias(libs.plugins.{plugin_ns}.android.room)
+  alias(libs.plugins.{plugin_ns}.android.ktor)
 }}
 
 android {{
@@ -521,8 +571,8 @@ package {pkg}.di
 
 import android.content.Context
 import androidx.room.Room
-import com.weather.vibe.data.{n}.local.{N}Database
-import com.weather.vibe.data.{n}.local.dao.{N}Dao
+import {pkg}.local.{N}Database
+import {pkg}.local.dao.{N}Dao
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -561,7 +611,7 @@ data class {N}Response(
     w(s / "remote" / "api" / f"{N}ApiService.kt", f"""
 package {pkg}.remote.api
 
-import com.weather.vibe.data.{n}.remote.dto.{N}Response
+import {pkg}.remote.dto.{N}Response
 
 interface {N}ApiService {{
   suspend fun fetch{N}Items(): List<{N}Response>
@@ -571,7 +621,7 @@ interface {N}ApiService {{
     w(s / "remote" / "api" / f"Default{N}ApiService.kt", f"""
 package {pkg}.remote.api
 
-import com.weather.vibe.data.{n}.remote.dto.{N}Response
+import {pkg}.remote.dto.{N}Response
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -608,7 +658,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.weather.vibe.data.{n}.local.entity.{N}Entity
+import {pkg}.local.entity.{N}Entity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -627,8 +677,8 @@ package {pkg}.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.weather.vibe.data.{n}.local.dao.{N}Dao
-import com.weather.vibe.data.{n}.local.entity.{N}Entity
+import {pkg}.local.dao.{N}Dao
+import {pkg}.local.entity.{N}Entity
 
 @Database(
   entities = [{N}Entity::class],
@@ -642,9 +692,9 @@ abstract class {N}Database : RoomDatabase() {{
     w(s / "mapper" / f"{N}ToDomain.kt", f"""
 package {pkg}.mapper
 
-import com.weather.vibe.data.{n}.local.entity.{N}Entity
-import com.weather.vibe.data.{n}.remote.dto.{N}Response
-import com.weather.vibe.domain.{n}.model.{N}Item
+import {pkg}.local.entity.{N}Entity
+import {pkg}.remote.dto.{N}Response
+import {domain_pkg}.model.{N}Item
 
 internal fun {N}Response.toDomain(): {N}Item =
   {N}Item(
@@ -668,10 +718,10 @@ internal fun {N}Item.toEntity(): {N}Entity =
     w(s / "repository" / f"Default{N}Repository.kt", f"""
 package {pkg}.repository
 
-import com.weather.vibe.data.{n}.mapper.toDomain
-import com.weather.vibe.data.{n}.remote.api.{N}ApiService
-import com.weather.vibe.domain.{n}.model.{N}Item
-import com.weather.vibe.domain.{n}.repository.{N}Repository
+import {pkg}.mapper.toDomain
+import {pkg}.remote.api.{N}ApiService
+import {domain_pkg}.model.{N}Item
+import {domain_pkg}.repository.{N}Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
@@ -703,8 +753,6 @@ def update_settings(name: str, layers: list, root: Path):
 
     content = settings.read_text()
     n = to_lower(name)
-    added = []
-
     to_add = []
     if "domain" in layers:
         to_add.append(f'include(":domain:{n}")')
@@ -713,10 +761,7 @@ def update_settings(name: str, layers: list, root: Path):
     if "feature" in layers:
         to_add.append(f'include(":feature:{n}")')
 
-    for line in to_add:
-        if line not in content:
-            added.append(line)
-
+    added = [line for line in to_add if line not in content]
     if added:
         settings.write_text(content.rstrip() + "\n" + "\n".join(added) + "\n")
         for line in added:
@@ -730,7 +775,7 @@ def update_settings(name: str, layers: list, root: Path):
 # ---------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="WeatherVibe Feature Scaffold Generator")
+    parser = argparse.ArgumentParser(description="Android Feature Scaffold Generator")
     parser.add_argument("--name", required=True, help="Feature name in PascalCase (e.g., Profile)")
     parser.add_argument(
         "--layers",
@@ -757,14 +802,16 @@ def main():
         print(f"Error: unknown layers: {invalid}. Valid: all, domain, data, feature", file=sys.stderr)
         sys.exit(1)
 
-    print(f"\nScaffolding '{name}' [{', '.join(layers)}] in {root}\n")
+    cfg = detect_config(root)
+    print(f"\nScaffolding '{name}' [{', '.join(layers)}] in {root}")
+    print(f"  package: {cfg['base_package']}  theme: {cfg['theme_class']}  plugins: {cfg['plugin_namespace']}.*\n")
 
     if "domain" in layers:
-        generate_domain(name, root)
+        generate_domain(name, root, cfg)
     if "data" in layers:
-        generate_data(name, root)
+        generate_data(name, root, cfg)
     if "feature" in layers:
-        generate_feature(name, root)
+        generate_feature(name, root, cfg)
 
     print()
     update_settings(name, layers, root)

@@ -149,7 +149,7 @@ internal class HomeStateFactory(
   }
 
   private companion object {
-    
+
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
     const val DEGREE_SYMBOL = "°"

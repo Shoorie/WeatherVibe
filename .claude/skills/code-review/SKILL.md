@@ -2,9 +2,9 @@
 name: code-review
 description: >-
   Reviews code changes and produces a detailed report with issues and fix suggestions.
-  Use when user says: review, code review, check changes, sprawdź kod, zrób review,
-  przejrzyj zmiany, oceń kod, check my code, review this file, review diff, sprawdź plik.
-  By default reviews git diff (unstaged + staged); reviews specific files if user points to them.
+  Use when user says: review, code review, check changes, check my code, review this file,
+  review diff, or any variation of reviewing code. By default reviews git diff (unstaged + staged);
+  reviews specific files if user points to them.
 ---
 
 # Code Review

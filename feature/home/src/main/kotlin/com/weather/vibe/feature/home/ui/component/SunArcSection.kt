@@ -37,6 +37,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunset
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.dayLengthLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunriseLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunsetLabel
+import androidx.compose.runtime.remember
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -72,6 +73,9 @@ private fun SunArcCanvas(
   val accentColor = colors.accent
   val accentDarkColor = colors.accentDark
   val glowColor = colors.accent.copy(alpha = GLOW_ALPHA)
+  val gradientBrush = remember(accentColor, accentDarkColor) {
+    Brush.linearGradient(colors = listOf(accentColor, accentDarkColor))
+  }
 
   Canvas(
     modifier = modifier
@@ -100,9 +104,7 @@ private fun SunArcCanvas(
 
     if (sunProgress > 0f) {
       drawArc(
-        brush = Brush.linearGradient(
-          colors = listOf(accentColor, accentDarkColor)
-        ),
+        brush = gradientBrush,
         startAngle = 180f,
         sweepAngle = ARC_SWEEP * sunProgress,
         useCenter = false,

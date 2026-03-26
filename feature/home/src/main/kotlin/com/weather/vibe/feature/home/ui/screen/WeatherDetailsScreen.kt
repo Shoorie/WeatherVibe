@@ -69,13 +69,10 @@ internal fun WeatherDetailsContent(
   state: HomeUiState,
   onNavigateBack: () -> Unit
 ) {
-  val backgroundBrush = remember(colors.backgroundGradientStart, colors.backgroundGradientEnd) {
-    Brush.verticalGradient(
-      listOf(
-        colors.backgroundGradientStart,
-        colors.backgroundGradientEnd
-      )
-    )
+  val gradientStart = colors.backgroundGradientStart
+  val gradientEnd = colors.backgroundGradientEnd
+  val backgroundBrush = remember(gradientStart, gradientEnd) {
+    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
   }
 
   Box(

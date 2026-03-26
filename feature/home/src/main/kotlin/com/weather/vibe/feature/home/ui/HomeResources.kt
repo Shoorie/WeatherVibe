@@ -82,6 +82,14 @@ internal class HomeResources(private val context: Context) {
   object Texts {
 
     @Composable
+    fun aiBriefingLabel(): String =
+      stringResource(R.string.ai_briefing_label)
+
+    @Composable
+    fun aiBriefingUnavailable(): String =
+      stringResource(R.string.ai_briefing_unavailable)
+
+    @Composable
     fun atmosphereSectionTitle(): String =
       stringResource(R.string.atmosphere_section_title)
 

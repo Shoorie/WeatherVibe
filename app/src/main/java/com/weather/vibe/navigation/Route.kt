@@ -1,12 +1,17 @@
 package com.weather.vibe.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-object HomeRoute
+data class HomeRoute(
+  val selectedCityName: String? = null,
+  val selectedLatitude: Double? = null,
+  val selectedLongitude: Double? = null
+) : NavKey
 
 @Serializable
-object SearchRoute
+data object SearchRoute : NavKey
 
 @Serializable
-object WeatherDetailsRoute
+data object WeatherDetailsRoute : NavKey

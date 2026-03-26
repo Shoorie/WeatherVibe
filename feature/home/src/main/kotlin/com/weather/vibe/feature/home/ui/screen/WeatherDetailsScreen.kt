@@ -24,9 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
@@ -35,7 +33,9 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.backContentDescription
@@ -44,17 +44,17 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
 import com.weather.vibe.feature.home.ui.component.DetailSection
 import com.weather.vibe.feature.home.ui.component.SunArcSection
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun WeatherDetailsScreen(
-  onNavigateBack: () -> Unit = {},
-  viewModelStoreOwner: ViewModelStoreOwner =
-    requireNotNull(LocalViewModelStoreOwner.current)
+  onNavigateBack: () -> Unit = {}
 ) {
-  val viewModel: HomeViewModel = koinViewModel(
-    viewModelStoreOwner = viewModelStoreOwner
-  )
+
+  val activityOwner = LocalContext.current as ViewModelStoreOwner
+  val viewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activityOwner)
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   WeatherDetailsContent(
@@ -81,17 +81,20 @@ internal fun WeatherDetailsContent(
       .background(brush = backgroundBrush)
   ) {
     when (state) {
-      is Loaded -> DetailsLoadedContent(
-        state = state,
-        onNavigateBack = onNavigateBack
-      )
-      else -> Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-      ) {
-        CircularProgressIndicator(color = colors.accent)
-      }
+      is Loading,
+      is Error -> DetailsLoadingContent()
+      is Loaded -> DetailsLoadedContent(state = state, onNavigateBack = onNavigateBack)
     }
+  }
+}
+
+@Composable
+private fun DetailsLoadingContent(modifier: Modifier = Modifier) {
+  Box(
+    modifier = modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
+    CircularProgressIndicator(color = colors.accent)
   }
 }
 

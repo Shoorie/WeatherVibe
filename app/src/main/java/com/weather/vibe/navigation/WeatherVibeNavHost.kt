@@ -22,8 +22,8 @@ fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
     entryProvider = { key ->
       when (key) {
         is HomeRoute -> NavEntry(key) { HomeEntry(key, backStack) }
-        WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(backStack) }
-        SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
+        is WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(backStack) }
+        is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
         else -> NavEntry(key) {}
       }
     }

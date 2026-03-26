@@ -9,6 +9,7 @@ internal sealed interface HomeUiState {
 
   @Immutable
   data class Loaded(
+    val briefing: BriefingUiState = BriefingUiState.Loading,
     val currentWeather: CurrentWeatherUiState,
     val dailyForecast: List<DailyForecastUiState>,
     val detailsSections: DetailsSectionsUiState,

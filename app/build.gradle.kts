@@ -29,6 +29,7 @@ ksp {
 }
 
 dependencies {
+  implementation(project(":core:ai"))
   implementation(project(":core:network"))
   implementation(project(":core:designsystem"))
   implementation(project(":domain:weather"))

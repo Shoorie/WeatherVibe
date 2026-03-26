@@ -57,8 +57,6 @@ import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -69,8 +67,8 @@ fun HomeScreen(
   selectedLatitude: Double? = null,
   selectedLongitude: Double? = null
 ) {
-  val activityOwner = LocalContext.current as ViewModelStoreOwner
-  val viewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activityOwner)
+
+  val viewModel: HomeViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(selectedCityName) {

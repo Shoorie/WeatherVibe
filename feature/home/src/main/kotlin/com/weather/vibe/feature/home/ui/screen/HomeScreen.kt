@@ -57,6 +57,8 @@ import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -65,11 +67,10 @@ fun HomeScreen(
   onNavigateToSearch: () -> Unit = {},
   selectedCityName: String? = null,
   selectedLatitude: Double? = null,
-  selectedLongitude: Double? = null,
-  onSelectionConsumed: () -> Unit = {}
+  selectedLongitude: Double? = null
 ) {
-
-  val viewModel: HomeViewModel = koinViewModel()
+  val activityOwner = LocalContext.current as ViewModelStoreOwner
+  val viewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activityOwner)
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   LaunchedEffect(selectedCityName) {
@@ -84,7 +85,6 @@ fun HomeScreen(
           longitude = selectedLongitude
         )
       )
-      onSelectionConsumed()
     }
   }
 
@@ -163,7 +163,7 @@ private fun WeatherContent(
     item {
       DetailsPreviewCard(
         previewItems = state.detailsSections.previewItems,
-        onClick = onNavigateToDetails
+        onClick = { onNavigateToDetails() }
       )
     }
     item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }

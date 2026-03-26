@@ -1,69 +1,64 @@
 package com.weather.vibe.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
 import com.weather.vibe.feature.search.ui.SearchScreen
 
 @Composable
-fun WeatherVibeNavHost(
-  modifier: Modifier = Modifier,
-  navController: NavHostController = rememberNavController()
-) {
-  NavHost(
-    navController = navController,
-    startDestination = HomeRoute,
-    modifier = modifier
-  ) {
-    composable<HomeRoute> { backStackEntry ->
+fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
 
-      val cityName by backStackEntry.savedStateHandle
-        .getStateFlow<String?>(KEY_CITY_NAME, null)
-        .collectAsStateWithLifecycle()
+  val backStack = rememberNavBackStack(HomeRoute())
 
-      HomeScreen(
-        onNavigateToDetails = { navController.navigate(WeatherDetailsRoute) },
-        onNavigateToSearch = { navController.navigate(SearchRoute) },
-        selectedCityName = cityName,
-        selectedLatitude = backStackEntry.savedStateHandle.get<Double>(KEY_LATITUDE),
-        selectedLongitude = backStackEntry.savedStateHandle.get<Double>(KEY_LONGITUDE),
-        onSelectionConsumed = { backStackEntry.savedStateHandle[KEY_CITY_NAME] = null }
-      )
-    }
-    composable<WeatherDetailsRoute> { backStackEntry ->
-      val homeEntry = remember(backStackEntry) {
-        navController.getBackStackEntry<HomeRoute>()
+  NavDisplay(
+    backStack = backStack,
+    modifier = modifier,
+    onBack = { backStack.removeLastOrNull() },
+    entryProvider = { key ->
+      when (key) {
+        is HomeRoute -> NavEntry(key) { HomeEntry(key, backStack) }
+        WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(backStack) }
+        SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
+        else -> NavEntry(key) {}
       }
-      WeatherDetailsScreen(
-        onNavigateBack = { navController.popBackStack() },
-        viewModelStoreOwner = homeEntry
-      )
     }
-    composable<SearchRoute> {
-      SearchScreen(
-        onLocationSelected = { cityName, latitude, longitude ->
-          navController.previousBackStackEntry
-            ?.savedStateHandle?.apply {
-              set(KEY_CITY_NAME, cityName)
-              set(KEY_LATITUDE, latitude)
-              set(KEY_LONGITUDE, longitude)
-            }
-          navController.popBackStack()
-        },
-        onNavigateBack = { navController.popBackStack() }
-      )
-    }
-  }
+  )
 }
 
-private const val KEY_CITY_NAME = "cityName"
-private const val KEY_LATITUDE = "latitude"
-private const val KEY_LONGITUDE = "longitude"
+@Composable
+private fun HomeEntry(
+  route: HomeRoute,
+  backStack: MutableList<NavKey>
+) {
+  HomeScreen(
+    onNavigateToDetails = { backStack.add(WeatherDetailsRoute) },
+    onNavigateToSearch = { backStack.add(SearchRoute) },
+    selectedCityName = route.selectedCityName,
+    selectedLatitude = route.selectedLatitude,
+    selectedLongitude = route.selectedLongitude
+  )
+}
+
+@Composable
+private fun DetailsEntry(backStack: MutableList<NavKey>) {
+  WeatherDetailsScreen(
+    onNavigateBack = { backStack.removeLastOrNull() }
+  )
+}
+
+@Composable
+private fun SearchEntry(backStack: MutableList<NavKey>) {
+  SearchScreen(
+    onLocationSelected = { cityName, latitude, longitude ->
+      backStack.removeLastOrNull()
+      backStack.removeLastOrNull()
+      backStack.add(HomeRoute(cityName, latitude, longitude))
+    },
+    onNavigateBack = { backStack.removeLastOrNull() }
+  )
+}

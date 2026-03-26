@@ -22,6 +22,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "WeatherVibe"
 include(":app")
+include(":core:ai")
 include(":core:network")
 include(":core:designsystem")
 include(":domain:location")

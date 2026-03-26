@@ -1,9 +1,13 @@
 package com.weather.vibe.data.weather.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.weather.vibe.data.weather.local.WeatherDatabase
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
+import com.weather.vibe.data.weather.persistence.BriefingCacheData
+import com.weather.vibe.data.weather.persistence.BriefingDataStorePrefs
+import com.weather.vibe.data.weather.persistence.BriefingDataStoreQualifier
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -23,4 +27,9 @@ class DataWeatherModule {
   @Single
   fun provideWeatherCacheDao(database: WeatherDatabase): WeatherCacheDao =
     database.weatherCacheDao()
+
+  @Single
+  @BriefingDataStoreQualifier
+  fun provideBriefingDataStore(context: Context): DataStore<BriefingCacheData> =
+    BriefingDataStorePrefs().get(context)
 }

@@ -44,8 +44,6 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
 import com.weather.vibe.feature.home.ui.component.DetailSection
 import com.weather.vibe.feature.home.ui.component.SunArcSection
-import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.ViewModelStoreOwner
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,8 +51,7 @@ fun WeatherDetailsScreen(
   onNavigateBack: () -> Unit = {}
 ) {
 
-  val activityOwner = LocalContext.current as ViewModelStoreOwner
-  val viewModel: HomeViewModel = koinViewModel(viewModelStoreOwner = activityOwner)
+  val viewModel: HomeViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   WeatherDetailsContent(

@@ -11,6 +11,8 @@ object AppDimens {
   val PaddingLarge = 24.dp
   val PaddingExtraLarge = 32.dp
 
+  val BriefingCardContentMinHeight = 56.dp
+
   val HourlyItemWidth = 68.dp
   val HourlyItemHeight = 96.dp
 

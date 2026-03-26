@@ -3,9 +3,11 @@ package com.weather.vibe.feature.home.presentation
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
@@ -24,6 +26,9 @@ internal class HomeStateFactory(
   private val metricsFactory: MetricsStateFactory,
   private val resources: HomeResources
 ) {
+
+  fun applyBriefing(current: HomeUiState, briefing: BriefingUiState): HomeUiState =
+    if (current is Loaded) current.copy(briefing = briefing) else current
 
   fun create(data: WeatherData): Loaded =
     Loaded(

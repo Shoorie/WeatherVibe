@@ -52,6 +52,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.error
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
+import com.weather.vibe.feature.home.ui.component.AiBriefingCard
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
@@ -103,13 +104,10 @@ internal fun HomeContent(
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit
 ) {
-  val backgroundBrush = remember(colors.backgroundGradientStart, colors.backgroundGradientEnd) {
-    Brush.verticalGradient(
-      listOf(
-        colors.backgroundGradientStart,
-        colors.backgroundGradientEnd
-      )
-    )
+  val gradientStart = colors.backgroundGradientStart
+  val gradientEnd = colors.backgroundGradientEnd
+  val backgroundBrush = remember(gradientStart, gradientEnd) {
+    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
   }
 
   Box(
@@ -155,6 +153,9 @@ private fun WeatherContent(
       )
     }
     item { CurrentWeatherSection(state = state.currentWeather) }
+    item { Spacer(modifier = Modifier.height(PaddingSmall)) }
+    item { AiBriefingCard(state = state.briefing) }
+    item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item { HourlyForecastRow(hourlyForecasts = state.hourlyForecast) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item { DailyForecastList(dailyForecasts = state.dailyForecast) }

@@ -12,6 +12,7 @@ internal object Plugins {
   const val kotlinCompose = "org.jetbrains.kotlin.plugin.compose"
   const val kotlinSerialization = "org.jetbrains.kotlin.plugin.serialization"
   const val ksp = "com.google.devtools.ksp"
+  const val protobuf = "com.google.protobuf"
 
   const val weatherVibeLibrary = "weathervibe.android.library"
   const val weatherVibeCompose = "weathervibe.android.compose"

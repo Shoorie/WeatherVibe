@@ -19,10 +19,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -57,6 +62,7 @@ import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
+import com.weather.vibe.feature.home.ui.component.MoodPlaylistSheet
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -129,6 +135,7 @@ internal fun HomeContent(
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WeatherContent(
   modifier: Modifier = Modifier,
@@ -137,6 +144,10 @@ private fun WeatherContent(
   onNavigateToSearch: () -> Unit,
   onRefresh: () -> Unit
 ) {
+
+  var showMoodSheet by rememberSaveable { mutableStateOf(value = false) }
+  val uriHandler = LocalUriHandler.current
+
   LazyColumn(
     modifier = modifier
       .fillMaxSize()
@@ -152,7 +163,12 @@ private fun WeatherContent(
     }
     item { CurrentWeatherSection(state = state.currentWeather) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
-    item { AiBriefingCard(state = state.briefing) }
+    item {
+      AiBriefingCard(
+        onMusicClick = { showMoodSheet = true },
+        state = state.briefing
+      )
+    }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item { HourlyForecastRow(hourlyForecasts = state.hourlyForecast) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
@@ -165,6 +181,15 @@ private fun WeatherContent(
       )
     }
     item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }
+  }
+
+  if (showMoodSheet) {
+    MoodPlaylistSheet(
+      onDismiss = { showMoodSheet = false },
+      onOpenSpotify = { query -> runCatching { uriHandler.openUri(query) } },
+      onOpenYtMusic = { url -> runCatching { uriHandler.openUri(url) } },
+      state = state.playlist
+    )
   }
 }
 

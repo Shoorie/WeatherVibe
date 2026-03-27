@@ -15,6 +15,7 @@ internal sealed interface HomeUiState {
     val detailsSections: DetailsSectionsUiState,
     val header: HeaderUiState,
     val hourlyForecast: List<HourlyForecastUiState>,
+    val playlist: PlaylistUiState = PlaylistUiState.Loading,
     val sunriseSunset: SunriseSunsetUiState
   ) : HomeUiState
 

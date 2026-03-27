@@ -18,6 +18,7 @@ data class WeatherColors(
   val onSurface: Color,
   val onSurfaceVariant: Color,
   val outline: Color,
+  val sheetSurface: Color,
   val surfaceVariant: Color,
   val textTertiary: Color
 )
@@ -37,6 +38,7 @@ fun weatherDarkColors(): WeatherColors =
     onSurface = ColorTokens.TextPrimary,
     onSurfaceVariant = ColorTokens.TextSecondary,
     outline = ColorTokens.GlassBorder,
+    sheetSurface = ColorTokens.SheetSurface,
     surfaceVariant = ColorTokens.GlassSurface,
     textTertiary = ColorTokens.TextTertiary
   )

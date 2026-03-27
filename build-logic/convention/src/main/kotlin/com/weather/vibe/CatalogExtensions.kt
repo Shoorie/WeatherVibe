@@ -72,3 +72,13 @@ internal val VersionCatalog.kotlinxSerializationJson
 // Coroutines.
 internal val VersionCatalog.coroutinesAndroid
   get() = library("kotlinx-coroutines-android")
+
+// DataStore / Proto.
+internal val VersionCatalog.datastoreCore
+  get() = library("androidx-datastore")
+
+internal val VersionCatalog.protobufKotlinLite
+  get() = library("protobuf-kotlin-lite")
+
+internal val VersionCatalog.protobufProtoc
+  get() = library("protobuf-protoc")

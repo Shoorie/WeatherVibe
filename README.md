@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.21-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Jetpack Compose](https://img.shields.io/badge/UI-Jetpack_Compose-4285F4.svg?logo=android)](https://developer.android.com/jetpack/compose)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean_&_MVI-success.svg)](#)
 [![Vibe Coding](https://img.shields.io/badge/Built_with-AI_&_Vibe_Coding-8A2BE2.svg)](#)

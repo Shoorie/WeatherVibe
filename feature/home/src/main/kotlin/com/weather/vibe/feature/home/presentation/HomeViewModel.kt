@@ -2,8 +2,10 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.weather.model.MoodPlaylist
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.GenerateDailyBriefing
+import com.weather.vibe.domain.weather.usecase.GenerateMoodPlaylist
 import com.weather.vibe.domain.weather.usecase.GetWeather
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
@@ -11,6 +13,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +26,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 internal class HomeViewModel(
   private val generateDailyBriefing: GenerateDailyBriefing,
+  private val generateMoodPlaylist: GenerateMoodPlaylist,
   private val getWeather: GetWeather,
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory
@@ -67,12 +71,23 @@ internal class HomeViewModel(
   }
 
   private fun onWeatherSuccess(data: WeatherData) {
+
     _state.update { stateFactory.create(data) }
+
     generateDailyBriefing(data)
       .onEach { result ->
         result.fold(
           onSuccess = ::onBriefingSuccess,
           onFailure = { onBriefingError() }
+        )
+      }
+      .launchIn(viewModelScope)
+
+    generateMoodPlaylist(data)
+      .onEach { result ->
+        result.fold(
+          onSuccess = ::onPlaylistSuccess,
+          onFailure = { onPlaylistError() }
         )
       }
       .launchIn(viewModelScope)
@@ -83,11 +98,39 @@ internal class HomeViewModel(
   }
 
   private fun onBriefingSuccess(text: String) {
-    _state.update { stateFactory.applyBriefing(it, BriefingUiState.Loaded(text)) }
+    _state.update {
+      stateFactory.applyBriefing(
+        current = it,
+        briefing = BriefingUiState.Loaded(text)
+      )
+    }
   }
 
   private fun onBriefingError() {
-    _state.update { stateFactory.applyBriefing(it, BriefingUiState.Error) }
+    _state.update {
+      stateFactory.applyBriefing(
+        current = it,
+        briefing = BriefingUiState.Error
+      )
+    }
+  }
+
+  private fun onPlaylistSuccess(data: MoodPlaylist) {
+    _state.update {
+      stateFactory.applyPlaylist(
+        current = it,
+        playlist = stateFactory.createPlaylist(data)
+      )
+    }
+  }
+
+  private fun onPlaylistError() {
+    _state.update {
+      stateFactory.applyPlaylist(
+        current = it,
+        playlist = PlaylistUiState.Error
+      )
+    }
   }
 
   private companion object {

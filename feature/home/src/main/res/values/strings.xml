@@ -18,8 +18,13 @@
   <string name="humidity_label">Humidity</string>
   <string name="humidity_value_format">%1$d%%</string>
   <string name="low_temp_format">L: %1$s</string>
+  <string name="mood_playlist_content_description">Open mood playlist</string>
+  <string name="mood_playlist_label">Today\'s Vibe</string>
+  <string name="mood_playlist_unavailable">Playlist unavailable</string>
   <string name="no_results_found">No results found for \"%1$s\"</string>
   <string name="now_label">Now</string>
+  <string name="open_in_spotify">Open in Spotify</string>
+  <string name="open_in_yt_music">Open in YouTube Music</string>
   <string name="precipitation_label">Precipitation</string>
   <string name="precipitation_value_format">%1$d%%</string>
   <string name="pressure_label">Pressure</string>

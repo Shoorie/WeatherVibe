@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
+import com.weather.vibe.domain.weather.model.MoodPlaylist
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
@@ -10,6 +11,7 @@ import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
@@ -29,6 +31,22 @@ internal class HomeStateFactory(
 
   fun applyBriefing(current: HomeUiState, briefing: BriefingUiState): HomeUiState =
     if (current is Loaded) current.copy(briefing = briefing) else current
+
+  fun applyPlaylist(current: HomeUiState, playlist: PlaylistUiState): HomeUiState =
+    if (current is Loaded) current.copy(playlist = playlist) else current
+
+  fun createPlaylist(data: MoodPlaylist): PlaylistUiState.Loaded {
+
+    val spotifyQuery = data.genres.joinToString(separator = " ")
+    val ytQuery = data.genres.joinToString(separator = "+")
+
+    return PlaylistUiState.Loaded(
+      genres = data.genres,
+      mood = data.mood,
+      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
+      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
+    )
+  }
 
   fun create(data: WeatherData): Loaded =
     Loaded(
@@ -156,6 +174,8 @@ internal class HomeStateFactory(
   private companion object {
 
     const val DATE_FORMAT = "EEEE, d MMMM"
+    const val SPOTIFY_SCHEME = "spotify:search:"
+    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
     const val DAY_FORMAT = "EEE"
     const val DEGREE_SYMBOL = "°"
     const val MINUTES_PER_HOUR = 60

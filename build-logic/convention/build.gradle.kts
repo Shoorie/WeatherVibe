@@ -21,6 +21,7 @@ dependencies {
   compileOnly(libs.android.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.ksp.gradlePlugin)
+  compileOnly(libs.protobuf.gradlePlugin)
 }
 
 tasks {
@@ -59,6 +60,10 @@ gradlePlugin {
     register("ktor") {
       id = "weathervibe.android.ktor"
       implementationClass = "KtorPlugin"
+    }
+    register("datastore") {
+      id = "weathervibe.android.datastore"
+      implementationClass = "DatastorePlugin"
     }
   }
 }

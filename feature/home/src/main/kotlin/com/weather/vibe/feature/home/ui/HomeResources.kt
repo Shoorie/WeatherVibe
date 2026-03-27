@@ -2,6 +2,8 @@ package com.weather.vibe.feature.home.ui
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.feature.home.R
 import org.koin.core.annotation.Factory
@@ -53,6 +55,21 @@ internal class HomeResources(private val context: Context) {
 
   fun windSpeedMax(): String =
     context.getString(R.string.wind_speed_max_label)
+
+  object Painters {
+
+    @Composable
+    fun musicIcon(): Painter =
+      painterResource(id = R.drawable.ic_music)
+
+    @Composable
+    fun spotifyIcon(): Painter =
+      painterResource(id = R.drawable.ic_spotify)
+
+    @Composable
+    fun ytMusicIcon(): Painter =
+      painterResource(id = R.drawable.ic_yt_music)
+  }
 
   object Emojis {
     fun cloud(): String = "\u2601\uFE0F"
@@ -126,8 +143,28 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.low_temp_format, temperature)
 
     @Composable
+    fun moodPlaylistContentDescription(): String =
+      stringResource(R.string.mood_playlist_content_description)
+
+    @Composable
+    fun moodPlaylistLabel(): String =
+      stringResource(R.string.mood_playlist_label)
+
+    @Composable
+    fun moodPlaylistUnavailable(): String =
+      stringResource(R.string.mood_playlist_unavailable)
+
+    @Composable
     fun nowLabel(): String =
       stringResource(R.string.now_label)
+
+    @Composable
+    fun openInSpotify(): String =
+      stringResource(R.string.open_in_spotify)
+
+    @Composable
+    fun openInYtMusic(): String =
+      stringResource(R.string.open_in_yt_music)
 
     @Composable
     fun refreshContentDescription(): String =

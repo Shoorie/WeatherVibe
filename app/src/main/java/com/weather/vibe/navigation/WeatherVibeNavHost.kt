@@ -9,11 +9,12 @@ import androidx.navigation3.ui.NavDisplay
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
 import com.weather.vibe.feature.search.ui.SearchScreen
+import com.weather.vibe.feature.splash.ui.screen.SplashScreen
 
 @Composable
 fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
 
-  val backStack = rememberNavBackStack(HomeRoute())
+  val backStack = rememberNavBackStack(SplashRoute)
 
   NavDisplay(
     backStack = backStack,
@@ -21,11 +22,22 @@ fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
     onBack = { backStack.removeLastOrNull() },
     entryProvider = { key ->
       when (key) {
+        is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
         is HomeRoute -> NavEntry(key) { HomeEntry(key, backStack) }
         is WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(backStack) }
         is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
         else -> NavEntry(key) {}
       }
+    }
+  )
+}
+
+@Composable
+private fun SplashEntry(backStack: MutableList<NavKey>) {
+  SplashScreen(
+    onNavigateToHome = {
+      backStack.removeLastOrNull()
+      backStack.add(HomeRoute())
     }
   )
 }

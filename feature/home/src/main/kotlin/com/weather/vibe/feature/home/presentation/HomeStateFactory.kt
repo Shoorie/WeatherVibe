@@ -1,9 +1,12 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.MoodPlaylist
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.usecase.ConvertTemperature
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -21,10 +24,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
-import kotlin.math.roundToInt
 
 @Factory
 internal class HomeStateFactory(
+  private val convertTemperature: ConvertTemperature,
   private val metricsFactory: MetricsStateFactory,
   private val resources: HomeResources
 ) {
@@ -52,15 +55,27 @@ internal class HomeStateFactory(
     )
   }
 
-  fun create(data: WeatherData): Loaded =
+  fun create(data: WeatherData, temperatureUnit: TemperatureUnit = CELSIUS): Loaded =
     Loaded(
-      currentWeather = createCurrentWeather(data),
-      dailyForecast = createDailyForecast(data.dailyForecast),
-      detailsSections = metricsFactory.create(data),
+      currentWeather = createCurrentWeather(data, temperatureUnit),
+      dailyForecast = createDailyForecast(data.dailyForecast, temperatureUnit),
+      detailsSections = metricsFactory.create(data, temperatureUnit),
       header = createHeader(data),
-      hourlyForecast = createHourlyForecast(data.hourlyForecast),
+      hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit),
       sunriseSunset = createSunriseSunset(data.dailyForecast)
     )
+
+  fun reformatTemperatures(
+    current: HomeUiState,
+    data: WeatherData,
+    temperatureUnit: TemperatureUnit
+  ): HomeUiState {
+    val loaded = current as? Loaded ?: return current
+    return create(data, temperatureUnit).copy(
+      briefing = loaded.briefing,
+      playlist = loaded.playlist
+    )
+  }
 
   private fun createHeader(data: WeatherData): HeaderUiState =
     HeaderUiState(
@@ -69,40 +84,49 @@ internal class HomeStateFactory(
     )
 
   private fun createCurrentWeather(
-    data: WeatherData
+    data: WeatherData,
+    unit: TemperatureUnit
   ): CurrentWeatherUiState {
     val today = data.dailyForecast.firstOrNull()
     return CurrentWeatherUiState(
       conditionEmoji = data.condition.emoji,
       conditionLabel = data.condition.label,
-      currentTemperature = formatTemperature(data.currentTemperature),
-      feelsLikeTemperature = formatTemperature(data.apparentTemperature),
-      highTemperature = formatTemperature(today?.maxTemperature ?: data.currentTemperature),
-      lowTemperature = formatTemperature(today?.minTemperature ?: data.currentTemperature)
+      currentTemperature = convertTemperature(celsius = data.currentTemperature, unit = unit),
+      feelsLikeTemperature = convertTemperature(celsius = data.apparentTemperature, unit = unit),
+      highTemperature = convertTemperature(
+        celsius = today?.maxTemperature ?: data.currentTemperature,
+        unit = unit
+      ),
+      lowTemperature = convertTemperature(
+        celsius = today?.minTemperature ?: data.currentTemperature,
+        unit = unit
+      )
     )
   }
 
   private fun createHourlyForecast(
-    hours: List<HourlyWeather>
+    hours: List<HourlyWeather>,
+    unit: TemperatureUnit
   ): List<HourlyForecastUiState> =
     hours.mapIndexed { index, hour ->
       HourlyForecastUiState(
         conditionEmoji = hour.condition.emoji,
-        isCurrentHour = index == 0,
-        temperature = formatTemperature(hour.temperature),
+        isCurrentHour = index == CURRENT_HOUR_INDEX,
+        temperature = convertTemperature(celsius = hour.temperature, unit = unit),
         timeLabel = formatHourLabel(hour.time)
       )
     }
 
   private fun createDailyForecast(
-    days: List<DailyWeather>
+    days: List<DailyWeather>,
+    unit: TemperatureUnit
   ): List<DailyForecastUiState> =
     days.map { day ->
       DailyForecastUiState(
         conditionEmoji = day.condition.emoji,
         dayLabel = formatDayLabel(day.date),
-        maxTemperature = formatTemperature(day.maxTemperature),
-        minTemperature = formatTemperature(day.minTemperature)
+        maxTemperature = convertTemperature(celsius = day.maxTemperature, unit = unit),
+        minTemperature = convertTemperature(celsius = day.minTemperature, unit = unit)
       )
     }
 
@@ -127,11 +151,14 @@ internal class HomeStateFactory(
     sunrise: LocalDateTime?,
     sunset: LocalDateTime?
   ): Float {
-    if (sunrise == null || sunset == null) return 0f
+    if (sunrise == null || sunset == null) return MIN_PROGRESS
     val now = LocalDateTime.now()
     val dayMinutes = Duration.between(sunrise, sunset).toMinutes().toFloat()
     val elapsed = Duration.between(sunrise, now).toMinutes().toFloat()
-    return (elapsed / dayMinutes).coerceIn(minimumValue = 0f, maximumValue = 1f)
+    return (elapsed / dayMinutes).coerceIn(
+      minimumValue = MIN_PROGRESS,
+      maximumValue = MAX_PROGRESS
+    )
   }
 
   private fun formatDayLength(
@@ -145,9 +172,6 @@ internal class HomeStateFactory(
       minutes = (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
     )
   }
-
-  private fun formatTemperature(value: Double): String =
-    "${value.roundToInt()}$DEGREE_SYMBOL"
 
   private fun formatDate(): String =
     LocalDate.now().format(DATE_FORMATTER)
@@ -177,14 +201,16 @@ internal class HomeStateFactory(
 
   private companion object {
 
+    const val CURRENT_HOUR_INDEX = 0
     const val DATE_FORMAT = "EEEE, d MMMM"
-    const val SPOTIFY_SCHEME = "spotify:search:"
-    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
     const val DAY_FORMAT = "EEE"
-    const val DEGREE_SYMBOL = "°"
+    const val MAX_PROGRESS = 1f
+    const val MIN_PROGRESS = 0f
     const val MINUTES_PER_HOUR = 60
+    const val SPOTIFY_SCHEME = "spotify:search:"
     const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
+    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
 
     val DATE_FORMATTER: DateTimeFormatter? =
       ofPattern(DATE_FORMAT, Locale.ENGLISH)

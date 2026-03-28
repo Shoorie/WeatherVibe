@@ -1,18 +1,9 @@
 package com.weather.vibe.domain.weather.cache
 
 import com.weather.vibe.domain.weather.model.WeatherAiContent
-import java.time.LocalDate
+import com.weather.vibe.domain.weather.model.WeatherAiParams
 
 interface WeatherAiCache {
-
-  suspend fun get(
-    cityName: String,
-    date: LocalDate
-  ): WeatherAiContent?
-
-  suspend fun save(
-    cityName: String,
-    content: WeatherAiContent,
-    date: LocalDate
-  )
+  suspend fun get(params: WeatherAiParams): WeatherAiContent?
+  suspend fun save(content: WeatherAiContent, params: WeatherAiParams)
 }

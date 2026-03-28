@@ -9,4 +9,6 @@ message WeatherAiCacheData {
   string briefing_text = 3;
   string mood = 4;
   string genres_csv = 5;
+  string persona = 6;
+  string excluded_genres = 7;
 }

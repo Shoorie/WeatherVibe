@@ -175,6 +175,10 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.search_city_content_description)
 
     @Composable
+    fun settingsContentDescription(): String =
+      stringResource(R.string.settings_content_description)
+
+    @Composable
     fun sunriseLabel(): String =
       stringResource(R.string.sunrise_label)
 

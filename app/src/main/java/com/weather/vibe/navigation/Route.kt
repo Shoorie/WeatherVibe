@@ -17,4 +17,7 @@ data object SearchRoute : NavKey
 data object SplashRoute : NavKey
 
 @Serializable
+data object SettingsRoute : NavKey
+
+@Serializable
 data object WeatherDetailsRoute : NavKey

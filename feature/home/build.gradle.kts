@@ -7,5 +7,6 @@ android {
 }
 
 dependencies {
+  implementation(project(":domain:settings"))
   implementation(project(":domain:weather"))
 }

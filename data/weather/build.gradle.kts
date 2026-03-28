@@ -13,6 +13,7 @@ android {
 dependencies {
   implementation(project(":core:ai"))
   implementation(project(":core:network"))
+  implementation(project(":domain:settings"))
   implementation(project(":domain:weather"))
 
   implementation(libs.koin.android)

@@ -9,8 +9,8 @@ import java.time.LocalDate
 
 @Single(binds = [MoodPlaylistCache::class])
 internal class DefaultMoodPlaylistCache(
-  @param:MoodPlaylistDataStoreQualifier
-  private val dataStore: DataStore<MoodPlaylistCacheData>
+  @param:BriefingDataStoreQualifier
+  private val dataStore: DataStore<BriefingCacheData>
 ) : MoodPlaylistCache {
 
   override suspend fun get(cityName: String, date: LocalDate): MoodPlaylist? {

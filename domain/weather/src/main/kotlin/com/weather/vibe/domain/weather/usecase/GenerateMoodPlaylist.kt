@@ -1,5 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
+import com.weather.vibe.domain.weather.cache.MoodPlaylistCache
 import com.weather.vibe.domain.weather.model.MoodPlaylist
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.repository.BriefingRepository
@@ -7,24 +8,29 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Factory
+import java.time.LocalDate
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 import kotlin.math.roundToInt
 
 @Factory
 class GenerateMoodPlaylist(
+  private val cache: MoodPlaylistCache,
   private val repository: BriefingRepository
 ) {
 
   operator fun invoke(weatherData: WeatherData): Flow<Result<MoodPlaylist>> =
     flow {
-
-      val prompt = buildPrompt(weatherData)
-      val response = repository.generateBriefing(prompt)
-
+      val date = LocalDate.now()
+      val cached = cache.get(cityName = weatherData.cityName, date = date)
+      if (cached != null) {
+        emit(success(cached))
+        return@flow
+      }
+      val response = repository.generateBriefing(buildPrompt(weatherData))
       val playlist = parseResponse(response)
+      cache.save(cityName = weatherData.cityName, date = date, playlist = playlist)
       emit(success(playlist))
-
     }.catch { emit(failure(it)) }
 
   private fun buildPrompt(weather: WeatherData): String =
@@ -36,21 +42,17 @@ class GenerateMoodPlaylist(
     )
 
   private fun parseResponse(response: String): MoodPlaylist {
-
     val lines = response.trim().lines()
-
     val mood = lines.firstOrNull { it.startsWith(MOOD_PREFIX) }
       ?.removePrefix(MOOD_PREFIX)
       ?.trim()
       .orEmpty()
-
     val genres = lines.firstOrNull { it.startsWith(GENRES_PREFIX) }
       ?.removePrefix(GENRES_PREFIX)
       ?.split(",")
       ?.map { it.trim() }
       ?.filter { it.isNotBlank() }
       .orEmpty()
-
     return MoodPlaylist(genres = genres, mood = mood)
   }
 

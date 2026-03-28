@@ -6,17 +6,17 @@ import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
-internal object BriefingCacheSerializer : Serializer<BriefingCacheData> {
+internal object WeatherAiCacheSerializer : Serializer<WeatherAiCacheData> {
 
-  override val defaultValue: BriefingCacheData = BriefingCacheData.getDefaultInstance()
+  override val defaultValue: WeatherAiCacheData = WeatherAiCacheData.getDefaultInstance()
 
-  override suspend fun readFrom(input: InputStream): BriefingCacheData =
+  override suspend fun readFrom(input: InputStream): WeatherAiCacheData =
     try {
-      BriefingCacheData.parseFrom(input)
+      WeatherAiCacheData.parseFrom(input)
     } catch (exception: InvalidProtocolBufferException) {
       throw CorruptionException("Cannot read proto.", exception)
     }
 
-  override suspend fun writeTo(t: BriefingCacheData, output: OutputStream) =
+  override suspend fun writeTo(t: WeatherAiCacheData, output: OutputStream) =
     t.writeTo(output)
 }

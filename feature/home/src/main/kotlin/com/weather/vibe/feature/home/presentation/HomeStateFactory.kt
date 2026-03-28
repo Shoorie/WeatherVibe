@@ -29,11 +29,15 @@ internal class HomeStateFactory(
   private val resources: HomeResources
 ) {
 
-  fun applyBriefing(current: HomeUiState, briefing: BriefingUiState): HomeUiState =
-    if (current is Loaded) current.copy(briefing = briefing) else current
-
-  fun applyPlaylist(current: HomeUiState, playlist: PlaylistUiState): HomeUiState =
-    if (current is Loaded) current.copy(playlist = playlist) else current
+  fun applyAiContent(
+    briefing: BriefingUiState,
+    current: HomeUiState,
+    playlist: PlaylistUiState
+  ): HomeUiState =
+    when (current is Loaded) {
+      true -> current.copy(briefing = briefing, playlist = playlist)
+      false -> current
+    }
 
   fun createPlaylist(data: MoodPlaylist): PlaylistUiState.Loaded {
 

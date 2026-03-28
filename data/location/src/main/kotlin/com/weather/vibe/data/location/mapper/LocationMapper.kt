@@ -7,7 +7,7 @@ import com.weather.vibe.domain.location.model.LocationResult
 fun LocationResultDto.toLocationResult(): LocationResult =
   LocationResult(
     admin1 = admin1,
-    country = country ?: "",
+    country = country.orEmpty(),
     id = id,
     latitude = latitude,
     longitude = longitude,

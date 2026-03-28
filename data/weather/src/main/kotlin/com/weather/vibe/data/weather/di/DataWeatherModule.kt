@@ -7,7 +7,7 @@ import com.weather.vibe.data.weather.local.WeatherDatabase
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
 import com.weather.vibe.data.weather.persistence.WeatherAiCacheData
 import com.weather.vibe.data.weather.persistence.WeatherAiDataStorePrefs
-import com.weather.vibe.data.weather.persistence.WeatherAiDataStoreQualifier
+import com.weather.vibe.data.weather.persistence.WeatherAiQualifier
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -29,7 +29,7 @@ class DataWeatherModule {
     database.weatherCacheDao()
 
   @Single
-  @WeatherAiDataStoreQualifier
+  @WeatherAiQualifier
   fun provideWeatherAiDataStore(context: Context): DataStore<WeatherAiCacheData> =
     WeatherAiDataStorePrefs().get(context)
 }

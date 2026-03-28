@@ -2,12 +2,16 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.domain.settings.usecase.GetUserSettings
 import com.weather.vibe.domain.weather.model.WeatherAiContent
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherAiContent
 import com.weather.vibe.domain.weather.usecase.GetWeather
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
+import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -25,6 +29,7 @@ import org.koin.android.annotation.KoinViewModel
 @KoinViewModel
 internal class HomeViewModel(
   private val generateWeatherAiContent: GenerateWeatherAiContent,
+  private val getUserSettings: GetUserSettings,
   private val getWeather: GetWeather,
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory
@@ -33,19 +38,67 @@ internal class HomeViewModel(
   private val _state = MutableStateFlow<HomeUiState>(Loading)
   val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
+  private val snapshot = MutableStateFlow(HomeSnapshot())
+
   init {
-    onRefreshClick()
+    getUserSettings()
+      .onEach(::onSettingsResult)
+      .launchIn(viewModelScope)
+    loadWeather()
   }
 
   fun dispatch(action: HomeAction) {
     when (action) {
       is ReceiveLocationResult -> onReceiveLocationResult(action)
       is RefreshClick -> onRefreshClick()
+      is ResumeLifecycle -> onResumeLifecycle()
     }
   }
 
+  private fun onSettingsResult(result: Result<UserSettings>) {
+    result.onSuccess(::onSettingsUpdate)
+  }
+
+  private fun onSettingsUpdate(settings: UserSettings) {
+
+    val previous = snapshot.value
+    snapshot.update { it.withSettings(settings) }
+
+    if (previous.hasTemperatureChange(settings)) {
+      reformatTemperatures(previous.weatherData, settings.temperatureUnit)
+    }
+
+    if (previous.hasAiSettingsChange(settings)) {
+      invalidateAiContent()
+    }
+  }
+
+  private fun reformatTemperatures(weatherData: WeatherData?, unit: TemperatureUnit) {
+    weatherData ?: return
+    _state.update { stateFactory.reformatTemperatures(it, weatherData, unit) }
+  }
+
+  private fun invalidateAiContent() {
+    _state.update {
+      stateFactory.applyAiContent(
+        briefing = BriefingUiState.Loading,
+        current = it,
+        playlist = PlaylistUiState.Loading
+      )
+    }
+  }
+
+  private fun onResumeLifecycle() {
+    val weatherData = snapshot.value.weatherData ?: return
+    refreshAiContent(weatherData)
+  }
+
   private fun onReceiveLocationResult(action: ReceiveLocationResult) {
-    loadWeather(action.latitude, action.longitude, action.cityName)
+    loadWeather(
+      cityName = action.cityName,
+      latitude = action.latitude,
+      longitude = action.longitude
+    )
   }
 
   private fun onRefreshClick() {
@@ -53,9 +106,9 @@ internal class HomeViewModel(
   }
 
   private fun loadWeather(
+    cityName: String = DEFAULT_CITY,
     latitude: Double = DEFAULT_LATITUDE,
-    longitude: Double = DEFAULT_LONGITUDE,
-    cityName: String = DEFAULT_CITY
+    longitude: Double = DEFAULT_LONGITUDE
   ) {
     _state.update { Loading }
     getWeather(cityName, latitude, longitude)
@@ -69,8 +122,13 @@ internal class HomeViewModel(
   }
 
   private fun onWeatherSuccess(data: WeatherData) {
-    _state.update { stateFactory.create(data) }
-    generateWeatherAiContent(data)
+    snapshot.update { it.copy(weatherData = data) }
+    _state.update { stateFactory.create(data, snapshot.value.temperatureUnit) }
+    refreshAiContent(data)
+  }
+
+  private fun refreshAiContent(data: WeatherData) {
+    generateWeatherAiContent(weatherData = data)
       .onEach { result ->
         result.fold(
           onSuccess = ::onAiContentSuccess,

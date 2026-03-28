@@ -36,8 +36,11 @@ dependencies {
   implementation(project(":domain:location"))
   implementation(project(":data:weather"))
   implementation(project(":data:location"))
+  implementation(project(":domain:settings"))
+  implementation(project(":data:settings"))
   implementation(project(":feature:home"))
   implementation(project(":feature:search"))
+  implementation(project(":feature:settings"))
   implementation(project(":feature:splash"))
 
   implementation(libs.androidx.core.ktx)

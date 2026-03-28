@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(project(":domain:settings"))
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.serialization.json)
   implementation(libs.koin.core)

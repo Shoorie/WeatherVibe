@@ -1,6 +1,9 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.usecase.ConvertTemperature
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeResources
@@ -21,9 +24,15 @@ import java.util.Locale
 import kotlin.math.roundToInt
 
 @Factory
-internal class MetricsStateFactory(private val resources: HomeResources) {
+internal class MetricsStateFactory(
+  private val convertTemperature: ConvertTemperature,
+  private val resources: HomeResources
+) {
 
-  fun create(data: WeatherData): DetailsSectionsUiState {
+  fun create(
+    data: WeatherData,
+    temperatureUnit: TemperatureUnit = CELSIUS
+  ): DetailsSectionsUiState {
 
     val today = data.dailyForecast.firstOrNull()
     val precipitationProb = data.hourlyForecast.firstOrNull()
@@ -33,31 +42,31 @@ internal class MetricsStateFactory(private val resources: HomeResources) {
       windSpeed(data.windSpeed),
       windDirection(data.windDirection),
       windGusts(data.windGusts),
-      windSpeedMax(today?.windSpeedMax ?: 0.0)
+      windSpeedMax(today?.windSpeedMax ?: DEFAULT_WIND_SPEED)
     )
 
     val atmosphereItems = listOf(
       humidity(data.humidity),
       pressure(data.surfacePressure),
-      dewPoint(data.dewPoint),
+      dewPoint(data.dewPoint, temperatureUnit),
       cloudCover(data.cloudCover)
     )
 
     val conditionsItems = listOf(
-      precipitation(precipitationProb ?: 0),
-      uvIndex(today?.uvIndexMax ?: 0.0),
+      precipitation(precipitationProb ?: DEFAULT_PRECIPITATION),
+      uvIndex(today?.uvIndexMax ?: DEFAULT_UV_INDEX),
       visibility(data.visibility),
-      rainfall(today?.precipitationSum ?: 0.0)
+      rainfall(today?.precipitationSum ?: DEFAULT_RAINFALL)
     )
 
     return DetailsSectionsUiState(
       atmosphere = atmosphereItems,
       conditions = conditionsItems,
       previewItems = listOf(
-        atmosphereItems[0],
-        windItems[0],
-        conditionsItems[1],
-        conditionsItems[0]
+        atmosphereItems[PREVIEW_HUMIDITY_INDEX],
+        windItems[PREVIEW_WIND_INDEX],
+        conditionsItems[PREVIEW_UV_INDEX],
+        conditionsItems[PREVIEW_PRECIPITATION_INDEX]
       ),
       wind = windItems
     )
@@ -125,11 +134,11 @@ internal class MetricsStateFactory(private val resources: HomeResources) {
     )
   }
 
-  private fun dewPoint(value: Double): MetricItemUiState =
+  private fun dewPoint(value: Double, unit: TemperatureUnit): MetricItemUiState =
     MetricItemUiState(
       icon = dewDrop(),
       label = resources.dewPoint(),
-      value = "${value.roundToInt()}$DEGREE_SYMBOL"
+      value = convertTemperature(celsius = value, unit = unit)
     )
 
   private fun windGusts(value: Double): MetricItemUiState =
@@ -166,7 +175,11 @@ internal class MetricsStateFactory(private val resources: HomeResources) {
     "${value.roundToInt()} $SPEED_UNIT"
 
   private companion object {
-    const val DEGREE_SYMBOL = "°"
+
+    const val DEFAULT_PRECIPITATION = 0
+    const val DEFAULT_RAINFALL = 0.0
+    const val DEFAULT_UV_INDEX = 0.0
+    const val DEFAULT_WIND_SPEED = 0.0
     const val DIRECTION_OFFSET = 0.5
     const val DIRECTION_STEP = 45.0
     const val METERS_PER_KM = 1000.0
@@ -178,6 +191,12 @@ internal class MetricsStateFactory(private val resources: HomeResources) {
     const val VISIBILITY_KM_THRESHOLD = 1.0
     const val VISIBILITY_UNIT_KM = "km"
     const val VISIBILITY_UNIT_M = "m"
+
+    const val PREVIEW_HUMIDITY_INDEX = 0
+    const val PREVIEW_PRECIPITATION_INDEX = 0
+    const val PREVIEW_UV_INDEX = 1
+    const val PREVIEW_WIND_INDEX = 0
+
     val WIND_DIRECTIONS = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
   }
 }

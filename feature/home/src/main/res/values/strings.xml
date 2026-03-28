@@ -31,6 +31,7 @@
   <string name="rainfall_label">Rainfall</string>
   <string name="refresh_content_description">Refresh</string>
   <string name="search_city_content_description">Search city</string>
+  <string name="settings_content_description">Settings</string>
   <string name="search_hint">Search city&#8230;</string>
   <string name="sunrise_label">Sunrise</string>
   <string name="sunset_label">Sunset</string>

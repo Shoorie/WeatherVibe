@@ -22,7 +22,7 @@ class GenerateMoodPlaylist(
   operator fun invoke(weatherData: WeatherData): Flow<Result<MoodPlaylist>> =
     flow {
       val date = LocalDate.now()
-      val cached = cache.get(cityName = weatherData.cityName, date = date)
+      val cached = cache.getPlaylist(cityName = weatherData.cityName, date = date)
       if (cached != null) {
         emit(success(cached))
         return@flow

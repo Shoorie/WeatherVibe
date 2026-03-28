@@ -15,26 +15,31 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
@@ -46,6 +51,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.HomeAction
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
+import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
@@ -56,6 +62,7 @@ import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.error
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
 import com.weather.vibe.feature.home.ui.component.AiBriefingCard
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
@@ -69,6 +76,7 @@ import org.koin.androidx.compose.koinViewModel
 fun HomeScreen(
   onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
+  onNavigateToSettings: () -> Unit = {},
   selectedCityName: String? = null,
   selectedLatitude: Double? = null,
   selectedLongitude: Double? = null
@@ -76,6 +84,17 @@ fun HomeScreen(
 
   val viewModel: HomeViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
+
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(lifecycleOwner) {
+    val observer = object : DefaultLifecycleObserver {
+      override fun onResume(owner: LifecycleOwner) {
+        viewModel.dispatch(ResumeLifecycle)
+      }
+    }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
 
   LaunchedEffect(selectedCityName) {
     if (selectedCityName != null
@@ -96,7 +115,8 @@ fun HomeScreen(
     state = state,
     dispatch = viewModel::dispatch,
     onNavigateToDetails = onNavigateToDetails,
-    onNavigateToSearch = onNavigateToSearch
+    onNavigateToSearch = onNavigateToSearch,
+    onNavigateToSettings = onNavigateToSettings
   )
 }
 
@@ -106,7 +126,8 @@ internal fun HomeContent(
   state: HomeUiState,
   dispatch: (HomeAction) -> Unit,
   onNavigateToDetails: () -> Unit,
-  onNavigateToSearch: () -> Unit
+  onNavigateToSearch: () -> Unit,
+  onNavigateToSettings: () -> Unit
 ) {
   val gradientStart = colors.backgroundGradientStart
   val gradientEnd = colors.backgroundGradientEnd
@@ -129,6 +150,7 @@ internal fun HomeContent(
         state = state,
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
+        onNavigateToSettings = onNavigateToSettings,
         onRefresh = { dispatch(RefreshClick) }
       )
     }
@@ -142,6 +164,7 @@ private fun WeatherContent(
   state: Loaded,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
+  onNavigateToSettings: () -> Unit,
   onRefresh: () -> Unit
 ) {
 
@@ -158,6 +181,7 @@ private fun WeatherContent(
       LocationHeader(
         state = state.header,
         onNavigateToSearch = onNavigateToSearch,
+        onNavigateToSettings = onNavigateToSettings,
         onRefresh = onRefresh
       )
     }
@@ -198,6 +222,7 @@ private fun LocationHeader(
   modifier: Modifier = Modifier,
   state: HeaderUiState,
   onNavigateToSearch: () -> Unit,
+  onNavigateToSettings: () -> Unit,
   onRefresh: () -> Unit
 ) {
   Row(
@@ -225,6 +250,13 @@ private fun LocationHeader(
       Icon(
         imageVector = Icons.Default.Search,
         contentDescription = searchCityContentDescription(),
+        tint = colors.onSurfaceVariant
+      )
+    }
+    IconButton(onClick = onNavigateToSettings) {
+      Icon(
+        imageVector = Icons.Default.Settings,
+        contentDescription = settingsContentDescription(),
         tint = colors.onSurfaceVariant
       )
     }
@@ -293,7 +325,8 @@ private fun Preview(
       state = state,
       dispatch = {},
       onNavigateToDetails = {},
-      onNavigateToSearch = {}
+      onNavigateToSearch = {},
+      onNavigateToSettings = {}
     )
   }
 }

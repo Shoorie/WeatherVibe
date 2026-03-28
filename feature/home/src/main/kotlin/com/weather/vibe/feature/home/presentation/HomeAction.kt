@@ -9,4 +9,6 @@ internal sealed interface HomeAction {
   ) : HomeAction
 
   data object RefreshClick : HomeAction
+
+  data object ResumeLifecycle : HomeAction
 }

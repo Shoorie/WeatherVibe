@@ -9,5 +9,6 @@ internal class DefaultWeatherAiRepository(
   private val aiService: AiService
 ) : WeatherAiRepository {
 
-  override suspend fun generate(prompt: String): String = aiService.generateText(prompt)
+  override suspend fun generate(prompt: String): String =
+    aiService.generateText(prompt)
 }

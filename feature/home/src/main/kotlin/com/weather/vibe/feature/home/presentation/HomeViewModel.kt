@@ -2,10 +2,9 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.weather.model.MoodPlaylist
+import com.weather.vibe.domain.weather.model.WeatherAiContent
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.domain.weather.usecase.GenerateDailyBriefing
-import com.weather.vibe.domain.weather.usecase.GenerateMoodPlaylist
+import com.weather.vibe.domain.weather.usecase.GenerateWeatherAiContent
 import com.weather.vibe.domain.weather.usecase.GetWeather
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
@@ -25,8 +24,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class HomeViewModel(
-  private val generateDailyBriefing: GenerateDailyBriefing,
-  private val generateMoodPlaylist: GenerateMoodPlaylist,
+  private val generateWeatherAiContent: GenerateWeatherAiContent,
   private val getWeather: GetWeather,
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory
@@ -71,23 +69,12 @@ internal class HomeViewModel(
   }
 
   private fun onWeatherSuccess(data: WeatherData) {
-
     _state.update { stateFactory.create(data) }
-
-    generateDailyBriefing(data)
+    generateWeatherAiContent(data)
       .onEach { result ->
         result.fold(
-          onSuccess = ::onBriefingSuccess,
-          onFailure = { onBriefingError() }
-        )
-      }
-      .launchIn(viewModelScope)
-
-    generateMoodPlaylist(data)
-      .onEach { result ->
-        result.fold(
-          onSuccess = ::onPlaylistSuccess,
-          onFailure = { onPlaylistError() }
+          onSuccess = ::onAiContentSuccess,
+          onFailure = { onAiContentError() }
         )
       }
       .launchIn(viewModelScope)
@@ -97,36 +84,20 @@ internal class HomeViewModel(
     _state.update { Error(error.message ?: resources.defaultError()) }
   }
 
-  private fun onBriefingSuccess(text: String) {
+  private fun onAiContentSuccess(content: WeatherAiContent) {
     _state.update {
-      stateFactory.applyBriefing(
+      stateFactory.applyAiContent(
+        briefing = BriefingUiState.Loaded(content.briefing),
         current = it,
-        briefing = BriefingUiState.Loaded(text)
+        playlist = stateFactory.createPlaylist(content.playlist)
       )
     }
   }
 
-  private fun onBriefingError() {
+  private fun onAiContentError() {
     _state.update {
-      stateFactory.applyBriefing(
-        current = it,
-        briefing = BriefingUiState.Error
-      )
-    }
-  }
-
-  private fun onPlaylistSuccess(data: MoodPlaylist) {
-    _state.update {
-      stateFactory.applyPlaylist(
-        current = it,
-        playlist = stateFactory.createPlaylist(data)
-      )
-    }
-  }
-
-  private fun onPlaylistError() {
-    _state.update {
-      stateFactory.applyPlaylist(
+      stateFactory.applyAiContent(
+        briefing = BriefingUiState.Error,
         current = it,
         playlist = PlaylistUiState.Error
       )

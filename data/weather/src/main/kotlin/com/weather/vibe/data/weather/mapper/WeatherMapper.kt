@@ -118,9 +118,11 @@ fun WeatherCacheEntity.toWeatherData(): WeatherData {
   val hourlyList = runCatching {
     json.decodeFromString<List<HourlyWeather>>(hourlyForecastJson)
   }.getOrDefault(emptyList())
+
   val dailyList = runCatching {
     json.decodeFromString<List<DailyWeather>>(dailyForecastJson)
   }.getOrDefault(emptyList())
+
   val firstHourly = hourlyList.firstOrNull()
 
   return WeatherData(

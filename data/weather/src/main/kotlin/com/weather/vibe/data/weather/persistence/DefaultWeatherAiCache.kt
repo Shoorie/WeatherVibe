@@ -1,58 +1,47 @@
 package com.weather.vibe.data.weather.persistence
 
 import androidx.datastore.core.DataStore
-import com.weather.vibe.domain.weather.cache.BriefingCache
-import com.weather.vibe.domain.weather.cache.MoodPlaylistCache
+import com.weather.vibe.domain.weather.cache.WeatherAiCache
 import com.weather.vibe.domain.weather.model.MoodPlaylist
+import com.weather.vibe.domain.weather.model.WeatherAiContent
 import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Single
 import java.time.LocalDate
 
-@Single(binds = [BriefingCache::class, MoodPlaylistCache::class])
+@Single(binds = [WeatherAiCache::class])
 internal class DefaultWeatherAiCache(
-  @param:BriefingDataStoreQualifier
-  private val dataStore: DataStore<BriefingCacheData>
-) : BriefingCache, MoodPlaylistCache {
+  @param:WeatherAiDataStoreQualifier
+  private val dataStore: DataStore<WeatherAiCacheData>
+) : WeatherAiCache {
 
-  override suspend fun get(cityName: String, date: LocalDate): String? {
-    val data = dataStore.data.first()
-    return data.briefingText.takeIf {
-      data.cityName == cityName &&
-        data.date == date.toString() &&
-        it.isNotBlank()
-    }
-  }
+  override suspend fun get(cityName: String, date: LocalDate): WeatherAiContent? {
 
-  override suspend fun save(cityName: String, date: LocalDate, text: String) {
-    dataStore.updateData {
-      it.toBuilder()
-        .setCityName(cityName)
-        .setDate(date.toString())
-        .setBriefingText(text)
-        .build()
-    }
-  }
-
-  override suspend fun getPlaylist(cityName: String, date: LocalDate): MoodPlaylist? {
     val data = dataStore.data.first()
     val isValid = data.cityName == cityName &&
       data.date == date.toString() &&
+      data.briefingText.isNotBlank() &&
       data.mood.isNotBlank() &&
       data.genresCsv.isNotBlank()
+
     if (!isValid) return null
-    return MoodPlaylist(
-      genres = data.genresCsv.split(",").map { it.trim() }.filter { it.isNotBlank() },
-      mood = data.mood
+
+    return WeatherAiContent(
+      briefing = data.briefingText,
+      playlist = MoodPlaylist(
+        genres = data.genresCsv.split(",").map { it.trim() }.filter { it.isNotBlank() },
+        mood = data.mood
+      )
     )
   }
 
-  override suspend fun save(cityName: String, date: LocalDate, playlist: MoodPlaylist) {
+  override suspend fun save(cityName: String, content: WeatherAiContent, date: LocalDate) {
     dataStore.updateData {
       it.toBuilder()
         .setCityName(cityName)
         .setDate(date.toString())
-        .setMood(playlist.mood)
-        .setGenresCsv(playlist.genres.joinToString(separator = ","))
+        .setBriefingText(content.briefing)
+        .setMood(content.playlist.mood)
+        .setGenresCsv(content.playlist.genres.joinToString(separator = ","))
         .build()
     }
   }

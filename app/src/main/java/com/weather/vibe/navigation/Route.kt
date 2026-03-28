@@ -14,4 +14,7 @@ data class HomeRoute(
 data object SearchRoute : NavKey
 
 @Serializable
+data object SplashRoute : NavKey
+
+@Serializable
 data object WeatherDetailsRoute : NavKey

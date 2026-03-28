@@ -139,7 +139,20 @@ delay(1000)
 ## 8. No Hardcoded Values
 
 * **FORBIDDEN:** Never use raw hardcoded strings, format patterns, symbols, or magic numbers
-  inline in code. Extract them to a `private companion object` with named constants.
+  inline in code.
+
+### Where to put constants
+
+| Scope                                              | Pattern                                   | Example                                                                       |
+|----------------------------------------------------|-------------------------------------------|-------------------------------------------------------------------------------|
+| Used only within a **single class**                | `private companion object`                | animation spec in one ViewModel                                               |
+| Used across **multiple files in a feature module** | `internal object XxxDefaults`             | `SplashDefaults` shared by `SplashScreen`, `SplashDrawing`, `SplashAnimation` |
+| Used across **multiple feature modules**           | `core:designsystem` tokens or `AppDimens` | spacing, colors, typography                                                   |
+
+> **Rule:** When constants are scoped to a single feature but span multiple files, extract them
+> to an `internal object XxxDefaults` (e.g., `SplashDefaults`, `HomeDefaults`). This avoids
+> duplication and keeps constants discoverable. Use PascalCase for property names inside
+> `Defaults` objects, consistent with Material3 conventions (e.g., `ButtonDefaults`).
 
 ---
 

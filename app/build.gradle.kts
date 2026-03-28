@@ -38,8 +38,10 @@ dependencies {
   implementation(project(":data:location"))
   implementation(project(":feature:home"))
   implementation(project(":feature:search"))
+  implementation(project(":feature:splash"))
 
   implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.core.splashscreen)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.navigation3.runtime)

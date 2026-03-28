@@ -42,17 +42,21 @@ class GenerateMoodPlaylist(
     )
 
   private fun parseResponse(response: String): MoodPlaylist {
+
     val lines = response.trim().lines()
+
     val mood = lines.firstOrNull { it.startsWith(MOOD_PREFIX) }
       ?.removePrefix(MOOD_PREFIX)
       ?.trim()
       .orEmpty()
+
     val genres = lines.firstOrNull { it.startsWith(GENRES_PREFIX) }
       ?.removePrefix(GENRES_PREFIX)
       ?.split(",")
       ?.map { it.trim() }
       ?.filter { it.isNotBlank() }
       .orEmpty()
+
     return MoodPlaylist(genres = genres, mood = mood)
   }
 

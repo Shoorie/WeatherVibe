@@ -1,10 +1,10 @@
 package com.weather.vibe.feature.settings.presentation
 
-import com.weather.vibe.domain.settings.model.Persona
+import com.weather.vibe.domain.settings.model.BriefTone
 
 internal sealed interface SettingsAction {
   data object BackClick : SettingsAction
-  data class ExcludedGenresChange(val genres: String) : SettingsAction
-  data class PersonaSelect(val persona: Persona) : SettingsAction
+  data class BriefToneSelect(val tone: BriefTone) : SettingsAction
+  data class GenreRemove(val genre: String) : SettingsAction
   data object TemperatureUnitToggle : SettingsAction
 }

@@ -49,8 +49,10 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.HomeAction
+import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
+import com.weather.vibe.feature.home.presentation.HomeAction.RetryAiContent
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -147,6 +149,7 @@ internal fun HomeContent(
         onRetry = { dispatch(RefreshClick) }
       )
       is Loaded -> WeatherContent(
+        dispatch = dispatch,
         state = state,
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
@@ -161,6 +164,7 @@ internal fun HomeContent(
 @Composable
 private fun WeatherContent(
   modifier: Modifier = Modifier,
+  dispatch: (HomeAction) -> Unit,
   state: Loaded,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
@@ -190,6 +194,7 @@ private fun WeatherContent(
     item {
       AiBriefingCard(
         onMusicClick = { showMoodSheet = true },
+        onRetryClick = { dispatch(RetryAiContent) },
         state = state.briefing
       )
     }
@@ -210,6 +215,7 @@ private fun WeatherContent(
   if (showMoodSheet) {
     MoodPlaylistSheet(
       onDismiss = { showMoodSheet = false },
+      onGenreRemoveClick = { genre -> dispatch(GenreRemoveClick(genre)) },
       onOpenSpotify = { query -> runCatching { uriHandler.openUri(query) } },
       onOpenYtMusic = { url -> runCatching { uriHandler.openUri(url) } },
       state = state.playlist

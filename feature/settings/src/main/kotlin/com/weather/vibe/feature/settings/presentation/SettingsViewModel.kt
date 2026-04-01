@@ -3,11 +3,11 @@ package com.weather.vibe.feature.settings.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.UserSettings
-import com.weather.vibe.domain.settings.usecase.GetUserSettings
+import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.settings.usecase.SaveUserSettings
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
-import com.weather.vibe.feature.settings.presentation.SettingsAction.ExcludedGenresChange
-import com.weather.vibe.feature.settings.presentation.SettingsAction.PersonaSelect
+import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
+import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
 import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
@@ -27,7 +27,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class SettingsViewModel(
-  private val getUserSettings: GetUserSettings,
+  private val observeUserSettings: ObserveUserSettings,
   private val resources: SettingsResources,
   private val saveUserSettings: SaveUserSettings,
   private val stateFactory: SettingsStateFactory
@@ -42,7 +42,7 @@ internal class SettingsViewModel(
   private var currentSettings: UserSettings? = null
 
   init {
-    getUserSettings()
+    observeUserSettings()
       .onEach(::onSettingsResult)
       .launchIn(viewModelScope)
   }
@@ -50,33 +50,29 @@ internal class SettingsViewModel(
   fun dispatch(action: SettingsAction) {
     when (action) {
       is BackClick -> onBackClick()
-      is ExcludedGenresChange -> onExcludedGenresChange(action)
-      is PersonaSelect -> onPersonaSelect(action)
+      is BriefToneSelect -> onBriefToneSelect(action)
+      is GenreRemove -> onGenreRemove(action)
       is TemperatureUnitToggle -> onTemperatureUnitToggle()
     }
   }
 
   private fun onSettingsResult(result: Result<UserSettings>) {
-    result
-      .onSuccess(::onSettingsSuccess)
-      .onFailure { onSettingsError() }
-  }
-
-  private fun onSettingsSuccess(settings: UserSettings) {
+    val settings = result.getOrNull() ?: run { onSettingsError(); return }
+    if (settings == currentSettings) return
     currentSettings = settings
-    _state.update { stateFactory.create(settings) }
+    _state.update { stateFactory.create(settings = settings) }
   }
 
   private fun onSettingsError() {
     _state.update { SettingsUiState.Error(resources.defaultError()) }
   }
 
-  private fun onPersonaSelect(action: PersonaSelect) {
-    save { withPersona(action.persona) }
+  private fun onBriefToneSelect(action: BriefToneSelect) {
+    save { withBriefTone(action.tone) }
   }
 
-  private fun onExcludedGenresChange(action: ExcludedGenresChange) {
-    save { withExcludedGenres(action.genres) }
+  private fun onGenreRemove(action: GenreRemove) {
+    save { withExcludedGenres(excludedGenres - action.genre) }
   }
 
   private fun onTemperatureUnitToggle() {
@@ -84,12 +80,10 @@ internal class SettingsViewModel(
   }
 
   private fun save(transform: UserSettings.() -> UserSettings) {
-
     val settings = currentSettings ?: return
     val updated = settings.transform()
     currentSettings = updated
-
-    _state.update { stateFactory.create(updated) }
+    _state.update { stateFactory.create(settings = updated) }
     viewModelScope.launch { saveUserSettings(settings = updated) }
   }
 

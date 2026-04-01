@@ -9,9 +9,13 @@ internal sealed interface PlaylistUiState {
   data object Error : PlaylistUiState
 
   @Immutable
+  data class Generating(val message: String) : PlaylistUiState
+
+  @Immutable
   data class Loaded(
-    val genres: List<String>,
+    val genres: List<GenreChipUiState>,
     val mood: String,
+    val moodDescription: String,
     val spotifyQuery: String,
     val ytMusicUrl: String
   ) : PlaylistUiState

@@ -2,14 +2,15 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
+import com.weather.vibe.domain.weather.model.AiSuggestion
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
-import com.weather.vibe.domain.weather.model.MoodPlaylist
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.ConvertTemperature
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
@@ -42,19 +43,6 @@ internal class HomeStateFactory(
       false -> current
     }
 
-  fun createPlaylist(data: MoodPlaylist): PlaylistUiState.Loaded {
-
-    val spotifyQuery = data.genres.joinToString(separator = " ")
-    val ytQuery = data.genres.joinToString(separator = "+")
-
-    return PlaylistUiState.Loaded(
-      genres = data.genres,
-      mood = data.mood,
-      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
-      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
-    )
-  }
-
   fun create(data: WeatherData, temperatureUnit: TemperatureUnit = CELSIUS): Loaded =
     Loaded(
       currentWeather = createCurrentWeather(data, temperatureUnit),
@@ -64,6 +52,21 @@ internal class HomeStateFactory(
       hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit),
       sunriseSunset = createSunriseSunset(data.dailyForecast)
     )
+
+  fun createPlaylist(suggestion: AiSuggestion): PlaylistUiState.Loaded {
+
+    val genreNames = suggestion.genres.map { it.trim() }
+    val spotifyQuery = genreNames.joinToString(separator = " ")
+    val ytQuery = genreNames.firstOrNull().orEmpty()
+
+    return PlaylistUiState.Loaded(
+      genres = genreNames.map { GenreChipUiState(name = it) },
+      mood = suggestion.mood,
+      moodDescription = suggestion.moodDescription,
+      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
+      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
+    )
+  }
 
   fun reformatTemperatures(
     current: HomeUiState,

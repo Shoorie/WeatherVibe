@@ -20,21 +20,20 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.settings.model.Persona
-import com.weather.vibe.feature.settings.presentation.state.PersonaOptionUiState
-import com.weather.vibe.feature.settings.preview.SettingsPreviewData
-import com.weather.vibe.feature.settings.preview.SettingsPreviewData.personaOptions
+import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.feature.settings.presentation.state.BriefToneOptionUiState
+import com.weather.vibe.feature.settings.preview.SettingsPreviewData.briefToneOptions
 import com.weather.vibe.feature.settings.ui.SettingsResources.Texts
 
 @Composable
-internal fun SettingsPersonaSection(
+internal fun SettingsBriefToneSection(
   modifier: Modifier = Modifier,
-  onPersonaSelect: (Persona) -> Unit,
-  personaOptions: List<PersonaOptionUiState>
+  briefToneOptions: List<BriefToneOptionUiState>,
+  onBriefToneSelect: (BriefTone) -> Unit
 ) {
   Column(modifier = modifier) {
     Text(
-      text = Texts.aiPersonaSection(),
+      text = Texts.briefToneSection(),
       color = colors.onSurfaceVariant,
       style = typography.labelMedium,
       modifier = Modifier.padding(bottom = PaddingSmall)
@@ -48,10 +47,10 @@ internal fun SettingsPersonaSection(
           shape = shapes.cardSmall
         )
     ) {
-      personaOptions.forEach { option ->
-        PersonaRow(
+      briefToneOptions.forEach { option ->
+        BriefToneRow(
           option = option,
-          onSelect = { onPersonaSelect(option.persona) }
+          onSelect = { onBriefToneSelect(option.tone) }
         )
       }
     }
@@ -59,8 +58,8 @@ internal fun SettingsPersonaSection(
 }
 
 @Composable
-private fun PersonaRow(
-  option: PersonaOptionUiState,
+private fun BriefToneRow(
+  option: BriefToneOptionUiState,
   onSelect: () -> Unit
 ) {
   Row(
@@ -75,12 +74,18 @@ private fun PersonaRow(
       onClick = onSelect,
       colors = RadioButtonDefaults.colors(selectedColor = colors.accent)
     )
-    Text(
-      modifier = Modifier.padding(start = PaddingSmall),
-      text = option.label,
-      color = colors.onBackground,
-      style = typography.bodyMedium
-    )
+    Column(modifier = Modifier.padding(start = PaddingSmall)) {
+      Text(
+        text = option.label,
+        color = colors.onBackground,
+        style = typography.bodyMedium
+      )
+      Text(
+        text = option.description,
+        color = colors.onSurfaceVariant,
+        style = typography.bodySmall
+      )
+    }
   }
 }
 
@@ -88,9 +93,9 @@ private fun PersonaRow(
 @Composable
 private fun Preview() {
   WeatherVibeTheme {
-    SettingsPersonaSection(
-      onPersonaSelect = {},
-      personaOptions = personaOptions
+    SettingsBriefToneSection(
+      briefToneOptions = briefToneOptions,
+      onBriefToneSelect = {}
     )
   }
 }

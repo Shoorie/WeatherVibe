@@ -1,7 +1,7 @@
 package com.weather.vibe.domain.settings.model
 
-enum class Persona {
-  WITTY,
+enum class BriefTone {
   FORMAL,
-  SARCASTIC
+  HUMOROUS,
+  WITTY_AND_FRIENDLY
 }

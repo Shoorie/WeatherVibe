@@ -1,9 +1,11 @@
 package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
+import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -11,6 +13,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
+import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
@@ -129,10 +132,36 @@ internal class HomePreview :
       sunriseSunset = sunriseSunset
     )
 
+  private val successWithAiContent: HomeUiState =
+    Loaded(
+      briefing = BriefingUiState.Loaded(
+        text = "A mild partly cloudy day with a light breeze — " +
+          "great for a walk before the evening rain."
+      ),
+      currentWeather = currentWeather,
+      dailyForecast = dailyForecast,
+      detailsSections = detailsSections,
+      header = header,
+      hourlyForecast = hourlyForecast,
+      playlist = PlaylistUiState.Loaded(
+        genres = listOf(
+          GenreChipUiState(name = "lo-fi hip hop"),
+          GenreChipUiState(name = "acoustic"),
+          GenreChipUiState(name = "rainy day indie")
+        ),
+        mood = "Cozy rainy afternoon",
+        moodDescription = "Stay in, grab a warm drink",
+        spotifyQuery = "spotify:search:lo-fi hip hop acoustic rainy day indie",
+        ytMusicUrl = "https://music.youtube.com/search?q=lo-fi+hip+hop"
+      ),
+      sunriseSunset = sunriseSunset
+    )
+
   override val values: Sequence<HomeUiState> =
     sequenceOf(
       loadingState,
       errorState,
-      successWithForecast
+      successWithForecast,
+      successWithAiContent
     )
 }

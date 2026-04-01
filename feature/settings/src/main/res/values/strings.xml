@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="settings_screen_title">Settings</string>
-  <string name="settings_section_ai_persona">AI Briefing Style</string>
+  <string name="settings_section_brief_tone">AI Briefing Tone</string>
   <string name="settings_section_temperature">Temperature Unit</string>
   <string name="settings_section_excluded_genres">Excluded Music Genres</string>
-  <string name="settings_persona_witty">Witty &amp; Friendly</string>
-  <string name="settings_persona_formal">Formal &amp; Professional</string>
-  <string name="settings_persona_sarcastic">Sarcastic &amp; Edgy</string>
+  <string name="settings_brief_tone_witty">Witty &amp; Friendly</string>
+  <string name="settings_brief_tone_witty_desc">Light, warm, and conversational</string>
+  <string name="settings_brief_tone_formal">Formal &amp; Professional</string>
+  <string name="settings_brief_tone_formal_desc">Clear, concise, and business-like</string>
+  <string name="settings_brief_tone_humorous">Humorous</string>
+  <string name="settings_brief_tone_humorous_desc">Fun, playful, and punny</string>
   <string name="settings_unit_celsius">Celsius (°C)</string>
   <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
-  <string name="settings_hint_excluded_genres">e.g. jazz, classical</string>
   <string name="settings_error_default">Failed to load settings</string>
 </resources>

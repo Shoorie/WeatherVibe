@@ -53,6 +53,9 @@ internal class HomeResources(private val context: Context) {
   fun windSpeed(): String =
     context.getString(R.string.wind_speed_label)
 
+  fun findingBetterSuggestions(): String =
+    context.getString(R.string.finding_better_suggestions)
+
   fun windSpeedMax(): String =
     context.getString(R.string.wind_speed_max_label)
 
@@ -103,6 +106,10 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.ai_briefing_label)
 
     @Composable
+    fun aiBriefingRetryLabel(): String =
+      stringResource(R.string.ai_briefing_retry)
+
+    @Composable
     fun aiBriefingUnavailable(): String =
       stringResource(R.string.ai_briefing_unavailable)
 
@@ -129,6 +136,10 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun feelsLikeLabel(temperature: String): String =
       stringResource(R.string.feels_like_label, temperature)
+
+    @Composable
+    fun genreRemoveContentDescription(genre: String): String =
+      stringResource(R.string.genre_remove_content_description, genre)
 
     @Composable
     fun highTempLabel(temperature: String): String =

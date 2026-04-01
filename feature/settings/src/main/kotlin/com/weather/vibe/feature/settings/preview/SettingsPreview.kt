@@ -13,14 +13,23 @@ internal class SettingsPreview :
 
   private val loaded: SettingsUiState =
     Loaded(
-      excludedGenres = "jazz",
-      isCelsius = true,
-      personaOptions = SettingsPreviewData.personaOptions
+      briefToneOptions = SettingsPreviewData.briefToneOptions,
+      genreChips = SettingsPreviewData.genreChips,
+      hasExcludedGenres = true,
+      isCelsius = true
+    )
+
+  private val loadedNoExcludedGenres: SettingsUiState =
+    Loaded(
+      briefToneOptions = SettingsPreviewData.briefToneOptions,
+      genreChips = emptyList(),
+      hasExcludedGenres = false,
+      isCelsius = false
     )
 
   private val error: SettingsUiState =
     Error(message = "Unable to load settings.")
 
   override val values: Sequence<SettingsUiState> =
-    sequenceOf(loading, loaded, error)
+    sequenceOf(loading, loaded, loadedNoExcludedGenres, error)
 }

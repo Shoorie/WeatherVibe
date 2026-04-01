@@ -20,8 +20,8 @@ internal class DefaultSettingsCache(
   override suspend fun save(settings: UserSettings) {
     dataStore.updateData {
       it.toBuilder()
-        .setAiPersona(settings.persona.name)
-        .setExcludedGenres(settings.excludedGenres)
+        .setAiPersona(settings.briefTone.name)
+        .setExcludedGenres(settings.excludedGenresText)
         .setTemperatureUnit(settings.temperatureUnit.name)
         .build()
     }

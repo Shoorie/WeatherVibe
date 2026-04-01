@@ -6,7 +6,7 @@ import androidx.compose.runtime.Immutable
 internal sealed interface BriefingUiState {
 
   @Immutable
-  data object Error : BriefingUiState
+  data class Error(val canRetry: Boolean) : BriefingUiState
 
   @Immutable
   data class Loaded(val text: String) : BriefingUiState

@@ -2,7 +2,6 @@ package com.weather.vibe.feature.settings.ui.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,8 +28,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.settings.presentation.SettingsAction
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
-import com.weather.vibe.feature.settings.presentation.SettingsAction.ExcludedGenresChange
-import com.weather.vibe.feature.settings.presentation.SettingsAction.PersonaSelect
+import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
+import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
 import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.SettingsViewModel
@@ -113,24 +112,25 @@ private fun SettingsLoadedContent(
       modifier = Modifier
         .fillMaxWidth()
         .padding(innerPadding)
-        .imePadding()
         .verticalScroll(rememberScrollState())
         .padding(PaddingMedium)
     ) {
-      SettingsPersonaSection(
-        onPersonaSelect = { dispatch(PersonaSelect(persona = it)) },
-        personaOptions = state.personaOptions
+      SettingsBriefToneSection(
+        briefToneOptions = state.briefToneOptions,
+        onBriefToneSelect = { dispatch(BriefToneSelect(tone = it)) }
       )
       SettingsTemperatureSection(
         isCelsius = state.isCelsius,
         onToggle = { dispatch(TemperatureUnitToggle) },
         modifier = Modifier.padding(top = PaddingLarge)
       )
-      SettingsMusicSection(
-        excludedGenres = state.excludedGenres,
-        onExcludedGenresChange = { dispatch(ExcludedGenresChange(genres = it)) },
-        modifier = Modifier.padding(top = PaddingLarge)
-      )
+      if (state.hasExcludedGenres) {
+        SettingsExcludedGenresSection(
+          modifier = Modifier.padding(top = PaddingLarge),
+          genreChips = state.genreChips,
+          onGenreRemove = { dispatch(GenreRemove(genre = it)) }
+        )
+      }
     }
   }
 }

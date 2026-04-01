@@ -1,5 +1,8 @@
 package com.weather.vibe.feature.home.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,15 +14,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,13 +41,16 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Error
+import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loading
 import com.weather.vibe.feature.home.preview.MoodPlaylistSheetPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Painters.spotifyIcon
 import com.weather.vibe.feature.home.ui.HomeResources.Painters.ytMusicIcon
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.genreRemoveContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistUnavailable
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.openInSpotify
@@ -53,6 +61,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.openInYtMusic
 internal fun MoodPlaylistSheet(
   modifier: Modifier = Modifier,
   onDismiss: () -> Unit,
+  onGenreRemoveClick: (String) -> Unit,
   onOpenSpotify: (String) -> Unit,
   onOpenYtMusic: (String) -> Unit,
   sheetState: SheetState = rememberModalBottomSheetState(),
@@ -78,12 +87,14 @@ internal fun MoodPlaylistSheet(
       Spacer(modifier = Modifier.height(PaddingMedium))
       when (state) {
         is Loading -> SheetLoadingContent()
-        is Error -> SheetErrorContent()
         is Loaded -> SheetLoadedContent(
-          state = state,
+          onGenreRemoveClick = onGenreRemoveClick,
           onOpenSpotify = onOpenSpotify,
-          onOpenYtMusic = onOpenYtMusic
+          onOpenYtMusic = onOpenYtMusic,
+          state = state
         )
+        is Generating -> SheetGeneratingContent(message = state.message)
+        is Error -> SheetErrorContent()
       }
     }
   }
@@ -102,9 +113,27 @@ private fun SheetLoadingContent(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SheetErrorContent(modifier: Modifier = Modifier) {
-  Text(
+private fun SheetGeneratingContent(
+  modifier: Modifier = Modifier,
+  message: String
+) {
+  Column(
     modifier = modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    CircularProgressIndicator(color = colors.accent)
+    Spacer(modifier = Modifier.height(PaddingSmall))
+    Text(
+      text = message,
+      style = typography.bodyMedium,
+      color = colors.onSurfaceVariant
+    )
+  }
+}
+
+@Composable
+private fun SheetErrorContent() {
+  Text(
     text = moodPlaylistUnavailable(),
     style = typography.bodyMedium,
     color = colors.onSurfaceVariant
@@ -114,6 +143,7 @@ private fun SheetErrorContent(modifier: Modifier = Modifier) {
 @Composable
 private fun SheetLoadedContent(
   modifier: Modifier = Modifier,
+  onGenreRemoveClick: (String) -> Unit,
   onOpenSpotify: (String) -> Unit,
   onOpenYtMusic: (String) -> Unit,
   state: Loaded
@@ -124,8 +154,17 @@ private fun SheetLoadedContent(
       style = typography.bodyMedium,
       color = colors.onBackground
     )
+    Spacer(modifier = Modifier.height(PaddingExtraSmall))
+    Text(
+      text = state.moodDescription,
+      style = typography.bodySmall,
+      color = colors.onSurfaceVariant
+    )
     Spacer(modifier = Modifier.height(PaddingMedium))
-    GenreChips(genres = state.genres)
+    GenreChips(
+      genres = state.genres,
+      onThumbsDown = onGenreRemoveClick
+    )
     Spacer(modifier = Modifier.height(PaddingMedium))
     SpotifyButton(onClick = { onOpenSpotify(state.spotifyQuery) })
     Spacer(modifier = Modifier.height(PaddingSmall))
@@ -188,7 +227,8 @@ private val YtMusicRed = Color(0xFFFF0000)
 @Composable
 private fun GenreChips(
   modifier: Modifier = Modifier,
-  genres: List<String>
+  genres: List<GenreChipUiState>,
+  onThumbsDown: (String) -> Unit
 ) {
   FlowRow(
     modifier = modifier,
@@ -196,23 +236,39 @@ private fun GenreChips(
     verticalArrangement = Arrangement.spacedBy(PaddingSmall)
   ) {
     genres.forEach { genre ->
-      SuggestionChip(
-        onClick = {},
-        label = {
-          Text(
-            text = genre,
-            style = typography.labelSmall
+      AnimatedVisibility(
+        visible = !genre.isRejecting,
+        enter = fadeIn(),
+        exit = fadeOut()
+      ) {
+        InputChip(
+          selected = false,
+          onClick = { onThumbsDown(genre.name) },
+          label = {
+            Text(
+              text = genre.name,
+              style = typography.labelSmall
+            )
+          },
+          trailingIcon = {
+            Icon(
+              imageVector = Icons.Default.Close,
+              contentDescription = genreRemoveContentDescription(genre.name),
+              modifier = Modifier.size(BrandIconSize),
+              tint = colors.onSurfaceVariant
+            )
+          },
+          colors = InputChipDefaults.inputChipColors(
+            containerColor = colors.glassSurface,
+            labelColor = colors.onBackground
+          ),
+          border = InputChipDefaults.inputChipBorder(
+            enabled = true,
+            selected = false,
+            borderColor = colors.outline
           )
-        },
-        colors = SuggestionChipDefaults.suggestionChipColors(
-          containerColor = colors.glassSurface,
-          labelColor = colors.onBackground
-        ),
-        border = SuggestionChipDefaults.suggestionChipBorder(
-          enabled = true,
-          borderColor = colors.outline
         )
-      )
+      }
     }
   }
 }
@@ -227,6 +283,7 @@ private fun Preview(
   WeatherVibeTheme {
     MoodPlaylistSheet(
       onDismiss = {},
+      onGenreRemoveClick = {},
       onOpenSpotify = {},
       onOpenYtMusic = {},
       state = state

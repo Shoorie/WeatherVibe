@@ -4,17 +4,28 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 
 data class UserSettings(
-  val excludedGenres: String,
-  val persona: Persona,
+  val briefTone: BriefTone,
+  val excludedGenres: Set<String>,
   val temperatureUnit: TemperatureUnit
 ) {
 
-  fun withExcludedGenres(genres: String): UserSettings =
-    copy(excludedGenres = genres)
+  val excludedGenresText: String
+    get() = excludedGenres.sorted()
+      .joinToString(separator = GENRES_SEPARATOR)
 
-  fun withPersona(persona: Persona): UserSettings =
-    copy(persona = persona)
+  fun withBriefTone(tone: BriefTone): UserSettings =
+    copy(briefTone = tone)
+
+  fun hasAiRelevantChange(previous: UserSettings): Boolean =
+    briefTone != previous.briefTone || excludedGenres != previous.excludedGenres
+
+  fun withExcludedGenres(genres: Set<String>): UserSettings =
+    copy(excludedGenres = genres)
 
   fun withToggledTemperatureUnit(): UserSettings =
     copy(temperatureUnit = if (temperatureUnit == CELSIUS) FAHRENHEIT else CELSIUS)
+
+  private companion object {
+    const val GENRES_SEPARATOR = ","
+  }
 }

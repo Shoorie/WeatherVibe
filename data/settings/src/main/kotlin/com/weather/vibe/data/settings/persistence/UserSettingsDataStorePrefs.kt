@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.dataStore
+import com.weather.vibe.data.settings.persistence.UserSettingsDataStorePrefs.Companion.FILE_NAME
 
 private val Context.userSettingsDataStore: DataStore<UserSettingsCacheData> by dataStore(
-  fileName = UserSettingsDataStorePrefs.FILE_NAME,
+  fileName = FILE_NAME,
   serializer = UserSettingsCacheSerializer,
   corruptionHandler = ReplaceFileCorruptionHandler {
     UserSettingsCacheData.getDefaultInstance()

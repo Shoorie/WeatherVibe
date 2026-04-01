@@ -4,6 +4,7 @@
 > **Passive ViewModels** and **Fat Domains**. Business logic must never reside in the UI layer.
 
 ## 📋 Table of Contents
+
 1. [Clean Architecture Layers & Naming Conventions](#1-clean-architecture-layers--naming-conventions)
 2. [The Passive ViewModel (Dumb ViewModel)](#2-the-passive-viewmodel-dumb-viewmodel)
 3. [State & Event Modeling (UDF)](#3-state--event-modeling-udf)
@@ -18,6 +19,7 @@
 ---
 
 ## 1. Clean Architecture Layers & Naming Conventions
+
 Module structure and class naming must strictly reflect layer responsibilities.
 
 * **`:data`**: Network DTOs, Room Entities, DAOs, and Repository Implementations.
@@ -25,14 +27,16 @@ Module structure and class naming must strictly reflect layer responsibilities.
 * **`:feature` (UI)**: ViewModels, UI State, Events, Composables, and State Factories.
 
 ### 🚫 Forbidden Naming Patterns
-| Component  | Rule                                              | Correct Example         |
-| :--------- | :------------------------------------------------ | :---------------------- |
-| **UseCase**| **NEVER** append `UseCase`. Use action verbs.     | `FetchUserProfile`      |
-| **Repo** | **NEVER** use `Impl` suffix. Use `Default` prefix.| `DefaultUserRepository` |
+
+| Component   | Rule                                               | Correct Example         |
+|:------------|:---------------------------------------------------|:------------------------|
+| **UseCase** | **NEVER** append `UseCase`. Use action verbs.      | `FetchUserProfile`      |
+| **Repo**    | **NEVER** use `Impl` suffix. Use `Default` prefix. | `DefaultUserRepository` |
 
 ---
 
 ## 2. The Passive ViewModel (Dumb ViewModel)
+
 The ViewModel acts strictly as a **bridge**, not a logic provider.
 
 * **Rule:** ViewModels must not contain complex data transformations, filtering, or business
@@ -43,9 +47,11 @@ The ViewModel acts strictly as a **bridge**, not a logic provider.
 ---
 
 ## 3. State & Event Modeling (UDF)
+
 All data flows in a single direction (Unidirectional Data Flow).
 
 ### 🟦 UI State (`StateFlow`)
+
 * **Mutation:** Update state ONLY via `_state.update { ... }`.
   **FORBIDDEN:** Direct assignment like `_state.value = ...`.
 * **Stability:** The State class MUST be annotated with `@Immutable` (from Compose) or `@Stable`.
@@ -53,12 +59,14 @@ All data flows in a single direction (Unidirectional Data Flow).
   `Loaded`, `Error`). Do not use "Boolean Soup" (e.g., `isLoading`, `isError`).
 
 ### 🟨 UI Events/Effects (`Channel`)
+
 * Handle one-off events (navigation, toasts, dialogs) via a `Channel` and collect as a `Flow`.
 * `private val _event = Channel<FeatureEvent>()` -> `val event = _event.receiveAsFlow()`.
 
 ---
 
 ## 4. Dispatching Actions (MVI Pattern)
+
 UI-to-ViewModel communication is restricted to a single entry point.
 
 * **Public API:** The only public function allowed is `fun dispatch(action: FeatureAction)`.
@@ -68,16 +76,18 @@ UI-to-ViewModel communication is restricted to a single entry point.
   readability: `is Click -> onClick()`.
 
 ### 🔠 MVI Grammar & Naming (CRITICAL)
+
 Actions and Events follow a strict tense rule to distinguish between **intentions** and **results**.
 
-| Component | Tense | Meaning | Correct Examples | Incorrect Examples |
-| :--- | :--- | :--- | :--- | :--- |
-| **Action** | **Present** | "I want this to happen" | `RefreshClick`, `ReceiveResult` | `Refreshed`, `ResultReceived` |
-| **Event** | **Present** | "Do this UI side effect" | `NavigateToDetails`, `ShowToast` | `NavigatedToDetails`, `ToastShown` |
+| Component  | Tense       | Meaning                  | Correct Examples                 | Incorrect Examples                 |
+|:-----------|:------------|:-------------------------|:---------------------------------|:-----------------------------------|
+| **Action** | **Present** | "I want this to happen"  | `RefreshClick`, `ReceiveResult`  | `Refreshed`, `ResultReceived`      |
+| **Event**  | **Present** | "Do this UI side effect" | `NavigateToDetails`, `ShowToast` | `NavigatedToDetails`, `ToastShown` |
 
 ---
 
 ## 5. Use Case Boundaries & Error Handling (Flow + catch)
+
 Use Cases serve as the safety boundary for asynchronous operations.
 
 * **Standard:** Use Cases MUST return `Flow<Result<T>>` using the `flow { }.catch { }` pattern.
@@ -88,6 +98,7 @@ Use Cases serve as the safety boundary for asynchronous operations.
 ---
 
 ## 6. Dependency Injection (Koin)
+
 Dependency injection is managed centrally using Koin Annotations.
 
 * **Rule:** For detailed DI rules, see `docs/ai-rules/di-koin.md`.
@@ -96,6 +107,7 @@ Dependency injection is managed centrally using Koin Annotations.
 ---
 
 ## 7. Typical ViewModel Structure Example
+
 Use this as the blueprint for every new feature module:
 
 ```kotlin
@@ -138,6 +150,7 @@ internal class FeatureViewModel(
 ---
 
 ## 8. Typical State & Contract Example (MVI)
+
 Model the UI contract in a single place (e.g., `UiContract.kt`).
 
 ```kotlin
@@ -172,10 +185,12 @@ internal sealed interface FeatureEvent {
 ---
 
 ## 9. StateFactory Pattern (Fat Factory)
+
 The factory is responsible for ALL data transformation from domain models to display-ready
 UI models. Composables receive pre-formatted strings - they never perform formatting logic.
 
 ### Rules:
+
 * **Private helper methods** per UI section: `createHeader()`, `createItems()`, etc.
 * **Private formatting utilities*.
 * **UI model classes** live in `presentation/model/` - one file per class, `@Immutable`,
@@ -183,11 +198,12 @@ UI models. Composables receive pre-formatted strings - they never perform format
 * **Loaded state** holds UI models directly (not raw domain models).
 
 ### Factory Template:
+
 ```kotlin
 @Factory
 internal class FeatureStateFactory {
 
-  fun createFrom(data: DomainData): Loaded = 
+  fun createFrom(data: DomainData): Loaded =
     Loaded(
       header = createHeader(data),
       items = createItems(data.items)
@@ -216,7 +232,34 @@ internal class FeatureStateFactory {
 
 ---
 
-## 10. Self-Verification Checklist
+## 10. Code Reads Like Prose
+
+Names must communicate purpose without comments. A reader should understand what is happening
+from names alone.
+
+* **Functions:** Name after the cause, not the implementation.
+* **Variables:** Prefer specific names over generic ones.
+* **Avoid noise:** `processData()`, `handleEvent()` say nothing. Name the domain action.
+
+---
+
+## 11. Testability
+
+Hard-to-test code signals poor design.
+
+* **One responsibility per unit.** A class/function doing N things requires N mocks to test.
+* **No hidden side effects.** A function should return a value OR delegate to a collaborator —
+  not both plus a side effect.
+* **Constructor injection only.** Never access `object` singletons or statics inside production
+  logic — inject them so tests can swap fakes.
+* **Use Cases return `Flow<Result<T>>`.** Trivially testable with `turbine` and `runTest`.
+* **Review heuristic:** Can you write a unit test in < 10 lines without mocking the world? If
+  not, redesign.
+
+---
+
+## 12. Self-Verification Checklist
+
 Before finalizing architectural changes, verify:
 
 1. [ ] **Naming:** No `UseCase` or `Impl` suffixes in class names?

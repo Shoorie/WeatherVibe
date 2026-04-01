@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +34,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
 import com.weather.vibe.feature.home.preview.AiBriefingCardPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Painters.musicIcon
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingRetryLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingUnavailable
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistContentDescription
 
@@ -39,6 +42,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistContentD
 internal fun AiBriefingCard(
   modifier: Modifier = Modifier,
   onMusicClick: () -> Unit,
+  onRetryClick: () -> Unit,
   state: BriefingUiState
 ) {
   GlassCard(
@@ -47,23 +51,7 @@ internal fun AiBriefingCard(
       .animateContentSize()
       .clickable(onClick = onMusicClick)
   ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      Text(
-        text = aiBriefingLabel(),
-        style = typography.titleSmall,
-        color = colors.onSurfaceVariant
-      )
-      Icon(
-        painter = musicIcon(),
-        contentDescription = moodPlaylistContentDescription(),
-        modifier = Modifier.size(BrandIconSize),
-        tint = colors.onSurfaceVariant
-      )
-    }
+    BriefingHeader()
     Spacer(modifier = Modifier.height(PaddingSmall))
     Box(
       modifier = Modifier
@@ -72,18 +60,78 @@ internal fun AiBriefingCard(
       contentAlignment = Alignment.Center
     ) {
       when (state) {
-        is Loading -> CircularProgressIndicator(color = colors.accent)
-        is Loaded -> Text(
-          text = state.text,
-          style = typography.bodyMedium,
-          color = colors.onBackground,
-          modifier = Modifier.fillMaxWidth()
-        )
-        is Error -> Text(
-          text = aiBriefingUnavailable(),
-          style = typography.bodyMedium,
-          color = colors.onSurfaceVariant,
-          modifier = Modifier.fillMaxWidth()
+        is Loading -> BriefingLoadingContent()
+        is Loaded -> BriefingTextContent(text = state.text)
+        is Error -> BriefingErrorContent(canRetry = state.canRetry, onRetryClick = onRetryClick)
+      }
+    }
+  }
+}
+
+@Composable
+private fun BriefingHeader(modifier: Modifier = Modifier) {
+  Row(
+    modifier = modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.SpaceBetween,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Text(
+      text = aiBriefingLabel(),
+      style = typography.titleSmall,
+      color = colors.onSurfaceVariant
+    )
+    Icon(
+      painter = musicIcon(),
+      contentDescription = moodPlaylistContentDescription(),
+      modifier = Modifier.size(BrandIconSize),
+      tint = colors.onSurfaceVariant
+    )
+  }
+}
+
+@Composable
+private fun BriefingLoadingContent(modifier: Modifier = Modifier) {
+  CircularProgressIndicator(
+    modifier = modifier,
+    color = colors.accent
+  )
+}
+
+@Composable
+private fun BriefingTextContent(
+  modifier: Modifier = Modifier,
+  text: String
+) {
+  Text(
+    text = text,
+    style = typography.bodyMedium,
+    color = colors.onBackground,
+    modifier = modifier.fillMaxWidth()
+  )
+}
+
+@Composable
+private fun BriefingErrorContent(
+  modifier: Modifier = Modifier,
+  canRetry: Boolean,
+  onRetryClick: () -> Unit
+) {
+  Column(
+    modifier = modifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally
+  ) {
+    Text(
+      text = aiBriefingUnavailable(),
+      style = typography.bodyMedium,
+      color = colors.onSurfaceVariant,
+      modifier = Modifier.fillMaxWidth()
+    )
+    if (canRetry) {
+      TextButton(onClick = onRetryClick) {
+        Text(
+          text = aiBriefingRetryLabel(),
+          style = typography.labelMedium,
+          color = colors.accent
         )
       }
     }
@@ -99,6 +147,7 @@ private fun Preview(
   WeatherVibeTheme {
     AiBriefingCard(
       onMusicClick = {},
+      onRetryClick = {},
       state = state
     )
   }

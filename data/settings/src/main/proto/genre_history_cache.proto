@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package = "com.weather.vibe.data.settings.persistence";
+option java_multiple_files = true;
+
+message GenreHistoryCacheData {
+  repeated string genres = 1;
+}

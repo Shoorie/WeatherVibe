@@ -47,4 +47,8 @@
   <string name="wind_speed_label">Wind Speed</string>
   <string name="wind_speed_max_label">Max Wind</string>
   <string name="wind_speed_value_format">%1$d km/h</string>
+
+  <string name="ai_briefing_retry">Retry</string>
+  <string name="finding_better_suggestions">Finding better suggestions…</string>
+  <string name="genre_remove_content_description">Remove %1$s</string>
 </resources>

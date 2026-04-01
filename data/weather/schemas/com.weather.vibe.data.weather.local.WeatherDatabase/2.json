@@ -1,0 +1,164 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "ac9f13990fb808138e9df8bf429e921a",
+    "entities": [
+      {
+        "tableName": "ai_suggestion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`weatherKeyHash` TEXT NOT NULL, `tone` TEXT NOT NULL, `briefText` TEXT NOT NULL, `fetchedAt` INTEGER NOT NULL, `genresCsv` TEXT NOT NULL, `mood` TEXT NOT NULL, `moodDescription` TEXT NOT NULL, `simplifiedCondition` TEXT NOT NULL, `temperatureRange` TEXT NOT NULL, `timeOfDay` TEXT NOT NULL, PRIMARY KEY(`weatherKeyHash`, `tone`))",
+        "fields": [
+          {
+            "fieldPath": "weatherKeyHash",
+            "columnName": "weatherKeyHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tone",
+            "columnName": "tone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "briefText",
+            "columnName": "briefText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "genresCsv",
+            "columnName": "genresCsv",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mood",
+            "columnName": "mood",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moodDescription",
+            "columnName": "moodDescription",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "simplifiedCondition",
+            "columnName": "simplifiedCondition",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperatureRange",
+            "columnName": "temperatureRange",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeOfDay",
+            "columnName": "timeOfDay",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "weatherKeyHash",
+            "tone"
+          ]
+        }
+      },
+      {
+        "tableName": "weather_cache",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`locationId` TEXT NOT NULL, `cityName` TEXT NOT NULL, `currentConditionName` TEXT NOT NULL, `currentTemperature` REAL NOT NULL, `dailyForecastJson` TEXT NOT NULL, `hourlyForecastJson` TEXT NOT NULL, `humidity` INTEGER NOT NULL, `isDay` INTEGER NOT NULL, `lastUpdated` INTEGER NOT NULL, `windDirection` REAL NOT NULL, `windSpeed` REAL NOT NULL, PRIMARY KEY(`locationId`))",
+        "fields": [
+          {
+            "fieldPath": "locationId",
+            "columnName": "locationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cityName",
+            "columnName": "cityName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentConditionName",
+            "columnName": "currentConditionName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentTemperature",
+            "columnName": "currentTemperature",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dailyForecastJson",
+            "columnName": "dailyForecastJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourlyForecastJson",
+            "columnName": "hourlyForecastJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDay",
+            "columnName": "isDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdated",
+            "columnName": "lastUpdated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDirection",
+            "columnName": "windDirection",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windSpeed",
+            "columnName": "windSpeed",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "locationId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac9f13990fb808138e9df8bf429e921a')"
+    ]
+  }
+}

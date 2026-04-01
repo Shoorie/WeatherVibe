@@ -156,7 +156,18 @@ delay(1000)
 
 ---
 
-## 9. Nullability & Safety
+## 9. KISS & DRY
+
+* **KISS:** Simplest solution that satisfies the requirement. Abstract only when a third genuine
+  use-case exists — not in anticipation of one.
+* **DRY:** Extract shared conceptual logic. Do not DRY incidental duplication (things that look
+  similar but differ in meaning).
+* **No speculative code:** No flags, extension points, or fallbacks for scenarios that don't
+  exist yet. Delete them on sight.
+
+---
+
+## 10. Nullability & Safety
 
 * Prefer `val` over `var` whenever possible.
 * Use Kotlin's null-safety features (`?.`, `?:`, `let`) instead of force-unwrapping (`!!`).
@@ -164,7 +175,7 @@ delay(1000)
 
 ---
 
-## 10. Self-Verification Checklist
+## 11. Self-Verification Checklist
 
 Before finalizing code changes, verify:
 

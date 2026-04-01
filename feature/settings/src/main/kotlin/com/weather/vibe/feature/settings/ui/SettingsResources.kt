@@ -9,31 +9,36 @@ import org.koin.core.annotation.Factory
 @Factory
 internal class SettingsResources(private val context: Context) {
 
+  fun briefToneFormalDescription(): String =
+    context.getString(R.string.settings_brief_tone_formal_desc)
+
+  fun briefToneFormalLabel(): String =
+    context.getString(R.string.settings_brief_tone_formal)
+
+  fun briefToneHumorousDescription(): String =
+    context.getString(R.string.settings_brief_tone_humorous_desc)
+
+  fun briefToneHumorousLabel(): String =
+    context.getString(R.string.settings_brief_tone_humorous)
+
+  fun briefToneWittyDescription(): String =
+    context.getString(R.string.settings_brief_tone_witty_desc)
+
+  fun briefToneWittyLabel(): String =
+    context.getString(R.string.settings_brief_tone_witty)
+
   fun defaultError(): String =
     context.getString(R.string.settings_error_default)
-
-  fun personaFormalLabel(): String =
-    context.getString(R.string.settings_persona_formal)
-
-  fun personaSarcasticLabel(): String =
-    context.getString(R.string.settings_persona_sarcastic)
-
-  fun personaWittyLabel(): String =
-    context.getString(R.string.settings_persona_witty)
 
   object Texts {
 
     @Composable
-    fun aiPersonaSection(): String =
-      stringResource(R.string.settings_section_ai_persona)
+    fun briefToneSection(): String =
+      stringResource(R.string.settings_section_brief_tone)
 
     @Composable
     fun celsiusLabel(): String =
       stringResource(R.string.settings_unit_celsius)
-
-    @Composable
-    fun excludedGenresHint(): String =
-      stringResource(R.string.settings_hint_excluded_genres)
 
     @Composable
     fun excludedGenresSection(): String =

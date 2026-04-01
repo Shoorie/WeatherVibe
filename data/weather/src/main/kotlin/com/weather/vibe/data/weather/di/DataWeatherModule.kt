@@ -1,13 +1,10 @@
 package com.weather.vibe.data.weather.di
 
 import android.content.Context
-import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.weather.vibe.data.weather.local.WeatherDatabase
+import com.weather.vibe.data.weather.local.dao.AiSuggestionDao
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
-import com.weather.vibe.data.weather.persistence.WeatherAiCacheData
-import com.weather.vibe.data.weather.persistence.WeatherAiDataStorePrefs
-import com.weather.vibe.data.weather.persistence.WeatherAiQualifier
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -17,19 +14,23 @@ import org.koin.core.annotation.Single
 class DataWeatherModule {
 
   @Single
-  fun provideWeatherDatabase(context: Context): WeatherDatabase =
-    Room.databaseBuilder(
-      context = context,
-      klass = WeatherDatabase::class.java,
-      name = "weather.db"
-    ).build()
+  fun provideAiSuggestionDao(database: WeatherDatabase): AiSuggestionDao =
+    database.aiSuggestionDao()
 
   @Single
   fun provideWeatherCacheDao(database: WeatherDatabase): WeatherCacheDao =
     database.weatherCacheDao()
 
   @Single
-  @WeatherAiQualifier
-  fun provideWeatherAiDataStore(context: Context): DataStore<WeatherAiCacheData> =
-    WeatherAiDataStorePrefs().get(context)
+  fun provideWeatherDatabase(context: Context): WeatherDatabase =
+    Room.databaseBuilder(
+      context = context,
+      klass = WeatherDatabase::class.java,
+      name = DATABASE_NAME
+    ).fallbackToDestructiveMigration(false)
+      .build()
+
+  private companion object {
+    const val DATABASE_NAME = "weather.db"
+  }
 }

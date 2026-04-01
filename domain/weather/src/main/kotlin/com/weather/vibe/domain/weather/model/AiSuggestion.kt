@@ -1,0 +1,8 @@
+package com.weather.vibe.domain.weather.model
+
+data class AiSuggestion(
+  val briefText: String,
+  val genres: List<String>,
+  val mood: String,
+  val moodDescription: String
+)

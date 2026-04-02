@@ -2,9 +2,9 @@ package com.weather.vibe.domain.weather.model
 
 import com.weather.vibe.domain.settings.model.BriefTone
 
-data class CachedAiSuggestion(
+data class CachedWeatherSuggestion(
   val fetchedAt: Long,
-  val suggestion: AiSuggestion,
+  val suggestion: WeatherSuggestion,
   val tone: BriefTone,
   val weatherKey: WeatherKey
 ) {

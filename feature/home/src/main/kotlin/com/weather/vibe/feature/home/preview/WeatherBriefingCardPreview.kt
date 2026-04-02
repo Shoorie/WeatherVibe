@@ -6,7 +6,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Error
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
 
-internal class AiBriefingCardPreview :
+internal class WeatherBriefingCardPreview :
   PreviewParameterProvider<BriefingUiState> {
 
   private val loading: BriefingUiState = Loading

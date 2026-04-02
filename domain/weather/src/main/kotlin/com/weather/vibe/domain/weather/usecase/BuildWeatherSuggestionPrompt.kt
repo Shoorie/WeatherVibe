@@ -10,7 +10,7 @@ import org.koin.core.annotation.Factory
 import kotlin.math.roundToInt
 
 @Factory
-internal class BuildWeatherAiPrompt {
+internal class BuildWeatherSuggestionPrompt {
 
   operator fun invoke(
     condition: SimplifiedCondition,

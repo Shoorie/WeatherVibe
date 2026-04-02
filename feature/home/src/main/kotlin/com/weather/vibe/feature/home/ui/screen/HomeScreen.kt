@@ -52,8 +52,8 @@ import com.weather.vibe.feature.home.presentation.HomeAction
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
-import com.weather.vibe.feature.home.presentation.HomeAction.RetryAiContent
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
+import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
@@ -66,7 +66,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescri
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
-import com.weather.vibe.feature.home.ui.component.AiBriefingCard
+import com.weather.vibe.feature.home.ui.component.WeatherBriefingCard
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
@@ -192,9 +192,9 @@ private fun WeatherContent(
     item { CurrentWeatherSection(state = state.currentWeather) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item {
-      AiBriefingCard(
+      WeatherBriefingCard(
         onMusicClick = { showMoodSheet = true },
-        onRetryClick = { dispatch(RetryAiContent) },
+        onRetryClick = { dispatch(RetryWeatherSuggestion) },
         state = state.briefing
       )
     }

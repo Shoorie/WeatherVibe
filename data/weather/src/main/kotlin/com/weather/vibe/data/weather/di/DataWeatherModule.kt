@@ -3,8 +3,8 @@ package com.weather.vibe.data.weather.di
 import android.content.Context
 import androidx.room.Room
 import com.weather.vibe.data.weather.local.WeatherDatabase
-import com.weather.vibe.data.weather.local.dao.AiSuggestionDao
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
+import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
@@ -14,12 +14,12 @@ import org.koin.core.annotation.Single
 class DataWeatherModule {
 
   @Single
-  fun provideAiSuggestionDao(database: WeatherDatabase): AiSuggestionDao =
-    database.aiSuggestionDao()
-
-  @Single
   fun provideWeatherCacheDao(database: WeatherDatabase): WeatherCacheDao =
     database.weatherCacheDao()
+
+  @Single
+  fun provideWeatherSuggestionDao(database: WeatherDatabase): WeatherSuggestionDao =
+    database.weatherSuggestionDao()
 
   @Single
   fun provideWeatherDatabase(context: Context): WeatherDatabase =

@@ -2,10 +2,10 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
-import com.weather.vibe.domain.weather.model.AiSuggestion
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.ConvertTemperature
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
@@ -33,7 +33,7 @@ internal class HomeStateFactory(
   private val resources: HomeResources
 ) {
 
-  fun applyAiContent(
+  fun applyWeatherSuggestion(
     briefing: BriefingUiState,
     current: HomeUiState,
     playlist: PlaylistUiState
@@ -53,7 +53,7 @@ internal class HomeStateFactory(
       sunriseSunset = createSunriseSunset(data.dailyForecast)
     )
 
-  fun createPlaylist(suggestion: AiSuggestion): PlaylistUiState.Loaded {
+  fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded {
 
     val genreNames = suggestion.genres.map { it.trim() }
     val spotifyQuery = genreNames.joinToString(separator = " ")

@@ -6,7 +6,7 @@ import androidx.room.Entity
   tableName = "ai_suggestion",
   primaryKeys = ["weatherKeyHash", "tone"]
 )
-data class AiSuggestionEntity(
+data class WeatherSuggestionEntity(
   val briefText: String,
   val fetchedAt: Long,
   val genresCsv: String,

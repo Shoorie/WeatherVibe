@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class AiResponseDto(
+internal data class WeatherSuggestionDto(
 
   @SerialName("briefText")
   val briefText: String = "",

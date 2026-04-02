@@ -31,7 +31,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Error
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
-import com.weather.vibe.feature.home.preview.AiBriefingCardPreview
+import com.weather.vibe.feature.home.preview.WeatherBriefingCardPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Painters.musicIcon
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingRetryLabel
@@ -39,7 +39,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingUnavailabl
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistContentDescription
 
 @Composable
-internal fun AiBriefingCard(
+internal fun WeatherBriefingCard(
   modifier: Modifier = Modifier,
   onMusicClick: () -> Unit,
   onRetryClick: () -> Unit,
@@ -141,11 +141,11 @@ private fun BriefingErrorContent(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(AiBriefingCardPreview::class)
+  @PreviewParameter(WeatherBriefingCardPreview::class)
   state: BriefingUiState
 ) {
   WeatherVibeTheme {
-    AiBriefingCard(
+    WeatherBriefingCard(
       onMusicClick = {},
       onRetryClick = {},
       state = state

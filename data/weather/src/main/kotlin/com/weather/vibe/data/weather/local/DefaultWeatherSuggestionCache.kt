@@ -1,24 +1,31 @@
 package com.weather.vibe.data.weather.local
 
-import com.weather.vibe.data.weather.local.dao.AiSuggestionDao
+import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
 import com.weather.vibe.data.weather.local.mapper.toDomain
 import com.weather.vibe.data.weather.local.mapper.toEntity
 import com.weather.vibe.domain.settings.model.BriefTone
-import com.weather.vibe.domain.weather.cache.WeatherAiCache
-import com.weather.vibe.domain.weather.model.AiSuggestion
-import com.weather.vibe.domain.weather.model.CachedAiSuggestion
+import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
+import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
 import com.weather.vibe.domain.weather.model.WeatherKey
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import org.koin.core.annotation.Single
 
-@Single(binds = [WeatherAiCache::class])
-internal class DefaultWeatherAiCache(
-  private val dao: AiSuggestionDao
-) : WeatherAiCache {
+@Single(binds = [WeatherSuggestionCache::class])
+internal class DefaultWeatherSuggestionCache(
+  private val dao: WeatherSuggestionDao
+) : WeatherSuggestionCache {
+
+  override suspend fun delete(
+    tone: BriefTone,
+    weatherKey: WeatherKey
+  ) {
+    dao.delete(keyHash = weatherKey.toHash(), tone = tone.name)
+  }
 
   override suspend fun get(
     tone: BriefTone,
     weatherKey: WeatherKey
-  ): CachedAiSuggestion? {
+  ): CachedWeatherSuggestion? {
     val entity = dao.get(
       keyHash = weatherKey.toHash(),
       tone = tone.name
@@ -27,11 +34,11 @@ internal class DefaultWeatherAiCache(
   }
 
   override suspend fun save(
-    suggestion: AiSuggestion,
+    suggestion: WeatherSuggestion,
     tone: BriefTone,
     weatherKey: WeatherKey
   ) {
-    val cached = CachedAiSuggestion(
+    val cached = CachedWeatherSuggestion(
       fetchedAt = System.currentTimeMillis(),
       suggestion = suggestion,
       tone = tone,

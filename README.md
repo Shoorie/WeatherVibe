@@ -17,6 +17,7 @@
   <img src="art/screen3.png" width="33%" />
   <img src="art/screen4.png" width="33%" />
   <img src="art/screen5.png" width="33%" />
+  <img src="art/screen6.png" width="33%" />
 </p>
 
 </div>

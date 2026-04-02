@@ -5,21 +5,25 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.settings.usecase.SaveUserSettings
-import com.weather.vibe.domain.weather.model.AiSuggestion
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.model.WeatherKey
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.ComputeWeatherKey
-import com.weather.vibe.domain.weather.usecase.GenerateAiSuggestion
+import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetWeather
+import com.weather.vibe.domain.weather.usecase.InvalidateWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
-import com.weather.vibe.feature.home.presentation.HomeAction.RetryAiContent
+import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
+import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
 import com.weather.vibe.feature.home.ui.HomeResources
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +40,8 @@ import java.time.LocalTime
 @KoinViewModel
 internal class HomeViewModel(
   private val computeWeatherKey: ComputeWeatherKey,
-  private val generateAiSuggestion: GenerateAiSuggestion,
+  private val generateWeatherSuggestion: GenerateWeatherSuggestion,
+  private val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   private val observeUserSettings: ObserveUserSettings,
   private val getWeather: GetWeather,
   private val resources: HomeResources,
@@ -53,7 +58,7 @@ internal class HomeViewModel(
   private var aiJob: Job? = null
 
   init {
-    startObserving()
+    observeWeather()
   }
 
   fun dispatch(action: HomeAction) {
@@ -61,13 +66,15 @@ internal class HomeViewModel(
       is GenreRemoveClick -> onGenreRemoveClick(action)
       is ReceiveLocationResult -> onReceiveLocationResult(action)
       is RefreshClick -> onRefreshClick()
-      is RetryAiContent -> onRetryAiContent()
+      is RetryWeatherSuggestion -> onRetryWeatherSuggestion()
       is ResumeLifecycle -> onResumeLifecycle()
     }
   }
 
-  private fun startObserving(location: Location = defaultLocation()) {
+  private fun observeWeather(location: Location = defaultLocation()) {
+
     _state.update { Loading }
+
     homeDataJob?.cancel()
     homeDataJob = combine(
       getWeather(location),
@@ -101,41 +108,64 @@ internal class HomeViewModel(
       hour = LocalTime.now().hour,
       temperatureCelsius = weather.currentTemperature
     )
-    val weatherConditionsChanged = weatherKey != snapshot.weatherKey
+    val previousWeatherKey = snapshot.weatherKey
     snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)
 
-    if (aiShouldRefresh(weatherConditionsChanged, settings, previousSettings)) {
-      _state.update { stateFactory.create(weather, settings.temperatureUnit) }
-      refreshAiContent()
+    val shouldRefreshSuggestion = _state.value !is Loaded ||
+      weatherKey != previousWeatherKey ||
+      settings.affectsWeatherSuggestion(previousSettings)
+
+    if (shouldRefreshSuggestion) {
+      updateWeather(weather, settings)
+      onWeatherSuggestionRefreshNeeded(settings, previousSettings, weatherKey)
     } else {
-      _state.update { stateFactory.reformatTemperatures(it, weather, settings.temperatureUnit) }
+      reformatTemperatures(weather, settings)
     }
   }
 
-  private fun aiShouldRefresh(
-    weatherConditionsChanged: Boolean,
+  private fun updateWeather(weather: WeatherData, settings: UserSettings) {
+    _state.update { stateFactory.create(weather, settings.temperatureUnit) }
+  }
+
+  private fun reformatTemperatures(weather: WeatherData, settings: UserSettings) {
+    _state.update {
+      stateFactory.reformatTemperatures(
+        current = it,
+        data = weather,
+        temperatureUnit = settings.temperatureUnit
+      )
+    }
+  }
+
+  private fun onWeatherSuggestionRefreshNeeded(
     settings: UserSettings,
-    previousSettings: UserSettings?
-  ): Boolean = _state.value !is HomeUiState.Loaded
-    || weatherConditionsChanged
-    || previousSettings != null && settings.hasAiRelevantChange(previousSettings)
+    previousSettings: UserSettings?,
+    weatherKey: WeatherKey
+  ) {
+    viewModelScope.launch {
+      if (settings.affectsWeatherSuggestion(previousSettings)) {
+        invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
+      }
+      refreshWeatherSuggestion()
+    }
+  }
 
   private fun onWeatherError(error: Throwable) {
     _state.update { HomeUiState.Error(error.message ?: resources.defaultError()) }
   }
 
   private fun onRefreshClick() {
-    startObserving()
+    observeWeather()
   }
 
-  private fun onRetryAiContent() {
-    refreshAiContent()
+  private fun onRetryWeatherSuggestion() {
+    refreshWeatherSuggestion()
   }
 
   private fun onResumeLifecycle() {
     if (aiJob?.isActive == true) return
     if (_state.value.isPlaylistLoaded) return
-    refreshAiContent()
+    refreshWeatherSuggestion()
   }
 
   private fun onReceiveLocationResult(action: ReceiveLocationResult) {
@@ -144,49 +174,65 @@ internal class HomeViewModel(
       latitude = action.latitude,
       longitude = action.longitude
     )
-    startObserving(location)
+    observeWeather(location)
   }
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
+
     val settings = currentSettings ?: return
     val updatedSettings = settings.withExcludedGenres(settings.excludedGenres + action.genre)
 
-    _state.update { it.withGenreRejecting(action.genre) }
+    updateGenreRejecting(action.genre)
 
-    if (_state.value.allGenresRejected) {
-      onAllGenresRejected(updatedSettings)
-    } else {
-      viewModelScope.launch { saveUserSettings(updatedSettings) }
+    when (_state.value.allGenresRejected) {
+      true -> onAllGenresRejected(updatedSettings)
+      false -> viewModelScope.launch { saveUserSettings(updatedSettings) }
     }
+  }
+
+  private fun updateGenreRejecting(genre: String) {
+    _state.update { it.withGenreRejecting(genre) }
   }
 
   private fun onAllGenresRejected(settings: UserSettings) {
-    _state.update { it.withPlaylist(PlaylistUiState.Generating(resources.findingBetterSuggestions())) }
+
+    showPlaylistGenerating()
+
     viewModelScope.launch {
       saveUserSettings(settings = settings)
-      refreshAiContent()
+      invalidateWeatherSuggestion(
+        tone = settings.briefTone,
+        weatherKey = snapshot.weatherKey ?: return@launch
+      )
+      refreshWeatherSuggestion()
     }
   }
 
-  private fun refreshAiContent() {
+  private fun showPlaylistGenerating() {
+    _state.update { it.withPlaylist(Generating(resources.findingBetterSuggestions())) }
+  }
+
+  private fun refreshWeatherSuggestion() {
 
     val weatherData = snapshot.weatherData ?: return
     val weatherKey = snapshot.weatherKey ?: return
 
     aiJob?.cancel()
-    aiJob = generateAiSuggestion(weatherData = weatherData, weatherKey = weatherKey)
-      .onEach { result ->
-        result.fold(
-          onSuccess = ::onAiContentSuccess,
-          onFailure = { onAiContentError() }
-        )
-      }
+    aiJob = generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
+      .onEach(::onWeatherSuggestionResult)
       .launchIn(viewModelScope)
   }
 
-  private fun onAiContentSuccess(suggestion: AiSuggestion) {
+  private fun onWeatherSuggestionResult(result: Result<WeatherSuggestion>) {
+    result.fold(
+      onSuccess = ::onWeatherSuggestionSuccess,
+      onFailure = { onWeatherSuggestionError() }
+    )
+  }
+
+  private fun onWeatherSuggestionSuccess(suggestion: WeatherSuggestion) {
     _state.update {
-      stateFactory.applyAiContent(
+      stateFactory.applyWeatherSuggestion(
         briefing = BriefingUiState.Loaded(text = suggestion.briefText),
         current = it,
         playlist = stateFactory.createPlaylist(suggestion = suggestion)
@@ -194,9 +240,9 @@ internal class HomeViewModel(
     }
   }
 
-  private fun onAiContentError() {
+  private fun onWeatherSuggestionError() {
     _state.update {
-      stateFactory.applyAiContent(
+      stateFactory.applyWeatherSuggestion(
         briefing = BriefingUiState.Error(canRetry = true),
         current = it,
         playlist = PlaylistUiState.Error

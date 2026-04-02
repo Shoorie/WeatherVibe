@@ -1,34 +1,32 @@
 package com.weather.vibe.data.weather.repository
 
 import com.weather.vibe.core.ai.AiService
-import com.weather.vibe.data.weather.remote.dto.AiResponseDto
-import com.weather.vibe.domain.weather.model.AiSuggestion
-import com.weather.vibe.domain.weather.repository.WeatherAiRepository
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import com.weather.vibe.data.weather.remote.dto.WeatherSuggestionDto
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.domain.weather.repository.WeatherSuggestionRepository
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.Single
 
-@Single(binds = [WeatherAiRepository::class])
-internal class DefaultWeatherAiRepository(
+@Single(binds = [WeatherSuggestionRepository::class])
+internal class DefaultWeatherSuggestionRepository(
   private val aiService: AiService
-) : WeatherAiRepository {
+) : WeatherSuggestionRepository {
 
   private val json = Json { ignoreUnknownKeys = true }
 
-  override suspend fun generate(prompt: String): AiSuggestion {
+  override suspend fun generate(prompt: String): WeatherSuggestion {
     val rawResponse = aiService.generateText(prompt)
     return parseResponse(rawResponse)
   }
 
-  private fun parseResponse(response: String): AiSuggestion {
+  private fun parseResponse(response: String): WeatherSuggestion {
     val cleaned = response.trim()
       .removePrefix("```json")
       .removePrefix("```")
       .removeSuffix("```")
       .trim()
 
-    val dto = json.decodeFromString<AiResponseDto>(cleaned)
+    val dto = json.decodeFromString<WeatherSuggestionDto>(cleaned)
 
     require(dto.briefText.isNotBlank()) { "briefText is blank" }
     require(dto.mood.isNotBlank()) { "mood is blank" }
@@ -36,7 +34,7 @@ internal class DefaultWeatherAiRepository(
       "Expected $EXPECTED_GENRE_COUNT genres, got ${dto.genres.size}"
     }
 
-    return AiSuggestion(
+    return WeatherSuggestion(
       briefText = dto.briefText,
       genres = dto.genres.map { it.trim().lowercase() },
       mood = dto.mood,

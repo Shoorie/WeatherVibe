@@ -1,20 +1,20 @@
 package com.weather.vibe.data.weather.local.mapper
 
-import com.weather.vibe.data.weather.local.entity.AiSuggestionEntity
+import com.weather.vibe.data.weather.local.entity.WeatherSuggestionEntity
 import com.weather.vibe.domain.settings.model.BriefTone
-import com.weather.vibe.domain.weather.model.AiSuggestion
-import com.weather.vibe.domain.weather.model.CachedAiSuggestion
+import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TemperatureRange
 import com.weather.vibe.domain.weather.model.TimeOfDay
 import com.weather.vibe.domain.weather.model.WeatherKey
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
 
 private const val GENRES_SEPARATOR = ","
 
-internal fun AiSuggestionEntity.toDomain(): CachedAiSuggestion =
-  CachedAiSuggestion(
+internal fun WeatherSuggestionEntity.toDomain(): CachedWeatherSuggestion =
+  CachedWeatherSuggestion(
     fetchedAt = fetchedAt,
-    suggestion = AiSuggestion(
+    suggestion = WeatherSuggestion(
       briefText = briefText,
       genres = genresCsv
         .split(GENRES_SEPARATOR)
@@ -31,8 +31,8 @@ internal fun AiSuggestionEntity.toDomain(): CachedAiSuggestion =
     )
   )
 
-internal fun CachedAiSuggestion.toEntity(): AiSuggestionEntity =
-  AiSuggestionEntity(
+internal fun CachedWeatherSuggestion.toEntity(): WeatherSuggestionEntity =
+  WeatherSuggestionEntity(
     briefText = suggestion.briefText,
     fetchedAt = fetchedAt,
     genresCsv = suggestion.genres.joinToString(separator = GENRES_SEPARATOR),

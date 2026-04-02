@@ -6,3 +6,4 @@ import org.koin.core.annotation.Module
 @Module
 @ComponentScan("com.weather.vibe.domain.weather")
 class DomainWeatherModule
+

@@ -12,11 +12,11 @@
 *Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
 
 <p align="center">
-  <img src="art/screen1.png" width="22%" />
-  <img src="art/screen2.png" width="22%" />
-  <img src="art/screen3.png" width="22%" />
-  <img src="art/screen4.png" width="22%" />
-  <img src="art/screen5.png" width="22%" />
+  <img src="art/screen1.png" width="33%" />
+  <img src="art/screen2.png" width="33%" />
+  <img src="art/screen3.png" width="33%" />
+  <img src="art/screen4.png" width="33%" />
+  <img src="art/screen5.png" width="33%" />
 </p>
 
 </div>

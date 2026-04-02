@@ -41,9 +41,9 @@ import java.time.LocalTime
 internal class HomeViewModel(
   private val computeWeatherKey: ComputeWeatherKey,
   private val generateWeatherSuggestion: GenerateWeatherSuggestion,
+  private val getWeather: GetWeather,
   private val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   private val observeUserSettings: ObserveUserSettings,
-  private val getWeather: GetWeather,
   private val resources: HomeResources,
   private val saveUserSettings: SaveUserSettings,
   private val stateFactory: HomeStateFactory
@@ -55,7 +55,7 @@ internal class HomeViewModel(
   private var snapshot = HomeSnapshot()
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
-  private var aiJob: Job? = null
+  private var suggestionJob: Job? = null
 
   init {
     observeWeather()
@@ -93,7 +93,7 @@ internal class HomeViewModel(
 
     weatherResult.fold(
       onSuccess = { weather -> onWeatherReady(weather, settings, previousSettings) },
-      onFailure = ::onWeatherError
+      onFailure = ::showWeatherError
     )
   }
 
@@ -103,31 +103,55 @@ internal class HomeViewModel(
     previousSettings: UserSettings?
   ) {
 
+    val previousWeatherKey = snapshot.weatherKey
     val weatherKey = computeWeatherKey(
       condition = weather.condition,
       hour = LocalTime.now().hour,
       temperatureCelsius = weather.currentTemperature
     )
-    val previousWeatherKey = snapshot.weatherKey
     snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)
 
-    val shouldRefreshSuggestion = _state.value !is Loaded ||
-      weatherKey != previousWeatherKey ||
-      settings.affectsWeatherSuggestion(previousSettings)
+    val isFirstLoad = _state.value !is Loaded
+    val weatherChanged = weatherKey != previousWeatherKey
+    val toneChanged = settings.hasBriefToneChanged(previousSettings)
 
-    if (shouldRefreshSuggestion) {
-      updateWeather(weather, settings)
-      onWeatherSuggestionRefreshNeeded(settings, previousSettings, weatherKey)
-    } else {
-      reformatTemperatures(weather, settings)
+    when {
+      isFirstLoad || weatherChanged -> onWeatherChanged(weather, settings)
+      toneChanged -> onBriefToneChanged(weather, settings, weatherKey)
+      else -> showTemperaturesReformatted(weather, settings)
     }
   }
 
-  private fun updateWeather(weather: WeatherData, settings: UserSettings) {
-    _state.update { stateFactory.create(weather, settings.temperatureUnit) }
+  private fun onWeatherChanged(weather: WeatherData, settings: UserSettings) {
+    showWeatherLoaded(weather, settings)
+    refreshWeatherSuggestion()
   }
 
-  private fun reformatTemperatures(weather: WeatherData, settings: UserSettings) {
+  private fun onBriefToneChanged(
+    weather: WeatherData,
+    settings: UserSettings,
+    weatherKey: WeatherKey
+  ) {
+    showWeatherLoaded(weather, settings)
+    viewModelScope.launch {
+      invalidateWeatherSuggestion(
+        tone = settings.briefTone,
+        weatherKey = weatherKey
+      )
+      refreshWeatherSuggestion()
+    }
+  }
+
+  private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
+    _state.update {
+      stateFactory.create(
+        data = weather,
+        temperatureUnit = settings.temperatureUnit
+      )
+    }
+  }
+
+  private fun showTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {
     _state.update {
       stateFactory.reformatTemperatures(
         current = it,
@@ -137,21 +161,12 @@ internal class HomeViewModel(
     }
   }
 
-  private fun onWeatherSuggestionRefreshNeeded(
-    settings: UserSettings,
-    previousSettings: UserSettings?,
-    weatherKey: WeatherKey
-  ) {
-    viewModelScope.launch {
-      if (settings.affectsWeatherSuggestion(previousSettings)) {
-        invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
-      }
-      refreshWeatherSuggestion()
+  private fun showWeatherError(error: Throwable) {
+    _state.update {
+      HomeUiState.Error(
+        error.message ?: resources.defaultError()
+      )
     }
-  }
-
-  private fun onWeatherError(error: Throwable) {
-    _state.update { HomeUiState.Error(error.message ?: resources.defaultError()) }
   }
 
   private fun onRefreshClick() {
@@ -163,7 +178,7 @@ internal class HomeViewModel(
   }
 
   private fun onResumeLifecycle() {
-    if (aiJob?.isActive == true) return
+    if (suggestionJob?.isActive == true) return
     if (_state.value.isPlaylistLoaded) return
     refreshWeatherSuggestion()
   }
@@ -180,7 +195,8 @@ internal class HomeViewModel(
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
 
     val settings = currentSettings ?: return
-    val updatedSettings = settings.withExcludedGenres(settings.excludedGenres + action.genre)
+    val updatedSettings = settings
+      .withExcludedGenres(settings.excludedGenres + action.genre)
 
     updateGenreRejecting(action.genre)
 
@@ -217,8 +233,8 @@ internal class HomeViewModel(
     val weatherData = snapshot.weatherData ?: return
     val weatherKey = snapshot.weatherKey ?: return
 
-    aiJob?.cancel()
-    aiJob = generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
+    suggestionJob?.cancel()
+    suggestionJob = generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
       .onEach(::onWeatherSuggestionResult)
       .launchIn(viewModelScope)
   }
@@ -231,21 +247,28 @@ internal class HomeViewModel(
   }
 
   private fun onWeatherSuggestionSuccess(suggestion: WeatherSuggestion) {
-    _state.update {
-      stateFactory.applyWeatherSuggestion(
-        briefing = BriefingUiState.Loaded(text = suggestion.briefText),
-        current = it,
-        playlist = stateFactory.createPlaylist(suggestion = suggestion)
-      )
-    }
+    showWeatherSuggestion(
+      briefing = BriefingUiState.Loaded(text = suggestion.briefText),
+      playlist = stateFactory.createPlaylist(suggestion = suggestion)
+    )
   }
 
   private fun onWeatherSuggestionError() {
+    showWeatherSuggestion(
+      briefing = BriefingUiState.Error(canRetry = true),
+      playlist = PlaylistUiState.Error
+    )
+  }
+
+  private fun showWeatherSuggestion(
+    briefing: BriefingUiState,
+    playlist: PlaylistUiState
+  ) {
     _state.update {
       stateFactory.applyWeatherSuggestion(
-        briefing = BriefingUiState.Error(canRetry = true),
+        briefing = briefing,
         current = it,
-        playlist = PlaylistUiState.Error
+        playlist = playlist
       )
     }
   }

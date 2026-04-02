@@ -16,20 +16,14 @@ data class UserSettings(
   fun withBriefTone(tone: BriefTone): UserSettings =
     copy(briefTone = tone)
 
-  fun affectsWeatherSuggestion(previous: UserSettings?): Boolean =
-    previous != null && (hasBriefToneChanged(previous) || hasExcludedGenresChanged(previous))
-
   fun withExcludedGenres(genres: Set<String>): UserSettings =
     copy(excludedGenres = genres)
 
   fun withToggledTemperatureUnit(): UserSettings =
     copy(temperatureUnit = if (temperatureUnit == CELSIUS) FAHRENHEIT else CELSIUS)
 
-  private fun hasBriefToneChanged(previous: UserSettings): Boolean =
-    briefTone != previous.briefTone
-
-  private fun hasExcludedGenresChanged(previous: UserSettings): Boolean =
-    excludedGenres != previous.excludedGenres
+  fun hasBriefToneChanged(previous: UserSettings?): Boolean =
+    previous != null && briefTone != previous.briefTone
 
   private companion object {
     const val GENRES_SEPARATOR = ","

@@ -1,9 +1,7 @@
 package com.weather.vibe.feature.settings.ui.screen
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -11,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.components.SectionLabel
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -23,13 +21,10 @@ internal fun SettingsTemperatureSection(
   isCelsius: Boolean,
   onToggle: () -> Unit
 ) {
-  Column(modifier = modifier) {
-    Text(
-      text = Texts.temperatureSection(),
-      color = colors.onSurfaceVariant,
-      style = typography.labelMedium,
-      modifier = Modifier.padding(bottom = PaddingSmall)
-    )
+  SectionLabel(
+    modifier = modifier,
+    text = Texts.temperatureSection()
+  ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically

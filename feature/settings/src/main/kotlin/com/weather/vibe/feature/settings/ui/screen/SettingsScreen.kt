@@ -5,15 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.designsystem.components.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.settings.presentation.SettingsAction
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
@@ -74,7 +66,6 @@ internal fun SettingsContent(
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsLoadedContent(
   modifier: Modifier = Modifier,
@@ -85,26 +76,9 @@ private fun SettingsLoadedContent(
     modifier = modifier,
     containerColor = colors.backgroundGradientStart,
     topBar = {
-      TopAppBar(
-        title = {
-          Text(
-            text = Texts.screenTitle(),
-            color = colors.onBackground,
-            style = typography.titleLarge
-          )
-        },
-        navigationIcon = {
-          IconButton(onClick = { dispatch(BackClick) }) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = null,
-              tint = colors.onBackground
-            )
-          }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-          containerColor = colors.backgroundGradientStart
-        )
+      VibeTopBar(
+        title = Texts.screenTitle(),
+        onNavigateBack = { dispatch(BackClick) }
       )
     }
   ) { innerPadding ->

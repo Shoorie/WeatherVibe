@@ -1,61 +1,58 @@
 package com.weather.vibe.core.designsystem.components
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.DividerThickness
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 
 @Composable
-fun GlassCard(
+fun GlassCardSection(
   modifier: Modifier = Modifier,
+  title: String,
   contentPadding: PaddingValues = PaddingValues(PaddingMedium),
+  showDivider: Boolean = true,
   content: @Composable ColumnScope.() -> Unit
 ) {
-
-  val surfaceColor = colors.surfaceVariant
-
-  Column(
-    modifier = modifier
-      .clip(shapes.card)
-      .drawBehind { drawRect(surfaceColor) }
-      .border(BorderThickness, colors.outline, shapes.card)
-      .padding(contentPadding),
-    content = content
-  )
+  GlassCard(
+    modifier = modifier.fillMaxWidth(),
+    contentPadding = contentPadding
+  ) {
+    Text(
+      text = title,
+      style = typography.titleSmall,
+      color = colors.onSurfaceVariant
+    )
+    Spacer(modifier = Modifier.height(PaddingSmall))
+    if (showDivider) {
+      HorizontalDivider(
+        color = colors.outline,
+        thickness = DividerThickness
+      )
+    }
+    content()
+  }
 }
 
 @PreviewLightDark
 @Composable
-private fun GlassCardPreview() {
+private fun Preview() {
   WeatherVibeTheme {
-    GlassCard(modifier = Modifier.fillMaxWidth()) {
-      Text(
-        text = "Title",
-        style = typography.titleSmall,
-        color = colors.onSurfaceVariant
-      )
+    GlassCardSection(title = "Section title") {
       Spacer(modifier = Modifier.height(PaddingSmall))
       Text(
-        text = "Content inside a GlassCard",
+        text = "Card content",
         style = typography.bodyMedium,
         color = colors.onBackground
       )

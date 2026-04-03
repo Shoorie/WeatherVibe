@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.weather.vibe.core.designsystem.components.SectionLabel
 import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
@@ -31,13 +32,10 @@ internal fun SettingsBriefToneSection(
   briefToneOptions: List<BriefToneOptionUiState>,
   onBriefToneSelect: (BriefTone) -> Unit
 ) {
-  Column(modifier = modifier) {
-    Text(
-      text = Texts.briefToneSection(),
-      color = colors.onSurfaceVariant,
-      style = typography.labelMedium,
-      modifier = Modifier.padding(bottom = PaddingSmall)
-    )
+  SectionLabel(
+    modifier = modifier,
+    text = Texts.briefToneSection()
+  ) {
     Column(
       modifier = Modifier
         .fillMaxWidth()

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.GlassCard
+import com.weather.vibe.core.designsystem.components.LoadingIndicator
+import com.weather.vibe.core.designsystem.components.SectionLabel
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -153,13 +154,11 @@ private fun RecentsSection(
   locations: List<LocationItemUiState>,
   onLocationClick: (LocationItemUiState) -> Unit
 ) {
-  Column(modifier = modifier) {
-    Text(
-      text = recentLocationsTitle(),
-      style = typography.titleSmall,
-      color = colors.onSurfaceVariant,
-      modifier = Modifier.padding(vertical = PaddingSmall)
-    )
+  SectionLabel(
+    modifier = modifier,
+    text = recentLocationsTitle(),
+    style = typography.titleSmall
+  ) {
     LocationList(
       emoji = clock(),
       locations = locations,
@@ -199,15 +198,11 @@ private fun LocationList(
 
 @Composable
 private fun SearchingIndicator(modifier: Modifier = Modifier) {
-  Box(
-    modifier = modifier.fillMaxWidth(),
-    contentAlignment = Alignment.Center
-  ) {
-    CircularProgressIndicator(
-      color = colors.accent,
-      modifier = Modifier.padding(PaddingMedium)
-    )
-  }
+  LoadingIndicator(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(PaddingMedium)
+  )
 }
 
 @Composable

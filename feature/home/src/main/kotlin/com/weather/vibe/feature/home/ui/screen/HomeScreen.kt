@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -41,6 +40,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.designsystem.components.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
@@ -143,7 +143,7 @@ internal fun HomeContent(
       .background(brush = backgroundBrush)
   ) {
     when (state) {
-      is Loading -> LoadingContent()
+      is Loading -> LoadingIndicator(modifier = modifier.fillMaxSize())
       is Error -> ErrorContent(
         error = state.message,
         onRetry = { dispatch(RefreshClick) }
@@ -273,16 +273,6 @@ private fun LocationHeader(
         tint = colors.onSurfaceVariant
       )
     }
-  }
-}
-
-@Composable
-private fun LoadingContent(modifier: Modifier = Modifier) {
-  Box(
-    modifier = modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-  ) {
-    CircularProgressIndicator(color = colors.accent)
   }
 }
 

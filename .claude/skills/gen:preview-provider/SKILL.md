@@ -1,5 +1,5 @@
 ---
-name: gen:preview-generator
+name: gen:preview-provider
 description: >-
   Generates PreviewParameterProvider classes with realistic fake data for UiState classes.
   Use when user says: generate preview, create preview provider, add preview data, generate
@@ -7,7 +7,7 @@ description: >-
   to add or generate previews.
 ---
 
-# Preview Generator
+# Preview Provider Generator
 
 ## Step 1 — Determine scope
 

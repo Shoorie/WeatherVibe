@@ -1,5 +1,5 @@
 ---
-name: refactor:pattern-refactor
+name: refactor:design-pattern
 description: >-
   Analyzes code for design pattern opportunities, identifies the right GoF or functional
   pattern, explains why it fits, and generates the refactored Kotlin implementation.

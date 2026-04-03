@@ -160,6 +160,19 @@ Every AI interaction is governed by these "unbreakable" laws. These files act as
 
 ---
 
+## Claude Code Skills
+
+This project uses reusable [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills
+from [claude-code-kit](https://github.com/Shoorie/claude-code-kit). The `.claude/` directory is
+gitignored — skills are installed locally.
+
+After cloning, run:
+```bash
+~/claude-code-kit/install.sh
+```
+
+---
+
 <div align="center">
   <b>Crafted with ❤️ and 🤖</b>
   <br/>

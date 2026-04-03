@@ -1,5 +1,5 @@
 ---
-name: audit:perf-audit
+name: audit:compose-performance
 description: >-
   Audits Compose UI files for performance issues: unnecessary recompositions, unstable
   types, missing keys in lazy lists, inline allocations, and missing derivedStateOf.
@@ -7,7 +7,7 @@ description: >-
   optimize Compose, find performance issues, or points to UI files for performance review.
 ---
 
-# Performance Audit
+# Compose Performance Audit
 
 ## Step 1 — Determine scope
 
@@ -18,7 +18,7 @@ description: >-
 Run the scanner first to collect static findings:
 
 ```bash
-python3 ".claude/skills/audit:perf-audit/scripts/scan_perf.py" --root <project_root> [--module <module_path>]
+python3 ".claude/skills/audit:compose-performance/scripts/scan_perf.py" --root <project_root> [--module <module_path>]
 ```
 
 ## Step 2 — Enrich with manual analysis
@@ -42,7 +42,7 @@ After the script, read flagged files to catch issues static analysis can't detec
 
 ---
 
-## Performance Audit Report
+## Compose Performance Audit Report
 
 ### 🔴 Recomposition risks
 

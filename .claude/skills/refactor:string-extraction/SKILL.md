@@ -1,5 +1,5 @@
 ---
-name: gen:string-extractor
+name: refactor:string-extraction
 description: >-
   Finds hardcoded string literals in Compose UI files and extracts them to strings.xml
   + resource wrapper functions. Use when user says: extract strings, find hardcoded strings,
@@ -7,7 +7,7 @@ description: >-
   or points to a Composable file asking to clean up hardcoded values.
 ---
 
-# String Extractor
+# String Extraction
 
 ## Step 1 — Determine scope
 

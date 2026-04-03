@@ -1,36 +1,24 @@
 package com.weather.vibe.feature.home.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons.AutoMirrored
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.designsystem.components.LoadingIndicator
+import com.weather.vibe.core.designsystem.components.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -38,7 +26,6 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.backContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
@@ -66,48 +53,37 @@ internal fun WeatherDetailsContent(
   state: HomeUiState,
   onNavigateBack: () -> Unit
 ) {
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  val backgroundBrush = remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
-  }
-
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(brush = backgroundBrush)
-  ) {
+  Scaffold(
+    modifier = modifier,
+    containerColor = colors.backgroundGradientStart,
+    topBar = {
+      VibeTopBar(
+        title = weatherDetailsTitle(),
+        onNavigateBack = onNavigateBack
+      )
+    }
+  ) { innerPadding ->
     when (state) {
       is Loading,
-      is Error -> DetailsLoadingContent()
-      is Loaded -> DetailsLoadedContent(state = state, onNavigateBack = onNavigateBack)
+      is Error -> LoadingIndicator(modifier = Modifier.fillMaxSize())
+      is Loaded -> DetailsLoadedContent(
+        modifier = Modifier.padding(innerPadding),
+        state = state
+      )
     }
-  }
-}
-
-@Composable
-private fun DetailsLoadingContent(modifier: Modifier = Modifier) {
-  Box(
-    modifier = modifier.fillMaxSize(),
-    contentAlignment = Alignment.Center
-  ) {
-    CircularProgressIndicator(color = colors.accent)
   }
 }
 
 @Composable
 private fun DetailsLoadedContent(
   modifier: Modifier = Modifier,
-  state: Loaded,
-  onNavigateBack: () -> Unit
+  state: Loaded
 ) {
   LazyColumn(
     modifier = modifier
       .fillMaxSize()
-      .statusBarsPadding()
       .padding(horizontal = PaddingMedium)
   ) {
-    item { DetailsTopBar(onNavigateBack = onNavigateBack) }
     item { Spacer(modifier = Modifier.height(PaddingSmall)) }
     item { SunArcSection(state = state.sunriseSunset) }
     item { Spacer(modifier = Modifier.height(PaddingMedium)) }
@@ -132,32 +108,6 @@ private fun DetailsLoadedContent(
       )
     }
     item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }
-  }
-}
-
-@Composable
-private fun DetailsTopBar(
-  modifier: Modifier = Modifier,
-  onNavigateBack: () -> Unit
-) {
-  Row(
-    modifier = modifier
-      .fillMaxWidth()
-      .padding(top = PaddingSmall),
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    IconButton(onClick = onNavigateBack) {
-      Icon(
-        imageVector = AutoMirrored.Filled.ArrowBack,
-        contentDescription = backContentDescription(),
-        tint = colors.onSurfaceVariant
-      )
-    }
-    Text(
-      text = weatherDetailsTitle(),
-      style = typography.headlineLarge,
-      color = colors.onBackground
-    )
   }
 }
 

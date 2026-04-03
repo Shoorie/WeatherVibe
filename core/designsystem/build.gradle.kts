@@ -6,3 +6,7 @@ plugins {
 android {
   namespace = "com.weather.vibe.core.designsystem"
 }
+
+dependencies {
+  implementation(libs.androidx.material.icons.core)
+}

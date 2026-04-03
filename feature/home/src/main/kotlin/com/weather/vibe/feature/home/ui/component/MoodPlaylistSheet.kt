@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -12,17 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
-import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
@@ -33,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.theme.AppDimens.BrandIconSize
+import com.weather.vibe.core.designsystem.components.BrandButton
+import com.weather.vibe.core.designsystem.components.LoadingIndicator
+import com.weather.vibe.core.designsystem.components.VibeInputChip
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
@@ -102,14 +94,11 @@ internal fun MoodPlaylistSheet(
 
 @Composable
 private fun SheetLoadingContent(modifier: Modifier = Modifier) {
-  Box(
+  LoadingIndicator(
     modifier = modifier
       .fillMaxWidth()
-      .height(PaddingLarge),
-    contentAlignment = Alignment.Center
-  ) {
-    CircularProgressIndicator(color = colors.accent)
-  }
+      .height(PaddingLarge)
+  )
 }
 
 @Composable
@@ -177,23 +166,13 @@ private fun SpotifyButton(
   modifier: Modifier = Modifier,
   onClick: () -> Unit
 ) {
-  Button(
-    onClick = onClick,
-    modifier = modifier.fillMaxWidth(),
-    colors = ButtonDefaults.buttonColors(containerColor = SpotifyGreen)
-  ) {
-    Icon(
-      painter = spotifyIcon(),
-      contentDescription = null,
-      modifier = Modifier.size(BrandIconSize),
-      tint = colors.onBackground
-    )
-    Spacer(modifier = Modifier.width(PaddingExtraSmall))
-    Text(
-      text = openInSpotify(),
-      color = colors.onBackground
-    )
-  }
+  BrandButton(
+    modifier = modifier,
+    icon = spotifyIcon(),
+    text = openInSpotify(),
+    containerColor = SpotifyGreen,
+    onClick = onClick
+  )
 }
 
 @Composable
@@ -201,23 +180,13 @@ private fun YtMusicButton(
   modifier: Modifier = Modifier,
   onClick: () -> Unit
 ) {
-  Button(
-    onClick = onClick,
-    modifier = modifier.fillMaxWidth(),
-    colors = ButtonDefaults.buttonColors(containerColor = YtMusicRed)
-  ) {
-    Icon(
-      painter = ytMusicIcon(),
-      contentDescription = null,
-      modifier = Modifier.size(BrandIconSize),
-      tint = colors.onBackground
-    )
-    Spacer(modifier = Modifier.width(PaddingExtraSmall))
-    Text(
-      text = openInYtMusic(),
-      color = colors.onBackground
-    )
-  }
+  BrandButton(
+    modifier = modifier,
+    icon = ytMusicIcon(),
+    text = openInYtMusic(),
+    containerColor = YtMusicRed,
+    onClick = onClick
+  )
 }
 
 private val SpotifyGreen = Color(0xFF1DB954)
@@ -241,32 +210,11 @@ private fun GenreChips(
         enter = fadeIn(),
         exit = fadeOut()
       ) {
-        InputChip(
+        VibeInputChip(
+          label = genre.name,
           selected = false,
-          onClick = { onThumbsDown(genre.name) },
-          label = {
-            Text(
-              text = genre.name,
-              style = typography.labelSmall
-            )
-          },
-          trailingIcon = {
-            Icon(
-              imageVector = Icons.Default.Close,
-              contentDescription = genreRemoveContentDescription(genre.name),
-              modifier = Modifier.size(BrandIconSize),
-              tint = colors.onSurfaceVariant
-            )
-          },
-          colors = InputChipDefaults.inputChipColors(
-            containerColor = colors.glassSurface,
-            labelColor = colors.onBackground
-          ),
-          border = InputChipDefaults.inputChipBorder(
-            enabled = true,
-            selected = false,
-            borderColor = colors.outline
-          )
+          onDismiss = { onThumbsDown(genre.name) },
+          dismissContentDescription = genreRemoveContentDescription(genre.name)
         )
       }
     }

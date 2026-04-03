@@ -40,7 +40,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.designsystem.components.LoadingIndicator
+import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium

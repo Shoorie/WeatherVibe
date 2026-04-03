@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.components.SectionLabel
+import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall

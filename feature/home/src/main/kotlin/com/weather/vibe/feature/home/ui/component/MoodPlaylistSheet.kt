@@ -23,9 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.components.BrandButton
-import com.weather.vibe.core.designsystem.components.LoadingIndicator
-import com.weather.vibe.core.designsystem.components.VibeInputChip
+import com.weather.vibe.core.designsystem.components.button.BrandButton
+import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
+import com.weather.vibe.core.designsystem.components.chip.VibeInputChip
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium

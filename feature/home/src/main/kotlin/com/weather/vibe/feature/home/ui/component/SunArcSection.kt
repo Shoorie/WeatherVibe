@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.components.GlassCard
+import com.weather.vibe.core.designsystem.components.card.GlassCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.SunArcHeight

@@ -20,7 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.components.GlassCard
+import com.weather.vibe.core.designsystem.components.card.GlassCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.BrandIconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.BriefingCardContentMinHeight
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall

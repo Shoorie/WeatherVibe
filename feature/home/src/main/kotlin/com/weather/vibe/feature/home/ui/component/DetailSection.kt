@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.components.GlassCard
+import com.weather.vibe.core.designsystem.components.card.GlassCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.DividerThickness
 import com.weather.vibe.core.designsystem.theme.AppDimens.EmojiSizeMetric
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall

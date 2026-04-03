@@ -13,7 +13,6 @@ object AppDimens {
 
   val BrandIconSize = 20.dp
   val BriefingCardContentMinHeight = 56.dp
-  val IconButtonSize = 32.dp
 
   val HourlyItemWidth = 68.dp
   val HourlyItemHeight = 96.dp

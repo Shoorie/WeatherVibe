@@ -13,5 +13,5 @@ build/
 .cxx
 local.properties
 
-# Local AI tools & environment settings
-.claude/settings.local.json
+# Claude Code (skills installed from claude-code-kit)
+.claude/

@@ -1,0 +1,25 @@
+name: Setup Firebase
+description: Write Firebase service account JSON to a temp file
+
+inputs:
+  service-account-json:
+    description: Firebase service account JSON content
+    required: true
+
+outputs:
+  credentials-path:
+    description: Path to service account JSON file
+    value: ${{ steps.write.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Write credentials
+      id: write
+      shell: bash
+      env:
+        FIREBASE_SA_JSON: ${{ inputs.service-account-json }}
+      run: |
+        CREDS_PATH="${{ runner.temp }}/firebase-sa.json"
+        printenv FIREBASE_SA_JSON > "$CREDS_PATH"
+        echo "path=$CREDS_PATH" >> "$GITHUB_OUTPUT"

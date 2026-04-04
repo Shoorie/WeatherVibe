@@ -1,4 +1,7 @@
-import java.util.Properties
+import com.weather.vibe.BuildConfigFields
+import com.weather.vibe.EnvKeys
+import com.weather.vibe.LocalPropertyKeys
+import com.weather.vibe.localProperties
 
 plugins {
   alias(libs.plugins.weathervibe.android.library)
@@ -6,26 +9,26 @@ plugins {
   alias(libs.plugins.weathervibe.android.ktor)
 }
 
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-  localPropertiesFile.inputStream().use { localProperties.load(it) }
-}
-
 android {
+
   namespace = "com.weather.vibe.core.ai"
 
   buildFeatures { buildConfig = true }
 
   defaultConfig {
+
+    val anthropicApiKey = System.getenv(EnvKeys.ANTHROPIC_API_KEY)
+      ?: localProperties.getProperty(LocalPropertyKeys.ANTHROPIC_API_KEY, "")
+
     buildConfigField(
       type = "String",
-      name = "ANTHROPIC_API_KEY",
-      value = "\"${localProperties.getProperty("anthropic.api.key", "")}\""
+      name = BuildConfigFields.ANTHROPIC_API_KEY,
+      value = "\"$anthropicApiKey\""
     )
+
     buildConfigField(
       type = "String",
-      name = "ANTHROPIC_MODEL",
+      name = BuildConfigFields.ANTHROPIC_MODEL,
       value = "\"${libs.versions.anthropicModel.get()}\""
     )
   }
@@ -33,6 +36,5 @@ android {
 
 dependencies {
   implementation(projects.core.network)
-
   implementation(libs.koin.android)
 }

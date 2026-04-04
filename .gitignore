@@ -13,5 +13,9 @@ build/
 .cxx
 local.properties
 
+# Signing
+*.jks
+*.keystore
+
 # Claude Code (skills installed from claude-code-kit)
 .claude/

@@ -31,7 +31,9 @@ internal fun WeatherSuggestionEntity.toDomain(): CachedWeatherSuggestion =
     )
   )
 
-internal fun CachedWeatherSuggestion.toEntity(): WeatherSuggestionEntity =
+internal fun CachedWeatherSuggestion.toEntity(
+  languageTag: String
+): WeatherSuggestionEntity =
   WeatherSuggestionEntity(
     briefText = suggestion.briefText,
     fetchedAt = fetchedAt,
@@ -42,5 +44,8 @@ internal fun CachedWeatherSuggestion.toEntity(): WeatherSuggestionEntity =
     temperatureRange = weatherKey.temperature.name,
     timeOfDay = weatherKey.timeOfDay.name,
     tone = tone.name,
-    weatherKeyHash = weatherKey.toHash()
+    weatherKeyHash = weatherKey.toLocalizedHash(languageTag)
   )
+
+internal fun WeatherKey.toLocalizedHash(languageTag: String): String =
+  "${toHash()}_$languageTag"

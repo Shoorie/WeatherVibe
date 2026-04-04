@@ -93,7 +93,7 @@ internal class HomeStateFactory(
     val today = data.dailyForecast.firstOrNull()
     return CurrentWeatherUiState(
       conditionEmoji = data.condition.emoji,
-      conditionLabel = data.condition.label,
+      conditionLabel = resources.conditionLabel(data.condition),
       currentTemperature = convertTemperature(celsius = data.currentTemperature, unit = unit),
       feelsLikeTemperature = convertTemperature(celsius = data.apparentTemperature, unit = unit),
       highTemperature = convertTemperature(
@@ -215,11 +215,11 @@ internal class HomeStateFactory(
     const val TIME_OUTPUT_FORMAT = "HH:mm"
     const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
 
-    val DATE_FORMATTER: DateTimeFormatter? =
-      ofPattern(DATE_FORMAT, Locale.ENGLISH)
+    val DATE_FORMATTER: DateTimeFormatter?
+      get() = ofPattern(DATE_FORMAT, Locale.getDefault())
 
-    val DAY_FORMATTER: DateTimeFormatter? =
-      ofPattern(DAY_FORMAT, Locale.ENGLISH)
+    val DAY_FORMATTER: DateTimeFormatter?
+      get() = ofPattern(DAY_FORMAT, Locale.getDefault())
 
     val TIME_INPUT_FORMATTER: DateTimeFormatter? =
       ofPattern(TIME_INPUT_FORMAT)

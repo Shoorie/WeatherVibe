@@ -48,6 +48,21 @@
   <string name="wind_speed_max_label">Max Wind</string>
   <string name="wind_speed_value_format">%1$d km/h</string>
 
+  <string name="condition_clear_sky">Clear Sky</string>
+  <string name="condition_mainly_clear">Mainly Clear</string>
+  <string name="condition_partly_cloudy">Partly Cloudy</string>
+  <string name="condition_overcast">Overcast</string>
+  <string name="condition_fog">Foggy</string>
+  <string name="condition_drizzle">Drizzle</string>
+  <string name="condition_freezing_drizzle">Freezing Drizzle</string>
+  <string name="condition_rain">Rain</string>
+  <string name="condition_freezing_rain">Freezing Rain</string>
+  <string name="condition_snow">Snow</string>
+  <string name="condition_rain_showers">Rain Showers</string>
+  <string name="condition_snow_showers">Snow Showers</string>
+  <string name="condition_thunderstorm">Thunderstorm</string>
+  <string name="condition_unknown">Unknown</string>
+
   <string name="ai_briefing_retry">Retry</string>
   <string name="finding_better_suggestions">Finding better suggestions…</string>
   <string name="genre_remove_content_description">Remove %1$s</string>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="settings_screen_title">Ustawienia</string>
+  <string name="settings_section_brief_tone">Ton briefingu AI</string>
+  <string name="settings_section_temperature">Jednostka temperatury</string>
+  <string name="settings_section_excluded_genres">Wykluczone gatunki muzyki</string>
+  <string name="settings_brief_tone_witty">Dowcipny i przyjazny</string>
+  <string name="settings_brief_tone_witty_desc">Lekki, ciepły i konwersacyjny</string>
+  <string name="settings_brief_tone_formal">Formalny i profesjonalny</string>
+  <string name="settings_brief_tone_formal_desc">Jasny, zwięzły i rzeczowy</string>
+  <string name="settings_brief_tone_humorous">Humorystyczny</string>
+  <string name="settings_brief_tone_humorous_desc">Lekka ironia, suchy dowcip i delikatny sarkazm</string>
+  <string name="settings_unit_celsius">Celsjusz (°C)</string>
+  <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
+  <string name="settings_error_default">Nie udało się załadować ustawień</string>
+</resources>

@@ -10,10 +10,10 @@ android {
 }
 
 dependencies {
-  implementation(project(":core:ai"))
-  implementation(project(":core:network"))
-  implementation(project(":domain:settings"))
-  implementation(project(":domain:weather"))
+  implementation(projects.core.ai)
+  implementation(projects.core.network)
+  implementation(projects.domain.settings)
+  implementation(projects.domain.weather)
 
   implementation(libs.koin.android)
 }

@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-  implementation(project(":domain:location"))
-  implementation(project(":domain:weather"))
+  implementation(projects.domain.location)
+  implementation(projects.domain.weather)
 }

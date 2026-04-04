@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "744366518743",
+    "project_id": "weathervibe-8da46",
+    "storage_bucket": "weathervibe-8da46.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744366518743:android:98b39a0ca45fc85b5e5b92",
+        "android_client_info": {
+          "package_name": "com.weather.vibe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmCWRy65_GyRYgteexzNoQGNdGCWUHGmY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

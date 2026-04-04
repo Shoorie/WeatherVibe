@@ -21,6 +21,8 @@ protobuf = "4.34.1"
 protobufPlugin = "0.9.6"
 koin = "4.2.0"
 koinAnnotations = "2.3.1"
+googleServices = "4.4.4"
+firebaseAppDistribution = "5.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +81,8 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
 
 # Plugins defined by this project
 weathervibe-android-application = { id = "weathervibe.android.application" }

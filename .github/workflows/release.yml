@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    branches: [ main ]
+    tags: [ 'v*' ]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -12,50 +12,50 @@ jobs:
   release:
     name: Build & Distribute
     runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
         with:
-          distribution: temurin
-          java-version: 17
+          fetch-depth: 0
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - uses: ./.github/actions/setup-android
 
-      - name: Decode keystore
-        run: |
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${{ runner.temp }}/release.jks
+      - name: Extract version from tag
+        id: version
+        run: echo "name=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate release notes
+        run: ./scripts/generate-release-notes.sh
+
+      - uses: ./.github/actions/decode-keystore
+        id: keystore
+        with:
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - uses: ./.github/actions/setup-firebase
+        id: firebase
+        with:
+          service-account-json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
 
       - name: Build release APK
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
         run: ./gradlew assembleRelease
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: release-apk
+          name: release-apk-${{ steps.version.outputs.name }}
           path: app/build/outputs/apk/release/*.apk
-
-      - name: Write Firebase service account
-        env:
-          FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
-        run: printenv FIREBASE_SA_JSON > ${{ runner.temp }}/firebase-sa.json
 
       - name: Distribute to Firebase
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-          FIREBASE_SERVICE_ACCOUNT_FILE: ${{ runner.temp }}/firebase-sa.json
+          VERSION_NAME: ${{ steps.version.outputs.name }}
+          KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
+          FIREBASE_SERVICE_ACCOUNT_FILE: ${{ steps.firebase.outputs.credentials-path }}
         run: ./gradlew appDistributionUploadRelease

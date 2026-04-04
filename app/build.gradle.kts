@@ -1,8 +1,22 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
+import com.weather.vibe.EnvKeys.FIREBASE_SERVICE_ACCOUNT_FILE
+import com.weather.vibe.EnvKeys.KEYSTORE_PASSWORD
+import com.weather.vibe.EnvKeys.KEYSTORE_PATH
+import com.weather.vibe.EnvKeys.KEY_ALIAS
+import com.weather.vibe.EnvKeys.KEY_PASSWORD
+import com.weather.vibe.LocalPropertyKeys.SIGNING_KEY_ALIAS
+import com.weather.vibe.LocalPropertyKeys.SIGNING_KEY_PASSWORD
+import com.weather.vibe.LocalPropertyKeys.SIGNING_STORE_FILE
+import com.weather.vibe.LocalPropertyKeys.SIGNING_STORE_PASSWORD
+import com.weather.vibe.localProperties
+
 plugins {
   alias(libs.plugins.weathervibe.android.application)
   alias(libs.plugins.weathervibe.android.compose)
   alias(libs.plugins.weathervibe.android.koin)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.google.services)
+  alias(libs.plugins.firebase.appdistribution)
 }
 
 android {
@@ -16,11 +30,42 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  val keystorePath = System.getenv(KEYSTORE_PATH)
+    ?: localProperties.getProperty(SIGNING_STORE_FILE)
+
+  if (keystorePath != null) {
+    signingConfigs {
+      create("release") {
+
+        storeFile = file(keystorePath)
+
+        storePassword = System.getenv(KEYSTORE_PASSWORD)
+          ?: localProperties.getProperty(SIGNING_STORE_PASSWORD, "")
+
+        keyAlias = System.getenv(KEY_ALIAS)
+          ?: localProperties.getProperty(SIGNING_KEY_ALIAS, "")
+
+        keyPassword = System.getenv(KEY_PASSWORD)
+          ?: localProperties.getProperty(SIGNING_KEY_PASSWORD, "")
+      }
+    }
+  }
+
   buildTypes {
     release {
-      isMinifyEnabled = false
+      isDebuggable = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      if (keystorePath != null) {
+        signingConfig = signingConfigs.getByName("release")
+      }
     }
+  }
+
+  firebaseAppDistribution {
+    artifactType = "APK"
+    serviceCredentialsFile = System.getenv(FIREBASE_SERVICE_ACCOUNT_FILE).orEmpty()
   }
 }
 

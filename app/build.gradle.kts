@@ -1,9 +1,11 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import com.weather.vibe.EnvKeys.FIREBASE_SERVICE_ACCOUNT_FILE
+import com.weather.vibe.EnvKeys.GITHUB_RUN_NUMBER
 import com.weather.vibe.EnvKeys.KEYSTORE_PASSWORD
 import com.weather.vibe.EnvKeys.KEYSTORE_PATH
 import com.weather.vibe.EnvKeys.KEY_ALIAS
 import com.weather.vibe.EnvKeys.KEY_PASSWORD
+import com.weather.vibe.EnvKeys.VERSION_NAME
 import com.weather.vibe.LocalPropertyKeys.SIGNING_KEY_ALIAS
 import com.weather.vibe.LocalPropertyKeys.SIGNING_KEY_PASSWORD
 import com.weather.vibe.LocalPropertyKeys.SIGNING_STORE_FILE
@@ -24,8 +26,8 @@ android {
 
   defaultConfig {
     applicationId = "com.weather.vibe"
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = System.getenv(GITHUB_RUN_NUMBER)?.toIntOrNull() ?: 1
+    versionName = System.getenv(VERSION_NAME) ?: "1.0.0-dev"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -65,7 +67,12 @@ android {
 
   firebaseAppDistribution {
     artifactType = "APK"
+    groups = "testers"
     serviceCredentialsFile = System.getenv(FIREBASE_SERVICE_ACCOUNT_FILE).orEmpty()
+    val notesFile = rootProject.file("release-notes.txt")
+    if (notesFile.exists()) {
+      releaseNotesFile = notesFile.absolutePath
+    }
   }
 }
 

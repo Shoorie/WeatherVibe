@@ -6,7 +6,23 @@ import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 
 interface WeatherSuggestionCache {
-  suspend fun delete(tone: BriefTone, weatherKey: WeatherKey)
-  suspend fun get(tone: BriefTone, weatherKey: WeatherKey): CachedWeatherSuggestion?
-  suspend fun save(suggestion: WeatherSuggestion, tone: BriefTone, weatherKey: WeatherKey)
+
+  suspend fun delete(
+    languageTag: String,
+    tone: BriefTone,
+    weatherKey: WeatherKey
+  )
+
+  suspend fun get(
+    languageTag: String,
+    tone: BriefTone,
+    weatherKey: WeatherKey
+  ): CachedWeatherSuggestion?
+
+  suspend fun save(
+    languageTag: String,
+    suggestion: WeatherSuggestion,
+    tone: BriefTone,
+    weatherKey: WeatherKey
+  )
 }

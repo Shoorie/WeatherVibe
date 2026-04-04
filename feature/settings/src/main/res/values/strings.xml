@@ -9,7 +9,7 @@
   <string name="settings_brief_tone_formal">Formal &amp; Professional</string>
   <string name="settings_brief_tone_formal_desc">Clear, concise, and business-like</string>
   <string name="settings_brief_tone_humorous">Humorous</string>
-  <string name="settings_brief_tone_humorous_desc">Fun, playful, and punny</string>
+  <string name="settings_brief_tone_humorous_desc">Light irony, dry wit, and gentle sarcasm</string>
   <string name="settings_unit_celsius">Celsius (°C)</string>
   <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
   <string name="settings_error_default">Failed to load settings</string>

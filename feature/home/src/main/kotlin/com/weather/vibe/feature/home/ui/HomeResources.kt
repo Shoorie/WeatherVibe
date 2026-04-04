@@ -5,11 +5,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.feature.home.R
 import org.koin.core.annotation.Factory
 
 @Factory
 internal class HomeResources(private val context: Context) {
+
+  fun conditionLabel(condition: WeatherCondition): String =
+    context.getString(CONDITION_STRING_IDS.getValue(condition))
 
   fun cloudCover(): String =
     context.getString(R.string.cloud_cover_label)
@@ -82,7 +86,6 @@ internal class HomeResources(private val context: Context) {
     fun eye(): String = "\uD83D\uDC41\uFE0F"
     fun gauge(): String = "\uD83D\uDD36"
     fun humidity(): String = "\uD83D\uDCA7"
-    fun locationPin(): String = "\uD83D\uDCCD"
     fun moon(): String = "\uD83C\uDF19"
     fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
     fun partlyCloudy(): String = "\u26C5"
@@ -208,5 +211,25 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun windSectionTitle(): String =
       stringResource(R.string.wind_section_title)
+  }
+
+  private companion object {
+
+    val CONDITION_STRING_IDS = mapOf(
+      WeatherCondition.CLEAR_SKY to R.string.condition_clear_sky,
+      WeatherCondition.MAINLY_CLEAR to R.string.condition_mainly_clear,
+      WeatherCondition.PARTLY_CLOUDY to R.string.condition_partly_cloudy,
+      WeatherCondition.OVERCAST to R.string.condition_overcast,
+      WeatherCondition.FOG to R.string.condition_fog,
+      WeatherCondition.DRIZZLE to R.string.condition_drizzle,
+      WeatherCondition.FREEZING_DRIZZLE to R.string.condition_freezing_drizzle,
+      WeatherCondition.RAIN to R.string.condition_rain,
+      WeatherCondition.FREEZING_RAIN to R.string.condition_freezing_rain,
+      WeatherCondition.SNOW to R.string.condition_snow,
+      WeatherCondition.RAIN_SHOWERS to R.string.condition_rain_showers,
+      WeatherCondition.SNOW_SHOWERS to R.string.condition_snow_showers,
+      WeatherCondition.THUNDERSTORM to R.string.condition_thunderstorm,
+      WeatherCondition.UNKNOWN to R.string.condition_unknown
+    )
   }
 }

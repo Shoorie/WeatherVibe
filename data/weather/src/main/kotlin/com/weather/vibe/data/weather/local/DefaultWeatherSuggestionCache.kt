@@ -3,6 +3,7 @@ package com.weather.vibe.data.weather.local
 import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
 import com.weather.vibe.data.weather.local.mapper.toDomain
 import com.weather.vibe.data.weather.local.mapper.toEntity
+import com.weather.vibe.data.weather.local.mapper.toLocalizedHash
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
 import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
@@ -16,24 +17,30 @@ internal class DefaultWeatherSuggestionCache(
 ) : WeatherSuggestionCache {
 
   override suspend fun delete(
+    languageTag: String,
     tone: BriefTone,
     weatherKey: WeatherKey
   ) {
-    dao.delete(keyHash = weatherKey.toHash(), tone = tone.name)
+    dao.delete(
+      keyHash = weatherKey.toLocalizedHash(languageTag),
+      tone = tone.name
+    )
   }
 
   override suspend fun get(
+    languageTag: String,
     tone: BriefTone,
     weatherKey: WeatherKey
   ): CachedWeatherSuggestion? {
     val entity = dao.get(
-      keyHash = weatherKey.toHash(),
+      keyHash = weatherKey.toLocalizedHash(languageTag),
       tone = tone.name
     ) ?: return null
     return entity.toDomain()
   }
 
   override suspend fun save(
+    languageTag: String,
     suggestion: WeatherSuggestion,
     tone: BriefTone,
     weatherKey: WeatherKey
@@ -44,6 +51,6 @@ internal class DefaultWeatherSuggestionCache(
       tone = tone,
       weatherKey = weatherKey
     )
-    dao.upsert(entity = cached.toEntity())
+    dao.upsert(entity = cached.toEntity(languageTag))
   }
 }

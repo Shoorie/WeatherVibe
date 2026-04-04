@@ -11,8 +11,8 @@ android {
 
 dependencies {
 
-  implementation(project(":domain:location"))
-  implementation(project(":core:network"))
+  implementation(projects.domain.location)
+  implementation(projects.core.network)
 
   implementation(libs.koin.android)
 }

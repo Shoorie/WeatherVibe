@@ -3,16 +3,10 @@ package com.weather.vibe.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.UserSettings
-import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
-import com.weather.vibe.domain.settings.usecase.SaveUserSettings
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.domain.weather.usecase.ComputeWeatherKey
-import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
-import com.weather.vibe.domain.weather.usecase.GetWeather
-import com.weather.vibe.domain.weather.usecase.InvalidateWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
@@ -39,14 +33,9 @@ import java.time.LocalTime
 
 @KoinViewModel
 internal class HomeViewModel(
-  private val computeWeatherKey: ComputeWeatherKey,
-  private val generateWeatherSuggestion: GenerateWeatherSuggestion,
-  private val getWeather: GetWeather,
-  private val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
-  private val observeUserSettings: ObserveUserSettings,
   private val resources: HomeResources,
-  private val saveUserSettings: SaveUserSettings,
-  private val stateFactory: HomeStateFactory
+  private val stateFactory: HomeStateFactory,
+  private val useCases: HomeUseCases,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<HomeUiState>(Loading)
@@ -77,8 +66,8 @@ internal class HomeViewModel(
 
     homeDataJob?.cancel()
     homeDataJob = combine(
-      getWeather(location),
-      observeUserSettings()
+      useCases.getWeather(location),
+      useCases.observeUserSettings()
     ) { weatherResult, settingsResult -> weatherResult to settingsResult }
       .onEach(::onHomeDataResult)
       .launchIn(viewModelScope)
@@ -104,7 +93,7 @@ internal class HomeViewModel(
   ) {
 
     val previousWeatherKey = snapshot.weatherKey
-    val weatherKey = computeWeatherKey(
+    val weatherKey = useCases.computeWeatherKey(
       condition = weather.condition,
       hour = LocalTime.now().hour,
       temperatureCelsius = weather.currentTemperature
@@ -134,7 +123,7 @@ internal class HomeViewModel(
   ) {
     showWeatherLoaded(weather, settings)
     viewModelScope.launch {
-      invalidateWeatherSuggestion(
+      useCases.invalidateWeatherSuggestion(
         tone = settings.briefTone,
         weatherKey = weatherKey
       )
@@ -202,7 +191,7 @@ internal class HomeViewModel(
 
     when (_state.value.allGenresRejected) {
       true -> onAllGenresRejected(updatedSettings)
-      false -> viewModelScope.launch { saveUserSettings(updatedSettings) }
+      false -> viewModelScope.launch { useCases.saveUserSettings(updatedSettings) }
     }
   }
 
@@ -215,8 +204,8 @@ internal class HomeViewModel(
     showPlaylistGenerating()
 
     viewModelScope.launch {
-      saveUserSettings(settings = settings)
-      invalidateWeatherSuggestion(
+      useCases.saveUserSettings(settings = settings)
+      useCases.invalidateWeatherSuggestion(
         tone = settings.briefTone,
         weatherKey = snapshot.weatherKey ?: return@launch
       )
@@ -234,7 +223,7 @@ internal class HomeViewModel(
     val weatherKey = snapshot.weatherKey ?: return
 
     suggestionJob?.cancel()
-    suggestionJob = generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
+    suggestionJob = useCases.generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
       .onEach(::onWeatherSuggestionResult)
       .launchIn(viewModelScope)
   }

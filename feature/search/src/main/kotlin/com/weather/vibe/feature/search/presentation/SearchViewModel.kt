@@ -3,10 +3,6 @@ package com.weather.vibe.feature.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.LocationResult
-import com.weather.vibe.domain.weather.usecase.GetCurrentTemperature
-import com.weather.vibe.domain.location.usecase.GetRecentLocations
-import com.weather.vibe.domain.location.usecase.SaveRecentLocation
-import com.weather.vibe.domain.location.usecase.SearchLocation
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
@@ -38,11 +34,8 @@ import org.koin.android.annotation.KoinViewModel
 @OptIn(FlowPreview::class)
 @KoinViewModel
 internal class SearchViewModel(
-  private val getCurrentTemperature: GetCurrentTemperature,
-  private val getRecentLocations: GetRecentLocations,
-  private val saveRecentLocation: SaveRecentLocation,
-  private val searchLocation: SearchLocation,
-  private val stateFactory: SearchStateFactory
+  private val stateFactory: SearchStateFactory,
+  private val useCases: SearchUseCases
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<SearchUiState>(Idle)
@@ -73,7 +66,7 @@ internal class SearchViewModel(
 
   private fun onLocationSelect(location: LocationItemUiState) {
     viewModelScope.launch {
-      saveRecentLocation(stateFactory.toLocationResult(location))
+      useCases.saveRecentLocation(stateFactory.toLocationResult(location))
       _event.send(
         NavigateBackWithResult(
           cityName = location.name,
@@ -92,7 +85,7 @@ internal class SearchViewModel(
   }
 
   private fun loadRecentLocations() {
-    getRecentLocations()
+    useCases.getRecentLocations()
       .onEach(::onRecentLocationsResult)
       .launchIn(viewModelScope)
   }
@@ -123,7 +116,7 @@ internal class SearchViewModel(
 
   private suspend fun performSearch(query: String) {
     _state.update { Searching }
-    searchLocation(query).collect { onSearchResult(query, it) }
+    useCases.searchLocation(query).collect { onSearchResult(query, it) }
   }
 
   private fun onSearchResult(query: String, result: Result<List<LocationResult>>) {
@@ -149,7 +142,7 @@ internal class SearchViewModel(
   ): List<LocationItemUiState> =
     items.map { item ->
       runCatching {
-        val temp = getCurrentTemperature(item.latitude, item.longitude)
+        val temp = useCases.getCurrentTemperature(item.latitude, item.longitude)
         stateFactory.enrichWithTemperature(item, temp)
       }.getOrDefault(item)
     }

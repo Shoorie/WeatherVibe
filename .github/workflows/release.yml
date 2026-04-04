@@ -45,6 +45,11 @@ jobs:
           name: release-apk
           path: app/build/outputs/apk/release/*.apk
 
+      - name: Write Firebase service account
+        env:
+          FIREBASE_SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: printenv FIREBASE_SA_JSON > ${{ runner.temp }}/firebase-sa.json
+
       - name: Distribute to Firebase
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -53,6 +58,4 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           FIREBASE_SERVICE_ACCOUNT_FILE: ${{ runner.temp }}/firebase-sa.json
-        run: |
-          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}' > ${{ runner.temp }}/firebase-sa.json
-          ./gradlew appDistributionUploadRelease
+        run: ./gradlew appDistributionUploadRelease

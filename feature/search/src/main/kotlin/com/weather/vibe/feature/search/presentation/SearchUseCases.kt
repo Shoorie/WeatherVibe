@@ -11,5 +11,5 @@ internal class SearchUseCases(
   val getCurrentTemperature: GetCurrentTemperature,
   val getRecentLocations: GetRecentLocations,
   val saveRecentLocation: SaveRecentLocation,
-  val searchLocation: SearchLocation,
+  val searchLocation: SearchLocation
 )

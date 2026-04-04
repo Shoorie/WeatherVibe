@@ -15,5 +15,5 @@ internal class HomeUseCases(
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   val observeUserSettings: ObserveUserSettings,
-  val saveUserSettings: SaveUserSettings,
+  val saveUserSettings: SaveUserSettings
 )

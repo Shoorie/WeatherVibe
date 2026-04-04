@@ -17,5 +17,8 @@ local.properties
 *.jks
 *.keystore
 
+# Generated
+release-notes.txt
+
 # Claude Code (skills installed from claude-code-kit)
 .claude/

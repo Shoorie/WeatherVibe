@@ -1,0 +1,23 @@
+name: Decode Keystore
+description: Decode base64 keystore to a temp file
+
+inputs:
+  keystore-base64:
+    description: Base64-encoded keystore
+    required: true
+
+outputs:
+  keystore-path:
+    description: Path to decoded keystore file
+    value: ${{ steps.decode.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Decode
+      id: decode
+      shell: bash
+      run: |
+        KEYSTORE_PATH="${{ runner.temp }}/release.jks"
+        echo "${{ inputs.keystore-base64 }}" | base64 --decode > "$KEYSTORE_PATH"
+        echo "path=$KEYSTORE_PATH" >> "$GITHUB_OUTPUT"

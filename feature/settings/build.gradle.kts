@@ -7,6 +7,6 @@ android {
 }
 
 dependencies {
-  implementation(project(":domain:settings"))
+  implementation(projects.domain.settings)
 }
 

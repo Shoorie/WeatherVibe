@@ -20,6 +20,8 @@ dependencyResolutionManagement {
   }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "WeatherVibe"
 include(":app")
 include(":core:ai")

@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-  implementation(project(":core:network"))
+  implementation(projects.core.network)
 
   implementation(libs.koin.android)
 }

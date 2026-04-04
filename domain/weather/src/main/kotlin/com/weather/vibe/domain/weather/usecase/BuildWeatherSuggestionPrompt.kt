@@ -62,7 +62,7 @@ internal class BuildWeatherSuggestionPrompt {
         "Reply with ONLY a JSON object (no markdown, no explanation) in this exact format:\n" +
         "{\n" +
         $$"  \"briefText\": \"1-2 sentence weather briefing in %1$s\",\n" +
-        "  \"mood\": \"short mood label in %1\$s, max 4 words\",\n" +
+        $$"  \"mood\": \"short mood label in %1$s, max 4 words\",\n" +
         $$"  \"moodDescription\": \"one contextual sentence in %1$s, max 12 words\",\n" +
         "  \"genres\": [\"genre1\", \"genre2\", \"genre3\"]\n" +
         "}\n\n" +

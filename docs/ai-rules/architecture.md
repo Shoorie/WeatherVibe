@@ -95,6 +95,16 @@ Use Cases serve as the safety boundary for asynchronous operations.
   Coroutine "freezing" or breaking structural concurrency.
 * **FORBIDDEN:** Do NOT use `runCatching` inside Use Cases.
 
+### Single Responsibility & Granularity (CRITICAL)
+
+* **One Use Case = one operation.** If you need "and" to describe it, split it.
+* **Compose, don't stuff.** Multiple small Use Cases collaborating > one large one.
+* **`invoke()` max ~10–15 lines.** Extract steps into private methods that do one thing each.
+* **`invoke()` reads like prose** — a sequence of named steps, not implementation details.
+* **Private methods max ~10–15 lines.** If longer, delegate to another Use Case.
+* **Name methods after *what*, not *how*.** No `process()`, `handle()`, `execute()`.
+* **Max 2–3 mocks per test.** More = Use Case does too much — split it.
+
 ---
 
 ## 6. Dependency Injection (Koin)

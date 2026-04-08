@@ -11,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.card.GlassCard
@@ -32,7 +35,9 @@ internal fun DetailSection(
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Text(
-      modifier = Modifier.padding(bottom = PaddingSmall),
+      modifier = Modifier
+        .padding(bottom = PaddingSmall)
+        .semantics { heading() },
       text = title,
       style = typography.titleSmall,
       color = colors.onSurfaceVariant
@@ -59,10 +64,12 @@ private fun DetailMetricRow(
   Row(
     modifier = modifier
       .fillMaxWidth()
-      .padding(vertical = PaddingSmall),
+      .padding(vertical = PaddingSmall)
+      .semantics(mergeDescendants = true) {},
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
+      modifier = Modifier.clearAndSetSemantics {},
       text = item.icon,
       fontSize = EmojiSizeMetric
     )

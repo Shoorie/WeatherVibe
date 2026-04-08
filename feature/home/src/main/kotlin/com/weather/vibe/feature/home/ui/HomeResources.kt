@@ -201,6 +201,18 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.sunset_label)
 
     @Composable
+    fun sunriseAt(time: String): String =
+      stringResource(R.string.sunrise_at_format, time)
+
+    @Composable
+    fun sunsetAt(time: String): String =
+      stringResource(R.string.sunset_at_format, time)
+
+    @Composable
+    fun sunProgressContentDescription(sunriseTime: String, sunsetTime: String): String =
+      stringResource(R.string.sun_progress_content_description, sunriseTime, sunsetTime)
+
+    @Composable
     fun tryAgainContentDescription(): String =
       stringResource(R.string.try_again_content_description)
 

@@ -18,6 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -35,7 +38,10 @@ import com.weather.vibe.feature.home.preview.SunArcSectionPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunrise
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunset
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.dayLengthLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunProgressContentDescription
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunriseAt
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunriseLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunsetAt
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunsetLabel
 import androidx.compose.runtime.remember
 import kotlin.math.PI
@@ -47,8 +53,16 @@ internal fun SunArcSection(
   modifier: Modifier = Modifier,
   state: SunriseSunsetUiState
 ) {
+  val progressDescription = sunProgressContentDescription(
+    sunriseTime = state.sunriseTime,
+    sunsetTime = state.sunsetTime
+  )
   GlassCard(modifier = modifier.fillMaxWidth()) {
-    SunArcCanvas(sunProgress = state.sunProgress)
+    SunArcCanvas(
+      modifier = Modifier
+        .semantics { contentDescription = progressDescription },
+      sunProgress = state.sunProgress
+    )
     Spacer(modifier = Modifier.height(PaddingSmall))
     SunTimesRow(state = state)
     if (state.dayLength.isNotEmpty()) {
@@ -85,10 +99,9 @@ private fun SunArcCanvas(
     val padding = ARC_PADDING_RATIO * size.width
     val strokeWidth = SunArcStrokeWidth.toPx()
     val dotRadius = SunDotRadius.toPx()
-    val arcLeft = padding
     val arcWidth = size.width - padding * 2
     val arcHeight = size.height - dotRadius * 2
-    val arcTopLeft = Offset(arcLeft, dotRadius)
+    val arcTopLeft = Offset(padding, dotRadius)
     val arcSize = Size(arcWidth, arcHeight * 2)
     val arcStroke = Stroke(width = strokeWidth, cap = StrokeCap.Round)
 
@@ -118,7 +131,7 @@ private fun SunArcCanvas(
       sunProgress = sunProgress,
       accentColor = accentColor,
       glowColor = glowColor,
-      arcLeft = arcLeft,
+      arcLeft = padding,
       arcWidth = arcWidth,
       arcHeight = arcHeight,
       dotRadius = dotRadius
@@ -160,11 +173,16 @@ private fun SunTimesRow(
   modifier: Modifier = Modifier,
   state: SunriseSunsetUiState
 ) {
+  val sunriseDescription = sunriseAt(state.sunriseTime)
+  val sunsetDescription = sunsetAt(state.sunsetTime)
   Row(
     modifier = modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
-    Column(horizontalAlignment = Alignment.Start) {
+    Column(
+      horizontalAlignment = Alignment.Start,
+      modifier = Modifier.clearAndSetSemantics { contentDescription = sunriseDescription }
+    ) {
       Text(
         text = "${sunrise()} ${state.sunriseTime}",
         style = typography.titleMedium,
@@ -176,7 +194,10 @@ private fun SunTimesRow(
         color = colors.onSurfaceVariant
       )
     }
-    Column(horizontalAlignment = Alignment.End) {
+    Column(
+      horizontalAlignment = Alignment.End,
+      modifier = Modifier.clearAndSetSemantics { contentDescription = sunsetDescription }
+    ) {
       Text(
         text = "${state.sunsetTime} ${sunset()}",
         style = typography.titleMedium,

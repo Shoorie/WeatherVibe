@@ -11,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,10 +39,13 @@ internal fun CurrentWeatherSection(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(vertical = PaddingLarge),
+      .padding(vertical = PaddingLarge)
+      .semantics(mergeDescendants = true) {},
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     Text(
+      modifier = Modifier
+        .clearAndSetSemantics {},
       text = state.conditionEmoji,
       fontSize = EmojiSizeLarge
     )
@@ -47,6 +53,8 @@ internal fun CurrentWeatherSection(
     Spacer(modifier = Modifier.height(PaddingSmall))
 
     Text(
+      modifier = Modifier
+        .semantics { heading() },
       text = state.currentTemperature,
       style = typography.displayLarge,
       color = colors.onBackground,

@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.home.ui.component
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,8 +47,9 @@ internal fun WeatherBriefingCard(
   GlassCard(
     modifier = modifier
       .fillMaxWidth()
-      .animateContentSize()
-      .clickable(onClick = onMusicClick)
+      .animateContentSize(),
+    onClick = onMusicClick,
+    onClickLabel = moodPlaylistContentDescription()
   ) {
     BriefingHeader()
     Spacer(modifier = Modifier.height(PaddingSmall))
@@ -82,7 +82,7 @@ private fun BriefingHeader(modifier: Modifier = Modifier) {
     )
     Icon(
       painter = musicIcon(),
-      contentDescription = moodPlaylistContentDescription(),
+      contentDescription = null,
       modifier = Modifier.size(BrandIconSize),
       tint = colors.onSurfaceVariant
     )

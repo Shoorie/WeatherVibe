@@ -8,6 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -24,20 +27,26 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.nowLabel
 @Composable
 internal fun HourlyForecastItem(
   modifier: Modifier = Modifier,
-  state: HourlyForecastUiState
+  state: HourlyForecastUiState,
+  accentColor: Color,
+  mutedColor: Color
 ) {
+
+  val timeLabel = if (state.isCurrentHour) nowLabel() else state.timeLabel
+  val description = "$timeLabel, ${state.temperature}"
+
   Column(
     modifier = modifier
       .width(HourlyItemWidth)
-      .height(HourlyItemHeight),
+      .height(HourlyItemHeight)
+      .clearAndSetSemantics { contentDescription = description },
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.SpaceEvenly
   ) {
     Text(
-      text = if (state.isCurrentHour) nowLabel() else state.timeLabel,
+      text = timeLabel,
       style = typography.labelSmall,
-      color = if (state.isCurrentHour) colors.accent
-        else colors.onSurfaceVariant,
+      color = if (state.isCurrentHour) accentColor else mutedColor,
       textAlign = TextAlign.Center
     )
     Text(
@@ -60,6 +69,10 @@ private fun Preview(
   state: HourlyForecastUiState
 ) {
   WeatherVibeTheme {
-    HourlyForecastItem(state = state)
+    HourlyForecastItem(
+      state = state,
+      accentColor = colors.accent,
+      mutedColor = colors.onSurfaceVariant
+    )
   }
 }

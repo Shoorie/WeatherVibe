@@ -1,6 +1,5 @@
 package com.weather.vibe.feature.home.ui.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +14,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.card.GlassCard
@@ -34,9 +35,9 @@ internal fun DetailsPreviewCard(
   onClick: () -> Unit
 ) {
   GlassCard(
-    modifier = modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick)
+    modifier = modifier.fillMaxWidth(),
+    onClick = onClick,
+    onClickLabel = weatherDetailsTitle()
   ) {
     PreviewMetricsRow(previewItems = previewItems)
     Spacer(modifier = Modifier.height(PaddingSmall))
@@ -54,8 +55,14 @@ private fun PreviewMetricsRow(
     horizontalArrangement = Arrangement.SpaceEvenly
   ) {
     previewItems.forEach { item ->
-      Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      Column(
+        modifier = Modifier
+          .semantics(mergeDescendants = true) {},
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
         Text(
+          modifier = Modifier
+            .clearAndSetSemantics {},
           text = item.icon,
           fontSize = EmojiSizeMetric
         )

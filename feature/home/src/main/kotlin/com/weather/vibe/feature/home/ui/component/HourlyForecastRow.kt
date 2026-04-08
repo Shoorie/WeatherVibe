@@ -13,6 +13,7 @@ import com.weather.vibe.core.designsystem.components.card.GlassCardSection
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.preview.HourlyForecastListPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.hourlyForecastTitle
@@ -22,6 +23,8 @@ internal fun HourlyForecastRow(
   modifier: Modifier = Modifier,
   hourlyForecasts: List<HourlyForecastUiState>
 ) {
+  val accentColor = colors.accent
+  val mutedColor = colors.onSurfaceVariant
   GlassCardSection(
     modifier = modifier,
     title = hourlyForecastTitle()
@@ -32,7 +35,11 @@ internal fun HourlyForecastRow(
         items = hourlyForecasts,
         key = { it.timeLabel }
       ) { hourly ->
-        HourlyForecastItem(state = hourly)
+        HourlyForecastItem(
+          state = hourly,
+          accentColor = accentColor,
+          mutedColor = mutedColor
+        )
       }
     }
   }

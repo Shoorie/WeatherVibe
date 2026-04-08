@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalTime
@@ -45,6 +46,7 @@ internal class HomeViewModel(
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
+  private var settingsJob: Job? = null
 
   init {
     observeWeather()
@@ -74,15 +76,21 @@ internal class HomeViewModel(
   }
 
   private fun onHomeDataResult(results: Pair<Result<WeatherData>, Result<UserSettings>>) {
-
     val (weatherResult, settingsResult) = results
-    val settings = settingsResult.getOrNull() ?: return
+    settingsResult.fold(
+      onSuccess = { settings -> onSettingsReady(weatherResult, settings) },
+      onFailure = ::showError
+    )
+  }
+
+  private fun onSettingsReady(weatherResult: Result<WeatherData>, settings: UserSettings) {
+
     val previousSettings = currentSettings
     currentSettings = settings
 
     weatherResult.fold(
       onSuccess = { weather -> onWeatherReady(weather, settings, previousSettings) },
-      onFailure = ::showWeatherError
+      onFailure = ::showError
     )
   }
 
@@ -122,7 +130,8 @@ internal class HomeViewModel(
     weatherKey: WeatherKey
   ) {
     showWeatherLoaded(weather, settings)
-    viewModelScope.launch {
+    settingsJob?.cancel()
+    settingsJob = viewModelScope.launch {
       useCases.invalidateWeatherSuggestion(
         tone = settings.briefTone,
         weatherKey = weatherKey
@@ -150,7 +159,7 @@ internal class HomeViewModel(
     }
   }
 
-  private fun showWeatherError(error: Throwable) {
+  private fun showError(error: Throwable) {
     _state.update {
       HomeUiState.Error(
         error.message ?: resources.defaultError()
@@ -187,23 +196,27 @@ internal class HomeViewModel(
     val updatedSettings = settings
       .withExcludedGenres(settings.excludedGenres + action.genre)
 
-    updateGenreRejecting(action.genre)
+    val updatedState = _state.updateAndGet { it.withGenreRejecting(action.genre) }
 
-    when (_state.value.allGenresRejected) {
+    when (updatedState.allGenresRejected) {
       true -> onAllGenresRejected(updatedSettings)
-      false -> viewModelScope.launch { useCases.saveUserSettings(updatedSettings) }
+      false -> saveSettings(updatedSettings)
     }
   }
 
-  private fun updateGenreRejecting(genre: String) {
-    _state.update { it.withGenreRejecting(genre) }
+  private fun saveSettings(settings: UserSettings) {
+    settingsJob?.cancel()
+    settingsJob = viewModelScope.launch {
+      useCases.saveUserSettings(settings)
+    }
   }
 
   private fun onAllGenresRejected(settings: UserSettings) {
 
     showPlaylistGenerating()
 
-    viewModelScope.launch {
+    settingsJob?.cancel()
+    settingsJob = viewModelScope.launch {
       useCases.saveUserSettings(settings = settings)
       useCases.invalidateWeatherSuggestion(
         tone = settings.briefTone,
@@ -223,7 +236,7 @@ internal class HomeViewModel(
     val weatherKey = snapshot.weatherKey ?: return
 
     suggestionJob?.cancel()
-    suggestionJob = useCases.generateWeatherSuggestion(weatherData = weatherData, weatherKey = weatherKey)
+    suggestionJob = useCases.generateWeatherSuggestion(weatherData, weatherKey)
       .onEach(::onWeatherSuggestionResult)
       .launchIn(viewModelScope)
   }

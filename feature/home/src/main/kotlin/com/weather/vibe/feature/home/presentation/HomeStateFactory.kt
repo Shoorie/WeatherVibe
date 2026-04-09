@@ -37,7 +37,7 @@ internal class HomeStateFactory(
   private val resolveTodayTemperatureBounds: ResolveTodayTemperatureBounds,
   private val resources: HomeResources,
   private val sunriseSunsetFactory: SunriseSunsetStateFactory,
-  private val temperatureFormatter: TemperatureFormatter,
+  private val temperature: TemperatureFormatter,
   private val timeProvider: TimeProvider
 ) {
 
@@ -51,18 +51,20 @@ internal class HomeStateFactory(
       false -> current
     }
 
-  fun create(data: WeatherData, temperatureUnit: TemperatureUnit = CELSIUS): Loaded {
+  fun create(data: WeatherData, unit: TemperatureUnit = CELSIUS): Loaded {
+
     val today = timeProvider.today()
-    val currentHourIndex = findCurrentHourIndex(
-      hours = data.hourlyForecast.map { it.time }
-    )
+    val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })
+    val metrics = getCurrentWeatherMetrics(data)
+    val sunInfo = resolveTodaySunInfo(data.dailyForecast)
+
     return Loaded(
-      currentWeather = createCurrentWeather(data, temperatureUnit),
-      dailyForecast = createDailyForecast(data.dailyForecast, temperatureUnit, today),
-      detailsSections = metricsFactory.create(getCurrentWeatherMetrics(data), temperatureUnit),
+      currentWeather = createCurrentWeather(data, unit),
+      dailyForecast = createDailyForecast(data.dailyForecast, unit, today),
+      detailsSections = metricsFactory.create(metrics, unit),
       header = createHeader(data, today),
-      hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit, currentHourIndex),
-      sunriseSunset = sunriseSunsetFactory.create(resolveTodaySunInfo(data.dailyForecast))
+      hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
+      sunriseSunset = sunriseSunsetFactory.create(sunInfo)
     )
   }
 
@@ -72,10 +74,10 @@ internal class HomeStateFactory(
   fun reformatTemperatures(
     current: HomeUiState,
     data: WeatherData,
-    temperatureUnit: TemperatureUnit
+    unit: TemperatureUnit
   ): HomeUiState {
     val loaded = current as? Loaded ?: return current
-    return create(data, temperatureUnit).copy(
+    return create(data, unit).copy(
       briefing = loaded.briefing,
       playlist = loaded.playlist
     )
@@ -91,14 +93,16 @@ internal class HomeStateFactory(
     data: WeatherData,
     unit: TemperatureUnit
   ): CurrentWeatherUiState {
+
     val bounds = resolveTodayTemperatureBounds(data)
+
     return CurrentWeatherUiState(
       conditionEmoji = data.condition.emoji,
       conditionLabel = resources.conditionLabel(data.condition),
-      currentTemperature = temperatureFormatter.format(celsius = data.currentTemperature, unit = unit),
-      feelsLikeTemperature = temperatureFormatter.format(celsius = data.apparentTemperature, unit = unit),
-      highTemperature = temperatureFormatter.format(celsius = bounds.max, unit = unit),
-      lowTemperature = temperatureFormatter.format(celsius = bounds.min, unit = unit)
+      currentTemperature = data.currentTemperature.formatted(unit),
+      feelsLikeTemperature = data.apparentTemperature.formatted(unit),
+      highTemperature = bounds.max.formatted(unit),
+      lowTemperature = bounds.min.formatted(unit)
     )
   }
 
@@ -111,7 +115,7 @@ internal class HomeStateFactory(
       HourlyForecastUiState(
         conditionEmoji = hour.condition.emoji,
         isCurrentHour = index == currentHourIndex,
-        temperature = temperatureFormatter.format(celsius = hour.temperature, unit = unit),
+        temperature = hour.temperature.formatted(unit),
         timeLabel = formatHourLabel(hour.time)
       )
     }
@@ -125,8 +129,8 @@ internal class HomeStateFactory(
       DailyForecastUiState(
         conditionEmoji = day.condition.emoji,
         dayLabel = formatDayLabel(day.date, today),
-        maxTemperature = temperatureFormatter.format(celsius = day.maxTemperature, unit = unit),
-        minTemperature = temperatureFormatter.format(celsius = day.minTemperature, unit = unit)
+        maxTemperature = day.maxTemperature.formatted(unit),
+        minTemperature = day.minTemperature.formatted(unit)
       )
     }
 
@@ -136,6 +140,9 @@ internal class HomeStateFactory(
   private fun formatDayLabel(date: LocalDate, today: LocalDate): String =
     if (date == today) resources.todayLabel()
     else date.format(DAY_FORMATTER)
+
+  private fun Double.formatted(unit: TemperatureUnit): String =
+    temperature.format(celsius = this, unit = unit)
 
   private companion object {
 

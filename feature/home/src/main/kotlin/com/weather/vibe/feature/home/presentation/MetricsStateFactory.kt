@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
 @Factory
 internal class MetricsStateFactory(
   private val resources: HomeResources,
-  private val temperatureFormatter: TemperatureFormatter
+  private val temperature: TemperatureFormatter
 ) {
 
   fun create(
@@ -134,7 +134,7 @@ internal class MetricsStateFactory(
     MetricItemUiState(
       icon = dewDrop(),
       label = resources.dewPoint(),
-      value = temperatureFormatter.format(celsius = value, unit = unit)
+      value = temperature.format(celsius = value, unit = unit)
     )
 
   private fun windGusts(value: Double): MetricItemUiState =

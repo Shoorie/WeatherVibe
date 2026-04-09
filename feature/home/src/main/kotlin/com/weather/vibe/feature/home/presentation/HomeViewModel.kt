@@ -145,7 +145,7 @@ internal class HomeViewModel(
     _state.update {
       stateFactory.create(
         data = weather,
-        temperatureUnit = settings.temperatureUnit
+        unit = settings.temperatureUnit
       )
     }
   }
@@ -155,7 +155,7 @@ internal class HomeViewModel(
       stateFactory.reformatTemperatures(
         current = it,
         data = weather,
-        temperatureUnit = settings.temperatureUnit
+        unit = settings.temperatureUnit
       )
     }
   }

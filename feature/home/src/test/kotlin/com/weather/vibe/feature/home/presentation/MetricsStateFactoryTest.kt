@@ -1,9 +1,9 @@
 package com.weather.vibe.feature.home.presentation
 
-import com.weather.vibe.domain.weather.usecase.ConvertTemperature
+import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.WEATHER
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.weatherData
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
 import com.weather.vibe.feature.home.ui.HomeResources
 import io.mockk.every
 import io.mockk.mockk
@@ -17,18 +17,19 @@ import strikt.assertions.isEqualTo
 
 class MetricsStateFactoryTest {
 
-  private val convertTemperature = mockk<ConvertTemperature>()
+  private val temperatureFormatter = mockk<TemperatureFormatter>()
   private val resources: HomeResources = fakeHomeResources()
 
   private val factory: MetricsStateFactory =
     MetricsStateFactory(
-      convertTemperature = convertTemperature,
-      resources = resources
+      computeWindDirection = ComputeWindDirection(),
+      resources = resources,
+      temperatureFormatter = temperatureFormatter
     )
 
   @Before
   fun setUp() {
-    every { convertTemperature(celsius = any(), unit = any()) } answers {
+    every { temperatureFormatter.format(celsius = any(), unit = any()) } answers {
       "${firstArg<Double>().toInt()}°"
     }
   }

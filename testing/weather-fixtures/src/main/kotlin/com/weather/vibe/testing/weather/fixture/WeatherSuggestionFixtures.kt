@@ -1,8 +1,8 @@
-package com.weather.vibe.feature.home.presentation.fixture
+package com.weather.vibe.testing.weather.fixture
 
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 
-internal object WeatherSuggestionFixtures {
+object WeatherSuggestionFixtures {
 
   const val BRIEF_TEXT = "Beautiful sunny day, perfect for a walk!"
   const val MOOD = "Uplifting"

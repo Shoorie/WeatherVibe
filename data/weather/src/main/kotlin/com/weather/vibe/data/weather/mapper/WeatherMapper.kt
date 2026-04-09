@@ -1,6 +1,8 @@
 package com.weather.vibe.data.weather.mapper
 
 import com.weather.vibe.core.time.TimeProvider
+import com.weather.vibe.data.weather.local.cache.CachedDailyWeather
+import com.weather.vibe.data.weather.local.cache.CachedHourlyWeather
 import com.weather.vibe.data.weather.local.entity.WeatherCacheEntity
 import com.weather.vibe.data.weather.remote.dto.ForecastResponseDto
 import com.weather.vibe.domain.weather.model.DailyWeather
@@ -8,8 +10,18 @@ import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherData
 import kotlinx.serialization.json.Json
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 private val json = Json { ignoreUnknownKeys = true }
+
+private fun parseLocalDateTime(value: String?): LocalDateTime? =
+  value?.takeIf { it.isNotEmpty() }
+    ?.let { runCatching { LocalDateTime.parse(it) }.getOrNull() }
+
+private fun parseLocalDate(value: String?): LocalDate? =
+  value?.takeIf { it.isNotEmpty() }
+    ?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
 
 fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
   val current = requireNotNull(currentWeather)
@@ -35,7 +47,8 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
   val hourlyForecasts = (currentHourIndex until minOf(
     currentHourIndex + 24,
     hourly.time.size
-  )).map { i ->
+  )).mapNotNull { i ->
+    val time = parseLocalDateTime(hourly.time.getOrNull(i)) ?: return@mapNotNull null
     HourlyWeather(
       apparentTemperature = hourly.apparentTemperature.getOrElse(i) { 0.0 },
       cloudCover = hourly.cloudcover.getOrElse(i) { 0 },
@@ -46,26 +59,27 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
       precipitationProbability = hourly.precipitationProbability.getOrElse(i) { 0 },
       surfacePressure = hourly.surfacePressure.getOrElse(i) { 0.0 },
       temperature = hourly.temperature2m.getOrElse(i) { 0.0 },
-      time = hourly.time[i],
+      time = time,
       visibility = hourly.visibility.getOrElse(i) { 0.0 },
       windGusts = hourly.windgusts10m.getOrElse(i) { 0.0 },
       windSpeed = hourly.windspeed10m.getOrElse(i) { 0.0 }
     )
   }
 
-  val dailyForecasts = daily?.time?.indices?.map { i ->
+  val dailyForecasts = daily?.time?.indices?.mapNotNull { i ->
+    val date = parseLocalDate(daily.time.getOrNull(i)) ?: return@mapNotNull null
     DailyWeather(
       condition = WeatherCondition.fromWmoCode(
         daily.weathercode.getOrElse(i) { 0 }
       ),
-      date = daily.time[i],
+      date = date,
       maxTemperature = daily.temperature2mMax.getOrElse(i) { 0.0 },
       minTemperature = daily.temperature2mMin.getOrElse(i) { 0.0 },
       precipitationProbability = daily.precipitationProbabilityMax
         .getOrElse(i) { 0 },
       precipitationSum = daily.precipitationSum.getOrElse(i) { 0.0 },
-      sunrise = daily.sunrise.getOrElse(i) { "" },
-      sunset = daily.sunset.getOrElse(i) { "" },
+      sunrise = parseLocalDateTime(daily.sunrise.getOrNull(i)),
+      sunset = parseLocalDateTime(daily.sunset.getOrNull(i)),
       uvIndexMax = daily.uvIndexMax.getOrElse(i) { 0.0 },
       windGustsMax = daily.windgusts10mMax.getOrElse(i) { 0.0 },
       windSpeedMax = daily.windspeed10mMax.getOrElse(i) { 0.0 }
@@ -109,19 +123,21 @@ fun WeatherData.toCacheEntity(timeProvider: TimeProvider): WeatherCacheEntity =
     windDirection = windDirection,
     humidity = humidity,
     isDay = isDay,
-    hourlyForecastJson = json.encodeToString(hourlyForecast),
-    dailyForecastJson = json.encodeToString(dailyForecast),
+    hourlyForecastJson = json.encodeToString(hourlyForecast.map(HourlyWeather::toCached)),
+    dailyForecastJson = json.encodeToString(dailyForecast.map(DailyWeather::toCached)),
     lastUpdated = timeProvider.nowEpochMillis()
   )
 
 fun WeatherCacheEntity.toWeatherData(): WeatherData {
 
   val hourlyList = runCatching {
-    json.decodeFromString<List<HourlyWeather>>(hourlyForecastJson)
+    json.decodeFromString<List<CachedHourlyWeather>>(hourlyForecastJson)
+      .map(CachedHourlyWeather::toDomain)
   }.getOrDefault(emptyList())
 
   val dailyList = runCatching {
-    json.decodeFromString<List<DailyWeather>>(dailyForecastJson)
+    json.decodeFromString<List<CachedDailyWeather>>(dailyForecastJson)
+      .map(CachedDailyWeather::toDomain)
   }.getOrDefault(emptyList())
 
   val firstHourly = hourlyList.firstOrNull()

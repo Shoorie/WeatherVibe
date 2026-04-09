@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.presentation.fixture
+package com.weather.vibe.testing.weather.fixture
 
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
@@ -7,8 +7,10 @@ import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.weather.model.WeatherData
+import java.time.LocalDate
+import java.time.LocalDateTime
 
-internal object WeatherDataFixtures {
+object WeatherDataFixtures {
 
   const val CITY_NAME = "Warsaw"
   const val CURRENT_TEMPERATURE = 22.0
@@ -20,34 +22,34 @@ internal object WeatherDataFixtures {
   const val LATITUDE = 52.23
   const val LONGITUDE = 21.01
 
-  const val TODAY_DATE = "2026-04-08"
-  const val TODAY_SUNRISE = "2026-04-08T06:00"
-  const val TODAY_SUNSET = "2026-04-08T19:30"
+  val TODAY_DATE: LocalDate = LocalDate.of(2026, 4, 8)
+  val TODAY_SUNRISE: LocalDateTime = LocalDateTime.of(2026, 4, 8, 6, 0)
+  val TODAY_SUNSET: LocalDateTime = LocalDateTime.of(2026, 4, 8, 19, 30)
   const val TODAY_MAX_TEMP = 25.0
   const val TODAY_MIN_TEMP = 12.0
 
-  const val HOUR_1_TIME = "2026-04-08T12:00"
-  const val HOUR_2_TIME = "2026-04-08T13:00"
-  const val HOUR_3_TIME = "2026-04-08T14:00"
+  val HOUR_1_TIME: LocalDateTime = LocalDateTime.of(2026, 4, 8, 12, 0)
+  val HOUR_2_TIME: LocalDateTime = LocalDateTime.of(2026, 4, 8, 13, 0)
+  val HOUR_3_TIME: LocalDateTime = LocalDateTime.of(2026, 4, 8, 14, 0)
 
   private const val HOUR_1_TEMP = 22.0
   private const val HOUR_2_TEMP = 24.0
   private const val HOUR_3_TEMP = 23.0
 
-  private const val TOMORROW_DATE = "2026-04-09"
-  private const val TOMORROW_SUNRISE = "2026-04-09T05:58"
-  private const val TOMORROW_SUNSET = "2026-04-09T19:32"
+  private val TOMORROW_DATE: LocalDate = LocalDate.of(2026, 4, 9)
+  private val TOMORROW_SUNRISE: LocalDateTime = LocalDateTime.of(2026, 4, 9, 5, 58)
+  private val TOMORROW_SUNSET: LocalDateTime = LocalDateTime.of(2026, 4, 9, 19, 32)
   private const val TOMORROW_MAX_TEMP = 20.0
   private const val TOMORROW_MIN_TEMP = 10.0
 
-  private const val RAINY_DAY_DATE = "2026-04-10"
-  private const val RAINY_DAY_SUNRISE = "2026-04-10T05:56"
-  private const val RAINY_DAY_SUNSET = "2026-04-10T19:34"
+  private val RAINY_DAY_DATE: LocalDate = LocalDate.of(2026, 4, 10)
+  private val RAINY_DAY_SUNRISE: LocalDateTime = LocalDateTime.of(2026, 4, 10, 5, 56)
+  private val RAINY_DAY_SUNSET: LocalDateTime = LocalDateTime.of(2026, 4, 10, 19, 34)
   private const val RAINY_DAY_MAX_TEMP = 14.0
   private const val RAINY_DAY_MIN_TEMP = 8.0
 
-  private const val SHORT_DAY_SUNRISE = "2026-04-08T07:30"
-  private const val SHORT_DAY_SUNSET = "2026-04-08T16:00"
+  private val SHORT_DAY_SUNRISE: LocalDateTime = LocalDateTime.of(2026, 4, 8, 7, 30)
+  private val SHORT_DAY_SUNSET: LocalDateTime = LocalDateTime.of(2026, 4, 8, 16, 0)
 
   val TODAY = dailyWeather(
     condition = CLEAR_SKY,
@@ -143,13 +145,13 @@ internal object WeatherDataFixtures {
 
   fun dailyWeather(
     condition: WeatherCondition = CLEAR_SKY,
-    date: String = TODAY_DATE,
+    date: LocalDate = TODAY_DATE,
     maxTemperature: Double = TODAY_MAX_TEMP,
     minTemperature: Double = TODAY_MIN_TEMP,
     precipitationProbability: Int = 10,
     precipitationSum: Double = 0.0,
-    sunrise: String = TODAY_SUNRISE,
-    sunset: String = TODAY_SUNSET,
+    sunrise: LocalDateTime? = TODAY_SUNRISE,
+    sunset: LocalDateTime? = TODAY_SUNSET,
     uvIndexMax: Double = 5.0,
     windGustsMax: Double = 30.0,
     windSpeedMax: Double = 20.0
@@ -172,7 +174,7 @@ internal object WeatherDataFixtures {
     humidity: Int = HUMIDITY,
     precipitationProbability: Int = 10,
     temperature: Double = CURRENT_TEMPERATURE,
-    time: String = HOUR_1_TIME,
+    time: LocalDateTime = HOUR_1_TIME,
     windSpeed: Double = WIND_SPEED
   ): HourlyWeather = HourlyWeather(
     condition = condition,

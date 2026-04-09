@@ -1,30 +1,24 @@
 package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class PlaylistStateFactory {
+internal class PlaylistStateFactory(
+  private val buildPlaylistQuery: BuildPlaylistQuery
+) {
 
   fun create(suggestion: WeatherSuggestion): PlaylistUiState.Loaded {
-
-    val genreNames = suggestion.genres.map { it.trim() }
-    val spotifyQuery = genreNames.joinToString(separator = " ")
-    val ytQuery = genreNames.firstOrNull().orEmpty()
-
+    val query = buildPlaylistQuery(suggestion)
     return PlaylistUiState.Loaded(
-      genres = genreNames.map { GenreChipUiState(name = it) },
+      genres = suggestion.genres.map { GenreChipUiState(name = it.trim()) },
       mood = suggestion.mood,
       moodDescription = suggestion.moodDescription,
-      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
-      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
+      spotifyQuery = query.spotify,
+      ytMusicUrl = query.ytMusic
     )
-  }
-
-  private companion object {
-    const val SPOTIFY_SCHEME = "spotify:search:"
-    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
   }
 }

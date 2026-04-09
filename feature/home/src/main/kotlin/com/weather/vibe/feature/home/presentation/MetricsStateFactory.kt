@@ -3,7 +3,7 @@ package com.weather.vibe.feature.home.presentation
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.domain.weather.usecase.ConvertTemperature
+import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeResources
@@ -25,8 +25,9 @@ import kotlin.math.roundToInt
 
 @Factory
 internal class MetricsStateFactory(
-  private val convertTemperature: ConvertTemperature,
-  private val resources: HomeResources
+  private val computeWindDirection: ComputeWindDirection,
+  private val resources: HomeResources,
+  private val temperatureFormatter: TemperatureFormatter
 ) {
 
   fun create(
@@ -90,7 +91,7 @@ internal class MetricsStateFactory(
     MetricItemUiState(
       icon = compass(),
       label = resources.direction(),
-      value = formatDirection(degrees)
+      value = computeWindDirection(degrees).name
     )
 
   private fun precipitation(probability: Int): MetricItemUiState =
@@ -138,7 +139,7 @@ internal class MetricsStateFactory(
     MetricItemUiState(
       icon = dewDrop(),
       label = resources.dewPoint(),
-      value = convertTemperature(celsius = value, unit = unit)
+      value = temperatureFormatter.format(celsius = value, unit = unit)
     )
 
   private fun windGusts(value: Double): MetricItemUiState =
@@ -162,12 +163,6 @@ internal class MetricsStateFactory(
       value = String.format(Locale.US, MILLIMETERS_FORMAT, value)
     )
 
-  private fun formatDirection(degrees: Double): String {
-    val index = ((degrees / DIRECTION_STEP) + DIRECTION_OFFSET)
-      .toInt() % WIND_DIRECTIONS.size
-    return WIND_DIRECTIONS[index]
-  }
-
   private fun formatPercent(value: Int): String =
     "$value$PERCENT_SYMBOL"
 
@@ -180,8 +175,6 @@ internal class MetricsStateFactory(
     const val DEFAULT_RAINFALL = 0.0
     const val DEFAULT_UV_INDEX = 0.0
     const val DEFAULT_WIND_SPEED = 0.0
-    const val DIRECTION_OFFSET = 0.5
-    const val DIRECTION_STEP = 45.0
     const val METERS_PER_KM = 1000.0
     const val MILLIMETERS_FORMAT = "%.1f mm"
     const val PERCENT_SYMBOL = "%"
@@ -196,7 +189,5 @@ internal class MetricsStateFactory(
     const val PREVIEW_PRECIPITATION_INDEX = 0
     const val PREVIEW_UV_INDEX = 1
     const val PREVIEW_WIND_INDEX = 0
-
-    val WIND_DIRECTIONS = arrayOf("N", "NE", "E", "SE", "S", "SW", "W", "NW")
   }
 }

@@ -1,9 +1,9 @@
 package com.weather.vibe.data.location.repository
 
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
-import com.weather.vibe.data.location.mapper.LocationCacheMapper
-import com.weather.vibe.data.location.mapper.LocationDtoMapper
+import com.weather.vibe.data.location.local.mapper.LocationCacheMapper
 import com.weather.vibe.data.location.remote.api.GeocodingApiService
+import com.weather.vibe.data.location.remote.mapper.LocationDtoMapper
 import com.weather.vibe.domain.location.model.LocationResult
 import com.weather.vibe.domain.location.repository.LocationRepository
 import kotlinx.coroutines.Dispatchers

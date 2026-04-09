@@ -1,4 +1,4 @@
-package com.weather.vibe.data.weather.mapper
+package com.weather.vibe.data.weather.local.mapper
 
 import com.weather.vibe.data.weather.local.cache.CachedDailyWeather
 import com.weather.vibe.data.weather.local.cache.CachedHourlyWeather

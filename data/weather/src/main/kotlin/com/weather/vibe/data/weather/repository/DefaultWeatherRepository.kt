@@ -1,9 +1,9 @@
 package com.weather.vibe.data.weather.repository
 
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
-import com.weather.vibe.data.weather.mapper.WeatherCacheMapper
-import com.weather.vibe.data.weather.mapper.WeatherDtoMapper
+import com.weather.vibe.data.weather.local.mapper.WeatherCacheMapper
 import com.weather.vibe.data.weather.remote.api.WeatherApiService
+import com.weather.vibe.data.weather.remote.mapper.WeatherDtoMapper
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers

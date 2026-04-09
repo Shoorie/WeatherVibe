@@ -1,5 +1,6 @@
 package com.weather.vibe.data.weather.mapper
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.weather.local.entity.WeatherCacheEntity
 import com.weather.vibe.data.weather.remote.dto.ForecastResponseDto
 import com.weather.vibe.domain.weather.model.DailyWeather
@@ -98,7 +99,7 @@ fun ForecastResponseDto.toWeatherData(cityName: String): WeatherData {
   )
 }
 
-fun WeatherData.toCacheEntity(): WeatherCacheEntity =
+fun WeatherData.toCacheEntity(timeProvider: TimeProvider): WeatherCacheEntity =
   WeatherCacheEntity(
     locationId = "${latitude},${longitude}",
     cityName = cityName,
@@ -110,7 +111,7 @@ fun WeatherData.toCacheEntity(): WeatherCacheEntity =
     isDay = isDay,
     hourlyForecastJson = json.encodeToString(hourlyForecast),
     dailyForecastJson = json.encodeToString(dailyForecast),
-    lastUpdated = System.currentTimeMillis()
+    lastUpdated = timeProvider.nowEpochMillis()
   )
 
 fun WeatherCacheEntity.toWeatherData(): WeatherData {

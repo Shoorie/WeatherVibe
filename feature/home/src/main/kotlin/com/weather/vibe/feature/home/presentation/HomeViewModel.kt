@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
@@ -30,12 +31,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.time.LocalTime
 
 @KoinViewModel
 internal class HomeViewModel(
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory,
+  private val timeProvider: TimeProvider,
   private val useCases: HomeUseCases,
 ) : ViewModel() {
 
@@ -103,7 +104,7 @@ internal class HomeViewModel(
     val previousWeatherKey = snapshot.weatherKey
     val weatherKey = useCases.computeWeatherKey(
       condition = weather.condition,
-      hour = LocalTime.now().hour,
+      hour = timeProvider.now().hour,
       temperatureCelsius = weather.currentTemperature
     )
     snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)

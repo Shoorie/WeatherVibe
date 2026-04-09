@@ -13,6 +13,7 @@ dependencies {
 
   implementation(projects.domain.location)
   implementation(projects.core.network)
+  implementation(projects.core.time)
 
   implementation(libs.koin.android)
 }

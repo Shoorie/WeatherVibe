@@ -10,16 +10,13 @@ import com.weather.vibe.domain.weather.usecase.ConvertTemperature
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
-import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
-import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,7 +27,9 @@ import java.util.Locale
 internal class HomeStateFactory(
   private val convertTemperature: ConvertTemperature,
   private val metricsFactory: MetricsStateFactory,
-  private val resources: HomeResources
+  private val playlistFactory: PlaylistStateFactory,
+  private val resources: HomeResources,
+  private val sunriseSunsetFactory: SunriseSunsetStateFactory
 ) {
 
   fun applyWeatherSuggestion(
@@ -50,23 +49,11 @@ internal class HomeStateFactory(
       detailsSections = metricsFactory.create(data, temperatureUnit),
       header = createHeader(data),
       hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit),
-      sunriseSunset = createSunriseSunset(data.dailyForecast)
+      sunriseSunset = sunriseSunsetFactory.create(data.dailyForecast)
     )
 
-  fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded {
-
-    val genreNames = suggestion.genres.map { it.trim() }
-    val spotifyQuery = genreNames.joinToString(separator = " ")
-    val ytQuery = genreNames.firstOrNull().orEmpty()
-
-    return PlaylistUiState.Loaded(
-      genres = genreNames.map { GenreChipUiState(name = it) },
-      mood = suggestion.mood,
-      moodDescription = suggestion.moodDescription,
-      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
-      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
-    )
-  }
+  fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded =
+    playlistFactory.create(suggestion)
 
   fun reformatTemperatures(
     current: HomeUiState,
@@ -133,49 +120,6 @@ internal class HomeStateFactory(
       )
     }
 
-  private fun createSunriseSunset(
-    days: List<DailyWeather>
-  ): SunriseSunsetUiState {
-    val today = days.firstOrNull()
-    val sunriseTime = today?.sunrise?.parseDateTime()
-    val sunsetTime = today?.sunset?.parseDateTime()
-    return SunriseSunsetUiState(
-      dayLength = formatDayLength(sunriseTime, sunsetTime),
-      sunProgress = calculateSunProgress(sunriseTime, sunsetTime),
-      sunriseTime = formatSunTime(today?.sunrise),
-      sunsetTime = formatSunTime(today?.sunset)
-    )
-  }
-
-  private fun String.parseDateTime(): LocalDateTime? =
-    runCatching { LocalDateTime.parse(this, TIME_INPUT_FORMATTER) }.getOrNull()
-
-  private fun calculateSunProgress(
-    sunrise: LocalDateTime?,
-    sunset: LocalDateTime?
-  ): Float {
-    if (sunrise == null || sunset == null) return MIN_PROGRESS
-    val now = LocalDateTime.now()
-    val dayMinutes = Duration.between(sunrise, sunset).toMinutes().toFloat()
-    val elapsed = Duration.between(sunrise, now).toMinutes().toFloat()
-    return (elapsed / dayMinutes).coerceIn(
-      minimumValue = MIN_PROGRESS,
-      maximumValue = MAX_PROGRESS
-    )
-  }
-
-  private fun formatDayLength(
-    sunrise: LocalDateTime?,
-    sunset: LocalDateTime?
-  ): String {
-    if (sunrise == null || sunset == null) return ""
-    val duration = Duration.between(sunrise, sunset)
-    return resources.dayLengthFormat(
-      hours = duration.toHours().toInt(),
-      minutes = (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
-    )
-  }
-
   private fun formatDate(): String =
     LocalDate.now().format(DATE_FORMATTER)
 
@@ -193,27 +137,13 @@ internal class HomeStateFactory(
       else parsed.format(DAY_FORMATTER)
     }.getOrDefault(date)
 
-  private fun formatSunTime(isoTime: String?): String {
-    if (isoTime.isNullOrEmpty()) return ""
-    return runCatching {
-      LocalDateTime
-        .parse(isoTime, TIME_INPUT_FORMATTER)
-        .format(TIME_OUTPUT_FORMATTER)
-    }.getOrDefault(isoTime)
-  }
-
   private companion object {
 
     const val CURRENT_HOUR_INDEX = 0
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
-    const val MAX_PROGRESS = 1f
-    const val MIN_PROGRESS = 0f
-    const val MINUTES_PER_HOUR = 60
-    const val SPOTIFY_SCHEME = "spotify:search:"
     const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
-    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
 
     val DATE_FORMATTER: DateTimeFormatter?
       get() = ofPattern(DATE_FORMAT, Locale.getDefault())

@@ -1,5 +1,6 @@
 package com.weather.vibe.data.weather.local
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
 import com.weather.vibe.data.weather.local.mapper.toDomain
 import com.weather.vibe.data.weather.local.mapper.toEntity
@@ -13,7 +14,8 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [WeatherSuggestionCache::class])
 internal class DefaultWeatherSuggestionCache(
-  private val dao: WeatherSuggestionDao
+  private val dao: WeatherSuggestionDao,
+  private val timeProvider: TimeProvider
 ) : WeatherSuggestionCache {
 
   override suspend fun delete(
@@ -46,7 +48,7 @@ internal class DefaultWeatherSuggestionCache(
     weatherKey: WeatherKey
   ) {
     val cached = CachedWeatherSuggestion(
-      fetchedAt = System.currentTimeMillis(),
+      fetchedAt = timeProvider.nowEpochMillis(),
       suggestion = suggestion,
       tone = tone,
       weatherKey = weatherKey

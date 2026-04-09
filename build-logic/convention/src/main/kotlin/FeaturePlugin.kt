@@ -1,6 +1,7 @@
 import com.weather.vibe.Plugins.weatherVibeCompose
 import com.weather.vibe.Plugins.weatherVibeKoin
 import com.weather.vibe.Plugins.weatherVibeLibrary
+import com.weather.vibe.Plugins.weatherVibeTest
 import com.weather.vibe.coroutinesAndroid
 import com.weather.vibe.implementation
 import com.weather.vibe.koinAndroid
@@ -23,6 +24,7 @@ class FeaturePlugin : Plugin<Project> {
       apply(plugin = weatherVibeLibrary)
       apply(plugin = weatherVibeCompose)
       apply(plugin = weatherVibeKoin)
+      apply(plugin = weatherVibeTest)
 
       dependencies {
         implementation(project(":core:designsystem"))

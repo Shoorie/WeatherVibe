@@ -17,4 +17,5 @@ internal object Plugins {
   const val weatherVibeLibrary = "weathervibe.android.library"
   const val weatherVibeCompose = "weathervibe.android.compose"
   const val weatherVibeKoin = "weathervibe.android.koin"
+  const val weatherVibeTest = "weathervibe.android.test"
 }

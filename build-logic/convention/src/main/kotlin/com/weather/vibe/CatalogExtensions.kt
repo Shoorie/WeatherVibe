@@ -73,6 +73,22 @@ internal val VersionCatalog.kotlinxSerializationJson
 internal val VersionCatalog.coroutinesAndroid
   get() = library("kotlinx-coroutines-android")
 
+// Test.
+internal val VersionCatalog.junit
+  get() = library("junit")
+
+internal val VersionCatalog.coroutinesTest
+  get() = library("kotlinx-coroutines-test")
+
+internal val VersionCatalog.mockk
+  get() = library("mockk")
+
+internal val VersionCatalog.striktCore
+  get() = library("strikt-core")
+
+internal val VersionCatalog.turbine
+  get() = library("turbine")
+
 // DataStore / Proto.
 internal val VersionCatalog.datastoreCore
   get() = library("androidx-datastore")

@@ -1,9 +1,8 @@
 package com.weather.vibe.data.weather.local
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
-import com.weather.vibe.data.weather.local.mapper.toDomain
-import com.weather.vibe.data.weather.local.mapper.toEntity
-import com.weather.vibe.data.weather.local.mapper.toLocalizedHash
+import com.weather.vibe.data.weather.local.mapper.WeatherSuggestionEntityMapper
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
 import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
@@ -13,7 +12,9 @@ import org.koin.core.annotation.Single
 
 @Single(binds = [WeatherSuggestionCache::class])
 internal class DefaultWeatherSuggestionCache(
-  private val dao: WeatherSuggestionDao
+  private val dao: WeatherSuggestionDao,
+  private val mapper: WeatherSuggestionEntityMapper,
+  private val timeProvider: TimeProvider
 ) : WeatherSuggestionCache {
 
   override suspend fun delete(
@@ -22,7 +23,7 @@ internal class DefaultWeatherSuggestionCache(
     weatherKey: WeatherKey
   ) {
     dao.delete(
-      keyHash = weatherKey.toLocalizedHash(languageTag),
+      keyHash = mapper.toLocalizedHash(weatherKey, languageTag),
       tone = tone.name
     )
   }
@@ -33,10 +34,10 @@ internal class DefaultWeatherSuggestionCache(
     weatherKey: WeatherKey
   ): CachedWeatherSuggestion? {
     val entity = dao.get(
-      keyHash = weatherKey.toLocalizedHash(languageTag),
+      keyHash = mapper.toLocalizedHash(weatherKey, languageTag),
       tone = tone.name
     ) ?: return null
-    return entity.toDomain()
+    return mapper.toDomain(entity)
   }
 
   override suspend fun save(
@@ -46,11 +47,11 @@ internal class DefaultWeatherSuggestionCache(
     weatherKey: WeatherKey
   ) {
     val cached = CachedWeatherSuggestion(
-      fetchedAt = System.currentTimeMillis(),
+      fetchedAt = timeProvider.nowEpochMillis(),
       suggestion = suggestion,
       tone = tone,
       weatherKey = weatherKey
     )
-    dao.upsert(entity = cached.toEntity(languageTag))
+    dao.upsert(entity = mapper.toEntity(cached, languageTag))
   }
 }

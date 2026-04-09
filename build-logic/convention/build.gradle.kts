@@ -65,5 +65,9 @@ gradlePlugin {
       id = "weathervibe.android.datastore"
       implementationClass = "DatastorePlugin"
     }
+    register("test") {
+      id = "weathervibe.android.test"
+      implementationClass = "TestPlugin"
+    }
   }
 }

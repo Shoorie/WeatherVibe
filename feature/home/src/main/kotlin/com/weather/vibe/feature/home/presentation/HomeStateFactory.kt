@@ -1,25 +1,26 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.domain.weather.usecase.ConvertTemperature
+import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
+import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
+import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
+import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
-import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
-import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
-import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -28,9 +29,16 @@ import java.util.Locale
 
 @Factory
 internal class HomeStateFactory(
-  private val convertTemperature: ConvertTemperature,
+  private val findCurrentHourIndex: FindCurrentHourIndex,
+  private val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
   private val metricsFactory: MetricsStateFactory,
-  private val resources: HomeResources
+  private val playlistFactory: PlaylistStateFactory,
+  private val resolveTodaySunInfo: ResolveTodaySunInfo,
+  private val resolveTodayTemperatureBounds: ResolveTodayTemperatureBounds,
+  private val resources: HomeResources,
+  private val sunriseSunsetFactory: SunriseSunsetStateFactory,
+  private val temperature: TemperatureFormatter,
+  private val timeProvider: TimeProvider
 ) {
 
   fun applyWeatherSuggestion(
@@ -43,188 +51,112 @@ internal class HomeStateFactory(
       false -> current
     }
 
-  fun create(data: WeatherData, temperatureUnit: TemperatureUnit = CELSIUS): Loaded =
-    Loaded(
-      currentWeather = createCurrentWeather(data, temperatureUnit),
-      dailyForecast = createDailyForecast(data.dailyForecast, temperatureUnit),
-      detailsSections = metricsFactory.create(data, temperatureUnit),
-      header = createHeader(data),
-      hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit),
-      sunriseSunset = createSunriseSunset(data.dailyForecast)
-    )
+  fun create(data: WeatherData, unit: TemperatureUnit = CELSIUS): Loaded {
 
-  fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded {
+    val today = timeProvider.today()
+    val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })
+    val metrics = getCurrentWeatherMetrics(data)
+    val sunInfo = resolveTodaySunInfo(data.dailyForecast)
 
-    val genreNames = suggestion.genres.map { it.trim() }
-    val spotifyQuery = genreNames.joinToString(separator = " ")
-    val ytQuery = genreNames.firstOrNull().orEmpty()
-
-    return PlaylistUiState.Loaded(
-      genres = genreNames.map { GenreChipUiState(name = it) },
-      mood = suggestion.mood,
-      moodDescription = suggestion.moodDescription,
-      spotifyQuery = "$SPOTIFY_SCHEME$spotifyQuery",
-      ytMusicUrl = "$YT_MUSIC_BASE_URL$ytQuery"
+    return Loaded(
+      currentWeather = createCurrentWeather(data, unit),
+      dailyForecast = createDailyForecast(data.dailyForecast, unit, today),
+      detailsSections = metricsFactory.create(metrics, unit),
+      header = createHeader(data, today),
+      hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
+      sunriseSunset = sunriseSunsetFactory.create(sunInfo)
     )
   }
+
+  fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded =
+    playlistFactory.create(suggestion)
 
   fun reformatTemperatures(
     current: HomeUiState,
     data: WeatherData,
-    temperatureUnit: TemperatureUnit
+    unit: TemperatureUnit
   ): HomeUiState {
     val loaded = current as? Loaded ?: return current
-    return create(data, temperatureUnit).copy(
+    return create(data, unit).copy(
       briefing = loaded.briefing,
       playlist = loaded.playlist
     )
   }
 
-  private fun createHeader(data: WeatherData): HeaderUiState =
+  private fun createHeader(data: WeatherData, today: LocalDate): HeaderUiState =
     HeaderUiState(
       cityName = data.cityName,
-      dateLabel = formatDate()
+      dateLabel = today.format(DATE_FORMATTER)
     )
 
   private fun createCurrentWeather(
     data: WeatherData,
     unit: TemperatureUnit
   ): CurrentWeatherUiState {
-    val today = data.dailyForecast.firstOrNull()
+
+    val bounds = resolveTodayTemperatureBounds(data)
+
     return CurrentWeatherUiState(
       conditionEmoji = data.condition.emoji,
       conditionLabel = resources.conditionLabel(data.condition),
-      currentTemperature = convertTemperature(celsius = data.currentTemperature, unit = unit),
-      feelsLikeTemperature = convertTemperature(celsius = data.apparentTemperature, unit = unit),
-      highTemperature = convertTemperature(
-        celsius = today?.maxTemperature ?: data.currentTemperature,
-        unit = unit
-      ),
-      lowTemperature = convertTemperature(
-        celsius = today?.minTemperature ?: data.currentTemperature,
-        unit = unit
-      )
+      currentTemperature = data.currentTemperature.formatted(unit),
+      feelsLikeTemperature = data.apparentTemperature.formatted(unit),
+      highTemperature = bounds.max.formatted(unit),
+      lowTemperature = bounds.min.formatted(unit)
     )
   }
 
   private fun createHourlyForecast(
     hours: List<HourlyWeather>,
-    unit: TemperatureUnit
+    unit: TemperatureUnit,
+    currentHourIndex: Int
   ): List<HourlyForecastUiState> =
     hours.mapIndexed { index, hour ->
       HourlyForecastUiState(
         conditionEmoji = hour.condition.emoji,
-        isCurrentHour = index == CURRENT_HOUR_INDEX,
-        temperature = convertTemperature(celsius = hour.temperature, unit = unit),
+        isCurrentHour = index == currentHourIndex,
+        temperature = hour.temperature.formatted(unit),
         timeLabel = formatHourLabel(hour.time)
       )
     }
 
   private fun createDailyForecast(
     days: List<DailyWeather>,
-    unit: TemperatureUnit
+    unit: TemperatureUnit,
+    today: LocalDate
   ): List<DailyForecastUiState> =
     days.map { day ->
       DailyForecastUiState(
         conditionEmoji = day.condition.emoji,
-        dayLabel = formatDayLabel(day.date),
-        maxTemperature = convertTemperature(celsius = day.maxTemperature, unit = unit),
-        minTemperature = convertTemperature(celsius = day.minTemperature, unit = unit)
+        dayLabel = formatDayLabel(day.date, today),
+        maxTemperature = day.maxTemperature.formatted(unit),
+        minTemperature = day.minTemperature.formatted(unit)
       )
     }
 
-  private fun createSunriseSunset(
-    days: List<DailyWeather>
-  ): SunriseSunsetUiState {
-    val today = days.firstOrNull()
-    val sunriseTime = today?.sunrise?.parseDateTime()
-    val sunsetTime = today?.sunset?.parseDateTime()
-    return SunriseSunsetUiState(
-      dayLength = formatDayLength(sunriseTime, sunsetTime),
-      sunProgress = calculateSunProgress(sunriseTime, sunsetTime),
-      sunriseTime = formatSunTime(today?.sunrise),
-      sunsetTime = formatSunTime(today?.sunset)
-    )
-  }
+  private fun formatHourLabel(time: LocalDateTime): String =
+    time.format(TIME_OUTPUT_FORMATTER)
 
-  private fun String.parseDateTime(): LocalDateTime? =
-    runCatching { LocalDateTime.parse(this, TIME_INPUT_FORMATTER) }.getOrNull()
+  private fun formatDayLabel(date: LocalDate, today: LocalDate): String =
+    if (date == today) resources.todayLabel()
+    else date.format(DAY_FORMATTER)
 
-  private fun calculateSunProgress(
-    sunrise: LocalDateTime?,
-    sunset: LocalDateTime?
-  ): Float {
-    if (sunrise == null || sunset == null) return MIN_PROGRESS
-    val now = LocalDateTime.now()
-    val dayMinutes = Duration.between(sunrise, sunset).toMinutes().toFloat()
-    val elapsed = Duration.between(sunrise, now).toMinutes().toFloat()
-    return (elapsed / dayMinutes).coerceIn(
-      minimumValue = MIN_PROGRESS,
-      maximumValue = MAX_PROGRESS
-    )
-  }
-
-  private fun formatDayLength(
-    sunrise: LocalDateTime?,
-    sunset: LocalDateTime?
-  ): String {
-    if (sunrise == null || sunset == null) return ""
-    val duration = Duration.between(sunrise, sunset)
-    return resources.dayLengthFormat(
-      hours = duration.toHours().toInt(),
-      minutes = (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
-    )
-  }
-
-  private fun formatDate(): String =
-    LocalDate.now().format(DATE_FORMATTER)
-
-  private fun formatHourLabel(time: String): String =
-    runCatching {
-      LocalDateTime
-        .parse(time, TIME_INPUT_FORMATTER)
-        .format(TIME_OUTPUT_FORMATTER)
-    }.getOrDefault(time)
-
-  private fun formatDayLabel(date: String): String =
-    runCatching {
-      val parsed = LocalDate.parse(date)
-      if (parsed == LocalDate.now()) resources.todayLabel()
-      else parsed.format(DAY_FORMATTER)
-    }.getOrDefault(date)
-
-  private fun formatSunTime(isoTime: String?): String {
-    if (isoTime.isNullOrEmpty()) return ""
-    return runCatching {
-      LocalDateTime
-        .parse(isoTime, TIME_INPUT_FORMATTER)
-        .format(TIME_OUTPUT_FORMATTER)
-    }.getOrDefault(isoTime)
-  }
+  private fun Double.formatted(unit: TemperatureUnit): String =
+    temperature.format(celsius = this, unit = unit)
 
   private companion object {
 
-    const val CURRENT_HOUR_INDEX = 0
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
-    const val MAX_PROGRESS = 1f
-    const val MIN_PROGRESS = 0f
-    const val MINUTES_PER_HOUR = 60
-    const val SPOTIFY_SCHEME = "spotify:search:"
-    const val TIME_INPUT_FORMAT = "yyyy-MM-dd'T'HH:mm"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
-    const val YT_MUSIC_BASE_URL = "https://music.youtube.com/search?q="
 
-    val DATE_FORMATTER: DateTimeFormatter?
+    val DATE_FORMATTER: DateTimeFormatter
       get() = ofPattern(DATE_FORMAT, Locale.getDefault())
 
-    val DAY_FORMATTER: DateTimeFormatter?
+    val DAY_FORMATTER: DateTimeFormatter
       get() = ofPattern(DAY_FORMAT, Locale.getDefault())
 
-    val TIME_INPUT_FORMATTER: DateTimeFormatter? =
-      ofPattern(TIME_INPUT_FORMAT)
-
-    val TIME_OUTPUT_FORMATTER: DateTimeFormatter? =
+    val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
       ofPattern(TIME_OUTPUT_FORMAT)
   }
 }

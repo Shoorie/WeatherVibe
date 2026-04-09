@@ -23,6 +23,10 @@ internal fun DependencyHandler.ksp(dependency: Any) {
   add("ksp", dependency)
 }
 
+internal fun DependencyHandler.testImplementation(dependency: Any) {
+  add("testImplementation", dependency)
+}
+
 internal fun DependencyHandler.debugImplementation(dependency: Any) {
   add("debugImplementation", dependency)
 }

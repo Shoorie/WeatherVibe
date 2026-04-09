@@ -143,6 +143,7 @@ Every AI interaction is governed by these "unbreakable" laws. These files act as
 | 🌐 [Network](/docs/ai-rules/network-ktor.md)          | External API        | **Strict Data Boundaries** & Ktor Implementation.          |
 | 💾 [Database](/docs/ai-rules/database-room.md)        | Persistence         | **Relational Mapping** over flat JSON persistence.         |
 | 📦 [Modularization](/docs/ai-rules/modularization.md) | Structure           | **Namespace-driven** layered feature modules.              |
+| 🧪 [Testing](/docs/ai-rules/testing.md)               | Quality             | **Fixtures, Fakes & Strikt** — tests as first-class docs.  |
 
 ---
 

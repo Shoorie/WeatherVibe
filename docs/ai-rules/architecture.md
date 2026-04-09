@@ -1,7 +1,9 @@
 # 🏗️ Architecture & State Management (CRITICAL RULES)
 
 > **Core Principle:** This project follows a strict **Clean Architecture** approach with
-> **Passive ViewModels** and **Fat Domains**. Business logic must never reside in the UI layer.
+> **Passive ViewModels**, **Thin Factories** (dumb mappers), and **Fat Domains** (all logic).
+> Business logic never resides in the UI layer — not in ViewModels, not in StateFactories,
+> not in Composables.
 
 ## 📋 Table of Contents
 
@@ -10,11 +12,13 @@
 3. [State & Event Modeling (UDF)](#3-state--event-modeling-udf)
 4. [Dispatching Actions (MVI Pattern)](#4-dispatching-actions-mvi-pattern)
 5. [Use Case Boundaries & Error Handling](#5-use-case-boundaries--error-handling-flow--catch)
-6. [Dependency Injection (Koin)](#7-dependency-injection-koin)
-7. [Typical ViewModel Structure Example](#8-typical-viewmodel-structure-example)
-8. [Typical State & Contract Example (MVI)](#9-typical-state--contract-example-mvi)
-9. [StateFactory Pattern (Fat Factory)](#10-statefactory-pattern-fat-factory)
-10. [Self-Verification Checklist](#11-self-verification-checklist)
+6. [Dependency Injection (Koin)](#6-dependency-injection-koin)
+7. [Typical ViewModel Structure Example](#7-typical-viewmodel-structure-example)
+8. [Typical State & Contract Example (MVI)](#8-typical-state--contract-example-mvi)
+9. [StateFactory Pattern (Thin Factory / Dumb Mapper)](#9-statefactory-pattern-thin-factory--dumb-mapper)
+10. [Code Reads Like Prose](#10-code-reads-like-prose)
+11. [Testability](#11-testability)
+12. [Self-Verification Checklist](#12-self-verification-checklist)
 
 ---
 
@@ -22,9 +26,12 @@
 
 Module structure and class naming must strictly reflect layer responsibilities.
 
-* **`:data`**: Network DTOs, Room Entities, DAOs, and Repository Implementations.
-* **`:domain`**: Pure Models (POJOs), Repository Interfaces, and Use Cases.
-* **`:feature` (UI)**: ViewModels, UI State, Events, Composables, and State Factories.
+* **`:data`**: Network DTOs, Room Entities, DAOs, Repository Implementations, and Mappers
+  (all String↔typed parsing lives here).
+* **`:domain`**: Pure Models (POJOs with typed fields — `LocalDateTime` not `String`), Repository
+  Interfaces, and Use Cases. **Fat Domain** — all parsing, calculation, and business branching.
+* **`:feature` (UI)**: ViewModels (passive), UI State, Events, Composables, and **Thin**
+  StateFactories (dumb mappers that only format).
 
 ### 🚫 Forbidden Naming Patterns
 
@@ -194,51 +201,81 @@ internal sealed interface FeatureEvent {
 
 ---
 
-## 9. StateFactory Pattern (Fat Factory)
+## 9. StateFactory Pattern (Thin Factory / Dumb Mapper)
 
-The factory is responsible for ALL data transformation from domain models to display-ready
-UI models. Composables receive pre-formatted strings - they never perform formatting logic.
+> **Core rule:** A StateFactory is a **dumb mapper**. It converts domain models to display-ready
+> UI models by **formatting values only**. All parsing, calculation, branching, and time-reading
+> live in the **domain layer** as small Use Cases (Fat Domain).
 
-### Rules:
+### ❌ Forbidden in factories
 
-* **Private helper methods** per UI section: `createHeader()`, `createItems()`, etc.
-* **Private formatting utilities*.
-* **UI model classes** live in `presentation/model/` - one file per class, `@Immutable`,
-  alphabetically ordered constructor params.
-* **Loaded state** holds UI models directly (not raw domain models).
+A factory MUST NOT contain:
+
+* **Parsing** — `LocalDateTime.parse(...)`, `runCatching { ... }`, String → Int/Double.
+* **Time reading** — `LocalDate.now()`, `LocalDateTime.now()`, `System.currentTimeMillis()`.
+  Inject a `TimeProvider` only if the factory passes `now()` into a Use Case — never reads it for logic.
+* **Calculation** — math, durations, ratios, index lookups, unit conversions beyond simple formatting.
+* **Business branching** — `if (itemDate == today)`, `when (status) { ... }` that decides *meaning*
+  (not pure presentation fallbacks like "empty list → empty string").
+* **Data shape decisions** — picking the "currently active" element, choosing which item is primary, etc.
+
+If you need any of the above, **extract a Use Case** in `domain/<x>/usecase/` and call it.
+
+### ✅ Allowed in factories
+
+* **Formatting** — `Double.roundToInt()`, `DateTimeFormatter`, `String.format(...)`, unit suffixes.
+* **Simple null/empty guards** producing empty UI state (`items.firstOrNull() ?: return Empty`).
+* **Delegation to resources** (`resources.title()`) and nested sub-factories.
+* **Mapping domain enums to label/icon** via lookup.
 
 ### Factory Template:
 
 ```kotlin
 @Factory
-internal class FeatureStateFactory {
+internal class FeatureStateFactory(
+  private val computeProgress: ComputeProgress,       // Fat Domain use case
+  private val findActiveItemIndex: FindActiveItemIndex, // Fat Domain use case
+  private val resources: FeatureResources,
+  private val timeProvider: TimeProvider
+) {
 
-  fun createFrom(data: DomainData): Loaded =
-    Loaded(
-      header = createHeader(data),
-      items = createItems(data.items)
+  fun create(data: FeatureDomainModel): Loaded {
+    
+    val primary = data.items.firstOrNull() ?: return Loaded.empty()
+    val now = timeProvider.now()
+    val activeIndex = findActiveItemIndex(data.items, now)
+    
+    return Loaded(
+      items = data.items.mapIndexed { index, item ->
+        ItemUiState(
+          label = item.name,
+          isActive = index == activeIndex
+        )
+      },
+      progressRatio = computeProgress(primary.startedAt, primary.endsAt, now),
+      summaryLabel = formatDuration(primary.duration)
+    )
+  }
+
+  private fun formatDuration(duration: Duration): String =
+    resources.durationFormat(
+      hours = duration.toHours().toInt(),
+      minutes = (duration.toMinutes() % MINUTES_PER_HOUR).toInt()
     )
 
-  private fun createHeader(data: DomainData): HeaderUiModel =
-    HeaderUiModel(
-      title = data.title,
-      subtitle = formatDate(data.date)
-    )
-
-  private fun createItems(
-    items: List<DomainItem>
-  ): List<ItemUiModel> =
-    items.map { item ->
-      ItemUiModel(
-        label = item.name,
-        value = formatValue(item.rawValue)
-      )
-    }
-
-  private fun formatDate(date: String): String = ...
-  private fun formatValue(value: Double): String = ...
+  private companion object {
+    const val MINUTES_PER_HOUR = 60
+  }
 }
 ```
+
+### Why Thin Factory + Fat Domain
+
+* **Testability.** Logic in Use Cases = unit tests <10 lines, zero mocks of UI concerns.
+* **Reusability.** Domain Use Cases are reusable across features; factories are feature-specific.
+* **Clarity.** A factory reads like a mapping table — one glance tells you what fields map where.
+* **No hidden bugs.** A factory full of `runCatching` and naive index-based assumptions hides
+  logic bugs where the data shape shifts but the mapper silently produces wrong-but-plausible output.
 
 ---
 
@@ -274,12 +311,16 @@ Before finalizing architectural changes, verify:
 
 1. [ ] **Naming:** No `UseCase` or `Impl` suffixes in class names?
 2. [ ] **ViewModel:** Is it strictly passive? (No business logic/mapping inside?)
-3. [ ] **StateFactory:** Are all domain-to-ui transformations handled here?
-4. [ ] **Constructor:** Are all parameters sorted alphabetically?
-5. [ ] **DI:** Are you following rules in `docs/ai-rules/di-koin.md`?
-6. [ ] **UDF:** Is state updated ONLY via `_state.update { ... }`?
-7. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
-8. [ ] **MVI Tense:** Are both Actions and Events using Present Tense?
-9. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
-10. [ ] **Use Case:** Returns `Flow<Result<T>>` and uses `catch { }` for safety?
-11. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?
+3. [ ] **Thin Factory:** Does the factory contain **any** parsing, time-reading, calculation,
+       or business branching? If yes → extract to a Use Case.
+4. [ ] **Fat Domain:** Does every "what does this value mean" decision live in a Use Case?
+5. [ ] **Constructor:** Are all parameters sorted alphabetically?
+6. [ ] **DI:** Are you following rules in `docs/ai-rules/di-koin.md`?
+7. [ ] **UDF:** Is state updated ONLY via `_state.update { ... }`?
+8. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
+9. [ ] **MVI Tense:** Are both Actions and Events using Present Tense?
+10. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
+11. [ ] **Use Case:** Async ones return `Flow<Result<T>>` and use `catch { }` for safety?
+12. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?
+13. [ ] **Domain models carry typed values:** No `String` for dates/times in domain models —
+        parse in data mappers, domain holds `LocalDateTime` / `LocalDate` / `Duration` / enums.

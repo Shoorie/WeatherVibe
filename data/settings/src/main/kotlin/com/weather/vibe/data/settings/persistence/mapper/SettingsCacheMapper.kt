@@ -1,4 +1,4 @@
-package com.weather.vibe.data.settings.mapper
+package com.weather.vibe.data.settings.persistence.mapper
 
 import com.weather.vibe.data.settings.persistence.UserSettingsCacheData
 import com.weather.vibe.domain.settings.model.BriefTone
@@ -19,10 +19,14 @@ internal class SettingsCacheMapper {
     )
 
   private fun String.toBriefTone(): BriefTone =
-    BriefTone.entries.firstOrNull { it.name == this } ?: WITTY_AND_FRIENDLY
+    BriefTone.entries
+      .firstOrNull { it.name == this }
+      ?: WITTY_AND_FRIENDLY
 
   private fun String.toTemperatureUnit(): TemperatureUnit =
-    TemperatureUnit.entries.firstOrNull { it.name == this } ?: CELSIUS
+    TemperatureUnit.entries
+      .firstOrNull { it.name == this }
+      ?: CELSIUS
 
   private fun String.toGenreSet(): Set<String> =
     if (isBlank()) emptySet()

@@ -1,4 +1,4 @@
-package com.weather.vibe.data.location.mapper
+package com.weather.vibe.data.location.remote.mapper
 
 import com.weather.vibe.data.location.remote.dto.LocationResultDto
 import com.weather.vibe.domain.location.model.LocationResult

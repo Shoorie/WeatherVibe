@@ -1,7 +1,7 @@
 package com.weather.vibe.data.settings.persistence
 
 import androidx.datastore.core.DataStore
-import com.weather.vibe.data.settings.mapper.SettingsCacheMapper
+import com.weather.vibe.data.settings.persistence.mapper.SettingsCacheMapper
 import com.weather.vibe.domain.settings.cache.SettingsCache
 import com.weather.vibe.domain.settings.model.UserSettings
 import kotlinx.coroutines.flow.Flow

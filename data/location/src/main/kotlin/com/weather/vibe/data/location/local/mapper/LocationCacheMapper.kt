@@ -1,4 +1,4 @@
-package com.weather.vibe.data.location.mapper
+package com.weather.vibe.data.location.local.mapper
 
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.location.local.entity.RecentLocationEntity

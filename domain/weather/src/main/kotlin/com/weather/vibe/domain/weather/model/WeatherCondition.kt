@@ -1,8 +1,5 @@
 package com.weather.vibe.domain.weather.model
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 enum class WeatherCondition(val label: String, val emoji: String) {
   CLEAR_SKY("Clear Sky", "☀️"),
   MAINLY_CLEAR("Mainly Clear", "🌤️"),

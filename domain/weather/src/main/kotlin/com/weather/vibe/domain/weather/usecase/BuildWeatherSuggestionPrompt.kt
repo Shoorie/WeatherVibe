@@ -4,10 +4,10 @@ import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
+import com.weather.vibe.domain.weather.model.Language
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TimeOfDay
 import org.koin.core.annotation.Factory
-import java.util.Locale
 import kotlin.math.roundToInt
 
 @Factory
@@ -22,64 +22,103 @@ internal class BuildWeatherSuggestionPrompt {
     tone: BriefTone
   ): String {
 
-    val toneInstruction = TONE_INSTRUCTIONS.getValue(tone)
-    val exclusionClause = buildExclusionClause(excludedGenres)
-    val languageName = resolveLanguageName(languageTag)
+    val language = Language.fromTag(languageTag)
 
-    return PROMPT.format(
-      languageName,
-      toneInstruction,
-      condition.label,
-      temperatureCelsius.roundToInt(),
-      timeOfDay.label,
-      exclusionClause
-    )
+    return buildString {
+      appendSection(roleSection(language))
+      appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
+      appendSection(briefSection(tone, language))
+      appendSection(naturalPhrasingSection(language))
+      appendSection(musicSection(excludedGenres))
+      appendSection(outputFormatSection(language))
+    }
   }
 
-  private fun buildExclusionClause(excludedGenres: Set<String>): String =
-    if (excludedGenres.isEmpty()) ""
-    else EXCLUSION_TEMPLATE.format(excludedGenres.joinToString(separator = ", "))
+  private fun roleSection(language: Language): String =
+    """
+      ROLE:
+      You are a native ${language.displayName} speaker writing a short weather brief for a local audience.
+      Compose your thoughts directly in ${language.displayName}. Do NOT translate from English.
+    """.trimIndent()
 
-  private fun resolveLanguageName(languageTag: String): String =
-    Locale.forLanguageTag(languageTag).getDisplayLanguage(Locale.ENGLISH)
+  private fun weatherSection(
+    condition: SimplifiedCondition,
+    temperatureCelsius: Double,
+    timeOfDay: TimeOfDay
+  ): String =
+    """
+      WEATHER:
+      - Condition: ${condition.label}
+      - Temperature: ${temperatureCelsius.roundToInt()}°C
+      - Time of day: ${timeOfDay.label}
+    """.trimIndent()
+
+  private fun briefSection(tone: BriefTone, language: Language): String =
+    """
+      BRIEF TEXT:
+      Write a 1-2 sentence weather comment in ${language.displayName}.
+      Tone: ${TONE_DESCRIPTIONS.getValue(tone)}
+      The brief must:
+      - Describe the atmosphere qualitatively (no specific temperature numbers)
+      - Hint at the mood or activity the weather invites (cozy indoors, a brisk walk, a book and tea, etc.)
+      - NEVER mention music, genres, or playlists — those are handled in a separate section
+    """.trimIndent()
+
+  private fun naturalPhrasingSection(language: Language): String =
+    """
+      NATURAL PHRASING:
+      Think directly in ${language.displayName}. Do not translate English idioms or sentence structures.
+      Use everyday, colloquial phrasing a real person would actually say in casual conversation.
+      Avoid stiff, literal constructions that sound like machine translation.
+
+      Examples of natural briefs in ${language.displayName}:
+      ${language.briefExamples.prependIndent("      ").trimStart()}
+    """.trimIndent()
+
+  private fun musicSection(excludedGenres: Set<String>): String =
+    buildString {
+      append(
+        """
+          MUSIC RECOMMENDATION:
+          Suggest exactly 3 music genres that match the weather mood above.
+          Genres MUST be real, searchable music genres in English.
+          Use consistent genre naming across requests.
+        """.trimIndent()
+      )
+      if (excludedGenres.isNotEmpty()) {
+        append("\nDo NOT suggest any of these genres: ")
+        append(excludedGenres.joinToString(separator = ", "))
+        append(".")
+      }
+    }
+
+  private fun outputFormatSection(language: Language): String =
+    """
+      OUTPUT FORMAT:
+      Reply with ONLY a JSON object (no markdown, no explanation, no code fences):
+      {
+        "briefText": "1-2 sentence weather brief in ${language.displayName}",
+        "mood": "short mood label in ${language.displayName}, max 4 words",
+        "moodDescription": "one atmospheric sentence in ${language.displayName}, max 12 words",
+        "genres": ["genre1", "genre2", "genre3"]
+      }
+
+      briefText, mood, and moodDescription MUST be written in ${language.displayName}.
+      Genres MUST always remain in English.
+      mood and moodDescription stay neutral/atmospheric regardless of brief tone.
+    """.trimIndent()
+
+  private fun StringBuilder.appendSection(content: String) {
+    append(content)
+    append("\n\n")
+  }
 
   private companion object {
 
-    const val EXCLUSION_TEMPLATE =
-      "\nIMPORTANT: Do NOT suggest any of these genres: %s."
-
-    const val PROMPT =
-      "You are a weather-to-music recommendation engine.\n\n" +
-        $$"OUTPUT LANGUAGE: %1$s\n" +
-        $$"You MUST write briefText, mood, and moodDescription entirely in %1$s. " +
-        "Use correct grammar and natural, fluent phrasing. " +
-        "Never mix languages. Genres MUST always remain in English.\n\n" +
-        $$"BRIEF TONE: %2$s\n\n" +
-        "WEATHER CONTEXT:\n" +
-        $$"- Condition: %3$s\n" +
-        $$"- Temperature: %4$d°C\n" +
-        $$"- Time of day: %5$s\n\n" +
-        "Reply with ONLY a JSON object (no markdown, no explanation) in this exact format:\n" +
-        "{\n" +
-        $$"  \"briefText\": \"1-2 sentence weather briefing in %1$s\",\n" +
-        $$"  \"mood\": \"short mood label in %1$s, max 4 words\",\n" +
-        $$"  \"moodDescription\": \"one contextual sentence in %1$s, max 12 words\",\n" +
-        "  \"genres\": [\"genre1\", \"genre2\", \"genre3\"]\n" +
-        "}\n\n" +
-        "RULES:\n" +
-        $$"- briefText, mood, and moodDescription MUST be in %1$s — no other language allowed\n" +
-        "- briefText must be written in the specified tone and reference the specific weather\n" +
-        "- mood and moodDescription are always neutral/atmospheric regardless of tone\n" +
-        "- genres must be exactly 3 real, searchable music genres in English that match the mood\n" +
-        "- briefText must NEVER include specific temperature numbers — describe warmth/cold qualitatively instead\n" +
-        $$"- Tone and humor must feel natural and idiomatic in %1$s — no literal translations of English idioms\n" +
-        "- Use consistent genre naming across requests" +
-        $$"%6$s"
-
-    val TONE_INSTRUCTIONS = mapOf(
-      FORMAL to "Formal and professional. Describe weather factually, like a weather report.",
-      HUMOROUS to "Humorous and playful. Use light irony, dry wit, or gentle sarcasm. Keep it relatable and grounded — no forced or over-the-top comparisons.",
-      WITTY_AND_FRIENDLY to "Witty and friendly. Warm, conversational, like a friend giving advice."
+    val TONE_DESCRIPTIONS = mapOf(
+      FORMAL to "Factual and professional, like a weather report.",
+      HUMOROUS to "Light irony and dry wit — grounded, never forced or over-the-top.",
+      WITTY_AND_FRIENDLY to "Warm and conversational, like a friend giving advice."
     )
   }
 }

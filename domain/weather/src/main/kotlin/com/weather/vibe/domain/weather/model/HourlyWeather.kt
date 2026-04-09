@@ -1,8 +1,7 @@
 package com.weather.vibe.domain.weather.model
 
-import kotlinx.serialization.Serializable
+import java.time.LocalDateTime
 
-@Serializable
 data class HourlyWeather(
   val apparentTemperature: Double = 0.0,
   val cloudCover: Int = 0,
@@ -13,7 +12,7 @@ data class HourlyWeather(
   val precipitationProbability: Int,
   val surfacePressure: Double = 0.0,
   val temperature: Double,
-  val time: String,
+  val time: LocalDateTime,
   val visibility: Double = 0.0,
   val windGusts: Double = 0.0,
   val windSpeed: Double

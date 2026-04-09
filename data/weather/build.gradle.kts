@@ -12,6 +12,7 @@ android {
 dependencies {
   implementation(projects.core.ai)
   implementation(projects.core.network)
+  implementation(projects.core.time)
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)
 

@@ -6,6 +6,9 @@ import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
@@ -14,7 +17,6 @@ import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
-import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
@@ -30,7 +32,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import java.time.LocalTime
 
 @KoinViewModel
 internal class HomeViewModel(
@@ -62,21 +63,23 @@ internal class HomeViewModel(
     }
   }
 
-  private fun observeWeather(location: Location = defaultLocation()) {
+  private fun observeWeather(location: Location = DEFAULT_LOCATION) {
 
     _state.update { Loading }
+    snapshot = HomeSnapshot()
 
     homeDataJob?.cancel()
     homeDataJob = combine(
       useCases.getWeather(location),
-      useCases.observeUserSettings()
-    ) { weatherResult, settingsResult -> weatherResult to settingsResult }
-      .onEach(::onHomeDataResult)
-      .launchIn(viewModelScope)
+      useCases.observeUserSettings(),
+      ::onHomeDataResult
+    ).launchIn(viewModelScope)
   }
 
-  private fun onHomeDataResult(results: Pair<Result<WeatherData>, Result<UserSettings>>) {
-    val (weatherResult, settingsResult) = results
+  private fun onHomeDataResult(
+    weatherResult: Result<WeatherData>,
+    settingsResult: Result<UserSettings>
+  ) {
     settingsResult.fold(
       onSuccess = { settings -> onSettingsReady(weatherResult, settings) },
       onFailure = ::showError
@@ -101,21 +104,20 @@ internal class HomeViewModel(
   ) {
 
     val previousWeatherKey = snapshot.weatherKey
-    val weatherKey = useCases.computeWeatherKey(
-      condition = weather.condition,
-      hour = LocalTime.now().hour,
-      temperatureCelsius = weather.currentTemperature
-    )
+    val weatherKey = useCases.getCurrentWeatherKey(weather)
     snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)
 
-    val isFirstLoad = _state.value !is Loaded
-    val weatherChanged = weatherKey != previousWeatherKey
-    val toneChanged = settings.hasBriefToneChanged(previousSettings)
+    val strategy = useCases.determineWeatherRefreshStrategy(
+      previousWeatherKey = previousWeatherKey,
+      currentWeatherKey = weatherKey,
+      previousSettings = previousSettings,
+      currentSettings = settings
+    )
 
-    when {
-      isFirstLoad || weatherChanged -> onWeatherChanged(weather, settings)
-      toneChanged -> onBriefToneChanged(weather, settings, weatherKey)
-      else -> showTemperaturesReformatted(weather, settings)
+    when (strategy) {
+      RegenerateSuggestion -> onWeatherChanged(weather, settings)
+      InvalidateAndRegenerate -> onBriefToneChanged(weather, settings, weatherKey)
+      ReformatOnly -> showTemperaturesReformatted(weather, settings)
     }
   }
 
@@ -132,39 +134,23 @@ internal class HomeViewModel(
     showWeatherLoaded(weather, settings)
     settingsJob?.cancel()
     settingsJob = viewModelScope.launch {
-      useCases.invalidateWeatherSuggestion(
-        tone = settings.briefTone,
-        weatherKey = weatherKey
-      )
+      useCases.invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
       refreshWeatherSuggestion()
     }
   }
 
   private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
-    _state.update {
-      stateFactory.create(
-        data = weather,
-        temperatureUnit = settings.temperatureUnit
-      )
-    }
+    _state.update { stateFactory.create(data = weather, unit = settings.temperatureUnit) }
   }
 
   private fun showTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {
     _state.update {
-      stateFactory.reformatTemperatures(
-        current = it,
-        data = weather,
-        temperatureUnit = settings.temperatureUnit
-      )
+      stateFactory.reformatTemperatures(current = it, data = weather, unit = settings.temperatureUnit)
     }
   }
 
   private fun showError(error: Throwable) {
-    _state.update {
-      HomeUiState.Error(
-        error.message ?: resources.defaultError()
-      )
-    }
+    _state.update { HomeUiState.Error(error.message ?: resources.defaultError()) }
   }
 
   private fun onRefreshClick() {
@@ -193,15 +179,11 @@ internal class HomeViewModel(
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
 
     val settings = currentSettings ?: return
-    val updatedSettings = settings
-      .withExcludedGenres(settings.excludedGenres + action.genre)
-
+    val updatedSettings = settings.withExcludedGenres(settings.excludedGenres + action.genre)
     val updatedState = _state.updateAndGet { it.withGenreRejecting(action.genre) }
 
-    when (updatedState.allGenresRejected) {
-      true -> onAllGenresRejected(updatedSettings)
-      false -> saveSettings(updatedSettings)
-    }
+    if (updatedState.allGenresRejected) onAllGenresRejected(updatedSettings)
+    else saveSettings(updatedSettings)
   }
 
   private fun saveSettings(settings: UserSettings) {
@@ -217,11 +199,9 @@ internal class HomeViewModel(
 
     settingsJob?.cancel()
     settingsJob = viewModelScope.launch {
-      useCases.saveUserSettings(settings = settings)
-      useCases.invalidateWeatherSuggestion(
-        tone = settings.briefTone,
-        weatherKey = snapshot.weatherKey ?: return@launch
-      )
+      useCases.saveUserSettings(settings)
+      val weatherKey = snapshot.weatherKey ?: return@launch
+      useCases.invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
       refreshWeatherSuggestion()
     }
   }
@@ -276,11 +256,10 @@ internal class HomeViewModel(
   }
 
   private companion object {
-    fun defaultLocation(): Location =
-      Location(
-        cityName = "Toruń",
-        latitude = 53.0138,
-        longitude = 18.5984
-      )
+    val DEFAULT_LOCATION = Location(
+      cityName = "Toruń",
+      latitude = 53.0138,
+      longitude = 18.5984
+    )
   }
 }

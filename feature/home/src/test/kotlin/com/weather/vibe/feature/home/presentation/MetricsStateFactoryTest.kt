@@ -23,7 +23,7 @@ class MetricsStateFactoryTest {
   private val factory: MetricsStateFactory =
     MetricsStateFactory(
       resources = resources,
-      temperatureFormatter = temperatureFormatter
+      temperature = temperatureFormatter
     )
 
   @Before

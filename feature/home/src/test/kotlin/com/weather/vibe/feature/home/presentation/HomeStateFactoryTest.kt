@@ -67,7 +67,7 @@ class HomeStateFactoryTest {
     resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
     sunriseSunsetFactory = sunriseSunsetFactory,
-    temperatureFormatter = temperatureFormatter,
+    temperature = temperatureFormatter,
     timeProvider = fakeTimeProvider
   )
 
@@ -316,7 +316,7 @@ class HomeStateFactoryTest {
     val result = factory.reformatTemperatures(
       current = loaded,
       data = WEATHER,
-      temperatureUnit = FAHRENHEIT
+      unit = FAHRENHEIT
     )
 
     expectThat(result).isA<HomeUiState.Loaded>()
@@ -331,7 +331,7 @@ class HomeStateFactoryTest {
     val result = factory.reformatTemperatures(
       current = loaded,
       data = WEATHER,
-      temperatureUnit = CELSIUS
+      unit = CELSIUS
     ) as HomeUiState.Loaded
 
     expectThat(result.briefing).isEqualTo(briefing)
@@ -346,7 +346,7 @@ class HomeStateFactoryTest {
     val result = factory.reformatTemperatures(
       current = loaded,
       data = WEATHER,
-      temperatureUnit = CELSIUS
+      unit = CELSIUS
     ) as HomeUiState.Loaded
 
     expectThat(result.playlist).isEqualTo(playlist)
@@ -358,7 +358,7 @@ class HomeStateFactoryTest {
     val result = factory.reformatTemperatures(
       current = HomeUiState.Loading,
       data = WEATHER,
-      temperatureUnit = CELSIUS
+      unit = CELSIUS
     )
 
     expectThat(result).isA<HomeUiState.Loading>()

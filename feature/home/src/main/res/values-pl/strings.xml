@@ -65,4 +65,7 @@
   <string name="ai_briefing_retry">Ponów</string>
   <string name="finding_better_suggestions">Szukam lepszych propozycji…</string>
   <string name="genre_remove_content_description">Usuń %1$s</string>
+  <string name="sun_progress_content_description">Słońce, wschód o %1$s, zachód o %2$s</string>
+  <string name="sunrise_at_format">Wschód o %1$s</string>
+  <string name="sunset_at_format">Zachód o %1$s</string>
 </resources>

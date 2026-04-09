@@ -82,7 +82,7 @@ allows stubs to be configured later in `@Before`. Reserve `lateinit var` only wh
 genuinely requires the `@Before` lifecycle.
 
 ```kotlin
-class FeatureStateFactoryTest : BaseTest() {
+class FeatureStateFactoryTest {
 
   private val dependency = mockk<Dependency>()
   private val factory = FeatureStateFactory(dependency = dependency)
@@ -90,6 +90,11 @@ class FeatureStateFactoryTest : BaseTest() {
   @Before
   fun setUp() {
     every { dependency.method(any()) } returns FeatureDataFixtures.DATA
+  }
+
+  @After
+  fun tearDown() {
+    unmockkAll()
   }
 
   @Test
@@ -101,6 +106,10 @@ class FeatureStateFactoryTest : BaseTest() {
   }
 }
 ```
+
+**MockK cleanup rule:** Any test class that uses MockK MUST call `unmockkAll()` in `@After`.
+Global stubs bleed across tests otherwise, producing order-dependent failures. No base class
+is needed — one `@After` method does the job and keeps composition over inheritance.
 
 ### Scenarios (only for given setup)
 
@@ -182,64 +191,34 @@ internal fun fakeResources(): FeatureResources =
 
 Use [Strikt](https://strikt.io/) for all assertions. Never use JUnit assertions or Truth.
 
-### Common Patterns
+Most tests need only a handful of matchers:
 
 ```kotlin
-// Equality
 expectThat(result.name).isEqualTo("expected")
-
-// Boolean
-expectThat(result.isActive).isTrue()
-expectThat(result.isDeleted).isFalse()
-
-// Collections
 expectThat(result.items).hasSize(3)
-expectThat(result.items).map { it.name }
-  .containsExactly("A", "B", "C")
-
-// Type checks
-expectThat(result).isA<FeatureUiState.Loaded>()
-
-// Chained
-expectThat(result.progress)
-  .isGreaterThan(0.4f)
-  .isLessThan(0.6f)
-
-// Nested access
 expectThat(result).isA<FeatureUiState.Loaded>()
   .get { header.title }.isEqualTo("Expected Title")
 ```
+
+For numeric ranges, collection mapping, and less common matchers, consult the
+[Strikt API docs](https://strikt.io/wiki/assertions/) — the library is self-documenting and
+full coverage here would just drift out of date.
 
 ---
 
 ## 5. Test Infrastructure
 
-### Convention Plugin
+Test dependencies (JUnit, MockK, Strikt, etc.) are **opt-in per module** — a module without
+tests should not carry the test classpath. Pull test libraries only into modules that actually
+ship tests.
 
-All test dependencies are provided by the `app.android.test` convention plugin. No manual
-dependency declarations needed.
-
-### Test Stack
-
-| Library                 | Purpose                |
-|:------------------------|:-----------------------|
-| JUnit 4                 | Test runner            |
-| MockK                   | Mocking framework      |
-| Strikt                  | Assertion library      |
-| Turbine                 | Flow testing           |
-| kotlinx-coroutines-test | Coroutine test support |
-
-### Directory Structure
+### Directory Layout
 
 ```
-feature/xxx/src/test/kotlin/com/.../presentation/
-  ├── fixture/           # Test data fixtures
-  │   ├── XxxDataFixtures.kt
-  │   └── YyyFixtures.kt
-  ├── fake/              # Pre-configured mocks / fakes
-  │   └── FakeXxxResources.kt
-  ├── XxxStateFactoryTest.kt
-  └── XxxViewModelTest.kt
+<module>/src/test/kotlin/.../
+  ├── fixture/    # FeatureDataFixtures.kt — test data
+  ├── fake/       # fakeXxxResources.kt — pre-configured mocks
+  └── *Test.kt
 ```
 
 ---

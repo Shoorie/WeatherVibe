@@ -14,5 +14,6 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)
 
+  testImplementation(projects.testing.settingsFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

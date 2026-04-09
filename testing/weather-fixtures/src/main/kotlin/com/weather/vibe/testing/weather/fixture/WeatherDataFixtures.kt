@@ -2,12 +2,19 @@ package com.weather.vibe.testing.weather.fixture
 
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
+import com.weather.vibe.domain.weather.model.SimplifiedCondition
+import com.weather.vibe.domain.weather.model.SimplifiedCondition.SUNNY
+import com.weather.vibe.domain.weather.model.TemperatureRange
+import com.weather.vibe.domain.weather.model.TemperatureRange.WARM
+import com.weather.vibe.domain.weather.model.TimeOfDay
+import com.weather.vibe.domain.weather.model.TimeOfDay.AFTERNOON
 import com.weather.vibe.domain.weather.model.TodaySunInfo
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherMetrics
 import com.weather.vibe.domain.weather.model.WindDirection
 import java.time.Duration
@@ -110,6 +117,8 @@ object WeatherDataFixtures {
   val METRICS = weatherMetrics()
 
   val SUN_INFO = todaySunInfo()
+
+  val WEATHER_KEY = weatherKey()
 
   fun weatherData(
     apparentTemperature: Double = APPARENT_TEMPERATURE,
@@ -231,5 +240,15 @@ object WeatherDataFixtures {
     sunProgress = sunProgress,
     sunrise = sunrise,
     sunset = sunset
+  )
+
+  fun weatherKey(
+    condition: SimplifiedCondition = SUNNY,
+    temperature: TemperatureRange = WARM,
+    timeOfDay: TimeOfDay = AFTERNOON
+  ): WeatherKey = WeatherKey(
+    condition = condition,
+    temperature = temperature,
+    timeOfDay = timeOfDay
   )
 }

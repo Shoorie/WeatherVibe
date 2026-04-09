@@ -1,22 +1,19 @@
 package com.weather.vibe.domain.weather.usecase
 
-import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
-import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
-import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.SimplifiedCondition.RAINY
-import com.weather.vibe.domain.weather.model.SimplifiedCondition.SUNNY
 import com.weather.vibe.domain.weather.model.TemperatureRange.COLD
-import com.weather.vibe.domain.weather.model.TemperatureRange.WARM
-import com.weather.vibe.domain.weather.model.TimeOfDay.AFTERNOON
 import com.weather.vibe.domain.weather.model.TimeOfDay.NIGHT
-import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
+import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.DEFAULT_SETTINGS
+import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER_KEY
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherKey
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -30,9 +27,9 @@ class DetermineWeatherRefreshStrategyTest {
 
     val result = determineStrategy(
       previousWeatherKey = null,
-      currentWeatherKey = SUNNY_WARM_AFTERNOON,
+      currentWeatherKey = WEATHER_KEY,
       previousSettings = null,
-      currentSettings = userSettings()
+      currentSettings = DEFAULT_SETTINGS
     )
 
     expectThat(result).isEqualTo(RegenerateSuggestion)
@@ -41,11 +38,13 @@ class DetermineWeatherRefreshStrategyTest {
   @Test
   fun `given different weather key, when determined, then regenerate suggestion`() {
 
+    val rainyColdNight = weatherKey(condition = RAINY, temperature = COLD, timeOfDay = NIGHT)
+
     val result = determineStrategy(
-      previousWeatherKey = SUNNY_WARM_AFTERNOON,
-      currentWeatherKey = RAINY_COLD_NIGHT,
-      previousSettings = userSettings(),
-      currentSettings = userSettings()
+      previousWeatherKey = WEATHER_KEY,
+      currentWeatherKey = rainyColdNight,
+      previousSettings = DEFAULT_SETTINGS,
+      currentSettings = DEFAULT_SETTINGS
     )
 
     expectThat(result).isEqualTo(RegenerateSuggestion)
@@ -55,8 +54,8 @@ class DetermineWeatherRefreshStrategyTest {
   fun `given same key and changed tone, when determined, then invalidate and regenerate`() {
 
     val result = determineStrategy(
-      previousWeatherKey = SUNNY_WARM_AFTERNOON,
-      currentWeatherKey = SUNNY_WARM_AFTERNOON,
+      previousWeatherKey = WEATHER_KEY,
+      currentWeatherKey = WEATHER_KEY,
       previousSettings = userSettings(briefTone = FORMAL),
       currentSettings = userSettings(briefTone = HUMOROUS)
     )
@@ -68,8 +67,8 @@ class DetermineWeatherRefreshStrategyTest {
   fun `given same key and only unit changed, when determined, then reformat only`() {
 
     val result = determineStrategy(
-      previousWeatherKey = SUNNY_WARM_AFTERNOON,
-      currentWeatherKey = SUNNY_WARM_AFTERNOON,
+      previousWeatherKey = WEATHER_KEY,
+      currentWeatherKey = WEATHER_KEY,
       previousSettings = userSettings(temperatureUnit = CELSIUS),
       currentSettings = userSettings(temperatureUnit = FAHRENHEIT)
     )
@@ -81,36 +80,12 @@ class DetermineWeatherRefreshStrategyTest {
   fun `given same key and null previous settings, when determined, then reformat only`() {
 
     val result = determineStrategy(
-      previousWeatherKey = SUNNY_WARM_AFTERNOON,
-      currentWeatherKey = SUNNY_WARM_AFTERNOON,
+      previousWeatherKey = WEATHER_KEY,
+      currentWeatherKey = WEATHER_KEY,
       previousSettings = null,
-      currentSettings = userSettings()
+      currentSettings = DEFAULT_SETTINGS
     )
 
     expectThat(result).isEqualTo(ReformatOnly)
-  }
-
-  private fun userSettings(
-    briefTone: BriefTone = FORMAL,
-    temperatureUnit: TemperatureUnit = CELSIUS
-  ): UserSettings = UserSettings(
-    briefTone = briefTone,
-    excludedGenres = emptySet(),
-    temperatureUnit = temperatureUnit
-  )
-
-  private companion object {
-
-    val SUNNY_WARM_AFTERNOON = WeatherKey(
-      condition = SUNNY,
-      temperature = WARM,
-      timeOfDay = AFTERNOON
-    )
-
-    val RAINY_COLD_NIGHT = WeatherKey(
-      condition = RAINY,
-      temperature = COLD,
-      timeOfDay = NIGHT
-    )
   }
 }

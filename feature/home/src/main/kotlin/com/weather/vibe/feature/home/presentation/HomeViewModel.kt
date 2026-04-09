@@ -2,11 +2,13 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
+import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
@@ -15,7 +17,6 @@ import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
-import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
@@ -36,7 +37,6 @@ import org.koin.android.annotation.KoinViewModel
 internal class HomeViewModel(
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory,
-  private val timeProvider: TimeProvider,
   private val useCases: HomeUseCases,
 ) : ViewModel() {
 
@@ -66,6 +66,7 @@ internal class HomeViewModel(
   private fun observeWeather(location: Location = defaultLocation()) {
 
     _state.update { Loading }
+    snapshot = HomeSnapshot()
 
     homeDataJob?.cancel()
     homeDataJob = combine(
@@ -102,21 +103,20 @@ internal class HomeViewModel(
   ) {
 
     val previousWeatherKey = snapshot.weatherKey
-    val weatherKey = useCases.computeWeatherKey(
-      condition = weather.condition,
-      hour = timeProvider.now().hour,
-      temperatureCelsius = weather.currentTemperature
-    )
+    val weatherKey = useCases.getCurrentWeatherKey(weather)
     snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)
 
-    val isFirstLoad = _state.value !is Loaded
-    val weatherChanged = weatherKey != previousWeatherKey
-    val toneChanged = settings.hasBriefToneChanged(previousSettings)
+    val strategy = useCases.determineWeatherRefreshStrategy(
+      previousWeatherKey = previousWeatherKey,
+      currentWeatherKey = weatherKey,
+      previousSettings = previousSettings,
+      currentSettings = settings
+    )
 
-    when {
-      isFirstLoad || weatherChanged -> onWeatherChanged(weather, settings)
-      toneChanged -> onBriefToneChanged(weather, settings, weatherKey)
-      else -> showTemperaturesReformatted(weather, settings)
+    when (strategy) {
+      RegenerateSuggestion -> onWeatherChanged(weather, settings)
+      InvalidateAndRegenerate -> onBriefToneChanged(weather, settings, weatherKey)
+      ReformatOnly -> showTemperaturesReformatted(weather, settings)
     }
   }
 

@@ -2,11 +2,15 @@ package com.weather.vibe.testing.weather.fixture
 
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
+import com.weather.vibe.domain.weather.model.TodaySunInfo
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.model.WeatherMetrics
+import com.weather.vibe.domain.weather.model.WindDirection
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -103,6 +107,10 @@ object WeatherDataFixtures {
 
   val WEATHER = weatherData()
 
+  val METRICS = weatherMetrics()
+
+  val SUN_INFO = todaySunInfo()
+
   fun weatherData(
     apparentTemperature: Double = APPARENT_TEMPERATURE,
     cityName: String = CITY_NAME,
@@ -183,5 +191,45 @@ object WeatherDataFixtures {
     temperature = temperature,
     time = time,
     windSpeed = windSpeed
+  )
+
+  fun weatherMetrics(
+    cloudCover: Int = 20,
+    dewPoint: Double = 12.0,
+    humidity: Int = HUMIDITY,
+    precipitationProbability: Int = 10,
+    precipitationSum: Double = 0.0,
+    surfacePressure: Double = 1013.0,
+    uvIndexMax: Double = 5.0,
+    visibility: Double = 10000.0,
+    windDirection: WindDirection = WindDirection.S,
+    windGusts: Double = WIND_GUSTS,
+    windSpeed: Double = WIND_SPEED,
+    windSpeedMax: Double = 20.0
+  ): WeatherMetrics = WeatherMetrics(
+    cloudCover = cloudCover,
+    dewPoint = dewPoint,
+    humidity = humidity,
+    precipitationProbability = precipitationProbability,
+    precipitationSum = precipitationSum,
+    surfacePressure = surfacePressure,
+    uvIndexMax = uvIndexMax,
+    visibility = visibility,
+    windDirection = windDirection,
+    windGusts = windGusts,
+    windSpeed = windSpeed,
+    windSpeedMax = windSpeedMax
+  )
+
+  fun todaySunInfo(
+    dayLength: Duration = Duration.ofHours(13).plusMinutes(30),
+    sunProgress: Float = 0.5f,
+    sunrise: LocalDateTime = TODAY_SUNRISE,
+    sunset: LocalDateTime = TODAY_SUNSET
+  ): TodaySunInfo = TodaySunInfo(
+    dayLength = dayLength,
+    sunProgress = sunProgress,
+    sunrise = sunrise,
+    sunset = sunset
   )
 }

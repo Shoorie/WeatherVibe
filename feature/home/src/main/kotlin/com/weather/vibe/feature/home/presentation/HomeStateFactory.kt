@@ -8,6 +8,8 @@ import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
+import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
+import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
@@ -28,8 +30,10 @@ import java.util.Locale
 @Factory
 internal class HomeStateFactory(
   private val findCurrentHourIndex: FindCurrentHourIndex,
+  private val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
   private val metricsFactory: MetricsStateFactory,
   private val playlistFactory: PlaylistStateFactory,
+  private val resolveTodaySunInfo: ResolveTodaySunInfo,
   private val resolveTodayTemperatureBounds: ResolveTodayTemperatureBounds,
   private val resources: HomeResources,
   private val sunriseSunsetFactory: SunriseSunsetStateFactory,
@@ -55,10 +59,10 @@ internal class HomeStateFactory(
     return Loaded(
       currentWeather = createCurrentWeather(data, temperatureUnit),
       dailyForecast = createDailyForecast(data.dailyForecast, temperatureUnit, today),
-      detailsSections = metricsFactory.create(data, temperatureUnit),
+      detailsSections = metricsFactory.create(getCurrentWeatherMetrics(data), temperatureUnit),
       header = createHeader(data, today),
       hourlyForecast = createHourlyForecast(data.hourlyForecast, temperatureUnit, currentHourIndex),
-      sunriseSunset = sunriseSunsetFactory.create(data.dailyForecast)
+      sunriseSunset = sunriseSunsetFactory.create(resolveTodaySunInfo(data.dailyForecast))
     )
   }
 

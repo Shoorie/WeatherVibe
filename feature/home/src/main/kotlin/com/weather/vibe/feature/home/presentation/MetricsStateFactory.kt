@@ -2,8 +2,8 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
-import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
+import com.weather.vibe.domain.weather.model.WeatherMetrics
+import com.weather.vibe.domain.weather.model.WindDirection
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeResources
@@ -25,39 +25,34 @@ import kotlin.math.roundToInt
 
 @Factory
 internal class MetricsStateFactory(
-  private val computeWindDirection: ComputeWindDirection,
   private val resources: HomeResources,
   private val temperatureFormatter: TemperatureFormatter
 ) {
 
   fun create(
-    data: WeatherData,
+    metrics: WeatherMetrics,
     temperatureUnit: TemperatureUnit = CELSIUS
   ): DetailsSectionsUiState {
 
-    val today = data.dailyForecast.firstOrNull()
-    val precipitationProb = data.hourlyForecast.firstOrNull()
-      ?.precipitationProbability
-
     val windItems = listOf(
-      windSpeed(data.windSpeed),
-      windDirection(data.windDirection),
-      windGusts(data.windGusts),
-      windSpeedMax(today?.windSpeedMax ?: DEFAULT_WIND_SPEED)
+      windSpeed(metrics.windSpeed),
+      windDirection(metrics.windDirection),
+      windGusts(metrics.windGusts),
+      windSpeedMax(metrics.windSpeedMax)
     )
 
     val atmosphereItems = listOf(
-      humidity(data.humidity),
-      pressure(data.surfacePressure),
-      dewPoint(data.dewPoint, temperatureUnit),
-      cloudCover(data.cloudCover)
+      humidity(metrics.humidity),
+      pressure(metrics.surfacePressure),
+      dewPoint(metrics.dewPoint, temperatureUnit),
+      cloudCover(metrics.cloudCover)
     )
 
     val conditionsItems = listOf(
-      precipitation(precipitationProb ?: DEFAULT_PRECIPITATION),
-      uvIndex(today?.uvIndexMax ?: DEFAULT_UV_INDEX),
-      visibility(data.visibility),
-      rainfall(today?.precipitationSum ?: DEFAULT_RAINFALL)
+      precipitation(metrics.precipitationProbability),
+      uvIndex(metrics.uvIndexMax),
+      visibility(metrics.visibility),
+      rainfall(metrics.precipitationSum)
     )
 
     return DetailsSectionsUiState(
@@ -87,11 +82,11 @@ internal class MetricsStateFactory(
       value = formatSpeed(value)
     )
 
-  private fun windDirection(degrees: Double): MetricItemUiState =
+  private fun windDirection(direction: WindDirection): MetricItemUiState =
     MetricItemUiState(
       icon = compass(),
       label = resources.direction(),
-      value = computeWindDirection(degrees).name
+      value = direction.name
     )
 
   private fun precipitation(probability: Int): MetricItemUiState =
@@ -160,7 +155,7 @@ internal class MetricsStateFactory(
     MetricItemUiState(
       icon = rainfall(),
       label = resources.rainfall(),
-      value = String.format(Locale.US, MILLIMETERS_FORMAT, value)
+      value = String.format(Locale.getDefault(), MILLIMETERS_FORMAT, value)
     )
 
   private fun formatPercent(value: Int): String =
@@ -171,10 +166,6 @@ internal class MetricsStateFactory(
 
   private companion object {
 
-    const val DEFAULT_PRECIPITATION = 0
-    const val DEFAULT_RAINFALL = 0.0
-    const val DEFAULT_UV_INDEX = 0.0
-    const val DEFAULT_WIND_SPEED = 0.0
     const val METERS_PER_KM = 1000.0
     const val MILLIMETERS_FORMAT = "%.1f mm"
     const val PERCENT_SYMBOL = "%"

@@ -1,8 +1,6 @@
 package com.weather.vibe.feature.home.presentation
 
-import com.weather.vibe.domain.weather.model.DailyWeather
-import com.weather.vibe.domain.weather.usecase.CalculateDayLength
-import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
+import com.weather.vibe.domain.weather.model.TodaySunInfo
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState.Companion.Empty
 import com.weather.vibe.feature.home.ui.HomeResources
@@ -14,21 +12,16 @@ import java.time.format.DateTimeFormatter.ofPattern
 
 @Factory
 internal class SunriseSunsetStateFactory(
-  private val calculateDayLength: CalculateDayLength,
-  private val calculateSunProgress: CalculateSunProgress,
   private val resources: HomeResources
 ) {
 
-  fun create(days: List<DailyWeather>): SunriseSunsetUiState {
-    val today = days.firstOrNull()
-    val sunrise = today?.sunrise
-    val sunset = today?.sunset
-    if (sunrise == null || sunset == null) return Empty
+  fun create(info: TodaySunInfo?): SunriseSunsetUiState {
+    info ?: return Empty
     return SunriseSunsetUiState(
-      dayLength = formatDayLength(calculateDayLength(sunrise = sunrise, sunset = sunset)),
-      sunProgress = calculateSunProgress(sunrise = sunrise, sunset = sunset),
-      sunriseTime = formatTime(sunrise),
-      sunsetTime = formatTime(sunset)
+      dayLength = formatDayLength(info.dayLength),
+      sunProgress = info.sunProgress,
+      sunriseTime = formatTime(info.sunrise),
+      sunsetTime = formatTime(info.sunset)
     )
   }
 

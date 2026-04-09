@@ -5,71 +5,76 @@ import com.weather.vibe.data.weather.local.cache.CachedHourlyWeather
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherCondition
+import org.koin.core.annotation.Factory
 
-internal fun HourlyWeather.toCached(): CachedHourlyWeather =
-  CachedHourlyWeather(
-    apparentTemperature = apparentTemperature,
-    cloudCover = cloudCover,
-    condition = condition.name,
-    dewPoint = dewPoint,
-    humidity = humidity,
-    precipitation = precipitation,
-    precipitationProbability = precipitationProbability,
-    surfacePressure = surfacePressure,
-    temperature = temperature,
-    time = time,
-    visibility = visibility,
-    windGusts = windGusts,
-    windSpeed = windSpeed
-  )
+@Factory
+internal class CachedWeatherMapper {
 
-internal fun CachedHourlyWeather.toDomain(): HourlyWeather =
-  HourlyWeather(
-    apparentTemperature = apparentTemperature,
-    cloudCover = cloudCover,
-    condition = condition.toWeatherCondition(),
-    dewPoint = dewPoint,
-    humidity = humidity,
-    precipitation = precipitation,
-    precipitationProbability = precipitationProbability,
-    surfacePressure = surfacePressure,
-    temperature = temperature,
-    time = time,
-    visibility = visibility,
-    windGusts = windGusts,
-    windSpeed = windSpeed
-  )
+  fun toCached(hourly: HourlyWeather): CachedHourlyWeather =
+    CachedHourlyWeather(
+      apparentTemperature = hourly.apparentTemperature,
+      cloudCover = hourly.cloudCover,
+      condition = hourly.condition.name,
+      dewPoint = hourly.dewPoint,
+      humidity = hourly.humidity,
+      precipitation = hourly.precipitation,
+      precipitationProbability = hourly.precipitationProbability,
+      surfacePressure = hourly.surfacePressure,
+      temperature = hourly.temperature,
+      time = hourly.time,
+      visibility = hourly.visibility,
+      windGusts = hourly.windGusts,
+      windSpeed = hourly.windSpeed
+    )
 
-internal fun DailyWeather.toCached(): CachedDailyWeather =
-  CachedDailyWeather(
-    condition = condition.name,
-    date = date,
-    maxTemperature = maxTemperature,
-    minTemperature = minTemperature,
-    precipitationProbability = precipitationProbability,
-    precipitationSum = precipitationSum,
-    sunrise = sunrise,
-    sunset = sunset,
-    uvIndexMax = uvIndexMax,
-    windGustsMax = windGustsMax,
-    windSpeedMax = windSpeedMax
-  )
+  fun toCached(daily: DailyWeather): CachedDailyWeather =
+    CachedDailyWeather(
+      condition = daily.condition.name,
+      date = daily.date,
+      maxTemperature = daily.maxTemperature,
+      minTemperature = daily.minTemperature,
+      precipitationProbability = daily.precipitationProbability,
+      precipitationSum = daily.precipitationSum,
+      sunrise = daily.sunrise,
+      sunset = daily.sunset,
+      uvIndexMax = daily.uvIndexMax,
+      windGustsMax = daily.windGustsMax,
+      windSpeedMax = daily.windSpeedMax
+    )
 
-internal fun CachedDailyWeather.toDomain(): DailyWeather =
-  DailyWeather(
-    condition = condition.toWeatherCondition(),
-    date = date,
-    maxTemperature = maxTemperature,
-    minTemperature = minTemperature,
-    precipitationProbability = precipitationProbability,
-    precipitationSum = precipitationSum,
-    sunrise = sunrise,
-    sunset = sunset,
-    uvIndexMax = uvIndexMax,
-    windGustsMax = windGustsMax,
-    windSpeedMax = windSpeedMax
-  )
+  fun toDomain(cached: CachedHourlyWeather): HourlyWeather =
+    HourlyWeather(
+      apparentTemperature = cached.apparentTemperature,
+      cloudCover = cached.cloudCover,
+      condition = cached.condition.toWeatherCondition(),
+      dewPoint = cached.dewPoint,
+      humidity = cached.humidity,
+      precipitation = cached.precipitation,
+      precipitationProbability = cached.precipitationProbability,
+      surfacePressure = cached.surfacePressure,
+      temperature = cached.temperature,
+      time = cached.time,
+      visibility = cached.visibility,
+      windGusts = cached.windGusts,
+      windSpeed = cached.windSpeed
+    )
 
-private fun String.toWeatherCondition(): WeatherCondition =
-  runCatching { WeatherCondition.valueOf(this) }
-    .getOrDefault(WeatherCondition.UNKNOWN)
+  fun toDomain(cached: CachedDailyWeather): DailyWeather =
+    DailyWeather(
+      condition = cached.condition.toWeatherCondition(),
+      date = cached.date,
+      maxTemperature = cached.maxTemperature,
+      minTemperature = cached.minTemperature,
+      precipitationProbability = cached.precipitationProbability,
+      precipitationSum = cached.precipitationSum,
+      sunrise = cached.sunrise,
+      sunset = cached.sunset,
+      uvIndexMax = cached.uvIndexMax,
+      windGustsMax = cached.windGustsMax,
+      windSpeedMax = cached.windSpeedMax
+    )
+
+  private fun String.toWeatherCondition(): WeatherCondition =
+    runCatching { WeatherCondition.valueOf(this) }
+      .getOrDefault(WeatherCondition.UNKNOWN)
+}

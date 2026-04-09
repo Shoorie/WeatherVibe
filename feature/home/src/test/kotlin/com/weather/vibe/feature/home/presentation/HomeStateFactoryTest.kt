@@ -8,7 +8,10 @@ import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.domain.weather.usecase.CalculateDayLength
 import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
+import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
+import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
+import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
 import com.weather.vibe.feature.home.presentation.fake.FakeTimeProvider
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
@@ -43,16 +46,24 @@ class HomeStateFactoryTest {
   )
   private val fakeTimeProvider = FakeTimeProvider()
 
-  private val sunriseSunsetFactory = SunriseSunsetStateFactory(
+  private val sunriseSunsetFactory = SunriseSunsetStateFactory(resources = resources)
+
+  private val resolveTodaySunInfo = ResolveTodaySunInfo(
     calculateDayLength = CalculateDayLength(),
-    calculateSunProgress = CalculateSunProgress(timeProvider = fakeTimeProvider),
-    resources = resources
+    calculateSunProgress = CalculateSunProgress(timeProvider = fakeTimeProvider)
+  )
+
+  private val getCurrentWeatherMetrics = GetCurrentWeatherMetrics(
+    computeWindDirection = ComputeWindDirection(),
+    findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider)
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
     findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
+    getCurrentWeatherMetrics = getCurrentWeatherMetrics,
     metricsFactory = metricsFactory,
     playlistFactory = playlistFactory,
+    resolveTodaySunInfo = resolveTodaySunInfo,
     resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
     sunriseSunsetFactory = sunriseSunsetFactory,

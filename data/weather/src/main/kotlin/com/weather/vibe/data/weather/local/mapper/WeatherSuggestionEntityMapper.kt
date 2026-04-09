@@ -8,44 +8,54 @@ import com.weather.vibe.domain.weather.model.TemperatureRange
 import com.weather.vibe.domain.weather.model.TimeOfDay
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import org.koin.core.annotation.Factory
 
-private const val GENRES_SEPARATOR = ","
+@Factory
+internal class WeatherSuggestionEntityMapper {
 
-internal fun WeatherSuggestionEntity.toDomain(): CachedWeatherSuggestion =
-  CachedWeatherSuggestion(
-    fetchedAt = fetchedAt,
-    suggestion = WeatherSuggestion(
-      briefText = briefText,
-      genres = genresCsv
-        .split(GENRES_SEPARATOR)
-        .map { it.trim() }
-        .filter { it.isNotBlank() },
-      mood = mood,
-      moodDescription = moodDescription
-    ),
-    tone = BriefTone.valueOf(tone),
-    weatherKey = WeatherKey(
-      condition = SimplifiedCondition.valueOf(simplifiedCondition),
-      temperature = TemperatureRange.valueOf(temperatureRange),
-      timeOfDay = TimeOfDay.valueOf(timeOfDay)
+  fun toDomain(entity: WeatherSuggestionEntity): CachedWeatherSuggestion =
+    CachedWeatherSuggestion(
+      fetchedAt = entity.fetchedAt,
+      suggestion = WeatherSuggestion(
+        briefText = entity.briefText,
+        genres = entity.genresCsv.toGenreList(),
+        mood = entity.mood,
+        moodDescription = entity.moodDescription
+      ),
+      tone = BriefTone.valueOf(entity.tone),
+      weatherKey = WeatherKey(
+        condition = SimplifiedCondition.valueOf(entity.simplifiedCondition),
+        temperature = TemperatureRange.valueOf(entity.temperatureRange),
+        timeOfDay = TimeOfDay.valueOf(entity.timeOfDay)
+      )
     )
-  )
 
-internal fun CachedWeatherSuggestion.toEntity(
-  languageTag: String
-): WeatherSuggestionEntity =
-  WeatherSuggestionEntity(
-    briefText = suggestion.briefText,
-    fetchedAt = fetchedAt,
-    genresCsv = suggestion.genres.joinToString(separator = GENRES_SEPARATOR),
-    mood = suggestion.mood,
-    moodDescription = suggestion.moodDescription,
-    simplifiedCondition = weatherKey.condition.name,
-    temperatureRange = weatherKey.temperature.name,
-    timeOfDay = weatherKey.timeOfDay.name,
-    tone = tone.name,
-    weatherKeyHash = weatherKey.toLocalizedHash(languageTag)
-  )
+  fun toEntity(
+    cached: CachedWeatherSuggestion,
+    languageTag: String
+  ): WeatherSuggestionEntity =
+    WeatherSuggestionEntity(
+      briefText = cached.suggestion.briefText,
+      fetchedAt = cached.fetchedAt,
+      genresCsv = cached.suggestion.genres.joinToString(separator = GENRES_SEPARATOR),
+      mood = cached.suggestion.mood,
+      moodDescription = cached.suggestion.moodDescription,
+      simplifiedCondition = cached.weatherKey.condition.name,
+      temperatureRange = cached.weatherKey.temperature.name,
+      timeOfDay = cached.weatherKey.timeOfDay.name,
+      tone = cached.tone.name,
+      weatherKeyHash = toLocalizedHash(cached.weatherKey, languageTag)
+    )
 
-internal fun WeatherKey.toLocalizedHash(languageTag: String): String =
-  "${toHash()}_$languageTag"
+  fun toLocalizedHash(weatherKey: WeatherKey, languageTag: String): String =
+    "${weatherKey.toHash()}_$languageTag"
+
+  private fun String.toGenreList(): List<String> =
+    split(GENRES_SEPARATOR)
+      .map { it.trim() }
+      .filter { it.isNotBlank() }
+
+  private companion object {
+    const val GENRES_SEPARATOR = ","
+  }
+}

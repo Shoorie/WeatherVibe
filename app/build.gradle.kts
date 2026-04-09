@@ -84,6 +84,7 @@ dependencies {
   implementation(projects.core.ai)
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
+  implementation(projects.core.time)
   implementation(projects.domain.weather)
   implementation(projects.domain.location)
   implementation(projects.data.weather)

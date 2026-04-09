@@ -7,6 +7,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.time)
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)
 }

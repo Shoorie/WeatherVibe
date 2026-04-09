@@ -14,6 +14,7 @@
 * **Doing API Calls (Ktor)?** -> Read `docs/ai-rules/network-ktor.md`
 * **Local Storage (Room)?** -> Read `docs/ai-rules/database-room.md`
 * **Modularization?** -> Read `docs/ai-rules/modularization.md`
+* **Unit Tests or Fixtures?** -> Read `docs/ai-rules/testing.md`
 
 ---
 

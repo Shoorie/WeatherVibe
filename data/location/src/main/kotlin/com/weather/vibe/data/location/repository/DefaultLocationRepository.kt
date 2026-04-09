@@ -1,5 +1,6 @@
 package com.weather.vibe.data.location.repository
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
 import com.weather.vibe.data.location.mapper.toLocationResult
 import com.weather.vibe.data.location.mapper.toRecentEntity
@@ -13,7 +14,8 @@ import org.koin.core.annotation.Single
 @Single(binds = [LocationRepository::class])
 internal class DefaultLocationRepository(
   private val geocodingApiService: GeocodingApiService,
-  private val recentLocationDao: RecentLocationDao
+  private val recentLocationDao: RecentLocationDao,
+  private val timeProvider: TimeProvider
 ) : LocationRepository {
 
   override suspend fun getRecentLocations(limit: Int): List<LocationResult> =
@@ -25,7 +27,7 @@ internal class DefaultLocationRepository(
 
   override suspend fun saveRecentLocation(location: LocationResult) =
     withContext(Dispatchers.IO) {
-      recentLocationDao.insert(location.toRecentEntity())
+      recentLocationDao.insert(location.toRecentEntity(timeProvider))
     }
 
   override suspend fun searchLocations(

@@ -8,4 +8,14 @@ internal data class SunriseSunsetUiState(
   val sunProgress: Float,
   val sunriseTime: String,
   val sunsetTime: String
-)
+) {
+
+  companion object {
+    val Empty = SunriseSunsetUiState(
+      dayLength = "",
+      sunProgress = 0f,
+      sunriseTime = "",
+      sunsetTime = ""
+    )
+  }
+}

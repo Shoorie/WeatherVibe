@@ -5,13 +5,17 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
-import com.weather.vibe.domain.weather.usecase.ConvertTemperature
+import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
+import com.weather.vibe.domain.weather.usecase.CalculateDayLength
+import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
+import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
+import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
 import com.weather.vibe.feature.home.presentation.fake.FakeTimeProvider
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
 import com.weather.vibe.feature.home.presentation.fixture.MetricFixtures.METRICS_SECTIONS
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.WEATHER
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.weatherData
-import com.weather.vibe.feature.home.presentation.fixture.WeatherSuggestionFixtures.SUGGESTION
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SUGGESTION
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
@@ -31,28 +35,34 @@ import strikt.assertions.map
 
 class HomeStateFactoryTest {
 
-  private val convertTemperature = mockk<ConvertTemperature>()
+  private val temperatureFormatter = mockk<TemperatureFormatter>()
   private val resources: HomeResources = fakeHomeResources()
   private val metricsFactory = mockk<MetricsStateFactory>()
-  private val playlistFactory = PlaylistStateFactory()
+  private val playlistFactory = PlaylistStateFactory(
+    buildPlaylistQuery = BuildPlaylistQuery()
+  )
   private val fakeTimeProvider = FakeTimeProvider()
 
   private val sunriseSunsetFactory = SunriseSunsetStateFactory(
-    resources = resources,
-    timeProvider = fakeTimeProvider
+    calculateDayLength = CalculateDayLength(),
+    calculateSunProgress = CalculateSunProgress(timeProvider = fakeTimeProvider),
+    resources = resources
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
-    convertTemperature = convertTemperature,
+    findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
     metricsFactory = metricsFactory,
     playlistFactory = playlistFactory,
+    resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
-    sunriseSunsetFactory = sunriseSunsetFactory
+    sunriseSunsetFactory = sunriseSunsetFactory,
+    temperatureFormatter = temperatureFormatter,
+    timeProvider = fakeTimeProvider
   )
 
   @Before
   fun setUp() {
-    every { convertTemperature(celsius = any(), unit = any()) } answers {
+    every { temperatureFormatter.format(celsius = any(), unit = any()) } answers {
       "${firstArg<Double>().toInt()}°"
     }
     every { metricsFactory.create(any(), any()) } returns METRICS_SECTIONS

@@ -1,9 +1,10 @@
 package com.weather.vibe.feature.home.presentation
 
-import com.weather.vibe.feature.home.presentation.fixture.WeatherSuggestionFixtures.SUGGESTION
-import com.weather.vibe.feature.home.presentation.fixture.WeatherSuggestionFixtures.SINGLE_GENRE
-import com.weather.vibe.feature.home.presentation.fixture.WeatherSuggestionFixtures.WHITESPACE_GENRES
-import com.weather.vibe.feature.home.presentation.fixture.WeatherSuggestionFixtures.suggestion
+import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SUGGESTION
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SINGLE_GENRE
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.WHITESPACE_GENRES
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.suggestion
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.containsExactly
@@ -12,7 +13,9 @@ import strikt.assertions.map
 
 class PlaylistStateFactoryTest {
 
-  private val factory = PlaylistStateFactory()
+  private val factory = PlaylistStateFactory(
+    buildPlaylistQuery = BuildPlaylistQuery()
+  )
 
   @Test
   fun `when playlist created, then map genre names to chips`() {

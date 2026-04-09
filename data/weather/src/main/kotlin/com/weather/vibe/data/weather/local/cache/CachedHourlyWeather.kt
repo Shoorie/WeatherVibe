@@ -1,11 +1,17 @@
-package com.weather.vibe.domain.weather.model
+@file:UseSerializers(LocalDateTimeIsoSerializer::class)
 
+package com.weather.vibe.data.weather.local.cache
+
+import com.weather.vibe.core.time.serializer.LocalDateTimeIsoSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.UseSerializers
 import java.time.LocalDateTime
 
-data class HourlyWeather(
+@Serializable
+internal data class CachedHourlyWeather(
   val apparentTemperature: Double = 0.0,
   val cloudCover: Int = 0,
-  val condition: WeatherCondition,
+  val condition: String,
   val dewPoint: Double = 0.0,
   val humidity: Int,
   val precipitation: Double = 0.0,

@@ -138,7 +138,28 @@ For simple tests, inline setup is preferred over scenarios.
 
 ### Fixture Objects
 
-Place in `test/.../fixture/` package. One per domain model cluster.
+Fixtures are test data builders. Where they live depends on **who consumes them**.
+
+#### Placement Rule — Local vs Shared
+
+| Who uses the fixture?                                | Location                              | Visibility |
+|:-----------------------------------------------------|:--------------------------------------|:-----------|
+| **Single module** (presentation state, UI labels)    | `<module>/src/test/.../fixture/`      | `internal` |
+| **Two or more modules** (domain models, shared DTOs) | `:testing:<domain>-fixtures` module   | `public`   |
+
+**Domain model fixtures that are needed by more than one module MUST live in a dedicated
+`:testing:*` Android library module.** Never put shared fixtures in the production `src/main/`
+of a domain module (they would ship in the release binary) and never duplicate them across
+`test/fixture/` directories (drift is guaranteed).
+
+A shared testing module is a plain library module that depends on the domain module whose
+models it builds, and is consumed via `testImplementation(projects.testing.xxxFixtures)`.
+Its fixtures are `public object`s under `src/main/kotlin/.../fixture/`.
+
+Presentation-layer fixtures (UI state, resource labels, composable previews) are specific to
+one feature and stay `internal` in that feature's own `test/fixture/` package.
+
+#### Fixture Shape
 
 ```kotlin
 internal object FeatureDataFixtures {
@@ -166,6 +187,7 @@ internal object FeatureDataFixtures {
 - Every field has a named constant AND a default in the factory function
 - Pre-built instances use named constants — no magic literals
 - Factory functions allow single-field overrides in tests
+- Shared fixtures drop `internal` and become `public object` — everything else stays the same
 
 ### Fakes over Mocks
 
@@ -214,11 +236,24 @@ ship tests.
 
 ### Directory Layout
 
+Local (single-module) test infrastructure:
+
 ```
 <module>/src/test/kotlin/.../
-  ├── fixture/    # FeatureDataFixtures.kt — test data
+  ├── fixture/    # FeatureDataFixtures.kt — internal test data
   ├── fake/       # fakeXxxResources.kt — pre-configured mocks
   └── *Test.kt
+```
+
+Shared (cross-module) domain fixtures live in a dedicated library module and are
+consumed via `testImplementation(projects.testing.xxxFixtures)`:
+
+```
+testing/
+  └── <domain>-fixtures/
+       ├── build.gradle.kts         # library plugin, depends on :domain:<domain>
+       └── src/main/kotlin/.../fixture/
+            └── XxxFixtures.kt      # public object
 ```
 
 ---

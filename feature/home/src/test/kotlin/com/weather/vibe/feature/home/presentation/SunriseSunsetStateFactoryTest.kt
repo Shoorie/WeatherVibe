@@ -1,11 +1,13 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.weather.usecase.CalculateDayLength
+import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
 import com.weather.vibe.feature.home.presentation.fake.FakeTimeProvider
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.SHORT_DAY
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.TODAY
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.TODAY_SUNSET
-import com.weather.vibe.feature.home.presentation.fixture.WeatherDataFixtures.dailyWeather
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.SHORT_DAY
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.TODAY
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.TODAY_SUNSET
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.dailyWeather
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.junit.Test
 import strikt.api.expectThat
@@ -21,8 +23,9 @@ class SunriseSunsetStateFactoryTest {
 
   private val factory: SunriseSunsetStateFactory =
     SunriseSunsetStateFactory(
-      resources = resources,
-      timeProvider = fakeTimeProvider
+      calculateDayLength = CalculateDayLength(),
+      calculateSunProgress = CalculateSunProgress(timeProvider = fakeTimeProvider),
+      resources = resources
     )
 
   @Test
@@ -137,19 +140,9 @@ class SunriseSunsetStateFactoryTest {
   }
 
   @Test
-  fun `given invalid sunrise format, when state created, then return empty sunrise`() {
+  fun `given null sunrise, when state created, then sun progress is zero`() {
 
-    val invalid = dailyWeather(sunrise = "not-a-date", sunset = TODAY_SUNSET)
-
-    val result = factory.create(days = listOf(invalid))
-
-    expectThat(result.sunriseTime).isEqualTo("not-a-date")
-  }
-
-  @Test
-  fun `given empty sunrise, when state created, then sun progress is zero`() {
-
-    val noSunrise = dailyWeather(sunrise = "", sunset = TODAY_SUNSET)
+    val noSunrise = dailyWeather(sunrise = null, sunset = TODAY_SUNSET)
 
     val result = factory.create(days = listOf(noSunrise))
 

@@ -89,11 +89,12 @@ class FeatureStateFactoryTest : BaseTest() {
 
   @Before
   fun setUp() {
-    every { dependency.method(any()) } returns "stubbed"
+    every { dependency.method(any()) } returns FeatureDataFixtures.DATA
   }
 
   @Test
   fun `when state created, then map field correctly`() {
+    
     val result = factory.create(FeatureDataFixtures.DEFAULT)
 
     expectThat(result.field).isEqualTo("expected")
@@ -166,11 +167,9 @@ interactions or control complex behavior.
 Extract stub strings to named constants so tests can reference them in assertions:
 
 ```kotlin
-internal const val FAKE_LABEL = "Label"
-
 internal fun fakeResources(): FeatureResources =
   mockk<FeatureResources>(relaxed = false).apply {
-    every { label() } returns FAKE_LABEL
+    every { label() } returns LABEL
     every { format(any(), any()) } answers {
       "${firstArg<Int>()} ${secondArg<String>()}"
     }
@@ -220,24 +219,6 @@ expectThat(result).isA<FeatureUiState.Loaded>()
 All test dependencies are provided by the `app.android.test` convention plugin. No manual
 dependency declarations needed.
 
-### MockK Cleanup — BaseTest
-
-Extend `BaseTest` in any test class that uses MockK. It clears global MockK state after each
-test via `unmockkAll()`, preventing stub leakage between test runs.
-
-```kotlin
-internal abstract class BaseTest {
-
-  @After
-  fun tearDown() {
-    unmockkAll()
-  }
-}
-```
-
-Test classes that use no mocks (e.g., pure data-mapping factories) do not need to extend
-`BaseTest`.
-
 ### Test Stack
 
 | Library                 | Purpose                |
@@ -257,7 +238,6 @@ feature/xxx/src/test/kotlin/com/.../presentation/
   │   └── YyyFixtures.kt
   ├── fake/              # Pre-configured mocks / fakes
   │   └── FakeXxxResources.kt
-  ├── BaseTest.kt
   ├── XxxStateFactoryTest.kt
   └── XxxViewModelTest.kt
 ```
@@ -284,16 +264,7 @@ When a StateFactory grows large (>200 lines, >3 dependencies), extract sub-facto
 ### Test Determinism
 
 Never rely on `LocalDateTime.now()`, `Random`, or system state in assertions.
-Inject time as a constructor dependency so tests can control it:
-
-```kotlin
-interface TimeProvider {
-  fun now(): LocalDateTime
-}
-
-// In production: inject RealTimeProvider via DI
-// In tests: inject FakeTimeProvider with a mutable LocalDateTime field
-```
+Inject time as a constructor dependency so tests can control it.
 
 ---
 
@@ -306,6 +277,5 @@ Before finalizing tests, verify:
 3. [ ] Fixtures use named constants, not magic values — including in pre-built instances?
 4. [ ] No `Thread.sleep()`, no flaky timing dependencies?
 5. [ ] Fakes/mocks are set up in `@Before`, not duplicated per test?
-6. [ ] Test classes that use MockK extend `BaseTest`?
-7. [ ] Edge cases covered (empty lists, null values, boundary conditions)?
-8. [ ] Test names are precise about expected outcome?
+6. [ ] Edge cases covered (empty lists, null values, boundary conditions)?
+7. [ ] Test names are precise about expected outcome?

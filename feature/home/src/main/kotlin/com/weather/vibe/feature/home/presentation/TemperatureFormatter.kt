@@ -16,6 +16,6 @@ internal class TemperatureFormatter(
   }
 
   private companion object {
-    const val DEGREE_SYMBOL = "\u00B0"
+    const val DEGREE_SYMBOL = "°"
   }
 }

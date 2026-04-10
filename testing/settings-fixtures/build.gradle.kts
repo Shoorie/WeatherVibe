@@ -8,4 +8,7 @@ android {
 
 dependencies {
   implementation(projects.domain.settings)
+  implementation(projects.data.settings)
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.protobuf.kotlin.lite)
 }

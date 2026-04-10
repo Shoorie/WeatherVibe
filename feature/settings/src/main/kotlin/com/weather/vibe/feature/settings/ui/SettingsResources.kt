@@ -1,34 +1,41 @@
 package com.weather.vibe.feature.settings.ui
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
+import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
+import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.feature.settings.R
 import org.koin.core.annotation.Factory
 
 @Factory
 internal class SettingsResources(private val context: Context) {
 
-  fun briefToneFormalDescription(): String =
-    context.getString(R.string.settings_brief_tone_formal_desc)
+  fun briefToneLabel(tone: BriefTone): String =
+    context.getString(tone.labelRes())
 
-  fun briefToneFormalLabel(): String =
-    context.getString(R.string.settings_brief_tone_formal)
-
-  fun briefToneHumorousDescription(): String =
-    context.getString(R.string.settings_brief_tone_humorous_desc)
-
-  fun briefToneHumorousLabel(): String =
-    context.getString(R.string.settings_brief_tone_humorous)
-
-  fun briefToneWittyDescription(): String =
-    context.getString(R.string.settings_brief_tone_witty_desc)
-
-  fun briefToneWittyLabel(): String =
-    context.getString(R.string.settings_brief_tone_witty)
+  fun briefToneDescription(tone: BriefTone): String =
+    context.getString(tone.descriptionRes())
 
   fun defaultError(): String =
     context.getString(R.string.settings_error_default)
+
+  @StringRes
+  private fun BriefTone.labelRes(): Int = when (this) {
+    WITTY_AND_FRIENDLY -> R.string.settings_brief_tone_witty
+    FORMAL -> R.string.settings_brief_tone_formal
+    HUMOROUS -> R.string.settings_brief_tone_humorous
+  }
+
+  @StringRes
+  private fun BriefTone.descriptionRes(): Int = when (this) {
+    WITTY_AND_FRIENDLY -> R.string.settings_brief_tone_witty_desc
+    FORMAL -> R.string.settings_brief_tone_formal_desc
+    HUMOROUS -> R.string.settings_brief_tone_humorous_desc
+  }
 
   object Texts {
 

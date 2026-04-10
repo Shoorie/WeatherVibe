@@ -18,6 +18,16 @@ internal class SettingsCacheMapper {
       temperatureUnit = cacheData.temperatureUnit.toTemperatureUnit()
     )
 
+  fun toCache(
+    previous: UserSettingsCacheData,
+    settings: UserSettings
+  ): UserSettingsCacheData =
+    previous.toBuilder()
+      .setAiPersona(settings.briefTone.name)
+      .setExcludedGenres(settings.excludedGenres.toCsv())
+      .setTemperatureUnit(settings.temperatureUnit.name)
+      .build()
+
   private fun String.toBriefTone(): BriefTone =
     BriefTone.entries
       .firstOrNull { it.name == this }
@@ -34,6 +44,9 @@ internal class SettingsCacheMapper {
       .map { it.trim() }
       .filter { it.isNotBlank() }
       .toSet()
+
+  private fun Set<String>.toCsv(): String =
+    sorted().joinToString(separator = GENRES_SEPARATOR)
 
   private companion object {
     const val GENRES_SEPARATOR = ","

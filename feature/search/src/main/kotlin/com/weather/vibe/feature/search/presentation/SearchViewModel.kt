@@ -2,7 +2,8 @@ package com.weather.vibe.feature.search.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.location.model.LocationResult
+import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
@@ -66,7 +67,7 @@ internal class SearchViewModel(
 
   private fun onLocationSelect(location: LocationItemUiState) {
     viewModelScope.launch {
-      useCases.saveRecentLocation(stateFactory.toLocationResult(location))
+      useCases.saveRecentLocation(stateFactory.toLocation(location))
       _event.send(
         NavigateBackWithResult(
           cityName = location.name,
@@ -90,12 +91,12 @@ internal class SearchViewModel(
       .launchIn(viewModelScope)
   }
 
-  private suspend fun onRecentLocationsResult(result: Result<List<LocationResult>>) {
+  private suspend fun onRecentLocationsResult(result: Result<List<Location>>) {
     val locations = result.getOrNull() ?: return
     onRecentLocationsSuccess(locations)
   }
 
-  private suspend fun onRecentLocationsSuccess(locations: List<LocationResult>) {
+  private suspend fun onRecentLocationsSuccess(locations: List<Location>) {
     if (locations.isEmpty()) {
       _state.update { Idle }
     } else {
@@ -119,13 +120,13 @@ internal class SearchViewModel(
     useCases.searchLocation(query).collect { onSearchResult(query, it) }
   }
 
-  private fun onSearchResult(query: String, result: Result<List<LocationResult>>) {
+  private fun onSearchResult(query: String, result: Result<List<Location>>) {
     result
       .onSuccess { onSearchSuccess(query, it) }
       .onFailure { onSearchError(query) }
   }
 
-  private fun onSearchSuccess(query: String, locations: List<LocationResult>) {
+  private fun onSearchSuccess(query: String, locations: List<Location>) {
     if (locations.isEmpty()) {
       _state.update { Empty(query) }
     } else {
@@ -142,7 +143,13 @@ internal class SearchViewModel(
   ): List<LocationItemUiState> =
     items.map { item ->
       runCatching {
-        val temp = useCases.getCurrentTemperature(item.latitude, item.longitude)
+        val temp = useCases.getCurrentTemperature(
+          Coordinates(
+            name = item.name,
+            latitude = item.latitude,
+            longitude = item.longitude
+          )
+        )
         stateFactory.enrichWithTemperature(item, temp)
       }.getOrDefault(item)
     }

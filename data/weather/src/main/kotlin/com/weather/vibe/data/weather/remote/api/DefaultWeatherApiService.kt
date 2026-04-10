@@ -1,6 +1,7 @@
 package com.weather.vibe.data.weather.remote.api
 
 import com.weather.vibe.data.weather.remote.dto.ForecastResponseDto
+import com.weather.vibe.domain.weather.model.Coordinates
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -12,22 +13,19 @@ internal class DefaultWeatherApiService(
   private val httpClient: HttpClient
 ) : WeatherApiService {
 
-  override suspend fun getCurrentTemperature(
-    latitude: Double,
-    longitude: Double
-  ): Double {
+  override suspend fun getCurrentTemperature(coordinates: Coordinates): Double {
     val response: ForecastResponseDto = httpClient.get(BASE_URL) {
-      parameter("latitude", latitude)
-      parameter("longitude", longitude)
+      parameter("latitude", coordinates.latitude)
+      parameter("longitude", coordinates.longitude)
       parameter("current_weather", true)
     }.body()
     return response.currentWeather?.temperature ?: 0.0
   }
 
-  override suspend fun getForecast(latitude: Double, longitude: Double): ForecastResponseDto =
+  override suspend fun getForecast(coordinates: Coordinates): ForecastResponseDto =
     httpClient.get(BASE_URL) {
-      parameter("latitude", latitude)
-      parameter("longitude", longitude)
+      parameter("latitude", coordinates.latitude)
+      parameter("longitude", coordinates.longitude)
       parameter("current_weather", true)
       parameter("hourly", HOURLY_VARIABLES)
       parameter("daily", DAILY_VARIABLES)

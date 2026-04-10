@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
-import com.weather.vibe.domain.weather.model.Location
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
@@ -69,14 +69,14 @@ internal class HomeViewModel(
     }
   }
 
-  private fun observeWeather(location: Location = DEFAULT_LOCATION) {
+  private fun observeWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
 
     _state.update { Loading }
     snapshot = HomeSnapshot()
 
     homeDataJob?.cancel()
     homeDataJob = combine(
-      useCases.getWeather(location),
+      useCases.getWeather(coordinates),
       useCases.observeUserSettings(),
       ::onHomeDataResult
     ).launchIn(viewModelScope)
@@ -183,12 +183,12 @@ internal class HomeViewModel(
   }
 
   private fun onReceiveLocationResult(action: ReceiveLocationResult) {
-    val location = Location(
-      cityName = action.cityName,
+    val coordinates = Coordinates(
+      name = action.cityName,
       latitude = action.latitude,
       longitude = action.longitude
     )
-    observeWeather(location)
+    observeWeather(coordinates)
   }
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
@@ -266,8 +266,8 @@ internal class HomeViewModel(
   }
 
   private companion object {
-    val DEFAULT_LOCATION = Location(
-      cityName = "Toruń",
+    val DEFAULT_LOCATION = Coordinates(
+      name = "Toruń",
       latitude = 53.0138,
       longitude = 18.5984
     )

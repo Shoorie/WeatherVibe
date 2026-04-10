@@ -1,6 +1,6 @@
 package com.weather.vibe.feature.search.presentation
 
-import com.weather.vibe.domain.location.model.LocationResult
+import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import org.koin.core.annotation.Factory
 import kotlin.math.roundToInt
@@ -9,7 +9,7 @@ import kotlin.math.roundToInt
 internal class SearchStateFactory {
 
   fun createItems(
-    locations: List<LocationResult>
+    locations: List<Location>
   ): List<LocationItemUiState> =
     locations.map { createItem(it) }
 
@@ -19,10 +19,8 @@ internal class SearchStateFactory {
   ): LocationItemUiState =
     item.copy(temperature = formatTemperature(temperature))
 
-  fun toLocationResult(
-    item: LocationItemUiState
-  ): LocationResult =
-    LocationResult(
+  fun toLocation(item: LocationItemUiState): Location =
+    Location(
       admin1 = item.admin1,
       country = item.country,
       id = item.id,
@@ -31,9 +29,7 @@ internal class SearchStateFactory {
       name = item.name
     )
 
-  private fun createItem(
-    location: LocationResult
-  ): LocationItemUiState =
+  private fun createItem(location: Location): LocationItemUiState =
     LocationItemUiState(
       admin1 = location.admin1,
       country = location.country,

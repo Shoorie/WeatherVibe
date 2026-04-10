@@ -85,7 +85,7 @@ internal class HomeStateFactory(
 
   private fun createHeader(data: WeatherData, today: LocalDate): HeaderUiState =
     HeaderUiState(
-      cityName = data.cityName,
+      cityName = data.coordinates.name,
       dateLabel = today.format(DATE_FORMATTER)
     )
 

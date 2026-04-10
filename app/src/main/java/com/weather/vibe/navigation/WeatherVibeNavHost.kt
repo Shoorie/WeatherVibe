@@ -53,9 +53,7 @@ private fun HomeEntry(
     onNavigateToDetails = { backStack.add(WeatherDetailsRoute) },
     onNavigateToSearch = { backStack.add(SearchRoute) },
     onNavigateToSettings = { backStack.add(SettingsRoute) },
-    selectedCityName = route.selectedCityName,
-    selectedLatitude = route.selectedLatitude,
-    selectedLongitude = route.selectedLongitude
+    selectedLocation = route.selectedLocation
   )
 }
 
@@ -69,10 +67,10 @@ private fun DetailsEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun SearchEntry(backStack: MutableList<NavKey>) {
   SearchScreen(
-    onLocationSelected = { cityName, latitude, longitude ->
+    onLocationSelected = { location ->
       backStack.removeLastOrNull()
       backStack.removeLastOrNull()
-      backStack.add(HomeRoute(cityName, latitude, longitude))
+      backStack.add(HomeRoute(selectedLocation = location))
     },
     onNavigateBack = { backStack.removeLastOrNull() }
   )

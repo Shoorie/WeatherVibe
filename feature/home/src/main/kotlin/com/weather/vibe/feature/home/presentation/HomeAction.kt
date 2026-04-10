@@ -1,14 +1,12 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.location.model.Location
+
 internal sealed interface HomeAction {
 
   data class GenreRemoveClick(val genre: String) : HomeAction
 
-  data class ReceiveLocationResult(
-    val cityName: String,
-    val latitude: Double,
-    val longitude: Double
-  ) : HomeAction
+  data class ReceiveLocationResult(val location: Location) : HomeAction
 
   data object RefreshClick : HomeAction
 

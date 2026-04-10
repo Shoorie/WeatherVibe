@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.search.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -34,22 +37,24 @@ import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
+import com.weather.vibe.feature.search.presentation.SearchAction.Retry
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
 import com.weather.vibe.feature.search.presentation.SearchViewModel
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
+import com.weather.vibe.feature.search.presentation.state.SearchUiState.Error
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Idle
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
 import com.weather.vibe.feature.search.preview.SearchPreview
-import com.weather.vibe.feature.search.preview.params.SearchPreviewParams
 import com.weather.vibe.feature.search.ui.SearchResources.Emojis.clock
 import com.weather.vibe.feature.search.ui.SearchResources.Emojis.locationPin
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.noResultsFound
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.recentLocationsTitle
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.retry
 import com.weather.vibe.feature.search.ui.component.LocationItem
 import com.weather.vibe.feature.search.ui.component.SearchBar
 import org.koin.androidx.compose.koinViewModel
@@ -61,7 +66,6 @@ fun SearchScreen(
 ) {
 
   val viewModel: SearchViewModel = koinViewModel()
-  val query by viewModel.query.collectAsStateWithLifecycle()
   val state by viewModel.state.collectAsStateWithLifecycle()
   val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -80,7 +84,6 @@ fun SearchScreen(
   }
 
   SearchContent(
-    query = query,
     state = state,
     dispatch = viewModel::dispatch
   )
@@ -89,7 +92,6 @@ fun SearchScreen(
 @Composable
 internal fun SearchContent(
   modifier: Modifier = Modifier,
-  query: String,
   state: SearchUiState,
   dispatch: (SearchAction) -> Unit
 ) {
@@ -107,14 +109,15 @@ internal fun SearchContent(
   ) {
     SearchBar(
       modifier = Modifier.padding(top = PaddingMedium),
-      query = query,
+      query = state.query,
       onQueryChange = { dispatch(QueryChange(it)) },
       onBack = { dispatch(BackClick) }
     )
     Spacer(modifier = Modifier.height(PaddingSmall))
     SearchStateContent(
       state = state,
-      onLocationClick = { dispatch(LocationSelect(it)) }
+      onLocationClick = { id -> dispatch(LocationSelect(id)) },
+      onRetryClick = { dispatch(Retry) }
     )
   }
 }
@@ -123,7 +126,8 @@ internal fun SearchContent(
 private fun SearchStateContent(
   modifier: Modifier = Modifier,
   state: SearchUiState,
-  onLocationClick: (LocationItemUiState) -> Unit
+  onLocationClick: (Long) -> Unit,
+  onRetryClick: () -> Unit
 ) {
   when (state) {
     is Idle -> Unit
@@ -143,6 +147,11 @@ private fun SearchStateContent(
       modifier = modifier,
       query = state.query
     )
+    is Error -> ErrorMessage(
+      modifier = modifier,
+      message = state.message,
+      onRetry = onRetryClick
+    )
   }
 }
 
@@ -150,7 +159,7 @@ private fun SearchStateContent(
 private fun RecentsSection(
   modifier: Modifier = Modifier,
   locations: List<LocationItemUiState>,
-  onLocationClick: (LocationItemUiState) -> Unit
+  onLocationClick: (Long) -> Unit
 ) {
   SectionLabel(
     modifier = modifier,
@@ -170,7 +179,7 @@ private fun LocationList(
   modifier: Modifier = Modifier,
   emoji: String,
   locations: List<LocationItemUiState>,
-  onLocationClick: (LocationItemUiState) -> Unit
+  onLocationClick: (Long) -> Unit
 ) {
   GlassCard(
     modifier = modifier.fillMaxWidth(),
@@ -182,7 +191,7 @@ private fun LocationList(
         name = location.name,
         subtitle = location.subtitle,
         temperature = location.temperature,
-        onClick = { onLocationClick(location) }
+        onClick = { onLocationClick(location.id) }
       )
       if (index < locations.lastIndex) {
         HorizontalDivider(
@@ -219,16 +228,44 @@ private fun EmptyMessage(
   )
 }
 
+@Composable
+private fun ErrorMessage(
+  modifier: Modifier = Modifier,
+  message: String,
+  onRetry: () -> Unit
+) {
+  Column(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(PaddingMedium),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+  ) {
+    Text(
+      text = message,
+      style = typography.bodyMedium,
+      color = colors.onSurfaceVariant,
+      textAlign = TextAlign.Center
+    )
+    TextButton(onClick = onRetry) {
+      Text(
+        text = retry(),
+        style = typography.labelMedium,
+        color = colors.accent
+      )
+    }
+  }
+}
+
 @PreviewLightDark
 @Composable
 private fun Preview(
   @PreviewParameter(SearchPreview::class)
-  params: SearchPreviewParams
+  state: SearchUiState
 ) {
   WeatherVibeTheme {
     SearchContent(
-      query = params.query,
-      state = params.state,
+      state = state,
       dispatch = {}
     )
   }

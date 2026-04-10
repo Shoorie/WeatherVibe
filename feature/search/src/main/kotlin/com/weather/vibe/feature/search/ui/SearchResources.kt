@@ -1,12 +1,16 @@
 package com.weather.vibe.feature.search.ui
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.feature.search.R
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class SearchResources {
+internal class SearchResources(private val context: Context) {
+
+  fun defaultError(): String =
+    context.getString(R.string.search_error_default)
 
   object Emojis {
     fun clock(): String = "\uD83D\uDD58"
@@ -26,5 +30,9 @@ internal class SearchResources {
     @Composable
     fun searchHint(): String =
       stringResource(R.string.search_hint)
+
+    @Composable
+    fun retry(): String =
+      stringResource(R.string.search_retry)
   }
 }

@@ -48,7 +48,7 @@ import strikt.assertions.map
 class SettingsViewModelTest {
 
   @get:Rule
-  val mainDispatcherRule = MainDispatcherRule()
+  val rule = MainDispatcherRule()
 
   private val includeGenre = mockk<IncludeGenre>()
   private val observeUserSettings = mockk<ObserveUserSettings>()

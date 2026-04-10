@@ -3,19 +3,23 @@ package com.weather.vibe.feature.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.weather.model.Coordinates
+import com.weather.vibe.domain.location.model.LocationWithTemperature
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
+import com.weather.vibe.feature.search.presentation.SearchAction.Retry
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
-import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
+import com.weather.vibe.feature.search.presentation.state.SearchUiState.Error
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Idle
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
+import com.weather.vibe.feature.search.presentation.state.withQuery
+import com.weather.vibe.feature.search.ui.SearchResources
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -24,9 +28,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -36,29 +40,34 @@ import org.koin.android.annotation.KoinViewModel
 @OptIn(FlowPreview::class)
 @KoinViewModel
 internal class SearchViewModel(
+  private val resources: SearchResources,
   private val stateFactory: SearchStateFactory,
   private val useCases: SearchUseCases
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow<SearchUiState>(Idle)
+  private val _state = MutableStateFlow<SearchUiState>(Idle())
   val state: StateFlow<SearchUiState> = _state.asStateFlow()
-
-  private val _query = MutableStateFlow("")
-  val query: StateFlow<String> = _query.asStateFlow()
 
   private val _event = Channel<SearchEvent>()
   val event: Flow<SearchEvent> = _event.receiveAsFlow()
 
+  private var lastLocations: List<Location> = emptyList()
+
+  private val errorHandler = CoroutineExceptionHandler { _, _ ->
+    showError()
+  }
+
   init {
     loadRecentLocations()
-    observeQuery()
+    observeQueryChanges()
   }
 
   fun dispatch(action: SearchAction) {
     when (action) {
       is BackClick -> onBackClick()
-      is LocationSelect -> onLocationSelect(action.location)
+      is LocationSelect -> onLocationSelect(action.id)
       is QueryChange -> onQueryChange(action.query)
+      is Retry -> onRetry()
     }
   }
 
@@ -66,92 +75,122 @@ internal class SearchViewModel(
     send(NavigateBack)
   }
 
-  private fun onLocationSelect(location: LocationItemUiState) {
-    viewModelScope.launch {
-      useCases.saveRecentLocation(stateFactory.toLocation(location))
-      _event.send(
-        NavigateBackWithResult(
-          cityName = location.name,
-          latitude = location.latitude,
-          longitude = location.longitude
-        )
-      )
+  private fun onLocationSelect(id: Long) {
+    val location = findLocation(id) ?: return
+    viewModelScope.launch(errorHandler) {
+      useCases.saveRecentLocation(location)
+      send(NavigateBackWithResult(
+        cityName = location.name,
+        latitude = location.latitude,
+        longitude = location.longitude
+      ))
     }
   }
 
   private fun onQueryChange(query: String) {
-    _query.update { query }
-    if (query.isEmpty()) {
-      loadRecentLocations()
+    _state.update { it.withQuery(query) }
+    if (query.isEmpty()) loadRecentLocations()
+  }
+
+  private fun onRetry() {
+    val query = currentQuery()
+    when (query.canBeSearched()) {
+      true -> retrySearch(query)
+      false -> loadRecentLocations()
     }
   }
 
   private fun loadRecentLocations() {
-    useCases.getRecentLocations()
+    useCases.getRecentLocationsWithTemperature()
       .onEach(::onRecentLocationsResult)
       .launchIn(viewModelScope)
   }
 
-  private suspend fun onRecentLocationsResult(result: Result<List<Location>>) {
-    val locations = result.getOrNull() ?: return
-    onRecentLocationsSuccess(locations)
+  private fun onRecentLocationsResult(result: Result<List<LocationWithTemperature>>) {
+    result.fold(
+      onSuccess = ::onRecentLocationsSuccess,
+      onFailure = { showError() }
+    )
   }
 
-  private suspend fun onRecentLocationsSuccess(locations: List<Location>) {
-    if (locations.isEmpty()) {
-      _state.update { Idle }
-    } else {
-      val items = stateFactory.createItems(locations)
-      val enriched = enrichWithTemperatures(items)
-      _state.update { Recents(enriched) }
+  private fun onRecentLocationsSuccess(entries: List<LocationWithTemperature>) {
+    lastLocations = entries.map { it.location }
+    _state.update { current ->
+      when (entries.isEmpty()) {
+        true -> Idle(query = current.query)
+        false -> Recents(
+          query = current.query,
+          locations = stateFactory.createItems(entries)
+        )
+      }
     }
   }
 
-  private fun observeQuery() {
+  private fun observeQueryChanges() {
     viewModelScope.launch {
-      _query
+      _state
+        .map { it.query }
+        .distinctUntilChanged()
         .debounce(SEARCH_DEBOUNCE_MS)
-        .filter { it.length >= MIN_QUERY_LENGTH }
-        .collectLatest { query -> performSearch(query) }
+        .collectLatest(::performSearch)
     }
   }
 
   private suspend fun performSearch(query: String) {
-    _state.update { Searching }
-    useCases.searchLocation(query).collect { onSearchResult(query, it) }
+
+    if (!query.canBeSearched()) return
+
+    _state.update { Searching(query) }
+
+    useCases
+      .searchLocation(query)
+      .collect { onSearchResult(query = query, result = it) }
+  }
+
+  private fun retrySearch(query: String) {
+    viewModelScope.launch { performSearch(query) }
   }
 
   private fun onSearchResult(query: String, result: Result<List<Location>>) {
-    result
-      .onSuccess { onSearchSuccess(query, it) }
-      .onFailure { onSearchError(query) }
+    result.fold(
+      onSuccess = { locations -> onSearchSuccess(query, locations) },
+      onFailure = { showError() }
+    )
   }
 
   private fun onSearchSuccess(query: String, locations: List<Location>) {
-    if (locations.isEmpty()) {
-      _state.update { Empty(query) }
-    } else {
-      _state.update { Results(stateFactory.createItems(locations)) }
-    }
-  }
 
-  private fun onSearchError(query: String) {
-    _state.update { Empty(query) }
-  }
+    lastLocations = locations
+    val entries = locations.map { LocationWithTemperature(location = it) }
 
-  private suspend fun enrichWithTemperatures(
-    items: List<LocationItemUiState>
-  ): List<LocationItemUiState> =
-    items.map { item ->
-      val temperature = useCases.getCurrentTemperature(
-        Coordinates(
-          name = item.name,
-          latitude = item.latitude,
-          longitude = item.longitude
+    _state.update {
+      when (entries.isEmpty()) {
+        true -> Empty(query = query)
+        false -> Results(
+          query = query,
+          locations = stateFactory.createItems(entries)
         )
-      ).first().getOrNull()
-      temperature?.let { stateFactory.enrichWithTemperature(item, it) } ?: item
+      }
     }
+  }
+
+  private fun showError() {
+    _state.update { current ->
+      Error(
+        query = current.query,
+        message = resources.defaultError()
+      )
+    }
+  }
+
+  private fun currentQuery(): String =
+    _state.value.query
+
+  private fun findLocation(id: Long): Location? =
+    lastLocations.firstOrNull { it.id == id }
+
+  private fun String.canBeSearched(): Boolean =
+    length >= MIN_QUERY_LENGTH
 
   private fun send(event: SearchEvent) {
     viewModelScope.launch { _event.send(event) }

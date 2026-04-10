@@ -15,7 +15,7 @@ class SelectBriefToneTest {
   private val selectBriefTone = SelectBriefTone(cache = cache)
 
   @Test
-  fun `when invoked, then cache holds settings with selected tone`() = runTest {
+  fun `when tone selected, then cache holds chosen tone`() = runTest {
 
     selectBriefTone(tone = FORMAL)
 
@@ -23,7 +23,7 @@ class SelectBriefToneTest {
   }
 
   @Test
-  fun `given cache throws, when invoked, then error propagates`() = runTest {
+  fun `given cache throws, when tone selected, then error propagates`() = runTest {
 
     cache.writeError = IllegalStateException("boom")
 

@@ -11,7 +11,7 @@ class ConvertTemperatureTest {
   private val convertTemperature = ConvertTemperature()
 
   @Test
-  fun `given celsius unit, when invoked, then return celsius value unchanged`() {
+  fun `given celsius unit, when converted, then value unchanged`() {
 
     val result = convertTemperature(celsius = 20.0, unit = CELSIUS)
 
@@ -19,7 +19,7 @@ class ConvertTemperatureTest {
   }
 
   @Test
-  fun `given fahrenheit unit and zero celsius, when invoked, then return 32`() {
+  fun `given fahrenheit unit and zero celsius, when converted, then return 32`() {
 
     val result = convertTemperature(celsius = 0.0, unit = FAHRENHEIT)
 
@@ -27,7 +27,7 @@ class ConvertTemperatureTest {
   }
 
   @Test
-  fun `given fahrenheit unit and 100 celsius, when invoked, then return 212`() {
+  fun `given fahrenheit unit and 100 celsius, when converted, then return 212`() {
 
     val result = convertTemperature(celsius = 100.0, unit = FAHRENHEIT)
 
@@ -35,7 +35,7 @@ class ConvertTemperatureTest {
   }
 
   @Test
-  fun `given fahrenheit unit and negative celsius, when invoked, then return converted value`() {
+  fun `given fahrenheit unit and minus 40 celsius, when converted, then return minus 40`() {
 
     val result = convertTemperature(celsius = -40.0, unit = FAHRENHEIT)
 

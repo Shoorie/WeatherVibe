@@ -13,7 +13,7 @@ import strikt.assertions.containsExactlyInAnyOrder
 class ExcludeGenreTest {
 
   @Test
-  fun `given no excluded genres, when invoked, then cache holds the added genre`() = runTest {
+  fun `given no excluded genres, when genre excluded, then excluded set contains it`() = runTest {
 
     val after = excludeFrom(userSettings(excludedGenres = emptySet()), POP)
 
@@ -21,7 +21,7 @@ class ExcludeGenreTest {
   }
 
   @Test
-  fun `given existing genres, when invoked, then cache appends the new genre`() = runTest {
+  fun `given existing excluded genres, when new genre excluded, then appended to set`() = runTest {
 
     val after = excludeFrom(userSettings(excludedGenres = setOf(POP)), METAL)
 
@@ -29,7 +29,7 @@ class ExcludeGenreTest {
   }
 
   @Test
-  fun `given genre already excluded, when invoked, then cache set is unchanged`() = runTest {
+  fun `given genre already excluded, when same genre excluded, then excluded set unchanged`() = runTest {
 
     val after = excludeFrom(userSettings(excludedGenres = setOf(POP)), POP)
 

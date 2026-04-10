@@ -1,11 +1,8 @@
 package com.weather.vibe.feature.search.presentation
 
-internal sealed interface SearchEvent {
-  data class NavigateBackWithResult(
-    val cityName: String,
-    val latitude: Double,
-    val longitude: Double
-  ) : SearchEvent
+import com.weather.vibe.domain.location.model.Location
 
+internal sealed interface SearchEvent {
+  data class NavigateBackWithResult(val location: Location) : SearchEvent
   data object NavigateBack : SearchEvent
 }

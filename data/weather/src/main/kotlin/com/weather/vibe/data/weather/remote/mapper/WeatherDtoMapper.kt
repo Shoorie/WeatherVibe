@@ -3,6 +3,7 @@ package com.weather.vibe.data.weather.remote.mapper
 import com.weather.vibe.data.weather.remote.dto.DailyDataDto
 import com.weather.vibe.data.weather.remote.dto.ForecastResponseDto
 import com.weather.vibe.data.weather.remote.dto.HourlyDataDto
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherCondition
@@ -14,27 +15,25 @@ import java.time.LocalDateTime
 @Factory
 internal class WeatherDtoMapper {
 
-  fun toDomain(response: ForecastResponseDto, cityName: String): WeatherData {
+  fun toDomain(response: ForecastResponseDto, coordinates: Coordinates): WeatherData {
 
     val current = requireNotNull(response.currentWeather)
-    val hourly = response.hourly ?: return currentOnlySnapshot(response, cityName)
+    val hourly = response.hourly ?: return currentOnlySnapshot(response, coordinates)
 
     val currentIndex = findCurrentHourIndex(hourly.time, current.time)
     val snapshot = snapshotAtCurrentHour(hourly, currentIndex, current.temperature)
 
     return WeatherData(
       apparentTemperature = snapshot.apparentTemperature,
-      cityName = cityName,
       cloudCover = snapshot.cloudCover,
       condition = WeatherCondition.fromWmoCode(current.weathercode),
+      coordinates = coordinates,
       currentTemperature = current.temperature,
       dailyForecast = buildDailyForecasts(response.daily),
       dewPoint = snapshot.dewPoint,
       hourlyForecast = buildHourlyForecasts(hourly, currentIndex),
       humidity = snapshot.humidity,
       isDay = current.isDay == 1,
-      latitude = response.latitude,
-      longitude = response.longitude,
       precipitation = snapshot.precipitation,
       surfacePressure = snapshot.surfacePressure,
       visibility = snapshot.visibility,
@@ -46,20 +45,18 @@ internal class WeatherDtoMapper {
 
   private fun currentOnlySnapshot(
     response: ForecastResponseDto,
-    cityName: String
+    coordinates: Coordinates
   ): WeatherData {
     val current = requireNotNull(response.currentWeather)
     return WeatherData(
       apparentTemperature = current.temperature,
-      cityName = cityName,
       condition = WeatherCondition.fromWmoCode(current.weathercode),
+      coordinates = coordinates,
       currentTemperature = current.temperature,
       dailyForecast = emptyList(),
       hourlyForecast = emptyList(),
       humidity = 0,
       isDay = current.isDay == 1,
-      latitude = response.latitude,
-      longitude = response.longitude,
       windDirection = current.winddirection,
       windSpeed = current.windspeed
     )

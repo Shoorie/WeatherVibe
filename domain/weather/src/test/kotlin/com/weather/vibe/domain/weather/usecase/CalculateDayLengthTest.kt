@@ -11,7 +11,7 @@ class CalculateDayLengthTest {
   private val calculateDayLength = CalculateDayLength()
 
   @Test
-  fun `when called with typical day, then return duration between sunrise and sunset`() {
+  fun `given typical day, then return duration between sunrise and sunset`() {
 
     val sunrise = LocalDateTime.of(2026, 4, 8, 6, 0)
     val sunset = LocalDateTime.of(2026, 4, 8, 19, 30)
@@ -22,7 +22,7 @@ class CalculateDayLengthTest {
   }
 
   @Test
-  fun `given short winter day, when called, then return shorter duration`() {
+  fun `given short winter day, then return shorter duration`() {
 
     val sunrise = LocalDateTime.of(2026, 12, 21, 8, 30)
     val sunset = LocalDateTime.of(2026, 12, 21, 15, 45)
@@ -33,7 +33,7 @@ class CalculateDayLengthTest {
   }
 
   @Test
-  fun `given sunset equals sunrise, when called, then return zero`() {
+  fun `given sunset equals sunrise, then return zero`() {
 
     val moment = LocalDateTime.of(2026, 4, 8, 12, 0)
 

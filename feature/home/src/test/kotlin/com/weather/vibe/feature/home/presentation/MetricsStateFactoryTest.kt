@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.WindDirection
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
 import com.weather.vibe.feature.home.ui.HomeResources
@@ -47,7 +48,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map wind speed`() {
+  fun `when details created, then wind speed formatted with km per hour`() {
 
     val result = factory.create(weatherMetrics(windSpeed = 15.0))
 
@@ -55,7 +56,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map wind speed label`() {
+  fun `when details created, then wind speed item has label`() {
 
     val result = factory.create(METRICS)
 
@@ -79,7 +80,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map wind gusts`() {
+  fun `when details created, then wind gusts formatted with km per hour`() {
 
     val result = factory.create(weatherMetrics(windGusts = 25.0))
 
@@ -87,7 +88,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map max wind speed label`() {
+  fun `when details created, then max wind speed item has label`() {
 
     val result = factory.create(METRICS)
 
@@ -103,7 +104,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map humidity as percentage`() {
+  fun `when details created, then humidity formatted as percentage`() {
 
     val result = factory.create(weatherMetrics(humidity = 65))
 
@@ -111,7 +112,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map humidity label`() {
+  fun `when details created, then humidity item has label`() {
 
     val result = factory.create(METRICS)
 
@@ -119,7 +120,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map pressure with hPa unit`() {
+  fun `when details created, then pressure formatted with hPa`() {
 
     val result = factory.create(weatherMetrics(surfacePressure = 1013.25))
 
@@ -127,7 +128,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map dew point as temperature`() {
+  fun `when details created, then dew point formatted as temperature`() {
 
     val result = factory.create(weatherMetrics(dewPoint = 12.0))
 
@@ -135,7 +136,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map cloud cover as percentage`() {
+  fun `when details created, then cloud cover formatted as percentage`() {
 
     val result = factory.create(weatherMetrics(cloudCover = 45))
 
@@ -151,7 +152,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map precipitation label`() {
+  fun `when details created, then precipitation item has label`() {
 
     val result = factory.create(METRICS)
 
@@ -159,7 +160,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map precipitation as percentage`() {
+  fun `when details created, then precipitation formatted as percentage`() {
 
     val result = factory.create(weatherMetrics(precipitationProbability = 60))
 
@@ -167,7 +168,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map uv index label`() {
+  fun `when details created, then uv index item has label`() {
 
     val result = factory.create(METRICS)
 
@@ -175,7 +176,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map visibility in km for high values`() {
+  fun `given high visibility, when details created, then shown in kilometres`() {
 
     val result = factory.create(weatherMetrics(visibility = 10000.0))
 
@@ -183,7 +184,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map visibility in meters for low values`() {
+  fun `given low visibility, when details created, then shown in metres`() {
 
     val result = factory.create(weatherMetrics(visibility = 500.0))
 
@@ -191,7 +192,7 @@ class MetricsStateFactoryTest {
   }
 
   @Test
-  fun `when details created, then map rainfall label`() {
+  fun `when details created, then rainfall item has label`() {
 
     val result = factory.create(METRICS)
 

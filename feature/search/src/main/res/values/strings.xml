@@ -3,4 +3,6 @@
   <string name="close_search_content_description">Close search</string>
   <string name="no_results_found">No results found for \"%1$s\"</string>
   <string name="recent_locations_title">Recently searched</string>
+  <string name="search_error_default">Something went wrong</string>
+  <string name="search_retry">Try again</string>
 </resources>

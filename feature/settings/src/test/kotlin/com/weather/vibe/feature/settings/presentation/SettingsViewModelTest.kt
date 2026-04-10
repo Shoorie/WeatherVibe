@@ -33,6 +33,7 @@ import io.mockk.unmockkAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Rule
@@ -48,7 +49,7 @@ import strikt.assertions.map
 class SettingsViewModelTest {
 
   @get:Rule
-  val mainDispatcherRule = MainDispatcherRule()
+  val rule = MainDispatcherRule(dispatcher = StandardTestDispatcher())
 
   private val includeGenre = mockk<IncludeGenre>()
   private val observeUserSettings = mockk<ObserveUserSettings>()

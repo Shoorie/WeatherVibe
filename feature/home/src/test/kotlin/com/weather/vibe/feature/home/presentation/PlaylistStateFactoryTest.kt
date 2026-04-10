@@ -18,7 +18,7 @@ class PlaylistStateFactoryTest {
   )
 
   @Test
-  fun `when playlist created, then map genre names to chips`() {
+  fun `when playlist created, then chips contain genre names`() {
 
     val result = factory.create(SUGGESTION)
 
@@ -35,7 +35,7 @@ class PlaylistStateFactoryTest {
   }
 
   @Test
-  fun `when playlist created, then map mood`() {
+  fun `when playlist created, then mood taken from suggestion`() {
 
     val result = factory.create(SUGGESTION)
 
@@ -43,7 +43,7 @@ class PlaylistStateFactoryTest {
   }
 
   @Test
-  fun `when playlist created, then map mood description`() {
+  fun `when playlist created, then mood description taken from suggestion`() {
 
     val result = factory.create(SUGGESTION)
 
@@ -79,7 +79,7 @@ class PlaylistStateFactoryTest {
   }
 
   @Test
-  fun `given genres with whitespace, when playlist created, then trim genre names`() {
+  fun `given genres with whitespace, when playlist created, then whitespace stripped from genre names`() {
 
     val result = factory.create(WHITESPACE_GENRES)
 

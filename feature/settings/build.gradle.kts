@@ -1,5 +1,6 @@
 plugins {
   alias(libs.plugins.weathervibe.android.feature)
+  alias(libs.plugins.weathervibe.android.test)
 }
 
 android {
@@ -8,5 +9,8 @@ android {
 
 dependencies {
   implementation(projects.domain.settings)
+
+  testImplementation(projects.testing.coroutineRules)
+  testImplementation(projects.testing.settingsFixtures)
 }
 

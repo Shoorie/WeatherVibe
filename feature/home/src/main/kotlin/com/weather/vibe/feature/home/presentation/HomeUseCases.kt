@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
-import com.weather.vibe.domain.settings.usecase.SaveUserSettings
 import com.weather.vibe.domain.weather.usecase.DetermineWeatherRefreshStrategy
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
@@ -12,10 +12,10 @@ import org.koin.core.annotation.Factory
 @Factory
 internal class HomeUseCases(
   val determineWeatherRefreshStrategy: DetermineWeatherRefreshStrategy,
+  val excludeGenre: ExcludeGenre,
   val generateWeatherSuggestion: GenerateWeatherSuggestion,
   val getCurrentWeatherKey: GetCurrentWeatherKey,
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
-  val observeUserSettings: ObserveUserSettings,
-  val saveUserSettings: SaveUserSettings
+  val observeUserSettings: ObserveUserSettings
 )

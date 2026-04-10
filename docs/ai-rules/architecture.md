@@ -93,14 +93,16 @@ Actions and Events follow a strict tense rule to distinguish between **intention
 
 ---
 
-## 5. Use Case Boundaries & Error Handling (Flow + catch)
+## 5. Use Case Boundaries & Error Handling
 
-Use Cases serve as the safety boundary for asynchronous operations.
-
-* **Standard:** Use Cases MUST return `Flow<Result<T>>` using the `flow { }.catch { }` pattern.
-* **Safety:** `Flow.catch` ensures `CancellationException` is not swallowed, preventing
-  Coroutine "freezing" or breaking structural concurrency.
-* **FORBIDDEN:** Do NOT use `runCatching` inside Use Cases.
+* **Read** (observe / fetch): return `Flow<Result<T>>` via `flow { }.catch { }`. Do NOT use
+  `runCatching` — `Flow.catch` keeps `CancellationException` intact.
+* **Write** (save / update / delete): `suspend fun` returning `Unit`, throwing on failure. No
+  `Flow`, no `Result`. The new state propagates through the read Use Case's hot flow that the
+  ViewModel already collects — emitting a result from the write Use Case duplicates state updates.
+* **Write errors:** handled in the ViewModel by `CoroutineExceptionHandler` on the launching
+  coroutine. Do NOT use `runCatching` in the ViewModel — it catches `CancellationException` and
+  breaks structured concurrency when the scope is cancelled.
 
 ### Single Responsibility & Granularity (CRITICAL)
 
@@ -131,22 +133,27 @@ Use this as the blueprint for every new feature module:
 @KoinViewModel
 internal class FeatureViewModel(
   private val factory: FeatureStateFactory,
-  private val fetchFeatureData: FetchFeatureData
+  private val fetchFeatureData: FetchFeatureData,
+  private val saveItem: SaveItem
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<FeatureUiState>(Loading)
-  val state: StateFlow<HomeUiState> = _state.asStateFlow()
+  val state: StateFlow<FeatureUiState> = _state.asStateFlow()
 
   private val _event = Channel<FeatureEvent>()
   val event: Flow<FeatureEvent> = _event.receiveAsFlow()
+
+  private val errorHandler = CoroutineExceptionHandler { _, _ -> showError() }
 
   fun dispatch(action: FeatureAction) {
     when (action) {
       is RefreshClick -> onRefreshClick()
       is ItemSelect -> onItemSelect(action)
+      is SaveClick -> onSaveClick(action)
     }
   }
 
+  // Read Use Case — Flow<Result<T>>, state updated from emissions.
   private fun onRefreshClick() {
     _state.update { Loading }
     fetchFeatureData()
@@ -154,8 +161,18 @@ internal class FeatureViewModel(
       .launchIn(viewModelScope)
   }
 
+  // Write Use Case — suspend fun, launched with errorHandler.
+  // New state arrives automatically through the read Use Case already being collected.
+  private fun onSaveClick(action: SaveClick) {
+    viewModelScope.launch(errorHandler) { saveItem(action.item) }
+  }
+
   private fun onItemSelect(action: ItemSelect) {
     send(NavigateToDetails(action.itemId))
+  }
+
+  private fun showError() {
+    _state.update { FeatureUiState.Error(/* message */) }
   }
 
   private fun send(event: FeatureEvent) {
@@ -320,7 +337,8 @@ Before finalizing architectural changes, verify:
 8. [ ] **MVI:** Is `dispatch(action)` the only entry point for UI events?
 9. [ ] **MVI Tense:** Are both Actions and Events using Present Tense?
 10. [ ] **Result Handling:** Are result handlers extracted to `onXxxResult/Success/Error` methods?
-11. [ ] **Use Case:** Async ones return `Flow<Result<T>>` and use `catch { }` for safety?
+11. [ ] **Use Case:** Read ones return `Flow<Result<T>>` with `catch { }`; write ones are
+        `suspend fun` whose errors bubble up to `CoroutineExceptionHandler` in the ViewModel?
 12. [ ] **Stability:** Is the UI State annotated with `@Immutable` or `@Stable`?
 13. [ ] **Domain models carry typed values:** No `String` for dates/times in domain models —
         parse in data mappers, domain holds `LocalDateTime` / `LocalDate` / `Duration` / enums.

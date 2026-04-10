@@ -1,9 +1,6 @@
 package com.weather.vibe.feature.settings.presentation
 
 import com.weather.vibe.domain.settings.model.BriefTone
-import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
-import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
-import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.settings.presentation.state.BriefToneOptionUiState
@@ -17,35 +14,32 @@ internal class SettingsStateFactory(
   private val resources: SettingsResources
 ) {
 
-  fun create(settings: UserSettings): SettingsUiState.Loaded =
+  fun create(
+    availableTones: List<BriefTone>,
+    settings: UserSettings
+  ): SettingsUiState.Loaded =
     SettingsUiState.Loaded(
-      briefToneOptions = createBriefToneOptions(selected = settings.briefTone),
+      briefToneOptions = createBriefToneOptions(
+        availableTones = availableTones,
+        selected = settings.briefTone
+      ),
       genreChips = createExcludedGenreChips(excluded = settings.excludedGenres),
       hasExcludedGenres = settings.excludedGenres.isNotEmpty(),
       isCelsius = settings.temperatureUnit == CELSIUS
     )
 
-  private fun createBriefToneOptions(selected: BriefTone): List<BriefToneOptionUiState> =
-    listOf(
+  private fun createBriefToneOptions(
+    availableTones: List<BriefTone>,
+    selected: BriefTone
+  ): List<BriefToneOptionUiState> =
+    availableTones.map { tone ->
       BriefToneOptionUiState(
-        description = resources.briefToneWittyDescription(),
-        isSelected = selected == WITTY_AND_FRIENDLY,
-        label = resources.briefToneWittyLabel(),
-        tone = WITTY_AND_FRIENDLY
-      ),
-      BriefToneOptionUiState(
-        description = resources.briefToneFormalDescription(),
-        isSelected = selected == FORMAL,
-        label = resources.briefToneFormalLabel(),
-        tone = FORMAL
-      ),
-      BriefToneOptionUiState(
-        description = resources.briefToneHumorousDescription(),
-        isSelected = selected == HUMOROUS,
-        label = resources.briefToneHumorousLabel(),
-        tone = HUMOROUS
+        description = resources.briefToneDescription(tone),
+        isSelected = tone == selected,
+        label = resources.briefToneLabel(tone),
+        tone = tone
       )
-    )
+    }
 
   private fun createExcludedGenreChips(
     excluded: Set<String>

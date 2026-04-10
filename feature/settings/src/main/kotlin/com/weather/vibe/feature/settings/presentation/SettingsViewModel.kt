@@ -2,9 +2,8 @@ package com.weather.vibe.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
-import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
-import com.weather.vibe.domain.settings.usecase.SaveUserSettings
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
 import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
@@ -13,6 +12,7 @@ import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loading
 import com.weather.vibe.feature.settings.ui.SettingsResources
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,10 +27,9 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class SettingsViewModel(
-  private val observeUserSettings: ObserveUserSettings,
   private val resources: SettingsResources,
-  private val saveUserSettings: SaveUserSettings,
-  private val stateFactory: SettingsStateFactory
+  private val stateFactory: SettingsStateFactory,
+  private val useCases: SettingsUseCases
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<SettingsUiState>(Loading)
@@ -39,10 +38,15 @@ internal class SettingsViewModel(
   private val _event = Channel<SettingsEvent>()
   val event: Flow<SettingsEvent> = _event.receiveAsFlow()
 
-  private var currentSettings: UserSettings? = null
+  private val availableTones: List<BriefTone> =
+    useCases.getAvailableBriefTones()
+
+  private val errorHandler = CoroutineExceptionHandler { _, _ ->
+    showDefaultError()
+  }
 
   init {
-    observeUserSettings()
+    useCases.observeUserSettings()
       .onEach(::onSettingsResult)
       .launchIn(viewModelScope)
   }
@@ -57,34 +61,38 @@ internal class SettingsViewModel(
   }
 
   private fun onSettingsResult(result: Result<UserSettings>) {
-    val settings = result.getOrNull() ?: run { onSettingsError(); return }
-    if (settings == currentSettings) return
-    currentSettings = settings
-    _state.update { stateFactory.create(settings = settings) }
+    result.fold(
+      onSuccess = ::showLoadedSettings,
+      onFailure = { showDefaultError() }
+    )
   }
 
-  private fun onSettingsError() {
+  private fun showLoadedSettings(settings: UserSettings) {
+    _state.update {
+      stateFactory.create(availableTones = availableTones, settings = settings)
+    }
+  }
+
+  private fun showDefaultError() {
     _state.update { SettingsUiState.Error(resources.defaultError()) }
   }
 
   private fun onBriefToneSelect(action: BriefToneSelect) {
-    save { withBriefTone(action.tone) }
+    viewModelScope.launch(errorHandler) {
+      useCases.selectBriefTone(action.tone)
+    }
   }
 
   private fun onGenreRemove(action: GenreRemove) {
-    save { withExcludedGenres(excludedGenres - action.genre) }
+    viewModelScope.launch(errorHandler) {
+      useCases.includeGenre(action.genre)
+    }
   }
 
   private fun onTemperatureUnitToggle() {
-    save { withToggledTemperatureUnit() }
-  }
-
-  private fun save(transform: UserSettings.() -> UserSettings) {
-    val settings = currentSettings ?: return
-    val updated = settings.transform()
-    currentSettings = updated
-    _state.update { stateFactory.create(settings = updated) }
-    viewModelScope.launch { saveUserSettings(settings = updated) }
+    viewModelScope.launch(errorHandler) {
+      useCases.toggleTemperatureUnit()
+    }
   }
 
   private fun onBackClick() {

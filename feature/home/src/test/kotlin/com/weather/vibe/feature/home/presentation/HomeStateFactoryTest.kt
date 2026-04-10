@@ -86,7 +86,7 @@ class HomeStateFactoryTest {
 
 
   @Test
-  fun `when state created, then map city name to header`() {
+  fun `when state created, then header contains city name`() {
 
     val result = factory.create(WEATHER)
 
@@ -102,7 +102,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map current temperature`() {
+  fun `when state created, then current temperature formatted`() {
 
     val result = factory.create(WEATHER)
 
@@ -111,7 +111,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map feels like temperature`() {
+  fun `when state created, then feels like temperature formatted`() {
 
     val result = factory.create(WEATHER)
 
@@ -120,7 +120,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map high temperature from daily forecast`() {
+  fun `when state created, then high temperature taken from first daily forecast`() {
 
     val result = factory.create(WEATHER)
 
@@ -129,7 +129,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map low temperature from daily forecast`() {
+  fun `when state created, then low temperature taken from first daily forecast`() {
 
     val result = factory.create(WEATHER)
 
@@ -138,7 +138,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map condition emoji`() {
+  fun `when state created, then current weather shows condition emoji`() {
 
     val result = factory.create(WEATHER)
 
@@ -147,7 +147,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map condition label`() {
+  fun `when state created, then current weather shows condition label`() {
 
     val result = factory.create(WEATHER)
 
@@ -179,7 +179,7 @@ class HomeStateFactoryTest {
 
 
   @Test
-  fun `when state created, then map hourly forecast items`() {
+  fun `when state created, then hourly forecast shows time labels`() {
 
     val result = factory.create(WEATHER)
 
@@ -205,7 +205,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map hourly condition emojis`() {
+  fun `when state created, then hourly forecast shows condition emojis`() {
 
     val result = factory.create(WEATHER)
 
@@ -214,7 +214,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map hourly temperatures`() {
+  fun `when state created, then hourly forecast shows temperatures`() {
 
     val result = factory.create(WEATHER)
 
@@ -224,7 +224,7 @@ class HomeStateFactoryTest {
 
 
   @Test
-  fun `when state created, then map daily forecast condition emojis`() {
+  fun `when state created, then daily forecast shows condition emojis`() {
 
     val result = factory.create(WEATHER)
 
@@ -233,7 +233,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map daily max temperatures`() {
+  fun `when state created, then daily forecast shows max temperature`() {
 
     val result = factory.create(WEATHER)
 
@@ -242,7 +242,7 @@ class HomeStateFactoryTest {
   }
 
   @Test
-  fun `when state created, then map daily min temperatures`() {
+  fun `when state created, then daily forecast shows min temperature`() {
 
     val result = factory.create(WEATHER)
 

@@ -12,7 +12,7 @@ class GetAvailableBriefTonesTest {
   private val getAvailableBriefTones = GetAvailableBriefTones()
 
   @Test
-  fun `when invoked, then returns tones in presentation order`() {
+  fun `when available tones requested, then returned in presentation order`() {
 
     val result = getAvailableBriefTones()
 

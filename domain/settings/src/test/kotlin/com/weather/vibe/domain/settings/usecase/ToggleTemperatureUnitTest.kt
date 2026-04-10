@@ -14,7 +14,7 @@ import strikt.assertions.isEqualTo
 class ToggleTemperatureUnitTest {
 
   @Test
-  fun `given celsius, when invoked, then cache flips to fahrenheit`() = runTest {
+  fun `given celsius, when toggled, then cache flips to fahrenheit`() = runTest {
 
     val after = toggleFrom(CELSIUS)
 
@@ -22,7 +22,7 @@ class ToggleTemperatureUnitTest {
   }
 
   @Test
-  fun `given fahrenheit, when invoked, then cache flips to celsius`() = runTest {
+  fun `given fahrenheit, when toggled, then cache flips to celsius`() = runTest {
 
     val after = toggleFrom(FAHRENHEIT)
 
@@ -30,7 +30,7 @@ class ToggleTemperatureUnitTest {
   }
 
   @Test
-  fun `given cache throws, when invoked, then error propagates`() = runTest {
+  fun `given cache throws, when toggled, then error propagates`() = runTest {
 
     val cache = FakeSettingsCache().apply { writeError = IllegalStateException("boom") }
 

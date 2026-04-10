@@ -22,7 +22,7 @@ class GetCurrentWeatherKeyTest {
   )
 
   @Test
-  fun `given afternoon hour, when invoked, then time of day is afternoon`() {
+  fun `given afternoon hour, when key computed, then time of day is afternoon`() {
 
     timeProvider.current = LocalDateTime.of(2026, 4, 8, 15, 30)
 
@@ -32,7 +32,7 @@ class GetCurrentWeatherKeyTest {
   }
 
   @Test
-  fun `given morning hour, when invoked, then time of day is morning`() {
+  fun `given morning hour, when key computed, then time of day is morning`() {
 
     timeProvider.current = LocalDateTime.of(2026, 4, 8, 8, 0)
 
@@ -42,7 +42,7 @@ class GetCurrentWeatherKeyTest {
   }
 
   @Test
-  fun `given rain condition, when invoked, then simplified condition is rainy`() {
+  fun `given rain condition, when key computed, then simplified condition is rainy`() {
 
     val result = getCurrentWeatherKey(weatherData(condition = RAIN))
 
@@ -50,7 +50,7 @@ class GetCurrentWeatherKeyTest {
   }
 
   @Test
-  fun `given warm temperature, when invoked, then temperature range is warm`() {
+  fun `given warm temperature, when key computed, then temperature range is warm`() {
 
     val result = getCurrentWeatherKey(weatherData(currentTemperature = 25.0))
 
@@ -58,7 +58,7 @@ class GetCurrentWeatherKeyTest {
   }
 
   @Test
-  fun `given cold temperature, when invoked, then temperature range is cold`() {
+  fun `given cold temperature, when key computed, then temperature range is cold`() {
 
     val result = getCurrentWeatherKey(weatherData(currentTemperature = 2.0))
 

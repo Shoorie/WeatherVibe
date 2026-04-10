@@ -4,6 +4,7 @@ import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.data.weather.local.cache.CachedDailyWeather
 import com.weather.vibe.data.weather.local.cache.CachedHourlyWeather
 import com.weather.vibe.data.weather.local.entity.WeatherCacheEntity
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherCondition
@@ -21,8 +22,8 @@ internal class WeatherCacheMapper(
 
   fun toEntity(weather: WeatherData): WeatherCacheEntity =
     WeatherCacheEntity(
-      locationId = weather.locationId(),
-      cityName = weather.cityName,
+      locationId = weather.coordinates.id,
+      cityName = weather.coordinates.name,
       currentTemperature = weather.currentTemperature,
       currentConditionName = weather.condition.name,
       windSpeed = weather.windSpeed,
@@ -39,21 +40,23 @@ internal class WeatherCacheMapper(
     val hourlyForecast = decodeHourly(entity.hourlyForecastJson)
     val dailyForecast = decodeDaily(entity.dailyForecastJson)
     val firstHour = hourlyForecast.firstOrNull()
-    val (latitude, longitude) = parseLocation(entity.locationId)
+    val (latitude, longitude) = Coordinates.parseId(entity.locationId)
 
     return WeatherData(
       apparentTemperature = firstHour?.apparentTemperature ?: entity.currentTemperature,
-      cityName = entity.cityName,
       cloudCover = firstHour?.cloudCover ?: 0,
       condition = parseCondition(entity.currentConditionName),
+      coordinates = Coordinates(
+        name = entity.cityName,
+        latitude = latitude,
+        longitude = longitude
+      ),
       currentTemperature = entity.currentTemperature,
       dailyForecast = dailyForecast,
       dewPoint = firstHour?.dewPoint ?: 0.0,
       hourlyForecast = hourlyForecast,
       humidity = entity.humidity,
       isDay = entity.isDay,
-      latitude = latitude,
-      longitude = longitude,
       precipitation = firstHour?.precipitation ?: 0.0,
       surfacePressure = firstHour?.surfacePressure ?: 0.0,
       visibility = firstHour?.visibility ?: 0.0,
@@ -81,21 +84,7 @@ internal class WeatherCacheMapper(
         .map(cachedWeatherMapper::toDomain)
     }.getOrDefault(emptyList())
 
-  private fun WeatherData.locationId(): String =
-    "$latitude$LOCATION_ID_SEPARATOR$longitude"
-
-  private fun parseLocation(locationId: String): Pair<Double, Double> {
-    val parts = locationId.split(LOCATION_ID_SEPARATOR)
-    val latitude = parts.getOrNull(0)?.toDoubleOrNull() ?: 0.0
-    val longitude = parts.getOrNull(1)?.toDoubleOrNull() ?: 0.0
-    return latitude to longitude
-  }
-
   private fun parseCondition(name: String): WeatherCondition =
     runCatching { WeatherCondition.valueOf(name) }
       .getOrDefault(WeatherCondition.UNKNOWN)
-
-  private companion object {
-    const val LOCATION_ID_SEPARATOR = ","
-  }
 }

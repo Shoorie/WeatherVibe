@@ -15,7 +15,7 @@ import strikt.assertions.isEmpty
 class IncludeGenreTest {
 
   @Test
-  fun `given genre excluded, when invoked, then cache holds empty set`() = runTest {
+  fun `given genre excluded, when included, then excluded set becomes empty`() = runTest {
 
     val after = includeFrom(userSettings(excludedGenres = setOf(POP)), POP)
 
@@ -23,7 +23,7 @@ class IncludeGenreTest {
   }
 
   @Test
-  fun `given one of many genres matches, when invoked, then cache keeps the rest`() = runTest {
+  fun `given multiple excluded genres, when one included, then others remain excluded`() = runTest {
 
     val initial = userSettings(excludedGenres = setOf(POP, METAL, JAZZ))
 
@@ -33,7 +33,7 @@ class IncludeGenreTest {
   }
 
   @Test
-  fun `given genre not excluded, when invoked, then cache set is unchanged`() = runTest {
+  fun `given genre not excluded, when included, then excluded set unchanged`() = runTest {
 
     val after = includeFrom(userSettings(excludedGenres = setOf(POP)), METAL)
 

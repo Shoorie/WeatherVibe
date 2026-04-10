@@ -3,4 +3,6 @@
   <string name="close_search_content_description">Zamknij wyszukiwanie</string>
   <string name="no_results_found">Brak wyników dla \"%1$s\"</string>
   <string name="recent_locations_title">Ostatnio wyszukiwane</string>
+  <string name="search_error_default">Coś poszło nie tak</string>
+  <string name="search_retry">Spróbuj ponownie</string>
 </resources>

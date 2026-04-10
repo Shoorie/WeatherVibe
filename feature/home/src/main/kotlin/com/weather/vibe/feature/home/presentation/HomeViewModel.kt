@@ -2,9 +2,10 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
-import com.weather.vibe.domain.weather.model.Location
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
@@ -12,7 +13,7 @@ import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
-import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
+import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
@@ -55,28 +56,29 @@ internal class HomeViewModel(
     showError(throwable)
   }
 
-  init {
-    observeWeather()
-  }
-
   fun dispatch(action: HomeAction) {
     when (action) {
       is GenreRemoveClick -> onGenreRemoveClick(action)
-      is ReceiveLocationResult -> onReceiveLocationResult(action)
+      is Initialize -> onInitialize(action)
       is RefreshClick -> onRefreshClick()
       is RetryWeatherSuggestion -> onRetryWeatherSuggestion()
       is ResumeLifecycle -> onResumeLifecycle()
     }
   }
 
-  private fun observeWeather(location: Location = DEFAULT_LOCATION) {
+  private fun onInitialize(action: Initialize) {
+    val coordinates = action.location?.toCoordinates() ?: DEFAULT_LOCATION
+    observeWeather(coordinates)
+  }
+
+  private fun observeWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
 
     _state.update { Loading }
     snapshot = HomeSnapshot()
 
     homeDataJob?.cancel()
     homeDataJob = combine(
-      useCases.getWeather(location),
+      useCases.getWeather(coordinates),
       useCases.observeUserSettings(),
       ::onHomeDataResult
     ).launchIn(viewModelScope)
@@ -182,15 +184,6 @@ internal class HomeViewModel(
     refreshWeatherSuggestion()
   }
 
-  private fun onReceiveLocationResult(action: ReceiveLocationResult) {
-    val location = Location(
-      cityName = action.cityName,
-      latitude = action.latitude,
-      longitude = action.longitude
-    )
-    observeWeather(location)
-  }
-
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
 
     val tone = currentSettings?.briefTone ?: return
@@ -266,8 +259,8 @@ internal class HomeViewModel(
   }
 
   private companion object {
-    val DEFAULT_LOCATION = Location(
-      cityName = "Toruń",
+    val DEFAULT_LOCATION = Coordinates(
+      name = "Toruń",
       latitude = 53.0138,
       longitude = 18.5984
     )

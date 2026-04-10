@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
@@ -21,6 +22,10 @@ fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
     backStack = backStack,
     modifier = modifier,
     onBack = { backStack.removeLastOrNull() },
+    entryDecorators = listOf(
+      rememberSaveableStateHolderNavEntryDecorator(),
+      rememberViewModelStoreNavEntryDecorator()
+    ),
     entryProvider = { key ->
       when (key) {
         is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
@@ -53,9 +58,7 @@ private fun HomeEntry(
     onNavigateToDetails = { backStack.add(WeatherDetailsRoute) },
     onNavigateToSearch = { backStack.add(SearchRoute) },
     onNavigateToSettings = { backStack.add(SettingsRoute) },
-    selectedCityName = route.selectedCityName,
-    selectedLatitude = route.selectedLatitude,
-    selectedLongitude = route.selectedLongitude
+    selectedLocation = route.selectedLocation
   )
 }
 
@@ -69,10 +72,10 @@ private fun DetailsEntry(backStack: MutableList<NavKey>) {
 @Composable
 private fun SearchEntry(backStack: MutableList<NavKey>) {
   SearchScreen(
-    onLocationSelected = { cityName, latitude, longitude ->
+    onLocationSelected = { location ->
       backStack.removeLastOrNull()
       backStack.removeLastOrNull()
-      backStack.add(HomeRoute(cityName, latitude, longitude))
+      backStack.add(HomeRoute(selectedLocation = location))
     },
     onNavigateBack = { backStack.removeLastOrNull() }
   )

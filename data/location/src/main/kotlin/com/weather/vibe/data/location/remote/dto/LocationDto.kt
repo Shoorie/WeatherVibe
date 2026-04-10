@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LocationResultDto(
+data class LocationDto(
 
   @SerialName("admin1")
   val admin1: String? = null,

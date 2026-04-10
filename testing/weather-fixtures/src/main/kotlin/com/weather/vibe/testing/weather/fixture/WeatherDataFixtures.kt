@@ -1,5 +1,6 @@
 package com.weather.vibe.testing.weather.fixture
 
+import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
@@ -32,6 +33,12 @@ object WeatherDataFixtures {
   const val WIND_GUSTS = 25.0
   const val LATITUDE = 52.23
   const val LONGITUDE = 21.01
+
+  val COORDINATES: Coordinates = Coordinates(
+    name = CITY_NAME,
+    latitude = LATITUDE,
+    longitude = LONGITUDE
+  )
 
   val TODAY_DATE: LocalDate = LocalDate.of(2026, 4, 8)
   val TODAY_SUNRISE: LocalDateTime = LocalDateTime.of(2026, 4, 8, 6, 0)
@@ -122,17 +129,15 @@ object WeatherDataFixtures {
 
   fun weatherData(
     apparentTemperature: Double = APPARENT_TEMPERATURE,
-    cityName: String = CITY_NAME,
     cloudCover: Int = 20,
     condition: WeatherCondition = CLEAR_SKY,
+    coordinates: Coordinates = COORDINATES,
     currentTemperature: Double = CURRENT_TEMPERATURE,
     dailyForecast: List<DailyWeather> = listOf(TODAY, TOMORROW, RAINY_DAY),
     dewPoint: Double = 12.0,
     hourlyForecast: List<HourlyWeather> = listOf(HOUR_1, HOUR_2, HOUR_3),
     humidity: Int = HUMIDITY,
     isDay: Boolean = true,
-    latitude: Double = LATITUDE,
-    longitude: Double = LONGITUDE,
     precipitation: Double = 0.0,
     surfacePressure: Double = 1013.0,
     visibility: Double = 10000.0,
@@ -141,17 +146,15 @@ object WeatherDataFixtures {
     windSpeed: Double = WIND_SPEED
   ): WeatherData = WeatherData(
     apparentTemperature = apparentTemperature,
-    cityName = cityName,
     cloudCover = cloudCover,
     condition = condition,
+    coordinates = coordinates,
     currentTemperature = currentTemperature,
     dailyForecast = dailyForecast,
     dewPoint = dewPoint,
     hourlyForecast = hourlyForecast,
     humidity = humidity,
     isDay = isDay,
-    latitude = latitude,
-    longitude = longitude,
     precipitation = precipitation,
     surfacePressure = surfacePressure,
     visibility = visibility,

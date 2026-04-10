@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
@@ -21,6 +22,10 @@ fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
     backStack = backStack,
     modifier = modifier,
     onBack = { backStack.removeLastOrNull() },
+    entryDecorators = listOf(
+      rememberSaveableStateHolderNavEntryDecorator(),
+      rememberViewModelStoreNavEntryDecorator()
+    ),
     entryProvider = { key ->
       when (key) {
         is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }

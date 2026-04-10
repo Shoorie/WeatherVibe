@@ -37,7 +37,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -94,7 +93,6 @@ class SearchViewModelTest {
     )
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Recents>()
       .get { locations }.hasSize(2)
@@ -106,7 +104,6 @@ class SearchViewModelTest {
     mockRecentsReturn(entries = emptyList())
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Idle>()
   }
@@ -117,7 +114,6 @@ class SearchViewModelTest {
     mockRecentsFail(IOException("boom"))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Error>()
       .get { message }.isEqualTo(DEFAULT_ERROR_MESSAGE)
@@ -129,7 +125,6 @@ class SearchViewModelTest {
     coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(QueryChange("krak"))
     advanceTimeBy(DEBOUNCE_PLUS_SLACK)
@@ -146,14 +141,12 @@ class SearchViewModelTest {
     coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(QueryChange("krak"))
     advanceTimeBy(DEBOUNCE_PLUS_SLACK)
     runCurrent()
 
     viewModel.dispatch(QueryChange(""))
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Recents>()
   }
@@ -164,7 +157,6 @@ class SearchViewModelTest {
     coEvery { searchLocation("xyz") } returns flowOf(success(emptyList()))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(QueryChange("xyz"))
     advanceTimeBy(DEBOUNCE_PLUS_SLACK)
@@ -180,7 +172,6 @@ class SearchViewModelTest {
     coEvery { searchLocation("xyz") } returns flowOf(failure(IOException("down")))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(QueryChange("xyz"))
     advanceTimeBy(DEBOUNCE_PLUS_SLACK)
@@ -195,10 +186,8 @@ class SearchViewModelTest {
     mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(LocationSelect(id = WARSAW.id))
-    advanceUntilIdle()
 
     coVerify { saveRecentLocation(WARSAW) }
   }
@@ -209,11 +198,9 @@ class SearchViewModelTest {
     mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.event.test {
       viewModel.dispatch(LocationSelect(id = WARSAW.id))
-      advanceUntilIdle()
 
       val event = awaitItem()
       expectThat(event).isA<NavigateBackWithResult>()
@@ -228,10 +215,8 @@ class SearchViewModelTest {
     coEvery { saveRecentLocation(WARSAW) } throws IllegalStateException("db down")
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(LocationSelect(id = WARSAW.id))
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Error>()
   }
@@ -240,11 +225,9 @@ class SearchViewModelTest {
   fun `when back clicked, then navigate back event emitted`() = runTest {
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.event.test {
       viewModel.dispatch(BackClick)
-      advanceUntilIdle()
 
       expectThat(awaitItem()).isA<NavigateBack>()
     }
@@ -259,14 +242,12 @@ class SearchViewModelTest {
     )
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(QueryChange("kra"))
     advanceTimeBy(DEBOUNCE_PLUS_SLACK)
     runCurrent()
 
     viewModel.dispatch(Retry)
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Results>()
   }
@@ -280,10 +261,8 @@ class SearchViewModelTest {
     )
 
     val viewModel = createViewModel()
-    advanceUntilIdle()
 
     viewModel.dispatch(Retry)
-    advanceUntilIdle()
 
     expectThat(viewModel.state.value).isA<Recents>()
   }
@@ -302,7 +281,6 @@ class SearchViewModelTest {
     )
 
     createViewModel()
-    advanceUntilIdle()
 
     verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
   }
@@ -310,7 +288,7 @@ class SearchViewModelTest {
   @Test
   fun `given unit changes after recents loaded, when unit emits, then recents rebuilt with new unit`() = runTest {
 
-    val unitFlow = MutableStateFlow<TemperatureUnit>(CELSIUS)
+    val unitFlow = MutableStateFlow(CELSIUS)
     every { observeTemperatureUnit() } returns unitFlow
     mockRecentsReturn(
       entries = listOf(
@@ -322,10 +300,8 @@ class SearchViewModelTest {
     )
 
     createViewModel()
-    advanceUntilIdle()
 
     unitFlow.value = FAHRENHEIT
-    advanceUntilIdle()
 
     verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
   }

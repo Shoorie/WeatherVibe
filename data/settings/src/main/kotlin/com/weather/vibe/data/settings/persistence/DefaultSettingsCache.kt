@@ -19,12 +19,15 @@ internal class DefaultSettingsCache(
     dataStore.data.map(mapper::toDomain)
 
   override suspend fun save(settings: UserSettings) {
-    dataStore.updateData {
-      it.toBuilder()
-        .setAiPersona(settings.briefTone.name)
-        .setExcludedGenres(settings.excludedGenresText)
-        .setTemperatureUnit(settings.temperatureUnit.name)
-        .build()
+    dataStore.updateData { previous ->
+      mapper.toCache(previous = previous, settings = settings)
+    }
+  }
+
+  override suspend fun update(change: (UserSettings) -> UserSettings) {
+    dataStore.updateData { previous ->
+      val updated = change(mapper.toDomain(previous))
+      mapper.toCache(previous = previous, settings = updated)
     }
   }
 }

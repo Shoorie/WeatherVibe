@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Location
 import com.weather.vibe.domain.weather.model.WeatherData
@@ -21,6 +22,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
 import com.weather.vibe.feature.home.ui.HomeResources
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +50,10 @@ internal class HomeViewModel(
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
   private var settingsJob: Job? = null
+
+  private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+    showError(throwable)
+  }
 
   init {
     observeWeather()
@@ -115,26 +121,31 @@ internal class HomeViewModel(
     )
 
     when (strategy) {
-      RegenerateSuggestion -> onWeatherChanged(weather, settings)
-      InvalidateAndRegenerate -> onBriefToneChanged(weather, settings, weatherKey)
-      ReformatOnly -> showTemperaturesReformatted(weather, settings)
+      RegenerateSuggestion -> onRegenerateSuggestion(weather, settings)
+      InvalidateAndRegenerate -> onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
+      ReformatOnly -> onTemperaturesReformatted(weather, settings)
     }
   }
 
-  private fun onWeatherChanged(weather: WeatherData, settings: UserSettings) {
+  private fun onRegenerateSuggestion(weather: WeatherData, settings: UserSettings) {
     showWeatherLoaded(weather, settings)
     refreshWeatherSuggestion()
   }
 
-  private fun onBriefToneChanged(
+  private fun onInvalidateAndRegenerateSuggestion(
     weather: WeatherData,
     settings: UserSettings,
     weatherKey: WeatherKey
   ) {
+
     showWeatherLoaded(weather, settings)
+
     settingsJob?.cancel()
     settingsJob = viewModelScope.launch {
-      useCases.invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
+      useCases.invalidateWeatherSuggestion(
+        tone = settings.briefTone,
+        weatherKey = weatherKey
+      )
       refreshWeatherSuggestion()
     }
   }
@@ -143,9 +154,13 @@ internal class HomeViewModel(
     _state.update { stateFactory.create(data = weather, unit = settings.temperatureUnit) }
   }
 
-  private fun showTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {
+  private fun onTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {
     _state.update {
-      stateFactory.reformatTemperatures(current = it, data = weather, unit = settings.temperatureUnit)
+      stateFactory.reformatTemperatures(
+        current = it,
+        data = weather,
+        unit = settings.temperatureUnit
+      )
     }
   }
 
@@ -178,32 +193,27 @@ internal class HomeViewModel(
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
 
-    val settings = currentSettings ?: return
-    val updatedSettings = settings.withExcludedGenres(settings.excludedGenres + action.genre)
+    val tone = currentSettings?.briefTone ?: return
     val updatedState = _state.updateAndGet { it.withGenreRejecting(action.genre) }
 
-    if (updatedState.allGenresRejected) onAllGenresRejected(updatedSettings)
-    else saveSettings(updatedSettings)
-  }
-
-  private fun saveSettings(settings: UserSettings) {
     settingsJob?.cancel()
-    settingsJob = viewModelScope.launch {
-      useCases.saveUserSettings(settings)
+    settingsJob = viewModelScope.launch(errorHandler) {
+
+      useCases.excludeGenre(action.genre)
+
+      if (updatedState.allGenresRejected) {
+        onAllGenresRejected(tone)
+      }
     }
   }
 
-  private fun onAllGenresRejected(settings: UserSettings) {
+  private suspend fun onAllGenresRejected(tone: BriefTone) {
 
     showPlaylistGenerating()
 
-    settingsJob?.cancel()
-    settingsJob = viewModelScope.launch {
-      useCases.saveUserSettings(settings)
-      val weatherKey = snapshot.weatherKey ?: return@launch
-      useCases.invalidateWeatherSuggestion(tone = settings.briefTone, weatherKey = weatherKey)
-      refreshWeatherSuggestion()
-    }
+    val weatherKey = snapshot.weatherKey ?: return
+    useCases.invalidateWeatherSuggestion(tone = tone, weatherKey = weatherKey)
+    refreshWeatherSuggestion()
   }
 
   private fun showPlaylistGenerating() {

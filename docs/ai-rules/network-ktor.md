@@ -39,8 +39,11 @@
 ---
 
 ## 4. Safe API Calls & Error Handling (CRITICAL)
-* **Threading:** All network calls MUST be executed within `withContext(Dispatchers.IO)`.
-* **Error Wrapping:** Use Cases wrap the call in `flow { }.catch { }`.
+* **Threading:** All network calls MUST run inside `withContext(Dispatchers.IO)`.
+* **Read Use Cases:** return `Flow<Result<T>>` via `flow { }.catch { }`.
+* **Write Use Cases:** `suspend fun` that throws on failure; the ViewModel handles errors with
+  a `CoroutineExceptionHandler`.
+* **Never** use `runCatching` — it swallows `CancellationException`.
 
 ---
 

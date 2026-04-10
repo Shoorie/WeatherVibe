@@ -9,8 +9,10 @@ android {
 
 dependencies {
   implementation(projects.domain.location)
+  implementation(projects.domain.settings)
   implementation(projects.domain.weather)
 
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.locationFixtures)
+  testImplementation(projects.testing.settingsFixtures)
 }

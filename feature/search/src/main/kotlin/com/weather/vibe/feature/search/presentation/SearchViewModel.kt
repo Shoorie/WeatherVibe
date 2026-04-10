@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.LocationWithTemperature
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
@@ -52,14 +54,39 @@ internal class SearchViewModel(
   val event: Flow<SearchEvent> = _event.receiveAsFlow()
 
   private var lastLocations: List<Location> = emptyList()
+  private var lastRecentEntries: List<LocationWithTemperature> = emptyList()
+  private var temperatureUnit: TemperatureUnit = CELSIUS
 
   private val errorHandler = CoroutineExceptionHandler { _, _ ->
     showError()
   }
 
   init {
+    observeTemperatureUnit()
     loadRecentLocations()
     observeQueryChanges()
+  }
+
+  private fun observeTemperatureUnit() {
+    useCases.observeTemperatureUnit()
+      .onEach(::onTemperatureUnitChanged)
+      .launchIn(viewModelScope)
+  }
+
+  private fun onTemperatureUnitChanged(unit: TemperatureUnit) {
+    temperatureUnit = unit
+    rebuildRecentsIfShown()
+  }
+
+  private fun rebuildRecentsIfShown() {
+    val current = _state.value
+    if (current !is Recents) return
+    _state.update {
+      Recents(
+        query = current.query,
+        locations = stateFactory.createItems(entries = lastRecentEntries, unit = temperatureUnit)
+      )
+    }
   }
 
   fun dispatch(action: SearchAction) {
@@ -111,12 +138,13 @@ internal class SearchViewModel(
 
   private fun onRecentLocationsSuccess(entries: List<LocationWithTemperature>) {
     lastLocations = entries.map { it.location }
+    lastRecentEntries = entries
     _state.update { current ->
       when (entries.isEmpty()) {
         true -> Idle(query = current.query)
         false -> Recents(
           query = current.query,
-          locations = stateFactory.createItems(entries)
+          locations = stateFactory.createItems(entries = entries, unit = temperatureUnit)
         )
       }
     }
@@ -165,7 +193,7 @@ internal class SearchViewModel(
         true -> Empty(query = query)
         false -> Results(
           query = query,
-          locations = stateFactory.createItems(entries)
+          locations = stateFactory.createItems(entries = entries, unit = temperatureUnit)
         )
       }
     }

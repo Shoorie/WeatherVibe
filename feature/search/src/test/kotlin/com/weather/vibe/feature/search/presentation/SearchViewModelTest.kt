@@ -5,6 +5,11 @@ import com.weather.vibe.domain.location.model.LocationWithTemperature
 import com.weather.vibe.domain.location.usecase.GetRecentLocationsWithTemperature
 import com.weather.vibe.domain.location.usecase.SaveRecentLocation
 import com.weather.vibe.domain.location.usecase.SearchLocation
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
+import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
+import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
@@ -27,7 +32,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -42,6 +49,8 @@ import strikt.assertions.hasSize
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 import java.io.IOException
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchViewModelTest {
@@ -50,14 +59,21 @@ class SearchViewModelTest {
   val rule = MainDispatcherRule()
 
   private val getRecentLocationsWithTemperature = mockk<GetRecentLocationsWithTemperature>()
+  private val observeTemperatureUnit = mockk<ObserveTemperatureUnit>()
   private val saveRecentLocation = mockk<SaveRecentLocation>()
   private val searchLocation = mockk<SearchLocation>()
   private val resources = mockk<SearchResources>()
-  private val stateFactory = SearchStateFactory(subtitle = LocationSubtitleFormatter())
+  private val temperature = mockk<TemperatureFormatter>()
+  private val stateFactory = SearchStateFactory(
+    subtitle = LocationSubtitleFormatter(),
+    temperature = temperature
+  )
 
   @Before
   fun setUp() {
     every { resources.defaultError() } returns DEFAULT_ERROR_MESSAGE
+    every { temperature.format(celsius = any(), unit = any()) } returns FORMATTED_TEMPERATURE
+    mockUnit(unit = CELSIUS)
     mockRecentsReturn(entries = emptyList())
     coJustRun { saveRecentLocation(any()) }
   }
@@ -110,7 +126,7 @@ class SearchViewModelTest {
   @Test
   fun `given non-empty query, when debounce elapses, then search results shown`() = runTest {
 
-    coEvery { searchLocation("krak") } returns flowOf(Result.success(listOf(KRAKOW)))
+    coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
     val viewModel = createViewModel()
     advanceUntilIdle()
@@ -127,7 +143,7 @@ class SearchViewModelTest {
   fun `given query cleared to empty, when dispatched, then recent locations reloaded`() = runTest {
 
     mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
-    coEvery { searchLocation("krak") } returns flowOf(Result.success(listOf(KRAKOW)))
+    coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
     val viewModel = createViewModel()
     advanceUntilIdle()
@@ -145,7 +161,7 @@ class SearchViewModelTest {
   @Test
   fun `given search returns empty, when debounce elapses, then state is empty with query`() = runTest {
 
-    coEvery { searchLocation("xyz") } returns flowOf(Result.success(emptyList()))
+    coEvery { searchLocation("xyz") } returns flowOf(success(emptyList()))
 
     val viewModel = createViewModel()
     advanceUntilIdle()
@@ -161,7 +177,7 @@ class SearchViewModelTest {
   @Test
   fun `given search fails, when debounce elapses, then state is error`() = runTest {
 
-    coEvery { searchLocation("xyz") } returns flowOf(Result.failure(IOException("down")))
+    coEvery { searchLocation("xyz") } returns flowOf(failure(IOException("down")))
 
     val viewModel = createViewModel()
     advanceUntilIdle()
@@ -238,8 +254,8 @@ class SearchViewModelTest {
   fun `given error with non-empty query, when retry clicked, then search retried successfully`() = runTest {
 
     coEvery { searchLocation("kra") } returnsMany listOf(
-      flowOf(Result.failure(IOException("first"))),
-      flowOf(Result.success(listOf(KRAKOW)))
+      flowOf(failure(IOException("first"))),
+      flowOf(success(listOf(KRAKOW)))
     )
 
     val viewModel = createViewModel()
@@ -259,8 +275,8 @@ class SearchViewModelTest {
   fun `given error with empty query, when retry clicked, then recent locations reloaded`() = runTest {
 
     every { getRecentLocationsWithTemperature() } returnsMany listOf(
-      flowOf(Result.failure(IOException("boom"))),
-      flowOf(Result.success(listOf(locationWithTemperature(location = WARSAW))))
+      flowOf(failure(IOException("boom"))),
+      flowOf(success(listOf(locationWithTemperature(location = WARSAW))))
     )
 
     val viewModel = createViewModel()
@@ -272,29 +288,77 @@ class SearchViewModelTest {
     expectThat(viewModel.state.value).isA<Recents>()
   }
 
+  @Test
+  fun `given fahrenheit setting, when recents loaded, then factory called with fahrenheit`() = runTest {
+
+    mockUnit(unit = FAHRENHEIT)
+    mockRecentsReturn(
+      entries = listOf(
+        locationWithTemperature(
+          location = WARSAW,
+          currentTemperature = 20.0
+        )
+      )
+    )
+
+    createViewModel()
+    advanceUntilIdle()
+
+    verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
+  }
+
+  @Test
+  fun `given unit changes after recents loaded, when unit emits, then recents rebuilt with new unit`() = runTest {
+
+    val unitFlow = MutableStateFlow<TemperatureUnit>(CELSIUS)
+    every { observeTemperatureUnit() } returns unitFlow
+    mockRecentsReturn(
+      entries = listOf(
+        locationWithTemperature(
+          location = WARSAW,
+          currentTemperature = 20.0
+        )
+      )
+    )
+
+    createViewModel()
+    advanceUntilIdle()
+
+    unitFlow.value = FAHRENHEIT
+    advanceUntilIdle()
+
+    verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
+  }
+
   private fun createViewModel(): SearchViewModel =
     SearchViewModel(
       resources = resources,
       stateFactory = stateFactory,
       useCases = SearchUseCases(
         getRecentLocationsWithTemperature = getRecentLocationsWithTemperature,
+        observeTemperatureUnit = observeTemperatureUnit,
         saveRecentLocation = saveRecentLocation,
         searchLocation = searchLocation
       )
     )
 
+  private fun mockUnit(unit: TemperatureUnit) {
+    every { observeTemperatureUnit() } returns flowOf(unit)
+  }
+
   private fun mockRecentsReturn(entries: List<LocationWithTemperature>) {
     every { getRecentLocationsWithTemperature() } returns
-      flowOf(Result.success(entries))
+      flowOf(success(entries))
   }
 
   private fun mockRecentsFail(error: Throwable) {
     every { getRecentLocationsWithTemperature() } returns
-      flowOf(Result.failure(error))
+      flowOf(failure(error))
   }
 
   private companion object {
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
     const val DEBOUNCE_PLUS_SLACK = 500L
+    const val FORMATTED_TEMPERATURE = "15°"
   }
 }

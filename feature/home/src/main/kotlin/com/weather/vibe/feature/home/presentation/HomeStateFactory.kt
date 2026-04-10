@@ -3,6 +3,7 @@ package com.weather.vibe.feature.home.presentation
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.DailyWeather
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData

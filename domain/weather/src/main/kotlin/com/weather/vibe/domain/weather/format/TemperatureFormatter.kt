@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.presentation
+package com.weather.vibe.domain.weather.format
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.weather.usecase.ConvertTemperature
@@ -6,7 +6,7 @@ import org.koin.core.annotation.Factory
 import kotlin.math.roundToInt
 
 @Factory
-internal class TemperatureFormatter(
+class TemperatureFormatter internal constructor(
   private val convertTemperature: ConvertTemperature
 ) {
 

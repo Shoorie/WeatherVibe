@@ -33,6 +33,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
@@ -61,7 +62,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SearchScreen(
-  onLocationSelected: (String, Double, Double) -> Unit,
+  onLocationSelected: (Location) -> Unit,
   onNavigateBack: () -> Unit
 ) {
 
@@ -74,11 +75,7 @@ fun SearchScreen(
       keyboardController?.hide()
       when (event) {
         is NavigateBack -> onNavigateBack()
-        is NavigateBackWithResult -> onLocationSelected(
-          event.cityName,
-          event.latitude,
-          event.longitude
-        )
+        is NavigateBackWithResult -> onLocationSelected(event.location)
       }
     }
   }

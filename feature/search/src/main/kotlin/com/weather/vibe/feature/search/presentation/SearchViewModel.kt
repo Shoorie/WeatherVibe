@@ -79,11 +79,7 @@ internal class SearchViewModel(
     val location = findLocation(id) ?: return
     viewModelScope.launch(errorHandler) {
       useCases.saveRecentLocation(location)
-      send(NavigateBackWithResult(
-        cityName = location.name,
-        latitude = location.latitude,
-        longitude = location.longitude
-      ))
+      send(NavigateBackWithResult(location))
     }
   }
 
@@ -144,23 +140,24 @@ internal class SearchViewModel(
 
     useCases
       .searchLocation(query)
-      .collect { onSearchResult(query = query, result = it) }
+      .collect(::onSearchResult)
   }
 
   private fun retrySearch(query: String) {
     viewModelScope.launch { performSearch(query) }
   }
 
-  private fun onSearchResult(query: String, result: Result<List<Location>>) {
+  private fun onSearchResult(result: Result<List<Location>>) {
     result.fold(
-      onSuccess = { locations -> onSearchSuccess(query, locations) },
+      onSuccess = ::onSearchSuccess,
       onFailure = { showError() }
     )
   }
 
-  private fun onSearchSuccess(query: String, locations: List<Location>) {
+  private fun onSearchSuccess(locations: List<Location>) {
 
     lastLocations = locations
+    val query = currentQuery()
     val entries = locations.map { LocationWithTemperature(location = it) }
 
     _state.update {

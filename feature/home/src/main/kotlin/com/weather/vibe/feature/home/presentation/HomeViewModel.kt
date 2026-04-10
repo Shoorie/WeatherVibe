@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
@@ -183,12 +184,7 @@ internal class HomeViewModel(
   }
 
   private fun onReceiveLocationResult(action: ReceiveLocationResult) {
-    val coordinates = Coordinates(
-      name = action.cityName,
-      latitude = action.latitude,
-      longitude = action.longitude
-    )
-    observeWeather(coordinates)
+    observeWeather(action.location.toCoordinates())
   }
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {

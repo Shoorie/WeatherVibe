@@ -201,11 +201,7 @@ class SearchViewModelTest {
 
       val event = awaitItem()
       expectThat(event).isA<NavigateBackWithResult>()
-        .and {
-          get { cityName }.isEqualTo(WARSAW.name)
-          get { latitude }.isEqualTo(WARSAW.latitude)
-          get { longitude }.isEqualTo(WARSAW.longitude)
-        }
+        .get { location }.isEqualTo(WARSAW)
     }
   }
 

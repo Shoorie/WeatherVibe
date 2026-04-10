@@ -54,7 +54,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
-import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
+import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
@@ -101,7 +101,7 @@ fun HomeScreen(
   }
 
   LaunchedEffect(selectedLocation) {
-    selectedLocation?.let { viewModel.dispatch(ReceiveLocationResult(it)) }
+    viewModel.dispatch(Initialize(selectedLocation))
   }
 
   HomeContent(

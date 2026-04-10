@@ -71,6 +71,10 @@ fun SearchScreen(
   val keyboardController = LocalSoftwareKeyboardController.current
 
   LaunchedEffect(Unit) {
+    viewModel.dispatch(QueryChange(query = ""))
+  }
+
+  LaunchedEffect(Unit) {
     viewModel.event.collect { event ->
       keyboardController?.hide()
       when (event) {

@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.WindDirection
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
 import com.weather.vibe.feature.home.ui.HomeResources

@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.WeatherMetrics
 import com.weather.vibe.domain.weather.model.WindDirection

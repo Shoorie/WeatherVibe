@@ -13,7 +13,7 @@ import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
-import com.weather.vibe.feature.home.presentation.HomeAction.ReceiveLocationResult
+import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
@@ -56,18 +56,19 @@ internal class HomeViewModel(
     showError(throwable)
   }
 
-  init {
-    observeWeather()
-  }
-
   fun dispatch(action: HomeAction) {
     when (action) {
       is GenreRemoveClick -> onGenreRemoveClick(action)
-      is ReceiveLocationResult -> onReceiveLocationResult(action)
+      is Initialize -> onInitialize(action)
       is RefreshClick -> onRefreshClick()
       is RetryWeatherSuggestion -> onRetryWeatherSuggestion()
       is ResumeLifecycle -> onResumeLifecycle()
     }
+  }
+
+  private fun onInitialize(action: Initialize) {
+    val coordinates = action.location?.toCoordinates() ?: DEFAULT_LOCATION
+    observeWeather(coordinates)
   }
 
   private fun observeWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
@@ -181,10 +182,6 @@ internal class HomeViewModel(
     if (suggestionJob?.isActive == true) return
     if (_state.value.isPlaylistLoaded) return
     refreshWeatherSuggestion()
-  }
-
-  private fun onReceiveLocationResult(action: ReceiveLocationResult) {
-    observeWeather(action.location.toCoordinates())
   }
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {

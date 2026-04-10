@@ -1,34 +1,34 @@
 package com.weather.vibe.feature.search.presentation
 
 import com.weather.vibe.domain.location.model.LocationWithTemperature
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import org.koin.core.annotation.Factory
-import kotlin.math.roundToInt
 
 @Factory
 internal class SearchStateFactory(
-  private val subtitle: LocationSubtitleFormatter
+  private val subtitle: LocationSubtitleFormatter,
+  private val temperature: TemperatureFormatter
 ) {
 
   fun createItems(
-    entries: List<LocationWithTemperature>
+    entries: List<LocationWithTemperature>,
+    unit: TemperatureUnit
   ): List<LocationItemUiState> =
-    entries.map(::createItem)
+    entries.map { entry -> createItem(entry = entry, unit = unit) }
 
   private fun createItem(
-    entry: LocationWithTemperature
+    entry: LocationWithTemperature,
+    unit: TemperatureUnit
   ): LocationItemUiState =
     LocationItemUiState(
       id = entry.location.id,
       name = entry.location.name,
       subtitle = subtitle(entry.location),
-      temperature = entry.currentTemperature?.let(::formatTemperature)
+      temperature = entry.currentTemperature?.formatted(unit)
     )
 
-  private fun formatTemperature(value: Double): String =
-    "${value.roundToInt()}$DEGREE_SYMBOL"
-
-  private companion object {
-    const val DEGREE_SYMBOL = "°"
-  }
+  private fun Double.formatted(unit: TemperatureUnit): String =
+    temperature.format(celsius = this, unit = unit)
 }

@@ -8,6 +8,7 @@ import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.domain.weather.usecase.CalculateDayLength
 import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics

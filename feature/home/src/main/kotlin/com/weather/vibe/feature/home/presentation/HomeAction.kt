@@ -6,7 +6,7 @@ internal sealed interface HomeAction {
 
   data class GenreRemoveClick(val genre: String) : HomeAction
 
-  data class ReceiveLocationResult(val location: Location) : HomeAction
+  data class Initialize(val location: Location?) : HomeAction
 
   data object RefreshClick : HomeAction
 

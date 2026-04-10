@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -142,16 +143,14 @@ internal class SearchViewModel(
     items: List<LocationItemUiState>
   ): List<LocationItemUiState> =
     items.map { item ->
-      runCatching {
-        val temp = useCases.getCurrentTemperature(
-          Coordinates(
-            name = item.name,
-            latitude = item.latitude,
-            longitude = item.longitude
-          )
+      val temperature = useCases.getCurrentTemperature(
+        Coordinates(
+          name = item.name,
+          latitude = item.latitude,
+          longitude = item.longitude
         )
-        stateFactory.enrichWithTemperature(item, temp)
-      }.getOrDefault(item)
+      ).first().getOrNull()
+      temperature?.let { stateFactory.enrichWithTemperature(item, it) } ?: item
     }
 
   private fun send(event: SearchEvent) {

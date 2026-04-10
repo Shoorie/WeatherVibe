@@ -79,12 +79,17 @@ internal class SearchViewModel(
   }
 
   private fun rebuildRecentsIfShown() {
+
     val current = _state.value
     if (current !is Recents) return
+
     _state.update {
       Recents(
         query = current.query,
-        locations = stateFactory.createItems(entries = lastRecentEntries, unit = temperatureUnit)
+        locations = stateFactory.createItems(
+          entries = lastRecentEntries,
+          unit = temperatureUnit
+        )
       )
     }
   }

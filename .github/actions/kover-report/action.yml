@@ -26,132 +26,21 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build coverage summary
+    - name: Render coverage summary
       shell: bash
       env:
         REPORTS_GLOB: ${{ inputs.reports-glob }}
         ROOT_XML: ${{ inputs.root-xml }}
-      run: |
-        python3 - <<'PY'
-        import glob
-        import os
-        import xml.etree.ElementTree as ET
-        from pathlib import Path
+      run: python3 "$GITHUB_ACTION_PATH/scripts/render-markdown.py"
 
-        reports_glob = os.environ["REPORTS_GLOB"]
-        root_xml = os.environ["ROOT_XML"]
-
-        def counters(path):
-            tree = ET.parse(path)
-            root = tree.getroot()
-            line_missed = line_covered = 0
-            branch_missed = branch_covered = 0
-            for counter in root.findall("./counter"):
-                ctype = counter.get("type")
-                m = int(counter.get("missed", "0"))
-                c = int(counter.get("covered", "0"))
-                if ctype == "LINE":
-                    line_missed += m
-                    line_covered += c
-                elif ctype == "BRANCH":
-                    branch_missed += m
-                    branch_covered += c
-            return line_missed, line_covered, branch_missed, branch_covered
-
-        def pct(covered, missed):
-            total = covered + missed
-            return (covered / total * 100) if total > 0 else 0.0
-
-        def module_from_path(path):
-            parts = Path(path).parts
-            idx = parts.index("build")
-            return ":" + ":".join(parts[:idx]) if idx > 0 else ":"
-
-        def emoji(percent):
-            if percent >= 80:
-                return "🟢"
-            if percent >= 50:
-                return "🟡"
-            return "🔴"
-
-        excluded_prefixes = (":testing:",)
-
-        rows = []
-        for path in sorted(glob.glob(reports_glob, recursive=True)):
-            if Path(path).resolve() == Path(root_xml).resolve():
-                continue
-            module = module_from_path(path)
-            if module.startswith(excluded_prefixes):
-                continue
-            lm, lc, bm, bc = counters(path)
-            if lc + lm == 0:
-                continue
-            rows.append({
-                "module": module,
-                "line_pct": pct(lc, lm),
-                "line_covered": lc,
-                "line_total": lc + lm,
-                "branch_pct": pct(bc, bm),
-            })
-
-        rows.sort(key=lambda r: -r["line_pct"])
-
-        lm, lc, bm, bc = counters(root_xml)
-        overall_line = pct(lc, lm)
-        overall_branch = pct(bc, bm)
-        overall_covered = lc
-        overall_total = lc + lm
-
-        lines = []
-        lines.append("## 📊 Code Coverage")
-        lines.append("")
-        lines.append(
-            f"**Overall:** {emoji(overall_line)} "
-            f"{overall_line:.1f}% line · "
-            f"{overall_branch:.1f}% branch · "
-            f"{overall_covered} / {overall_total} lines"
-        )
-        lines.append("")
-        lines.append("| Module | Line | Branch | Covered / Total |")
-        lines.append("|---|---:|---:|---:|")
-        for r in rows:
-            lines.append(
-                f"| `{r['module']}` | "
-                f"{emoji(r['line_pct'])} {r['line_pct']:.1f}% | "
-                f"{r['branch_pct']:.1f}% | "
-                f"{r['line_covered']} / {r['line_total']} |"
-            )
-
-        summary = "\n".join(lines) + "\n"
-
-        with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
-            f.write(summary)
-
-        Path("kover-summary.md").write_text(summary)
-        PY
-
-    - name: Post or update coverage comment on PR
+    - name: Upsert coverage comment on PR
       if: github.event_name == 'pull_request' && inputs.github-token != ''
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: |
-        marker="<!-- kover-coverage-report -->"
-        body=$(printf '%s\n\n%s' "$marker" "$(cat kover-summary.md)")
-
-        existing_id=$(gh api "repos/$REPO/issues/$PR_NUMBER/comments" \
-          --jq "map(select(.body | startswith(\"$marker\"))) | .[0].id // empty")
-
-        if [ -n "$existing_id" ]; then
-          gh api "repos/$REPO/issues/comments/$existing_id" \
-            -X PATCH -f body="$body" > /dev/null
-          echo "Updated existing coverage comment $existing_id"
-        else
-          gh pr comment "$PR_NUMBER" --repo "$REPO" --body "$body"
-          echo "Posted new coverage comment"
-        fi
+      run: bash "$GITHUB_ACTION_PATH/scripts/upsert-pr-comment.sh"
 
     - name: Upload Kover HTML report
       if: always()

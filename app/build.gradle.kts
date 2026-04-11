@@ -65,7 +65,7 @@ android {
     }
   }
 
-  firebaseAppDistribution {
+  firebaseAppDistributionDefault {
     artifactType = "APK"
     groups = "testers"
     serviceCredentialsFile = System.getenv(FIREBASE_SERVICE_ACCOUNT_FILE).orEmpty()

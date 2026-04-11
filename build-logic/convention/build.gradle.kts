@@ -23,6 +23,7 @@ dependencies {
   compileOnly(libs.ksp.gradlePlugin)
   compileOnly(libs.protobuf.gradlePlugin)
   compileOnly(libs.detekt.gradlePlugin)
+  compileOnly(libs.kover.gradlePlugin)
 }
 
 tasks {
@@ -73,6 +74,10 @@ gradlePlugin {
     register("detekt") {
       id = "weathervibe.android.detekt"
       implementationClass = "DetektPlugin"
+    }
+    register("kover") {
+      id = "weathervibe.android.kover"
+      implementationClass = "KoverPlugin"
     }
   }
 }

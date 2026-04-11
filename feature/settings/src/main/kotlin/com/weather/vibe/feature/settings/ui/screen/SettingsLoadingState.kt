@@ -19,4 +19,3 @@ private fun Preview() {
     SettingsLoadingState()
   }
 }
-

@@ -140,7 +140,7 @@ object WeatherDataFixtures {
     isDay: Boolean = true,
     precipitation: Double = 0.0,
     surfacePressure: Double = 1013.0,
-    visibility: Double = 10000.0,
+    visibility: Double = 10_000.0,
     windDirection: Double = WIND_DIRECTION,
     windGusts: Double = WIND_GUSTS,
     windSpeed: Double = WIND_SPEED
@@ -213,7 +213,7 @@ object WeatherDataFixtures {
     precipitationSum: Double = 0.0,
     surfacePressure: Double = 1013.0,
     uvIndexMax: Double = 5.0,
-    visibility: Double = 10000.0,
+    visibility: Double = 10_000.0,
     windDirection: WindDirection = WindDirection.S,
     windGusts: Double = WIND_GUSTS,
     windSpeed: Double = WIND_SPEED,

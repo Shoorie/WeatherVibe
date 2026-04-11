@@ -8,7 +8,7 @@ import com.weather.vibe.domain.settings.usecase.ToggleTemperatureUnit
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class SettingsUseCases(
+internal data class SettingsUseCases(
   val getAvailableBriefTones: GetAvailableBriefTones,
   val includeGenre: IncludeGenre,
   val observeUserSettings: ObserveUserSettings,

@@ -12,7 +12,11 @@ interface WeatherSuggestionDao {
   @Query("DELETE FROM ai_suggestion WHERE weatherKeyHash = :keyHash AND tone = :tone")
   suspend fun delete(keyHash: String, tone: String)
 
-  @Query("SELECT * FROM ai_suggestion WHERE weatherKeyHash = :keyHash AND tone = :tone ORDER BY fetchedAt DESC LIMIT 1")
+  @Query(
+    "SELECT * FROM ai_suggestion " +
+      "WHERE weatherKeyHash = :keyHash AND tone = :tone " +
+      "ORDER BY fetchedAt DESC LIMIT 1"
+  )
   suspend fun get(keyHash: String, tone: String): WeatherSuggestionEntity?
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)

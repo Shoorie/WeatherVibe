@@ -16,10 +16,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -70,12 +70,12 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescri
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
-import com.weather.vibe.feature.home.ui.component.WeatherBriefingCard
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
 import com.weather.vibe.feature.home.ui.component.MoodPlaylistSheet
+import com.weather.vibe.feature.home.ui.component.WeatherBriefingCard
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

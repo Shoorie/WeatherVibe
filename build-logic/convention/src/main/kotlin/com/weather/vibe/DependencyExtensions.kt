@@ -30,3 +30,7 @@ internal fun DependencyHandler.testImplementation(dependency: Any) {
 internal fun DependencyHandler.debugImplementation(dependency: Any) {
   add("debugImplementation", dependency)
 }
+
+internal fun DependencyHandler.detektPlugins(dependency: Any) {
+  add("detektPlugins", dependency)
+}

@@ -40,4 +40,3 @@ private fun Preview() {
     SettingsErrorState(message = "Something went wrong")
   }
 }
-

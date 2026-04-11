@@ -43,7 +43,8 @@ internal sealed interface HomeUiState {
         playlist = loadedPlaylist.copy(
           genres = loadedPlaylist.genres
             .map { if (it.name == genre) it.copy(isRejecting = true) else it }
-        ))
+        )
+      )
     }
 
     override fun withPlaylist(updated: PlaylistUiState): Loaded =

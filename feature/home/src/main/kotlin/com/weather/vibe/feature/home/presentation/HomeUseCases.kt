@@ -10,7 +10,7 @@ import com.weather.vibe.domain.weather.usecase.InvalidateWeatherSuggestion
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class HomeUseCases(
+internal data class HomeUseCases(
   val determineWeatherRefreshStrategy: DetermineWeatherRefreshStrategy,
   val excludeGenre: ExcludeGenre,
   val generateWeatherSuggestion: GenerateWeatherSuggestion,

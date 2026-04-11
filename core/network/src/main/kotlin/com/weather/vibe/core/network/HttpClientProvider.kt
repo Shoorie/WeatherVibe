@@ -12,10 +12,12 @@ import kotlinx.serialization.json.Json
 
 fun createHttpClient(): HttpClient = HttpClient(Android) {
   install(ContentNegotiation) {
-    json(Json {
-      ignoreUnknownKeys = true
-      isLenient = true
-    })
+    json(
+      Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+      }
+    )
   }
   if (BuildConfig.DEBUG) {
     install(Logging) {

@@ -57,7 +57,7 @@ class DetektPlugin : Plugin<Project> {
   }
 
   private companion object {
-    const val JVM_TARGET = "11"
+    const val JVM_TARGET = "17"
     const val CONFIG_PATH = "config/detekt/detekt.yml"
     const val BASELINE_FILE = "detekt-baseline.xml"
 

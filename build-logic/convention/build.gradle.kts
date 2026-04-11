@@ -7,13 +7,13 @@ plugins {
 group = "com.weather.vibe.buildlogic"
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_11
-  targetCompatibility = JavaVersion.VERSION_11
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
 kotlin {
   compilerOptions {
-    jvmTarget = JvmTarget.JVM_11
+    jvmTarget = JvmTarget.JVM_17
   }
 }
 
@@ -23,6 +23,7 @@ dependencies {
   compileOnly(libs.ksp.gradlePlugin)
   compileOnly(libs.protobuf.gradlePlugin)
   compileOnly(libs.detekt.gradlePlugin)
+  compileOnly(libs.kover.gradlePlugin)
 }
 
 tasks {
@@ -73,6 +74,10 @@ gradlePlugin {
     register("detekt") {
       id = "weathervibe.android.detekt"
       implementationClass = "DetektPlugin"
+    }
+    register("kover") {
+      id = "weathervibe.android.kover"
+      implementationClass = "KoverPlugin"
     }
   }
 }

@@ -8,25 +8,32 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
 jobs:
   check:
-    name: Build, Lint & Test
+    name: ${{ matrix.task }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        task: [ assembleDebug, lint, detekt ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-android
+      - run: ./gradlew ${{ matrix.task }}
+
+  test:
+    name: Test & Coverage
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-android
-
-      - run: ./gradlew assembleDebug
-      - run: ./gradlew lint
-      - run: ./gradlew detekt
-      - run: ./gradlew test
-      - run: ./gradlew koverXmlReport koverHtmlReport
+      - run: ./gradlew test koverXmlReport koverHtmlReport
 
       - name: Report coverage
         if: always()

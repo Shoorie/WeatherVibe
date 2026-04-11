@@ -47,7 +47,7 @@ Groups color tokens into meaningful UI concepts.
 * `@Immutable data class AppTypography(...)` (Maps `TypographyTokens` to semantic names)
 * `@Immutable data class AppShapes(...)`
 
-#### `Dimens.kt` (Spacing & Sizing)
+#### `AppDimens.kt` (Spacing & Sizing)
 
 * e.g., `object AppDimens { val PaddingMedium = 16.dp }`
 

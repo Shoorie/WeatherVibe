@@ -7,7 +7,7 @@ import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class SearchUseCases(
+internal data class SearchUseCases(
   val getRecentLocationsWithTemperature: GetRecentLocationsWithTemperature,
   val observeTemperatureUnit: ObserveTemperatureUnit,
   val saveRecentLocation: SaveRecentLocation,

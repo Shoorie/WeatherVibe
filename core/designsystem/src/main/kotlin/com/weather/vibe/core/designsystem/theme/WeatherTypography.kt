@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.TextStyle
 
 @Immutable
-class WeatherTypography(
+data class WeatherTypography(
   val bodyLarge: TextStyle = TypographyTokens.BodyLarge,
   val bodyMedium: TextStyle = TypographyTokens.BodyMedium,
   val bodySmall: TextStyle = TypographyTokens.BodySmall,

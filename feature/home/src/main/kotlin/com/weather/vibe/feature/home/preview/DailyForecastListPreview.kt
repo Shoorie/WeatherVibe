@@ -6,8 +6,8 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.mostlySunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunShower
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 
 internal class DailyForecastListPreview :
   PreviewParameterProvider<List<DailyForecastUiState>> {

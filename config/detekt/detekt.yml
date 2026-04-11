@@ -1,0 +1,108 @@
+complexity:
+  CyclomaticComplexMethod:
+    ignoreSingleWhenExpression: true
+  LongParameterList:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+    functionThreshold: 8
+    constructorThreshold: 10
+    ignoreAnnotated: ['Composable']
+  NamedArguments:
+    active: true
+    threshold: 2
+  TooManyFunctions:
+    active: false
+
+coroutines:
+  GlobalCoroutineUsage:
+    active: true
+
+exceptions:
+  NotImplementedDeclaration:
+    active: true
+  TooGenericExceptionCaught:
+    active: false
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+
+performance:
+  SpreadOperator:
+    active: false
+
+potential-bugs:
+  CastToNullableType:
+    active: true
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  NullCheckOnMutableProperty:
+    active: true
+  NullableToStringCall:
+    active: true
+
+style:
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview', 'PreviewLightDark']
+  MagicNumber:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+    ignorePropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreEnums: true
+    ignoreRanges: true
+  MaxLineLength:
+    maxLineLength: 100
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+  NoTabs:
+    active: true
+  PreferToOverPairSyntax:
+    active: true
+  RedundantExplicitType:
+    active: true
+  ReturnCount:
+    max: 3
+    excludeGuardClauses: true
+  UnderscoresInNumericLiterals:
+    active: true
+  UnnecessaryBackticks:
+    active: true
+  UseDataClass:
+    active: true
+  UseIfEmptyOrIfBlank:
+    active: true
+  UseIsNullOrEmpty:
+    active: true
+  UseOrEmpty:
+    active: true
+  WildcardImport:
+    excludeImports: []
+  FunctionOnlyReturningConstant:
+    active: false
+
+formatting:
+  android: true
+  autoCorrect: false
+  MaximumLineLength:
+    maxLineLength: 100
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+  NoWildcardImports:
+    packagesToUseImportOnDemandProperty: ''
+  Indentation:
+    indentSize: 2
+  ArgumentListWrapping:
+    indentSize: 2
+  ParameterListWrapping:
+    indentSize: 2
+  NoEmptyFirstLineInMethodBlock:
+    active: false
+  NoEmptyFirstLineInClassBody:
+    active: false
+  MultiLineIfElse:
+    active: false
+  CommentWrapping:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+  ImportOrdering:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+  NoConsecutiveBlankLines:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+  NoUnusedImports:
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']

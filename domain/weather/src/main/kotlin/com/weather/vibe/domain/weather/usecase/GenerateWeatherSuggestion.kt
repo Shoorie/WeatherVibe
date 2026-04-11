@@ -42,7 +42,6 @@ class GenerateWeatherSuggestion internal constructor(
         ?: fetchSuggestion(languageTag, weatherData, weatherKey, tone, excludedGenres)
 
       emit(success(suggestion))
-
     }.catch { emit(failure(it)) }
 
   private suspend fun cachedSuggestion(

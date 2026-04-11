@@ -98,3 +98,7 @@ internal val VersionCatalog.protobufKotlinLite
 
 internal val VersionCatalog.protobufProtoc
   get() = library("protobuf-protoc")
+
+// Detekt.
+internal val VersionCatalog.detektFormatting
+  get() = library("detekt-formatting")

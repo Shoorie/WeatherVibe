@@ -49,6 +49,12 @@ class HomeStateFactoryTest {
 
   private val sunriseSunsetFactory = SunriseSunsetStateFactory(resources = resources)
 
+  private val factories = HomeFactories(
+    metrics = metricsFactory,
+    playlist = playlistFactory,
+    sunriseSunset = sunriseSunsetFactory
+  )
+
   private val resolveTodaySunInfo = ResolveTodaySunInfo(
     calculateDayLength = CalculateDayLength(),
     calculateSunProgress = CalculateSunProgress(timeProvider = fakeTimeProvider)
@@ -60,14 +66,12 @@ class HomeStateFactoryTest {
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
+    factories = factories,
     findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
     getCurrentWeatherMetrics = getCurrentWeatherMetrics,
-    metricsFactory = metricsFactory,
-    playlistFactory = playlistFactory,
     resolveTodaySunInfo = resolveTodaySunInfo,
     resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
-    sunriseSunsetFactory = sunriseSunsetFactory,
     temperature = temperatureFormatter,
     timeProvider = fakeTimeProvider
   )

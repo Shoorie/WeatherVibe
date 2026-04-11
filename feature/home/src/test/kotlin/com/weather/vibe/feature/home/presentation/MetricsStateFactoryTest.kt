@@ -178,7 +178,7 @@ class MetricsStateFactoryTest {
   @Test
   fun `given high visibility, when details created, then shown in kilometres`() {
 
-    val result = factory.create(weatherMetrics(visibility = 10000.0))
+    val result = factory.create(weatherMetrics(visibility = 10_000.0))
 
     expectThat(result.conditions[2].value).isEqualTo("10 km")
   }

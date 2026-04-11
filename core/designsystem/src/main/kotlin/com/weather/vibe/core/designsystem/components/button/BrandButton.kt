@@ -54,8 +54,10 @@ private fun Preview() {
     BrandButton(
       icon = painterResource(id = R.drawable.ic_media_play),
       text = "Open in App",
-      containerColor = Color(0xFF1DB954),
+      containerColor = BrandPreviewColor,
       onClick = {}
     )
   }
 }
+
+private val BrandPreviewColor = Color(0xFF1DB954)

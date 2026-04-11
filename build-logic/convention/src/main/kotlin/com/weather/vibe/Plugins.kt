@@ -14,8 +14,11 @@ internal object Plugins {
   const val ksp = "com.google.devtools.ksp"
   const val protobuf = "com.google.protobuf"
 
+  const val detekt = "io.gitlab.arturbosch.detekt"
+
   const val weatherVibeLibrary = "weathervibe.android.library"
   const val weatherVibeCompose = "weathervibe.android.compose"
   const val weatherVibeKoin = "weathervibe.android.koin"
   const val weatherVibeTest = "weathervibe.android.test"
+  const val weatherVibeDetekt = "weathervibe.android.detekt"
 }

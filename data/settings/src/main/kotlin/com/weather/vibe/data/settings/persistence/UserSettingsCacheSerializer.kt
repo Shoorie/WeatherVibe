@@ -21,4 +21,3 @@ internal object UserSettingsCacheSerializer : Serializer<UserSettingsCacheData> 
   override suspend fun writeTo(t: UserSettingsCacheData, output: OutputStream) =
     t.writeTo(output)
 }
-

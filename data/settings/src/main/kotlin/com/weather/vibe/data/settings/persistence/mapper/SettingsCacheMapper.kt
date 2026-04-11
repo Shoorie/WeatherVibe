@@ -38,12 +38,13 @@ internal class SettingsCacheMapper {
       .firstOrNull { it.name == this }
       ?: CELSIUS
 
-  private fun String.toGenreSet(): Set<String> =
-    if (isBlank()) emptySet()
-    else split(GENRES_SEPARATOR)
+  private fun String.toGenreSet(): Set<String> = when {
+    isBlank() -> emptySet()
+    else -> split(GENRES_SEPARATOR)
       .map { it.trim() }
       .filter { it.isNotBlank() }
       .toSet()
+  }
 
   private fun Set<String>.toCsv(): String =
     sorted().joinToString(separator = GENRES_SEPARATOR)

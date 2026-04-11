@@ -25,8 +25,8 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.mostlySunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.precipitation
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunShower
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts

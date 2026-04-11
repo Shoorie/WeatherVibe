@@ -30,14 +30,12 @@ import java.util.Locale
 
 @Factory
 internal class HomeStateFactory(
+  private val factories: HomeFactories,
   private val findCurrentHourIndex: FindCurrentHourIndex,
   private val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
-  private val metricsFactory: MetricsStateFactory,
-  private val playlistFactory: PlaylistStateFactory,
   private val resolveTodaySunInfo: ResolveTodaySunInfo,
   private val resolveTodayTemperatureBounds: ResolveTodayTemperatureBounds,
   private val resources: HomeResources,
-  private val sunriseSunsetFactory: SunriseSunsetStateFactory,
   private val temperature: TemperatureFormatter,
   private val timeProvider: TimeProvider
 ) {
@@ -56,21 +54,21 @@ internal class HomeStateFactory(
 
     val today = timeProvider.today()
     val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })
-    val metrics = getCurrentWeatherMetrics(data)
+    val currentMetrics = getCurrentWeatherMetrics(data)
     val sunInfo = resolveTodaySunInfo(data.dailyForecast)
 
     return Loaded(
       currentWeather = createCurrentWeather(data, unit),
       dailyForecast = createDailyForecast(data.dailyForecast, unit, today),
-      detailsSections = metricsFactory.create(metrics, unit),
+      detailsSections = factories.metrics.create(currentMetrics, unit),
       header = createHeader(data, today),
       hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
-      sunriseSunset = sunriseSunsetFactory.create(sunInfo)
+      sunriseSunset = factories.sunriseSunset.create(sunInfo)
     )
   }
 
   fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded =
-    playlistFactory.create(suggestion)
+    factories.playlist.create(suggestion)
 
   fun reformatTemperatures(
     current: HomeUiState,
@@ -139,8 +137,10 @@ internal class HomeStateFactory(
     time.format(TIME_OUTPUT_FORMATTER)
 
   private fun formatDayLabel(date: LocalDate, today: LocalDate): String =
-    if (date == today) resources.todayLabel()
-    else date.format(DAY_FORMATTER)
+    when (date) {
+      today -> resources.todayLabel()
+      else -> date.format(DAY_FORMATTER)
+    }
 
   private fun Double.formatted(unit: TemperatureUnit): String =
     temperature.format(celsius = this, unit = unit)

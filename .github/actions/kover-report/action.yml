@@ -26,21 +26,21 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Build coverage summary
+    - name: Render coverage summary
       shell: bash
       env:
         REPORTS_GLOB: ${{ inputs.reports-glob }}
         ROOT_XML: ${{ inputs.root-xml }}
-      run: python3 "$GITHUB_ACTION_PATH/scripts/build-summary.py"
+      run: python3 "$GITHUB_ACTION_PATH/scripts/render-markdown.py"
 
-    - name: Post or update coverage comment on PR
+    - name: Upsert coverage comment on PR
       if: github.event_name == 'pull_request' && inputs.github-token != ''
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         REPO: ${{ github.repository }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
-      run: bash "$GITHUB_ACTION_PATH/scripts/post-comment.sh"
+      run: bash "$GITHUB_ACTION_PATH/scripts/upsert-pr-comment.sh"
 
     - name: Upload Kover HTML report
       if: always()

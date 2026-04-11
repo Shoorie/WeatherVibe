@@ -48,16 +48,14 @@ class KoverPlugin : Plugin<Project> {
       "*.*_Impl*",
       "*.R",
       "*.R$*",
-      "*.Manifest*",
+      "*.Manifest*"
     )
 
-    val EXCLUDED_PACKAGES = listOf(
-      "org.koin.ksp.generated",
-    )
+    val EXCLUDED_PACKAGES = listOf("org.koin.ksp.generated")
 
     val EXCLUDED_ANNOTATIONS = listOf(
       "androidx.compose.ui.tooling.preview.Preview",
-      "androidx.compose.ui.tooling.preview.PreviewParameter",
+      "androidx.compose.ui.tooling.preview.PreviewParameter"
     )
   }
 }

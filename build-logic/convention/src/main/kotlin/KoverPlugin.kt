@@ -46,9 +46,6 @@ class KoverPlugin : Plugin<Project> {
       "*.*Preview*",
       "*.*PreviewKt*",
       "*.*_Impl*",
-      "*.*_Factory",
-      "*.*_Factory$*",
-      "*.*Module$*",
       "*.R",
       "*.R$*",
       "*.Manifest*",
@@ -56,8 +53,6 @@ class KoverPlugin : Plugin<Project> {
 
     val EXCLUDED_PACKAGES = listOf(
       "org.koin.ksp.generated",
-      "hilt_aggregated_deps",
-      "dagger.hilt.internal.aggregatedroot.codegen",
     )
 
     val EXCLUDED_ANNOTATIONS = listOf(

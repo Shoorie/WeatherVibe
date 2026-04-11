@@ -23,4 +23,3 @@ internal class UserSettingsDataStorePrefs {
     const val FILE_NAME = "user_settings_cache_prefs"
   }
 }
-

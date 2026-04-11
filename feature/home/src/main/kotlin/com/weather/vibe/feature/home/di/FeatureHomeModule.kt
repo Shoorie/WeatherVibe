@@ -6,4 +6,3 @@ import org.koin.core.annotation.Module
 @Module
 @ComponentScan("com.weather.vibe.feature.home")
 class FeatureHomeModule
-

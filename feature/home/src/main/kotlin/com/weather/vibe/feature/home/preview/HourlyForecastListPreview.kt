@@ -13,8 +13,14 @@ internal class HourlyForecastListPreview :
 
   private val conditionEmojis: List<String> =
     listOf(
-      partlyCloudy(), cloud(), mostlySunny(), sunny(),
-      partlyCloudy(), rainfall(), cloud(), mostlySunny()
+      partlyCloudy(),
+      cloud(),
+      mostlySunny(),
+      sunny(),
+      partlyCloudy(),
+      rainfall(),
+      cloud(),
+      mostlySunny()
     )
 
   private val eightHours: List<HourlyForecastUiState> =

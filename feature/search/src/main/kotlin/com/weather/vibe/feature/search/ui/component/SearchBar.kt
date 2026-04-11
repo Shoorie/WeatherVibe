@@ -31,10 +31,10 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.search.preview.SearchBarPreview
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.searchHint
 

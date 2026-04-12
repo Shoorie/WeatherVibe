@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.platform.testTag
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -72,6 +73,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescri
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
+import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
@@ -174,6 +176,7 @@ private fun WeatherContent(
       .fillMaxSize()
       .statusBarsPadding()
       .padding(horizontal = PaddingMedium)
+      .testTag(FORECAST_LIST)
   ) {
     item {
       LocationHeader(

@@ -19,6 +19,7 @@ plugins {
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.google.services)
   alias(libs.plugins.firebase.appdistribution)
+  alias(libs.plugins.baselineprofile)
 }
 
 android {
@@ -85,6 +86,7 @@ dependencies {
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
   implementation(projects.core.time)
+  implementation(projects.core.tracing)
   implementation(projects.domain.weather)
   implementation(projects.domain.location)
   implementation(projects.data.weather)
@@ -107,6 +109,9 @@ dependencies {
 
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
+
+  implementation(libs.androidx.profileinstaller)
+  baselineProfile(projects.benchmark)
 
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)

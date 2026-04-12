@@ -31,7 +31,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -86,7 +88,9 @@ fun HomeScreen(
   selectedLocation: Location? = null
 ) {
 
-  val viewModel: HomeViewModel = koinViewModel()
+  val viewModel: HomeViewModel = koinViewModel(
+    viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner
+  )
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   val lifecycleOwner = LocalLifecycleOwner.current

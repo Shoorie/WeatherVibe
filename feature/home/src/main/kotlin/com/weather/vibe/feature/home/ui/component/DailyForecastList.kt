@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.ui.component
 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -22,9 +23,11 @@ internal fun DailyForecastList(
     title = dailyForecastTitle()
   ) {
     dailyForecasts.forEachIndexed { index, daily ->
-      DailyForecastItem(state = daily)
-      if (index < dailyForecasts.lastIndex) {
-        HorizontalDivider(color = colors.outline)
+      key(daily.dayLabel) {
+        DailyForecastItem(state = daily)
+        if (index < dailyForecasts.lastIndex) {
+          HorizontalDivider(color = colors.outline)
+        }
       }
     }
   }

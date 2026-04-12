@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -54,7 +55,6 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.feature.home.presentation.HomeAction
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
@@ -72,6 +72,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.refreshContentDescri
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
+import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
 import com.weather.vibe.feature.home.ui.component.CurrentWeatherSection
 import com.weather.vibe.feature.home.ui.component.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.DetailsPreviewCard
@@ -107,12 +108,15 @@ fun HomeScreen(
     viewModel.dispatch(Initialize(selectedLocation))
   }
 
+  val dispatch = viewModel::dispatch
   HomeContent(
     state = state,
-    dispatch = viewModel::dispatch,
     onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch,
-    onNavigateToSettings = onNavigateToSettings
+    onNavigateToSettings = onNavigateToSettings,
+    onRefresh = { dispatch(RefreshClick) },
+    onRetrySuggestion = { dispatch(RetryWeatherSuggestion) },
+    onGenreRemoveClick = { genre -> dispatch(GenreRemoveClick(genre)) }
   )
 }
 
@@ -120,10 +124,12 @@ fun HomeScreen(
 internal fun HomeContent(
   modifier: Modifier = Modifier,
   state: HomeUiState,
-  dispatch: (HomeAction) -> Unit,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
-  onNavigateToSettings: () -> Unit
+  onNavigateToSettings: () -> Unit,
+  onRefresh: () -> Unit,
+  onRetrySuggestion: () -> Unit,
+  onGenreRemoveClick: (String) -> Unit
 ) {
   val gradientStart = colors.backgroundGradientStart
   val gradientEnd = colors.backgroundGradientEnd
@@ -140,15 +146,16 @@ internal fun HomeContent(
       is Loading -> LoadingIndicator(modifier = modifier.fillMaxSize())
       is Error -> ErrorContent(
         error = state.message,
-        onRetry = { dispatch(RefreshClick) }
+        onRetry = onRefresh
       )
       is Loaded -> WeatherContent(
-        dispatch = dispatch,
         state = state,
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onNavigateToSettings = onNavigateToSettings,
-        onRefresh = { dispatch(RefreshClick) }
+        onRefresh = onRefresh,
+        onRetrySuggestion = onRetrySuggestion,
+        onGenreRemoveClick = onGenreRemoveClick
       )
     }
   }
@@ -158,22 +165,32 @@ internal fun HomeContent(
 @Composable
 private fun WeatherContent(
   modifier: Modifier = Modifier,
-  dispatch: (HomeAction) -> Unit,
   state: Loaded,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
-  onRefresh: () -> Unit
+  onRefresh: () -> Unit,
+  onRetrySuggestion: () -> Unit,
+  onGenreRemoveClick: (String) -> Unit
 ) {
 
   var showMoodSheet by rememberSaveable { mutableStateOf(value = false) }
   val uriHandler = LocalUriHandler.current
+
+  val onDismissMoodSheet: () -> Unit =
+    remember { { showMoodSheet = false } }
+
+  val onOpenSpotify: (String) -> Unit =
+    remember(uriHandler) { { query -> runCatching { uriHandler.openUri(query) } } }
+  val onOpenYtMusic: (String) -> Unit =
+    remember(uriHandler) { { url -> runCatching { uriHandler.openUri(url) } } }
 
   LazyColumn(
     modifier = modifier
       .fillMaxSize()
       .statusBarsPadding()
       .padding(horizontal = PaddingMedium)
+      .testTag(FORECAST_LIST)
   ) {
     item {
       LocationHeader(
@@ -188,7 +205,7 @@ private fun WeatherContent(
     item {
       WeatherBriefingCard(
         onMusicClick = { showMoodSheet = true },
-        onRetryClick = { dispatch(RetryWeatherSuggestion) },
+        onRetryClick = onRetrySuggestion,
         state = state.briefing
       )
     }
@@ -208,10 +225,10 @@ private fun WeatherContent(
 
   if (showMoodSheet) {
     MoodPlaylistSheet(
-      onDismiss = { showMoodSheet = false },
-      onGenreRemoveClick = { genre -> dispatch(GenreRemoveClick(genre)) },
-      onOpenSpotify = { query -> runCatching { uriHandler.openUri(query) } },
-      onOpenYtMusic = { url -> runCatching { uriHandler.openUri(url) } },
+      onDismiss = onDismissMoodSheet,
+      onGenreRemoveClick = onGenreRemoveClick,
+      onOpenSpotify = onOpenSpotify,
+      onOpenYtMusic = onOpenYtMusic,
       state = state.playlist
     )
   }
@@ -315,10 +332,12 @@ private fun Preview(
   WeatherVibeTheme {
     HomeContent(
       state = state,
-      dispatch = {},
       onNavigateToDetails = {},
       onNavigateToSearch = {},
-      onNavigateToSettings = {}
+      onNavigateToSettings = {},
+      onRefresh = {},
+      onRetrySuggestion = {},
+      onGenreRemoveClick = {}
     )
   }
 }

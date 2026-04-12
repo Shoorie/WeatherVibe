@@ -1,4 +1,7 @@
 [versions]
+androidCompileSdk = "36"
+androidMinSdk = "28"
+androidTargetSdk = "36"
 agp = "8.13.2"
 anthropicModel = "claude-haiku-4-5-20251001"
 kotlin = "2.3.20"
@@ -28,6 +31,10 @@ koinAnnotations = "2.3.1"
 googleServices = "4.4.4"
 firebaseAppDistribution = "5.2.1"
 detekt = "1.23.8"
+benchmarkMacroJunit4 = "1.4.1"
+uiautomator = "2.3.0"
+profileinstaller = "1.4.1"
+baselineprofile = "1.4.1"
 kover = "0.9.8"
 
 [libraries]
@@ -69,6 +76,9 @@ androidx-datastore = { group = "androidx.datastore", name = "datastore", version
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
 androidx-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmarkMacroJunit4" }
+androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
 
 # Gradle plugin artifacts (for build-logic compileOnly)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -96,6 +106,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 

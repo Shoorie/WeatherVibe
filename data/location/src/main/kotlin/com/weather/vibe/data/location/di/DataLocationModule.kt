@@ -5,10 +5,12 @@ import androidx.room.Room
 import com.weather.vibe.data.location.local.LocationDatabase
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
 import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
+@Configuration
 @ComponentScan("com.weather.vibe.data.location")
 class DataLocationModule {
 

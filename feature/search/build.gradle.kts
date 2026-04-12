@@ -1,5 +1,6 @@
 plugins {
   alias(libs.plugins.weathervibe.android.feature)
+  alias(libs.plugins.weathervibe.android.kover)
   alias(libs.plugins.weathervibe.android.test)
 }
 

@@ -1,0 +1,31 @@
+name: Coverage Baseline
+
+on:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: coverage-baseline-${{ github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  baseline:
+    name: Cache Coverage Baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-android
+      - run: ./gradlew test koverXmlReport
+
+      - name: Collect baseline XMLs
+        shell: bash
+        run: bash .github/actions/kover-report/scripts/collect-baseline.sh
+
+      - name: Save baseline to cache
+        uses: actions/cache/save@v4
+        with:
+          path: .kover-baseline
+          key: kover-baseline-${{ github.ref_name }}-${{ github.sha }}

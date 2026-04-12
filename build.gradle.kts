@@ -13,20 +13,10 @@ plugins {
   alias(libs.plugins.kover)
 }
 
-dependencies {
-  kover(projects.app)
-  kover(projects.core.ai)
-  kover(projects.core.designsystem)
-  kover(projects.core.network)
-  kover(projects.core.time)
-  kover(projects.domain.location)
-  kover(projects.domain.settings)
-  kover(projects.domain.weather)
-  kover(projects.data.location)
-  kover(projects.data.settings)
-  kover(projects.data.weather)
-  kover(projects.feature.home)
-  kover(projects.feature.search)
-  kover(projects.feature.settings)
-  kover(projects.feature.splash)
+subprojects {
+  afterEvaluate {
+    if (plugins.hasPlugin("org.jetbrains.kotlinx.kover")) {
+      rootProject.dependencies.add("kover", this)
+    }
+  }
 }

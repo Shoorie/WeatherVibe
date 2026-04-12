@@ -35,8 +35,18 @@ jobs:
       - uses: ./.github/actions/setup-android
       - run: ./gradlew test koverXmlReport koverHtmlReport
 
+      - name: Restore coverage baseline
+        if: always()
+        uses: actions/cache/restore@v4
+        with:
+          path: .kover-baseline
+          key: kover-baseline-${{ github.base_ref }}-no-exact-match
+          restore-keys: |
+            kover-baseline-${{ github.base_ref }}-
+
       - name: Report coverage
         if: always()
         uses: ./.github/actions/kover-report
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          baseline-dir: .kover-baseline

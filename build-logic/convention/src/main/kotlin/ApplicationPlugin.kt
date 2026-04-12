@@ -2,7 +2,6 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.weather.vibe.Plugins.androidApplication
 import com.weather.vibe.Plugins.kotlinAndroid
 import com.weather.vibe.Plugins.weatherVibeDetekt
-import com.weather.vibe.Plugins.weatherVibeKover
 import com.weather.vibe.configureKotlinAndroid
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -17,7 +16,6 @@ class ApplicationPlugin : Plugin<Project> {
       apply(plugin = androidApplication)
       apply(plugin = kotlinAndroid)
       apply(plugin = weatherVibeDetekt)
-      apply(plugin = weatherVibeKover)
 
       extensions.configure<ApplicationExtension> {
         configureKotlinAndroid(this)

@@ -24,10 +24,12 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "WeatherVibe"
 include(":app")
+include(":benchmark")
 include(":core:ai")
 include(":core:network")
 include(":core:designsystem")
 include(":core:time")
+include(":core:tracing")
 include(":domain:location")
 include(":domain:weather")
 include(":data:location")

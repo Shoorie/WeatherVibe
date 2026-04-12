@@ -3,6 +3,7 @@ import com.weather.vibe.Plugins.androidApplication
 import com.weather.vibe.Plugins.kotlinAndroid
 import com.weather.vibe.Plugins.weatherVibeDetekt
 import com.weather.vibe.configureKotlinAndroid
+import com.weather.vibe.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -19,7 +20,9 @@ class ApplicationPlugin : Plugin<Project> {
 
       extensions.configure<ApplicationExtension> {
         configureKotlinAndroid(this)
-        defaultConfig.targetSdk = 36
+        defaultConfig.targetSdk = libs
+          .findVersion("androidTargetSdk")
+          .get().toString().toInt()
       }
     }
   }

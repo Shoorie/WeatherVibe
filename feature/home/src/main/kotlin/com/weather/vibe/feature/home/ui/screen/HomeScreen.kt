@@ -33,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -43,6 +42,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -88,9 +88,8 @@ fun HomeScreen(
   selectedLocation: Location? = null
 ) {
 
-  val viewModel: HomeViewModel = koinViewModel(
-    viewModelStoreOwner = LocalContext.current as ViewModelStoreOwner
-  )
+  val owner = LocalContext.current as ViewModelStoreOwner
+  val viewModel = koinViewModel<HomeViewModel>(viewModelStoreOwner = owner)
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   val lifecycleOwner = LocalLifecycleOwner.current

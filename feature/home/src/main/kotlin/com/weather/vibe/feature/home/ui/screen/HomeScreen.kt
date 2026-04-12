@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.ui.platform.testTag
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -34,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -180,12 +180,10 @@ private fun WeatherContent(
   val onDismissMoodSheet: () -> Unit =
     remember { { showMoodSheet = false } }
 
-  val onOpenSpotify: (String) -> Unit = remember(uriHandler) {
-    { query -> runCatching { uriHandler.openUri(query) } }
-  }
-  val onOpenYtMusic: (String) -> Unit = remember(uriHandler) {
-    { url -> runCatching { uriHandler.openUri(url) } }
-  }
+  val onOpenSpotify: (String) -> Unit =
+    remember(uriHandler) { { query -> runCatching { uriHandler.openUri(query) } } }
+  val onOpenYtMusic: (String) -> Unit =
+    remember(uriHandler) { { url -> runCatching { uriHandler.openUri(url) } } }
 
   LazyColumn(
     modifier = modifier

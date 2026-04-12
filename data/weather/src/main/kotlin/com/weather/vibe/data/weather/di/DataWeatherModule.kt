@@ -6,10 +6,12 @@ import com.weather.vibe.data.weather.local.WeatherDatabase
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
 import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
 import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 
 @Module
+@Configuration
 @ComponentScan("com.weather.vibe.data.weather")
 class DataWeatherModule {
 

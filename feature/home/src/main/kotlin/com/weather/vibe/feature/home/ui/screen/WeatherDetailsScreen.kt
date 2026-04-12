@@ -9,8 +9,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
@@ -38,7 +40,8 @@ fun WeatherDetailsScreen(
   onNavigateBack: () -> Unit = {}
 ) {
 
-  val viewModel: HomeViewModel = koinViewModel()
+  val owner = LocalContext.current as ViewModelStoreOwner
+  val viewModel = koinViewModel<HomeViewModel>(viewModelStoreOwner = owner)
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   WeatherDetailsContent(

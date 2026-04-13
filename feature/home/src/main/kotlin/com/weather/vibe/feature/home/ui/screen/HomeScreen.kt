@@ -57,6 +57,11 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
+import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
+import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
+import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
+import com.weather.vibe.feature.home.ui.HomeKeys.HERO
+import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.error
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
 import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
@@ -67,12 +72,6 @@ import com.weather.vibe.feature.home.ui.component.HourlyForecastRow
 import com.weather.vibe.feature.home.ui.component.MoodPlaylistSheet
 import com.weather.vibe.feature.home.ui.component.WeatherBriefingCard
 import org.koin.androidx.compose.koinViewModel
-
-private const val ITEM_KEY_HERO = "hero"
-private const val ITEM_KEY_BRIEFING = "briefing"
-private const val ITEM_KEY_HOURLY = "hourly"
-private const val ITEM_KEY_DAILY = "daily"
-private const val ITEM_KEY_DETAILS = "details"
 
 @Composable
 fun HomeScreen(
@@ -161,6 +160,7 @@ private fun WeatherContent(
   onRetrySuggestion: () -> Unit,
   onGenreRemoveClick: (String) -> Unit
 ) {
+
   var showMoodSheet by rememberSaveable { mutableStateOf(value = false) }
   val uriHandler = LocalUriHandler.current
   val sheetCallbacks = remember(uriHandler) {
@@ -201,10 +201,12 @@ private fun ForecastList(
   onRetrySuggestion: () -> Unit,
   onMusicClick: () -> Unit
 ) {
+
   val horizontalPadding = remember { Modifier.padding(horizontal = Padding.Medium) }
   val listContentPadding = remember {
     PaddingValues(top = Padding.Medium, bottom = Padding.ExtraLarge)
   }
+
   PullToRefreshBox(
     modifier = modifier
       .fillMaxSize()
@@ -219,7 +221,7 @@ private fun ForecastList(
       contentPadding = listContentPadding,
       verticalArrangement = Arrangement.spacedBy(Padding.Large)
     ) {
-      item(key = ITEM_KEY_HERO) {
+      item(key = HERO) {
         HomeHeroCard(
           modifier = horizontalPadding,
           header = state.header,
@@ -228,7 +230,7 @@ private fun ForecastList(
           onNavigateToSettings = onNavigateToSettings
         )
       }
-      item(key = ITEM_KEY_BRIEFING) {
+      item(key = BRIEFING) {
         WeatherBriefingCard(
           modifier = horizontalPadding,
           onMusicClick = onMusicClick,
@@ -236,16 +238,16 @@ private fun ForecastList(
           state = state.briefing
         )
       }
-      item(key = ITEM_KEY_HOURLY) {
+      item(key = HOURLY) {
         HourlyForecastRow(state = state.hourlyForecast)
       }
-      item(key = ITEM_KEY_DAILY) {
+      item(key = DAILY) {
         DailyForecastList(
           modifier = horizontalPadding,
           state = state.dailyForecast
         )
       }
-      item(key = ITEM_KEY_DETAILS) {
+      item(key = DETAILS) {
         DetailsPreviewCard(
           modifier = horizontalPadding,
           previewItems = state.detailsSections.previewItems,

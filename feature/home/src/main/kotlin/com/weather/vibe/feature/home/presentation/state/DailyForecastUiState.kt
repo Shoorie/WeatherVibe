@@ -11,4 +11,8 @@ internal data class DailyForecastUiState(
   val maxTemperature: String,
   val minTemperature: String,
   val range: DailyRangeUiState
-)
+) {
+
+  val contentDescription: String =
+    "$dayLabel, $conditionLabel, $minTemperature – $maxTemperature"
+}

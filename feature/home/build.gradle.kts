@@ -14,5 +14,7 @@ dependencies {
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)
 
+  implementation(libs.kotlinx.collections.immutable)
+
   testImplementation(projects.testing.weatherFixtures)
 }

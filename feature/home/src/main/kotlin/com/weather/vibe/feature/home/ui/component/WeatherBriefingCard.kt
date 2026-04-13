@@ -20,7 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +30,6 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -45,7 +43,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
 import com.weather.vibe.feature.home.preview.WeatherBriefingCardPreview
 import com.weather.vibe.feature.home.ui.HomeDefaults.BriefingContentMinHeight
-import com.weather.vibe.feature.home.ui.HomeDefaults.BriefingMutedAlpha
+import com.weather.vibe.feature.home.ui.HomeDefaults.MinInteractiveSize
 import com.weather.vibe.feature.home.ui.HomeDefaults.MusicButtonSize
 import com.weather.vibe.feature.home.ui.HomeResources.Painters.musicIcon
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingLabel
@@ -55,8 +53,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingRetryLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingUnavailable
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.findingBetterSuggestionsLabel
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistContentDescription
-
-private val MinInteractiveSize = 48.dp
+import com.weather.vibe.feature.home.ui.HomeTextStyles
 
 @Composable
 internal fun WeatherBriefingCard(
@@ -114,7 +111,7 @@ private fun BriefingActionRow(
       Text(
         text = aiBriefingMusicHint(),
         style = typography.bodySmall,
-        color = colors.onPrimaryContainer.copy(alpha = BriefingMutedAlpha)
+        color = HomeTextStyles.mutedOnPrimaryContainer()
       )
       Spacer(modifier = Modifier.width(Padding.Small))
     }
@@ -188,9 +185,10 @@ private fun BriefingErrorContent(
   canRetry: Boolean,
   onRetryClick: () -> Unit
 ) {
-  val baseColor = colors.onPrimaryContainer
-  val mutedColor = remember(baseColor) { baseColor.copy(alpha = BriefingMutedAlpha) }
+
+  val mutedColor = HomeTextStyles.mutedOnPrimaryContainer()
   val retryContentDescription = aiBriefingRetryContentDescription()
+
   Column(
     modifier = modifier
       .fillMaxWidth()
@@ -198,15 +196,16 @@ private fun BriefingErrorContent(
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     Text(
+      modifier = Modifier.fillMaxWidth(),
       text = aiBriefingUnavailable(),
       style = typography.bodyMedium,
-      color = mutedColor,
-      modifier = Modifier.fillMaxWidth()
+      color = mutedColor
     )
     if (canRetry) {
       TextButton(
-        onClick = onRetryClick,
-        modifier = Modifier.semantics { contentDescription = retryContentDescription }
+        modifier = Modifier
+          .semantics { contentDescription = retryContentDescription },
+        onClick = onRetryClick
       ) {
         Text(
           text = aiBriefingRetryLabel(),

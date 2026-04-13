@@ -10,6 +10,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
+import kotlinx.collections.immutable.toImmutableList
 
 internal class DetailSectionPreview :
   PreviewParameterProvider<DetailSectionPreviewParams> {
@@ -21,7 +22,7 @@ internal class DetailSectionPreview :
         MetricItemUiState(compass(), "Direction", "SW"),
         MetricItemUiState(windGusts(), "Wind Gusts", "20 km/h"),
         MetricItemUiState(windMax(), "Max Wind", "28 km/h")
-      ),
+      ).toImmutableList(),
       title = "Wind"
     )
 
@@ -32,7 +33,7 @@ internal class DetailSectionPreview :
         MetricItemUiState(gauge(), "Pressure", "1015 hPa"),
         MetricItemUiState(dewDrop(), "Dew Point", "12°"),
         MetricItemUiState(cloud(), "Cloud Cover", "45%")
-      ),
+      ).toImmutableList(),
       title = "Atmosphere"
     )
 

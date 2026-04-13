@@ -25,6 +25,7 @@ import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.ui.HomeResources
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -153,7 +154,7 @@ internal class HomeStateFactory(
           temperature = hour.temperature.formatted(unit),
           timeLabel = formatHourLabel(hour.time)
         )
-      }
+      }.toImmutableList()
     )
 
   private fun createDailyForecast(
@@ -179,7 +180,7 @@ internal class HomeStateFactory(
           minTemperature = day.minTemperature.formatted(unit),
           range = toRangeUiState(range)
         )
-      }
+      }.toImmutableList()
     )
   }
 

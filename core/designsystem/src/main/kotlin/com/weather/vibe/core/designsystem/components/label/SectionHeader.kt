@@ -13,11 +13,11 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -35,7 +35,7 @@ fun SectionHeader(
 ) {
 
   val titleStyle = remember(titleTextStyle) {
-    titleTextStyle.copy(fontWeight = FontWeight.SemiBold)
+    titleTextStyle.copy(fontWeight = SemiBold)
   }
 
   Row(
@@ -43,7 +43,7 @@ fun SectionHeader(
       .fillMaxWidth()
       .semantics(mergeDescendants = true) { heading() },
     verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(Padding.Small)
+    horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     Text(
       modifier = Modifier.clearAndSetSemantics {},

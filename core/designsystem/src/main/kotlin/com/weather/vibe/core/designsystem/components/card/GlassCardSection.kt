@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
@@ -33,7 +34,7 @@ fun GlassCardSection(
       style = typography.titleSmall,
       color = colors.onSurfaceVariant
     )
-    Spacer(modifier = Modifier.height(Padding.Small))
+    Spacer(modifier = Modifier.height(Small))
     if (showDivider) {
       HorizontalDivider(
         color = colors.outline,
@@ -49,7 +50,7 @@ fun GlassCardSection(
 private fun Preview() {
   WeatherVibeTheme {
     GlassCardSection(title = "Section title") {
-      Spacer(modifier = Modifier.height(Padding.Small))
+      Spacer(modifier = Modifier.height(Small))
       Text(
         text = "Card content",
         style = typography.bodyMedium,

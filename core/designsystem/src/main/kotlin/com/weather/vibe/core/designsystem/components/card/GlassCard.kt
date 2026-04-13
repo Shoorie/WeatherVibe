@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,16 +17,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
-import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation
+import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation.Card
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 
 private val DefaultContentPadding = PaddingValues(Padding.Medium)
-private val MinInteractiveHeight = 48.dp
 
 @Composable
 fun GlassCard(
@@ -41,13 +40,13 @@ fun GlassCard(
 
   Column(
     modifier = modifier
-      .shadow(elevation = Elevation.Card, shape = shapes.card, clip = false)
+      .shadow(elevation = Card, shape = shapes.card, clip = false)
       .clip(shapes.card)
       .drawBehind { drawRect(surfaceColor) }
       .then(
         if (onClick != null) {
           Modifier
-            .defaultMinSize(minHeight = MinInteractiveHeight)
+            .minimumInteractiveComponentSize()
             .clickable(
               onClickLabel = onClickLabel,
               role = Role.Button,
@@ -70,7 +69,7 @@ private fun GlassCardPreview() {
         style = typography.titleSmall,
         color = colors.onSurfaceVariant
       )
-      Spacer(modifier = Modifier.height(Padding.Small))
+      Spacer(modifier = Modifier.height(Small))
       Text(
         text = "Content inside a GlassCard",
         style = typography.bodyMedium,

@@ -5,10 +5,13 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
+import com.weather.vibe.domain.weather.model.DailyTemperatureRange.Companion.emptyFor
+import com.weather.vibe.domain.weather.model.DailyWeather
+import com.weather.vibe.domain.weather.usecase.BuildDailyTemperatureRanges
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.domain.weather.usecase.CalculateDayLength
 import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
-import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
@@ -39,7 +42,8 @@ import strikt.assertions.map
 
 class HomeStateFactoryTest {
 
-  private val temperatureFormatter = mockk<TemperatureFormatter>()
+  private val temperature = mockk<TemperatureFormatter>()
+  private val buildDailyTemperatureRanges = mockk<BuildDailyTemperatureRanges>()
   private val resources: HomeResources = fakeHomeResources()
   private val metricsFactory = mockk<MetricsStateFactory>()
   private val playlistFactory = PlaylistStateFactory(
@@ -66,23 +70,31 @@ class HomeStateFactoryTest {
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
+    buildDailyTemperatureRanges = buildDailyTemperatureRanges,
     factories = factories,
     findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
     getCurrentWeatherMetrics = getCurrentWeatherMetrics,
     resolveTodaySunInfo = resolveTodaySunInfo,
     resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
-    temperature = temperatureFormatter,
+    temperature = temperature,
     timeProvider = fakeTimeProvider
   )
 
   @Before
   fun setUp() {
-    every { temperatureFormatter.format(celsius = any(), unit = any()) } answers {
+    every { temperature.format(celsius = any(), unit = any()) } answers {
       "${firstArg<Double>().toInt()}°"
     }
-    every { temperatureFormatter.roundedValue(celsius = any(), unit = any()) } answers {
-      firstArg<Double>().toInt()
+    every {
+      buildDailyTemperatureRanges(
+        days = any(),
+        currentTemperatureCelsius = any(),
+        unit = any(),
+        today = any()
+      )
+    } answers {
+      firstArg<List<DailyWeather>>().map { day -> emptyFor(day.date) }
     }
     every { metricsFactory.create(any(), any()) } returns METRICS_SECTIONS
   }

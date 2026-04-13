@@ -10,11 +10,10 @@ class TemperatureFormatter internal constructor(
   private val convertTemperature: ConvertTemperature
 ) {
 
-  fun format(celsius: Double, unit: TemperatureUnit): String =
-    "${roundedValue(celsius = celsius, unit = unit)}$DEGREE_SYMBOL"
-
-  fun roundedValue(celsius: Double, unit: TemperatureUnit): Int =
-    convertTemperature(celsius = celsius, unit = unit).roundToInt()
+  fun format(celsius: Double, unit: TemperatureUnit): String {
+    val value = convertTemperature(celsius = celsius, unit = unit)
+    return "${value.roundToInt()}$DEGREE_SYMBOL"
+  }
 
   private companion object {
     const val DEGREE_SYMBOL = "°"

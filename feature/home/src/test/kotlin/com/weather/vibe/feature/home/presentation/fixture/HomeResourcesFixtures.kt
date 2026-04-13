@@ -7,6 +7,7 @@ internal object HomeResourcesFixtures {
   const val DIRECTION_LABEL = "Direction"
   const val FINDING_BETTER_SUGGESTIONS = "Finding better suggestions..."
   const val HUMIDITY_LABEL = "Humidity"
+  const val NOW_LABEL = "Now"
   const val PRECIPITATION_LABEL = "Precipitation"
   const val PRESSURE_LABEL = "Pressure"
   const val RAINFALL_LABEL = "Rainfall"

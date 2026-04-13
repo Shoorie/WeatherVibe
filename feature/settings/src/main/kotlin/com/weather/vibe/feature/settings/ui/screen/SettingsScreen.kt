@@ -1,10 +1,9 @@
 package com.weather.vibe.feature.settings.ui.screen
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,8 +13,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.settings.presentation.SettingsAction
@@ -30,7 +27,7 @@ import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Erro
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loaded
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loading
 import com.weather.vibe.feature.settings.preview.SettingsPreview
-import com.weather.vibe.feature.settings.ui.SettingsResources.Texts
+import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.screenTitle
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -59,49 +56,29 @@ internal fun SettingsContent(
   state: SettingsUiState,
   dispatch: (SettingsAction) -> Unit
 ) {
-  when (state) {
-    is Loading -> SettingsLoadingState(modifier)
-    is Loaded -> SettingsLoadedContent(modifier = modifier, state = state, dispatch = dispatch)
-    is Error -> SettingsErrorState(modifier = modifier, message = state.message)
-  }
-}
-
-@Composable
-private fun SettingsLoadedContent(
-  modifier: Modifier = Modifier,
-  state: Loaded,
-  dispatch: (SettingsAction) -> Unit
-) {
   Scaffold(
     modifier = modifier,
-    containerColor = colors.backgroundGradientStart,
+    containerColor = colors.backgroundGradientEnd,
     topBar = {
       VibeTopBar(
-        title = Texts.screenTitle(),
+        title = screenTitle(),
         onNavigateBack = { dispatch(BackClick) }
       )
     }
   ) { innerPadding ->
-    Column(
+    Box(
       modifier = Modifier
-        .fillMaxWidth()
+        .fillMaxSize()
         .padding(innerPadding)
-        .verticalScroll(rememberScrollState())
-        .padding(PaddingMedium)
+        .background(colors.backgroundGradientEnd)
     ) {
-      SettingsBriefToneSection(
-        briefToneOptions = state.briefToneOptions,
-        onBriefToneSelect = { dispatch(BriefToneSelect(tone = it)) }
-      )
-      SettingsTemperatureSection(
-        isCelsius = state.isCelsius,
-        onToggle = { dispatch(TemperatureUnitToggle) },
-        modifier = Modifier.padding(top = PaddingLarge)
-      )
-      if (state.hasExcludedGenres) {
-        SettingsExcludedGenresSection(
-          modifier = Modifier.padding(top = PaddingLarge),
-          genreChips = state.genreChips,
+      when (state) {
+        is Loading -> SettingsLoadingState()
+        is Error -> SettingsErrorState(message = state.message)
+        is Loaded -> SettingsLoadedContent(
+          state = state,
+          onBriefToneSelect = { dispatch(BriefToneSelect(tone = it)) },
+          onTemperatureToggle = { dispatch(TemperatureUnitToggle) },
           onGenreRemove = { dispatch(GenreRemove(genre = it)) }
         )
       }

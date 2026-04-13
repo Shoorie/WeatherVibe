@@ -5,10 +5,13 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
+import com.weather.vibe.domain.weather.format.TemperatureFormatter
+import com.weather.vibe.domain.weather.model.DailyTemperatureRange.Companion.emptyFor
+import com.weather.vibe.domain.weather.model.DailyWeather
+import com.weather.vibe.domain.weather.usecase.BuildDailyTemperatureRanges
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.domain.weather.usecase.CalculateDayLength
 import com.weather.vibe.domain.weather.usecase.CalculateSunProgress
-import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.usecase.ComputeWindDirection
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
@@ -39,7 +42,8 @@ import strikt.assertions.map
 
 class HomeStateFactoryTest {
 
-  private val temperatureFormatter = mockk<TemperatureFormatter>()
+  private val temperature = mockk<TemperatureFormatter>()
+  private val buildDailyTemperatureRanges = mockk<BuildDailyTemperatureRanges>()
   private val resources: HomeResources = fakeHomeResources()
   private val metricsFactory = mockk<MetricsStateFactory>()
   private val playlistFactory = PlaylistStateFactory(
@@ -66,20 +70,31 @@ class HomeStateFactoryTest {
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
+    buildDailyTemperatureRanges = buildDailyTemperatureRanges,
     factories = factories,
     findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
     getCurrentWeatherMetrics = getCurrentWeatherMetrics,
     resolveTodaySunInfo = resolveTodaySunInfo,
     resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
     resources = resources,
-    temperature = temperatureFormatter,
+    temperature = temperature,
     timeProvider = fakeTimeProvider
   )
 
   @Before
   fun setUp() {
-    every { temperatureFormatter.format(celsius = any(), unit = any()) } answers {
+    every { temperature.format(celsius = any(), unit = any()) } answers {
       "${firstArg<Double>().toInt()}°"
+    }
+    every {
+      buildDailyTemperatureRanges(
+        days = any(),
+        currentTemperatureCelsius = any(),
+        unit = any(),
+        today = any()
+      )
+    } answers {
+      firstArg<List<DailyWeather>>().map { day -> emptyFor(day.date) }
     }
     every { metricsFactory.create(any(), any()) } returns METRICS_SECTIONS
   }
@@ -188,8 +203,8 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.timeLabel }
-      .containsExactly("12:00", "13:00", "14:00")
+    expectThat(result.hourlyForecast.items).map { it.timeLabel }
+      .containsExactly("Now", "13:00", "14:00")
   }
 
   @Test
@@ -197,7 +212,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast[0].isCurrentHour).isTrue()
+    expectThat(result.hourlyForecast.items[0].isCurrentHour).isTrue()
   }
 
   @Test
@@ -205,7 +220,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.drop(1)).map { it.isCurrentHour }
+    expectThat(result.hourlyForecast.items.drop(1)).map { it.isCurrentHour }
       .containsExactly(false, false)
   }
 
@@ -214,7 +229,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.conditionEmoji }
+    expectThat(result.hourlyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji)
   }
 
@@ -223,7 +238,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.temperature }
+    expectThat(result.hourlyForecast.items).map { it.temperature }
       .containsExactly("22°", "24°", "23°")
   }
 
@@ -233,7 +248,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast).map { it.conditionEmoji }
+    expectThat(result.dailyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji, RAIN.emoji)
   }
 
@@ -242,7 +257,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast[0].maxTemperature)
+    expectThat(result.dailyForecast.items[0].maxTemperature)
       .isEqualTo("25°")
   }
 
@@ -251,7 +266,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast[0].minTemperature)
+    expectThat(result.dailyForecast.items[0].minTemperature)
       .isEqualTo("12°")
   }
 

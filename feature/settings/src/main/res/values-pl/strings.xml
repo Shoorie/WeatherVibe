@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="settings_screen_title">Ustawienia</string>
+
   <string name="settings_section_brief_tone">Ton briefingu AI</string>
+  <string name="settings_section_brief_tone_subtitle">Jak Vibe ma się do Ciebie odzywać</string>
+
   <string name="settings_section_temperature">Jednostka temperatury</string>
+  <string name="settings_section_temperature_subtitle">Dla prognoz i briefingów</string>
+
   <string name="settings_section_excluded_genres">Wykluczone gatunki muzyki</string>
+  <string name="settings_section_excluded_genres_subtitle">Pominiemy je w playliście nastroju</string>
+
   <string name="settings_brief_tone_witty">Dowcipny i przyjazny</string>
   <string name="settings_brief_tone_witty_desc">Lekki, ciepły i konwersacyjny</string>
   <string name="settings_brief_tone_formal">Formalny i profesjonalny</string>
   <string name="settings_brief_tone_formal_desc">Jasny, zwięzły i rzeczowy</string>
   <string name="settings_brief_tone_humorous">Humorystyczny</string>
   <string name="settings_brief_tone_humorous_desc">Lekka ironia, suchy dowcip i delikatny sarkazm</string>
+  <string name="settings_brief_tone_selected_content_description">Wybrane</string>
+
   <string name="settings_unit_celsius">Celsjusz (°C)</string>
   <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
+
+  <string name="settings_genre_remove_content_description">Usuń %1$s</string>
+
   <string name="settings_error_default">Nie udało się załadować ustawień</string>
+  <string name="settings_error_title">Coś poszło nie tak</string>
 </resources>

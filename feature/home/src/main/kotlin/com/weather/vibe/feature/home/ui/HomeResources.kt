@@ -39,6 +39,9 @@ internal class HomeResources(private val context: Context) {
   fun pressure(): String =
     context.getString(R.string.pressure_label)
 
+  fun nowLabel(): String =
+    context.getString(R.string.now_label)
+
   fun rainfall(): String =
     context.getString(R.string.rainfall_label)
 
@@ -85,6 +88,7 @@ internal class HomeResources(private val context: Context) {
     fun error(): String = "\u26A1"
     fun eye(): String = "\uD83D\uDC41\uFE0F"
     fun gauge(): String = "\uD83D\uDD36"
+    fun headphones(): String = "\uD83C\uDFA7"
     fun humidity(): String = "\uD83D\uDCA7"
     fun moon(): String = "\uD83C\uDF19"
     fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
@@ -109,12 +113,28 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.ai_briefing_label)
 
     @Composable
+    fun aiBriefingMusicHint(): String =
+      stringResource(R.string.ai_briefing_music_hint)
+
+    @Composable
     fun aiBriefingRetryLabel(): String =
       stringResource(R.string.ai_briefing_retry)
 
     @Composable
+    fun aiBriefingRetryContentDescription(): String =
+      stringResource(R.string.ai_briefing_retry_content_description)
+
+    @Composable
     fun aiBriefingUnavailable(): String =
       stringResource(R.string.ai_briefing_unavailable)
+
+    @Composable
+    fun findingBetterSuggestionsLabel(): String =
+      stringResource(R.string.finding_better_suggestions)
+
+    @Composable
+    fun atmosphereSectionSubtitle(): String =
+      stringResource(R.string.atmosphere_section_subtitle)
 
     @Composable
     fun atmosphereSectionTitle(): String =
@@ -123,6 +143,10 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun backContentDescription(): String =
       stringResource(R.string.back_content_description)
+
+    @Composable
+    fun conditionsSectionSubtitle(): String =
+      stringResource(R.string.conditions_section_subtitle)
 
     @Composable
     fun conditionsSectionTitle(): String =
@@ -161,16 +185,20 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.mood_playlist_content_description)
 
     @Composable
+    fun moodPlaylistErrorTitle(): String =
+      stringResource(R.string.mood_playlist_error_title)
+
+    @Composable
     fun moodPlaylistLabel(): String =
       stringResource(R.string.mood_playlist_label)
 
     @Composable
-    fun moodPlaylistUnavailable(): String =
-      stringResource(R.string.mood_playlist_unavailable)
+    fun moodPlaylistSubtitle(): String =
+      stringResource(R.string.mood_playlist_subtitle)
 
     @Composable
-    fun nowLabel(): String =
-      stringResource(R.string.now_label)
+    fun moodPlaylistUnavailable(): String =
+      stringResource(R.string.mood_playlist_unavailable)
 
     @Composable
     fun openInSpotify(): String =
@@ -191,6 +219,14 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun settingsContentDescription(): String =
       stringResource(R.string.settings_content_description)
+
+    @Composable
+    fun sunSectionSubtitle(): String =
+      stringResource(R.string.sun_section_subtitle)
+
+    @Composable
+    fun sunSectionTitle(): String =
+      stringResource(R.string.sun_section_title)
 
     @Composable
     fun sunriseLabel(): String =
@@ -219,6 +255,14 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun weatherDetailsTitle(): String =
       stringResource(R.string.weather_details_title)
+
+    @Composable
+    fun weatherDetailsViewAll(): String =
+      stringResource(R.string.weather_details_view_all)
+
+    @Composable
+    fun windSectionSubtitle(): String =
+      stringResource(R.string.wind_section_subtitle)
 
     @Composable
     fun windSectionTitle(): String =

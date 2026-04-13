@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="settings_screen_title">Settings</string>
+
   <string name="settings_section_brief_tone">AI Briefing Tone</string>
+  <string name="settings_section_brief_tone_subtitle">How Vibe should talk to you</string>
+
   <string name="settings_section_temperature">Temperature Unit</string>
+  <string name="settings_section_temperature_subtitle">Units for forecasts and briefings</string>
+
   <string name="settings_section_excluded_genres">Excluded Music Genres</string>
+  <string name="settings_section_excluded_genres_subtitle">We\'ll skip these in your mood playlist</string>
+
   <string name="settings_brief_tone_witty">Witty &amp; Friendly</string>
   <string name="settings_brief_tone_witty_desc">Light, warm, and conversational</string>
   <string name="settings_brief_tone_formal">Formal &amp; Professional</string>
   <string name="settings_brief_tone_formal_desc">Clear, concise, and business-like</string>
   <string name="settings_brief_tone_humorous">Humorous</string>
   <string name="settings_brief_tone_humorous_desc">Light irony, dry wit, and gentle sarcasm</string>
+  <string name="settings_brief_tone_selected_content_description">Selected</string>
+
   <string name="settings_unit_celsius">Celsius (°C)</string>
   <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
+
+  <string name="settings_genre_remove_content_description">Remove %1$s</string>
+
   <string name="settings_error_default">Failed to load settings</string>
+  <string name="settings_error_title">Something\'s off</string>
 </resources>

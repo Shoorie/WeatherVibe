@@ -1,29 +1,40 @@
 package com.weather.vibe.feature.splash.ui.screen
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.splash.ui.SplashResources.Texts.appName
+import com.weather.vibe.feature.splash.ui.SplashResources.Texts.appTagline
+import com.weather.vibe.feature.splash.ui.SplashTextStyles.mutedOnBrand
+import com.weather.vibe.feature.splash.ui.SplashTextStyles.onBrand
 import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.ExitDuration
-import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.HoldDuration
-import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.TextYOffset
+import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.HoldBeforeExit
+import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.IconBottomGap
+import com.weather.vibe.feature.splash.ui.screen.SplashDefaults.WordmarkBottomGap
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SplashScreen(
@@ -32,97 +43,108 @@ fun SplashScreen(
 ) {
 
   val anim = remember { SplashAnimatables() }
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  val backgroundBrush = remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(colors = listOf(gradientStart, gradientEnd))
-  }
 
   LaunchedEffect(Unit) {
-    glowBurstsIn(anim = anim)
-    ringsExpandSequentially(anim = anim)
-    delay(HoldDuration)
-    titleSlidesIn(anim = anim)
-    delay(HoldDuration)
-    screenFadesOut(anim = anim)
+    launch { taglineFadesIn(anim = anim) }
+    wordmarkFadesIn(anim = anim)
+    delay(HoldBeforeExit)
+    sceneFadesOut(anim = anim)
     delay(ExitDuration.toLong())
     onNavigateToHome()
   }
 
-  Box(
+  val brandColor = onBrand()
+  val mutedBrandColor = mutedOnBrand()
+  val wordmarkText = appName()
+  val annotatedWordmark = remember(wordmarkText, brandColor, mutedBrandColor) {
+    buildWordmark(
+      wordmark = wordmarkText,
+      mutedColor = mutedBrandColor,
+      accentColor = brandColor
+    )
+  }
+
+  Column(
     modifier = modifier
       .fillMaxSize()
-      .background(brush = backgroundBrush)
-      .graphicsLayer {
-        alpha = anim.exitAlpha.value
-        scaleX = anim.exitScale.value
-        scaleY = anim.exitScale.value
-      },
-    contentAlignment = Alignment.Center
+      .background(color = colors.accent)
+      .graphicsLayer { alpha = anim.exitAlpha.value },
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    SplashGlowCanvas(anim = anim)
-    SplashAppName(
-      alpha = anim.textAlpha.value,
-      yOffset = anim.textSlide.value
+    SplashEqualizer(barColor = brandColor)
+    Spacer(modifier = Modifier.height(IconBottomGap))
+    SplashWordmark(
+      wordmark = annotatedWordmark,
+      contentLabel = wordmarkText,
+      alpha = anim.wordmarkAlpha.value,
+      slideDp = anim.wordmarkSlide.value
+    )
+    Spacer(modifier = Modifier.height(WordmarkBottomGap))
+    SplashTagline(
+      alpha = anim.taglineAlpha.value,
+      color = mutedBrandColor
     )
   }
 }
 
-@Composable
-private fun SplashGlowCanvas(
-  modifier: Modifier = Modifier,
-  anim: SplashAnimatables
-) {
-  val accentColor = colors.accent
-  Canvas(
-    modifier = modifier
-      .fillMaxSize()
-      .graphicsLayer { alpha = anim.glowAlpha.value }
-  ) {
-    val center = Offset(
-      x = size.width / 2f,
-      y = size.height * SplashDefaults.GlowCenterYFraction
-    )
-    val baseRadius = size.minDimension *
-      SplashDefaults.GlowRadiusFraction *
-      anim.glowScale.value
-    val ringStrokeWidth = SplashDefaults.RingStrokeDp.dp.toPx()
-    drawGlowLayers(
-      accentColor = accentColor,
-      baseRadius = baseRadius,
-      center = center
-    )
-    drawSunRays(
-      baseRadius = baseRadius,
-      center = center,
-      glowScale = anim.glowScale.value,
-      sunColor = SplashDefaults.SunYellow
-    )
-    drawAtmosphericRings(
-      accentColor = accentColor,
-      baseRadius = baseRadius,
-      center = center,
-      ring1Progress = anim.ring1Progress.value,
-      ring2Progress = anim.ring2Progress.value,
-      ring3Progress = anim.ring3Progress.value,
-      ringStrokeWidth = ringStrokeWidth
-    )
+private fun buildWordmark(
+  wordmark: String,
+  mutedColor: Color,
+  accentColor: Color
+): AnnotatedString {
+
+  val accentStart = wordmark
+    .indexOf(ACCENT_SPLIT_PREFIX)
+    .takeIf { it >= 0 }
+    ?: wordmark.length
+
+  return buildAnnotatedString {
+    withStyle(SpanStyle(color = mutedColor)) {
+      append(wordmark.substring(startIndex = 0, endIndex = accentStart))
+    }
+    withStyle(SpanStyle(color = accentColor)) {
+      append(wordmark.substring(startIndex = accentStart))
+    }
   }
 }
 
 @Composable
-private fun SplashAppName(
+private fun SplashWordmark(
   modifier: Modifier = Modifier,
+  wordmark: AnnotatedString,
+  contentLabel: String,
   alpha: Float,
-  yOffset: Float
+  slideDp: Float
 ) {
   Text(
-    modifier = modifier.offset(y = TextYOffset + yOffset.dp),
-    text = appName(),
+    modifier = modifier
+      .graphicsLayer {
+        this.alpha = alpha
+        translationY = slideDp * density
+      }
+      .semantics { contentDescription = contentLabel },
+    text = wordmark,
     style = typography.displaySmall,
-    color = colors.onBackground.copy(alpha = alpha)
+    fontWeight = FontWeight.SemiBold
   )
 }
+
+@Composable
+private fun SplashTagline(
+  modifier: Modifier = Modifier,
+  alpha: Float,
+  color: Color
+) {
+  Text(
+    modifier = modifier.graphicsLayer { this.alpha = alpha },
+    text = appTagline(),
+    style = typography.bodyMedium,
+    color = color
+  )
+}
+
+private const val ACCENT_SPLIT_PREFIX = "Vibe"
 
 @PreviewLightDark
 @Composable

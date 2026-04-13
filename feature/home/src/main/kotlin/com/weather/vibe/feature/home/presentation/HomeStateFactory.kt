@@ -4,10 +4,11 @@ import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.format.TemperatureFormatter
-import com.weather.vibe.domain.weather.model.DailyWeather
+import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.domain.weather.usecase.BuildDailyTemperatureRanges
 import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
@@ -15,12 +16,16 @@ import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
+import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.ui.HomeResources
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -30,6 +35,7 @@ import java.util.Locale
 
 @Factory
 internal class HomeStateFactory(
+  private val buildDailyTemperatureRanges: BuildDailyTemperatureRanges,
   private val factories: HomeFactories,
   private val findCurrentHourIndex: FindCurrentHourIndex,
   private val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
@@ -50,6 +56,36 @@ internal class HomeStateFactory(
       false -> current
     }
 
+  fun applyPlaylist(current: HomeUiState, playlist: PlaylistUiState): HomeUiState =
+    when (current is Loaded) {
+      true -> current.copy(playlist = playlist)
+      false -> current
+    }
+
+  fun markGenreAsRejecting(current: HomeUiState, genre: String): HomeUiState {
+
+    if (current !is Loaded) return current
+    val loadedPlaylist = current.playlist as? PlaylistUiState.Loaded
+      ?: return current
+
+    return current.copy(
+      playlist = loadedPlaylist.copy(
+        genres = loadedPlaylist.genres.map {
+          if (it.name == genre) it.copy(isRejecting = true) else it
+        }
+      )
+    )
+  }
+
+  fun areAllGenresRejected(current: HomeUiState): Boolean {
+    val loaded = current as? Loaded ?: return false
+    val playlist = loaded.playlist as? PlaylistUiState.Loaded ?: return false
+    return playlist.genres.all { it.isRejecting }
+  }
+
+  fun isPlaylistLoaded(current: HomeUiState): Boolean =
+    (current as? Loaded)?.playlist is PlaylistUiState.Loaded
+
   fun create(data: WeatherData, unit: TemperatureUnit = CELSIUS): Loaded {
 
     val today = timeProvider.today()
@@ -59,7 +95,7 @@ internal class HomeStateFactory(
 
     return Loaded(
       currentWeather = createCurrentWeather(data, unit),
-      dailyForecast = createDailyForecast(data.dailyForecast, unit, today),
+      dailyForecast = createDailyForecast(data, unit, today),
       detailsSections = factories.metrics.create(currentMetrics, unit),
       header = createHeader(data, today),
       hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
@@ -85,7 +121,7 @@ internal class HomeStateFactory(
   private fun createHeader(data: WeatherData, today: LocalDate): HeaderUiState =
     HeaderUiState(
       cityName = data.coordinates.name,
-      dateLabel = today.format(DATE_FORMATTER)
+      dateLabel = today.format(dateFormatter)
     )
 
   private fun createCurrentWeather(
@@ -109,29 +145,52 @@ internal class HomeStateFactory(
     hours: List<HourlyWeather>,
     unit: TemperatureUnit,
     currentHourIndex: Int
-  ): List<HourlyForecastUiState> =
-    hours.mapIndexed { index, hour ->
-      HourlyForecastUiState(
-        conditionEmoji = hour.condition.emoji,
-        isCurrentHour = index == currentHourIndex,
-        temperature = hour.temperature.formatted(unit),
-        timeLabel = formatHourLabel(hour.time)
-      )
-    }
+  ): HourlyForecastsUiState =
+    HourlyForecastsUiState(
+      items = hours.mapIndexed { index, hour ->
+        val isCurrentHour = index == currentHourIndex
+        HourlyForecastUiState(
+          conditionEmoji = hour.condition.emoji,
+          isCurrentHour = isCurrentHour,
+          temperature = hour.temperature.formatted(unit),
+          timeLabel = if (isCurrentHour) resources.nowLabel() else formatHourLabel(hour.time)
+        )
+      }.toImmutableList()
+    )
 
   private fun createDailyForecast(
-    days: List<DailyWeather>,
+    data: WeatherData,
     unit: TemperatureUnit,
     today: LocalDate
-  ): List<DailyForecastUiState> =
-    days.map { day ->
-      DailyForecastUiState(
-        conditionEmoji = day.condition.emoji,
-        dayLabel = formatDayLabel(day.date, today),
-        maxTemperature = day.maxTemperature.formatted(unit),
-        minTemperature = day.minTemperature.formatted(unit)
-      )
-    }
+  ): DailyForecastsUiState {
+
+    val ranges = buildDailyTemperatureRanges(
+      days = data.dailyForecast,
+      currentTemperatureCelsius = data.currentTemperature,
+      unit = unit,
+      today = today
+    )
+    return DailyForecastsUiState(
+      items = data.dailyForecast.zip(ranges).map { (day, range) ->
+        DailyForecastUiState(
+          conditionEmoji = day.condition.emoji,
+          conditionLabel = resources.conditionLabel(day.condition),
+          dayLabel = formatDayLabel(day.date, today),
+          isToday = day.date == today,
+          maxTemperature = day.maxTemperature.formatted(unit),
+          minTemperature = day.minTemperature.formatted(unit),
+          range = toRangeUiState(range)
+        )
+      }.toImmutableList()
+    )
+  }
+
+  private fun toRangeUiState(range: DailyTemperatureRange): DailyRangeUiState =
+    DailyRangeUiState(
+      startFraction = range.startFraction,
+      endFraction = range.endFraction,
+      currentFraction = range.currentFraction
+    )
 
   private fun formatHourLabel(time: LocalDateTime): String =
     time.format(TIME_OUTPUT_FORMATTER)
@@ -139,23 +198,23 @@ internal class HomeStateFactory(
   private fun formatDayLabel(date: LocalDate, today: LocalDate): String =
     when (date) {
       today -> resources.todayLabel()
-      else -> date.format(DAY_FORMATTER)
+      else -> date.format(dayFormatter)
     }
 
   private fun Double.formatted(unit: TemperatureUnit): String =
     temperature.format(celsius = this, unit = unit)
+
+  private val dateFormatter: DateTimeFormatter
+    get() = ofPattern(DATE_FORMAT, Locale.getDefault())
+
+  private val dayFormatter: DateTimeFormatter
+    get() = ofPattern(DAY_FORMAT, Locale.getDefault())
 
   private companion object {
 
     const val DATE_FORMAT = "EEEE, d MMMM"
     const val DAY_FORMAT = "EEE"
     const val TIME_OUTPUT_FORMAT = "HH:mm"
-
-    val DATE_FORMATTER: DateTimeFormatter
-      get() = ofPattern(DATE_FORMAT, Locale.getDefault())
-
-    val DAY_FORMATTER: DateTimeFormatter
-      get() = ofPattern(DAY_FORMAT, Locale.getDefault())
 
     val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
       ofPattern(TIME_OUTPUT_FORMAT)

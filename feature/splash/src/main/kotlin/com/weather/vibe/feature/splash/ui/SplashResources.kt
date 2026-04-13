@@ -11,5 +11,9 @@ internal object SplashResources {
     @Composable
     fun appName(): String =
       stringResource(R.string.app_name)
+
+    @Composable
+    fun appTagline(): String =
+      stringResource(R.string.app_tagline)
   }
 }

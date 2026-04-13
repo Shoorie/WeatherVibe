@@ -132,12 +132,20 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.finding_better_suggestions)
 
     @Composable
+    fun atmosphereSectionSubtitle(): String =
+      stringResource(R.string.atmosphere_section_subtitle)
+
+    @Composable
     fun atmosphereSectionTitle(): String =
       stringResource(R.string.atmosphere_section_title)
 
     @Composable
     fun backContentDescription(): String =
       stringResource(R.string.back_content_description)
+
+    @Composable
+    fun conditionsSectionSubtitle(): String =
+      stringResource(R.string.conditions_section_subtitle)
 
     @Composable
     fun conditionsSectionTitle(): String =
@@ -204,6 +212,14 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.settings_content_description)
 
     @Composable
+    fun sunSectionSubtitle(): String =
+      stringResource(R.string.sun_section_subtitle)
+
+    @Composable
+    fun sunSectionTitle(): String =
+      stringResource(R.string.sun_section_title)
+
+    @Composable
     fun sunriseLabel(): String =
       stringResource(R.string.sunrise_label)
 
@@ -234,6 +250,10 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun weatherDetailsViewAll(): String =
       stringResource(R.string.weather_details_view_all)
+
+    @Composable
+    fun windSectionSubtitle(): String =
+      stringResource(R.string.wind_section_subtitle)
 
     @Composable
     fun windSectionTitle(): String =

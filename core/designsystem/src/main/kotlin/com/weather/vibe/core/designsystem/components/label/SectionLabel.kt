@@ -12,7 +12,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -52,7 +52,7 @@ fun SectionLabelText(
 
   Text(
     modifier = modifier
-      .padding(bottom = Padding.Small)
+      .padding(bottom = Small)
       .semantics { heading() },
     text = displayText,
     style = style,

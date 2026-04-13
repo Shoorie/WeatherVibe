@@ -16,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -42,7 +43,7 @@ fun BrandButton(
       .defaultMinSize(minHeight = BrandMinHeight),
     onClick = onClick,
     shape = shapes.pill,
-    contentPadding = PaddingValues(horizontal = Padding.Large, vertical = Padding.Small),
+    contentPadding = PaddingValues(horizontal = Large, vertical = Small),
     colors = ButtonDefaults.buttonColors(
       containerColor = containerColor,
       contentColor = BrandContent
@@ -54,11 +55,11 @@ fun BrandButton(
       modifier = Modifier.size(IconSize.Small),
       tint = BrandContent
     )
-    Spacer(modifier = Modifier.width(Padding.Small))
+    Spacer(modifier = Modifier.width(Small))
     Text(
       text = text,
       color = BrandContent,
-      style = typography.titleSmall.copy(fontWeight = FontWeight.SemiBold)
+      style = typography.titleSmall.copy(fontWeight = SemiBold)
     )
   }
 }

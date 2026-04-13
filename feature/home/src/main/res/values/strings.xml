@@ -1,10 +1,13 @@
 <resources>
-  <string name="ai_briefing_label">AI Daily Briefing</string>
+  <string name="ai_briefing_label">Today\'s Vibe</string>
+  <string name="ai_briefing_music_hint">Discover today\'s sounds</string>
   <string name="ai_briefing_unavailable">Briefing unavailable</string>
+  <string name="atmosphere_section_subtitle">Pressure, humidity and dew point</string>
   <string name="atmosphere_section_title">Atmosphere</string>
   <string name="back_content_description">Go back</string>
   <string name="cloud_cover_label">Cloud Cover</string>
   <string name="close_search_content_description">Close search</string>
+  <string name="conditions_section_subtitle">Precipitation, UV and visibility</string>
   <string name="conditions_section_title">Conditions</string>
   <string name="daily_forecast_title">7-Day Forecast</string>
   <string name="day_length_format">%1$dh %2$dm</string>
@@ -20,6 +23,8 @@
   <string name="low_temp_format">L: %1$s</string>
   <string name="mood_playlist_content_description">Open mood playlist</string>
   <string name="mood_playlist_label">Today\'s Vibe</string>
+  <string name="mood_playlist_subtitle">A playlist tuned to the weather</string>
+  <string name="mood_playlist_error_title">Can\'t find your vibe</string>
   <string name="mood_playlist_unavailable">Playlist unavailable</string>
   <string name="no_results_found">No results found for \"%1$s\"</string>
   <string name="now_label">Now</string>
@@ -42,7 +47,9 @@
   <string name="uv_index_label">UV Index</string>
   <string name="visibility_label">Visibility</string>
   <string name="weather_details_title">Weather Details</string>
+  <string name="weather_details_view_all">View all details</string>
   <string name="wind_gusts_label">Wind Gusts</string>
+  <string name="wind_section_subtitle">Speed, direction and gusts</string>
   <string name="wind_section_title">Wind</string>
   <string name="wind_speed_label">Wind Speed</string>
   <string name="wind_speed_max_label">Max Wind</string>
@@ -64,9 +71,12 @@
   <string name="condition_unknown">Unknown</string>
 
   <string name="ai_briefing_retry">Retry</string>
+  <string name="ai_briefing_retry_content_description">Retry AI briefing</string>
   <string name="finding_better_suggestions">Finding better suggestions…</string>
   <string name="genre_remove_content_description">Remove %1$s</string>
   <string name="sun_progress_content_description">Sun progress, sunrise at %1$s, sunset at %2$s</string>
+  <string name="sun_section_subtitle">Sunrise, sunset and day length</string>
+  <string name="sun_section_title">Sun</string>
   <string name="sunrise_at_format">Sunrise at %1$s</string>
   <string name="sunset_at_format">Sunset at %1$s</string>
 </resources>

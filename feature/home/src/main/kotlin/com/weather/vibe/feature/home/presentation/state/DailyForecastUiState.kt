@@ -5,7 +5,14 @@ import androidx.compose.runtime.Immutable
 @Immutable
 internal data class DailyForecastUiState(
   val conditionEmoji: String,
+  val conditionLabel: String,
   val dayLabel: String,
+  val isToday: Boolean,
   val maxTemperature: String,
-  val minTemperature: String
-)
+  val minTemperature: String,
+  val range: DailyRangeUiState
+) {
+
+  val contentDescription: String =
+    "$dayLabel, $conditionLabel, $minTemperature – $maxTemperature"
+}

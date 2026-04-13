@@ -19,12 +19,15 @@ import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
+import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generating
 import com.weather.vibe.feature.home.ui.HomeResources
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,8 +35,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
@@ -50,9 +53,11 @@ internal class HomeViewModel(
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
-  private var settingsJob: Job? = null
+  private var invalidateJob: Job? = null
+  private var genreJob: Job? = null
 
   private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+    if (throwable is CancellationException) return@CoroutineExceptionHandler
     showError(throwable)
   }
 
@@ -72,10 +77,16 @@ internal class HomeViewModel(
   }
 
   private fun observeWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
-
     _state.update { Loading }
     snapshot = HomeSnapshot()
+    launchHomeDataObservation(coordinates)
+  }
 
+  private fun refreshWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
+    launchHomeDataObservation(coordinates)
+  }
+
+  private fun launchHomeDataObservation(coordinates: Coordinates) {
     homeDataJob?.cancel()
     homeDataJob = combine(
       useCases.getWeather(coordinates),
@@ -142,8 +153,8 @@ internal class HomeViewModel(
 
     showWeatherLoaded(weather, settings)
 
-    settingsJob?.cancel()
-    settingsJob = viewModelScope.launch {
+    invalidateJob?.cancel()
+    invalidateJob = viewModelScope.launch(errorHandler) {
       useCases.invalidateWeatherSuggestion(
         tone = settings.briefTone,
         weatherKey = weatherKey
@@ -171,7 +182,13 @@ internal class HomeViewModel(
   }
 
   private fun onRefreshClick() {
-    observeWeather()
+    val current = _state.value as? Loaded
+    if (current != null) {
+      _state.update { current.copy(isRefreshing = true) }
+      refreshWeather()
+    } else {
+      observeWeather()
+    }
   }
 
   private fun onRetryWeatherSuggestion() {
@@ -180,21 +197,22 @@ internal class HomeViewModel(
 
   private fun onResumeLifecycle() {
     if (suggestionJob?.isActive == true) return
-    if (_state.value.isPlaylistLoaded) return
+    if (stateFactory.isPlaylistLoaded(_state.value)) return
     refreshWeatherSuggestion()
   }
 
   private fun onGenreRemoveClick(action: GenreRemoveClick) {
 
     val tone = currentSettings?.briefTone ?: return
-    val updatedState = _state.updateAndGet { it.withGenreRejecting(action.genre) }
 
-    settingsJob?.cancel()
-    settingsJob = viewModelScope.launch(errorHandler) {
+    genreJob?.cancel()
+    genreJob = viewModelScope.launch(errorHandler) {
 
-      useCases.excludeGenre(action.genre)
+      withContext(NonCancellable) { useCases.excludeGenre(action.genre) }
 
-      if (updatedState.allGenresRejected) {
+      _state.update { stateFactory.markGenreAsRejecting(it, action.genre) }
+
+      if (stateFactory.areAllGenresRejected(_state.value)) {
         onAllGenresRejected(tone)
       }
     }
@@ -210,7 +228,12 @@ internal class HomeViewModel(
   }
 
   private fun showPlaylistGenerating() {
-    _state.update { it.withPlaylist(Generating(resources.findingBetterSuggestions())) }
+    _state.update {
+      stateFactory.applyPlaylist(
+        current = it,
+        playlist = Generating(resources.findingBetterSuggestions())
+      )
+    }
   }
 
   private fun refreshWeatherSuggestion() {

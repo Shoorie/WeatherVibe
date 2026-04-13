@@ -8,4 +8,8 @@ internal data class HourlyForecastUiState(
   val isCurrentHour: Boolean,
   val temperature: String,
   val timeLabel: String
-)
+) {
+
+  val contentDescription: String =
+    "$timeLabel, $temperature"
+}

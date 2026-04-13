@@ -37,6 +37,13 @@ internal class SettingsResources(private val context: Context) {
     HUMOROUS -> R.string.settings_brief_tone_humorous_desc
   }
 
+  object Emojis {
+    fun briefTone(): String = "\uD83D\uDDE3\uFE0F"
+    fun temperature(): String = "\uD83C\uDF21\uFE0F"
+    fun excludedGenres(): String = "\uD83C\uDFB7"
+    fun error(): String = "\u26A1"
+  }
+
   object Texts {
 
     @Composable
@@ -44,16 +51,36 @@ internal class SettingsResources(private val context: Context) {
       stringResource(R.string.settings_section_brief_tone)
 
     @Composable
+    fun briefToneSectionSubtitle(): String =
+      stringResource(R.string.settings_section_brief_tone_subtitle)
+
+    @Composable
+    fun briefToneSelectedContentDescription(): String =
+      stringResource(R.string.settings_brief_tone_selected_content_description)
+
+    @Composable
     fun celsiusLabel(): String =
       stringResource(R.string.settings_unit_celsius)
+
+    @Composable
+    fun errorTitle(): String =
+      stringResource(R.string.settings_error_title)
 
     @Composable
     fun excludedGenresSection(): String =
       stringResource(R.string.settings_section_excluded_genres)
 
     @Composable
+    fun excludedGenresSectionSubtitle(): String =
+      stringResource(R.string.settings_section_excluded_genres_subtitle)
+
+    @Composable
     fun fahrenheitLabel(): String =
       stringResource(R.string.settings_unit_fahrenheit)
+
+    @Composable
+    fun genreRemoveContentDescription(genre: String): String =
+      stringResource(R.string.settings_genre_remove_content_description, genre)
 
     @Composable
     fun screenTitle(): String =
@@ -62,5 +89,9 @@ internal class SettingsResources(private val context: Context) {
     @Composable
     fun temperatureSection(): String =
       stringResource(R.string.settings_section_temperature)
+
+    @Composable
+    fun temperatureSectionSubtitle(): String =
+      stringResource(R.string.settings_section_temperature_subtitle)
   }
 }

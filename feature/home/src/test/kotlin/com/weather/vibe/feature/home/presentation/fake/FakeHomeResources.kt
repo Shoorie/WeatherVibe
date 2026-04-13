@@ -7,6 +7,7 @@ import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.DIRECTION_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.FINDING_BETTER_SUGGESTIONS
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.HUMIDITY_LABEL
+import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.NOW_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.PRECIPITATION_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.PRESSURE_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.RAINFALL_LABEL
@@ -33,6 +34,7 @@ internal fun fakeHomeResources(): HomeResources =
     every { dewPoint() } returns DEW_POINT_LABEL
     every { direction() } returns DIRECTION_LABEL
     every { humidity() } returns HUMIDITY_LABEL
+    every { nowLabel() } returns NOW_LABEL
     every { precipitation() } returns PRECIPITATION_LABEL
     every { pressure() } returns PRESSURE_LABEL
     every { rainfall() } returns RAINFALL_LABEL

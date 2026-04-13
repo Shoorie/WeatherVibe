@@ -17,7 +17,7 @@ class CalculateSunProgressTest {
   private val sunset = LocalDateTime.of(2026, 4, 8, 19, 30)
 
   @Test
-  fun `given now at sunrise, when computed, then progress is zero`() {
+  fun `given now at sunrise, then progress is zero`() {
 
     fakeTimeProvider.current = sunrise
 
@@ -27,7 +27,7 @@ class CalculateSunProgressTest {
   }
 
   @Test
-  fun `given now at sunset, when computed, then progress is one`() {
+  fun `given now at sunset, then progress is one`() {
 
     fakeTimeProvider.current = sunset
 
@@ -37,7 +37,7 @@ class CalculateSunProgressTest {
   }
 
   @Test
-  fun `given now before sunrise, when computed, then progress clamps to zero`() {
+  fun `given now before sunrise, then progress clamps to zero`() {
 
     fakeTimeProvider.current = LocalDateTime.of(2026, 4, 8, 4, 0)
 
@@ -47,7 +47,7 @@ class CalculateSunProgressTest {
   }
 
   @Test
-  fun `given now after sunset, when computed, then progress clamps to one`() {
+  fun `given now after sunset, then progress clamps to one`() {
 
     fakeTimeProvider.current = LocalDateTime.of(2026, 4, 8, 22, 0)
 
@@ -57,7 +57,7 @@ class CalculateSunProgressTest {
   }
 
   @Test
-  fun `given now at midday, when computed, then progress is around half`() {
+  fun `given now at midday, then progress is around half`() {
 
     fakeTimeProvider.current = LocalDateTime.of(2026, 4, 8, 12, 45)
 
@@ -69,7 +69,7 @@ class CalculateSunProgressTest {
   }
 
   @Test
-  fun `given sunset before sunrise, when computed, then progress is zero`() {
+  fun `given sunset before sunrise, then progress is zero`() {
 
     fakeTimeProvider.current = sunrise
 

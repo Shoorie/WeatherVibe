@@ -24,6 +24,8 @@ fun VibeInputChip(
   onDismiss: () -> Unit,
   dismissContentDescription: String? = null
 ) {
+  val dismissTint = if (selected) colors.onAccent else colors.onSurfaceVariant
+
   InputChip(
     modifier = modifier,
     selected = selected,
@@ -43,7 +45,7 @@ fun VibeInputChip(
           imageVector = Icons.Default.Close,
           contentDescription = dismissContentDescription,
           modifier = Modifier.size(IconSize.Small),
-          tint = colors.onSurfaceVariant
+          tint = dismissTint
         )
       }
     },
@@ -51,7 +53,7 @@ fun VibeInputChip(
       containerColor = colors.glassSurface,
       labelColor = colors.onBackground,
       selectedContainerColor = colors.accent,
-      selectedLabelColor = colors.onBackground
+      selectedLabelColor = colors.onAccent
     ),
     border = InputChipDefaults.inputChipBorder(
       enabled = true,

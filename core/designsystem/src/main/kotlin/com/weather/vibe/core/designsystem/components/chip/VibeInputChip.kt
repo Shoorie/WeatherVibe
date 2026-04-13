@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 
 @Composable
@@ -30,10 +31,11 @@ fun VibeInputChip(
     modifier = modifier,
     selected = selected,
     onClick = onDismiss,
+    shape = shapes.pill,
     label = {
       Text(
         text = label,
-        style = typography.labelSmall
+        style = typography.labelMedium
       )
     },
     trailingIcon = {
@@ -50,7 +52,7 @@ fun VibeInputChip(
       }
     },
     colors = InputChipDefaults.inputChipColors(
-      containerColor = colors.glassSurface,
+      containerColor = colors.surfaceVariant,
       labelColor = colors.onBackground,
       selectedContainerColor = colors.accent,
       selectedLabelColor = colors.onAccent
@@ -58,7 +60,7 @@ fun VibeInputChip(
     border = InputChipDefaults.inputChipBorder(
       enabled = true,
       selected = selected,
-      borderColor = colors.outline,
+      borderColor = colors.outlineVariant,
       selectedBorderColor = colors.accent
     )
   )

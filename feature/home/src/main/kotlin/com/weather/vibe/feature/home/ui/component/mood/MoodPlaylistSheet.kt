@@ -1,19 +1,18 @@
 package com.weather.vibe.feature.home.ui.component.mood
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.designsystem.components.label.SectionHeader
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -25,7 +24,9 @@ import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generati
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loading
 import com.weather.vibe.feature.home.preview.MoodPlaylistSheetPreview
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.headphones
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistLabel
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistSubtitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,7 @@ internal fun MoodPlaylistSheet(
   onGenreRemoveClick: (String) -> Unit,
   onOpenSpotify: (String) -> Unit,
   onOpenYtMusic: (String) -> Unit,
-  sheetState: SheetState = rememberModalBottomSheetState(),
+  sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
   state: PlaylistUiState
 ) {
   ModalBottomSheet(
@@ -48,14 +49,15 @@ internal fun MoodPlaylistSheet(
       modifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = Medium)
-        .padding(bottom = Large)
+        .padding(bottom = Large),
+      verticalArrangement = Arrangement.spacedBy(Medium)
     ) {
-      Text(
-        text = moodPlaylistLabel(),
-        style = typography.titleMedium,
-        color = colors.onBackground
+      SectionHeader(
+        emoji = headphones(),
+        title = moodPlaylistLabel(),
+        subtitle = moodPlaylistSubtitle(),
+        titleTextStyle = typography.titleMedium
       )
-      Spacer(modifier = Modifier.height(Medium))
       MoodSheetContent(
         state = state,
         onGenreRemoveClick = onGenreRemoveClick,

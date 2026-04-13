@@ -23,6 +23,8 @@
   <string name="low_temp_format">N: %1$s</string>
   <string name="mood_playlist_content_description">Otwórz playlistę nastroju</string>
   <string name="mood_playlist_label">Klimat dnia</string>
+  <string name="mood_playlist_subtitle">Playlista dopasowana do pogody</string>
+  <string name="mood_playlist_error_title">Nie udało się znaleźć klimatu</string>
   <string name="mood_playlist_unavailable">Playlista niedostępna</string>
   <string name="no_results_found">Brak wyników dla \"%1$s\"</string>
   <string name="now_label">Teraz</string>

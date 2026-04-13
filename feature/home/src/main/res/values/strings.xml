@@ -23,6 +23,8 @@
   <string name="low_temp_format">L: %1$s</string>
   <string name="mood_playlist_content_description">Open mood playlist</string>
   <string name="mood_playlist_label">Today\'s Vibe</string>
+  <string name="mood_playlist_subtitle">A playlist tuned to the weather</string>
+  <string name="mood_playlist_error_title">Can\'t find your vibe</string>
   <string name="mood_playlist_unavailable">Playlist unavailable</string>
   <string name="no_results_found">No results found for \"%1$s\"</string>
   <string name="now_label">Now</string>

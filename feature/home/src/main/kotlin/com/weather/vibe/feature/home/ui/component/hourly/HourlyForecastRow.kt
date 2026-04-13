@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.ui.component
+package com.weather.vibe.feature.home.ui.component.hourly
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.label.SectionLabelText
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.preview.HourlyForecastListPreview
@@ -25,20 +26,24 @@ internal fun HourlyForecastRow(
   modifier: Modifier = Modifier,
   state: HourlyForecastsUiState
 ) {
+
   val listState = rememberLazyListState()
+
   LaunchedEffect(state.items.firstOrNull()?.timeLabel) {
     listState.animateScrollToItem(index = 0)
   }
+
   Column(modifier = modifier.fillMaxWidth()) {
     SectionLabelText(
-      modifier = Modifier.padding(horizontal = Padding.Medium),
+      modifier = Modifier
+        .padding(horizontal = Medium),
       text = hourlyForecastTitle(),
       uppercase = true
     )
     LazyRow(
       state = listState,
-      horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall),
-      contentPadding = PaddingValues(horizontal = Padding.Medium)
+      horizontalArrangement = Arrangement.spacedBy(ExtraSmall),
+      contentPadding = PaddingValues(horizontal = Medium)
     ) {
       items(
         items = state.items,

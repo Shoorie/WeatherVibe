@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.ui.screen
+package com.weather.vibe.feature.home.ui.screen.callbacks
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.platform.UriHandler

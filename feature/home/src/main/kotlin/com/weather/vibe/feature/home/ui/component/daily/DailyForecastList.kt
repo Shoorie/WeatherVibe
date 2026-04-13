@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.ui.component
+package com.weather.vibe.feature.home.ui.component.daily
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.HorizontalDivider

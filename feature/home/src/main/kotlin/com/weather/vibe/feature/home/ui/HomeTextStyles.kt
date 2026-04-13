@@ -30,4 +30,16 @@ internal object HomeTextStyles {
   fun mutedOnPrimaryContainer(): Color =
     colors.onPrimaryContainer
       .copy(alpha = BriefingMutedAlpha)
+
+  @Composable
+  fun hourlyTimeColor(isCurrentHour: Boolean): Color =
+    if (isCurrentHour) colors.onAccent else colors.onSurfaceVariant
+
+  @Composable
+  fun hourlyTemperatureColor(isCurrentHour: Boolean): Color =
+    if (isCurrentHour) colors.onAccent else colors.onBackground
+
+  @Composable
+  fun hourlyBackgroundColor(isCurrentHour: Boolean): Color =
+    if (isCurrentHour) colors.accent else Color.Transparent
 }

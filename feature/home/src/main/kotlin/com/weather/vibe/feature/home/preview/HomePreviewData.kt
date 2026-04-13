@@ -1,23 +1,53 @@
 package com.weather.vibe.feature.home.preview
 
+import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
+import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
+import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
+import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.dewDrop
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.eye
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.gauge
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.mostlySunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.precipitation
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunShower
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
 internal object HomePreviewData {
+
+  val header: HeaderUiState =
+    HeaderUiState(
+      cityName = "Zielona Góra",
+      dateLabel = "Saturday, 22 March"
+    )
+
+  val warmDayCurrent: CurrentWeatherUiState =
+    CurrentWeatherUiState(
+      conditionEmoji = partlyCloudy(),
+      conditionLabel = "Partly Cloudy",
+      currentTemperature = "19°",
+      feelsLikeTemperature = "17°",
+      highTemperature = "22°",
+      lowTemperature = "14°"
+    )
 
   val afternoonSunInfo: SunriseSunsetUiState =
     SunriseSunsetUiState(
@@ -166,6 +196,43 @@ internal object HomePreviewData {
       )
     }.toImmutableList()
   )
+
+  private val windMetrics: List<MetricItemUiState> =
+    listOf(
+      MetricItemUiState(wind(), "Wind Speed", "12 km/h"),
+      MetricItemUiState(compass(), "Direction", "SW"),
+      MetricItemUiState(windGusts(), "Wind Gusts", "20 km/h"),
+      MetricItemUiState(windMax(), "Max Wind", "28 km/h")
+    )
+
+  private val atmosphereMetrics: List<MetricItemUiState> =
+    listOf(
+      MetricItemUiState(humidity(), "Humidity", "65%"),
+      MetricItemUiState(gauge(), "Pressure", "1015 hPa"),
+      MetricItemUiState(dewDrop(), "Dew Point", "12°"),
+      MetricItemUiState(cloud(), "Cloud Cover", "45%")
+    )
+
+  private val conditionsMetrics: List<MetricItemUiState> =
+    listOf(
+      MetricItemUiState(precipitation(), "Precipitation", "20%"),
+      MetricItemUiState(uvIndex(), "UV Index", "3.5"),
+      MetricItemUiState(eye(), "Visibility", "24 km"),
+      MetricItemUiState(rainfall(), "Rainfall", "0.2 mm")
+    )
+
+  val detailsSections: DetailsSectionsUiState =
+    DetailsSectionsUiState(
+      atmosphere = atmosphereMetrics,
+      conditions = conditionsMetrics,
+      previewItems = listOf(
+        atmosphereMetrics[0],
+        windMetrics[0],
+        conditionsMetrics[1],
+        conditionsMetrics[0]
+      ),
+      wind = windMetrics
+    )
 
   val loadedPlaylist: PlaylistUiState.Loaded =
     PlaylistUiState.Loaded(

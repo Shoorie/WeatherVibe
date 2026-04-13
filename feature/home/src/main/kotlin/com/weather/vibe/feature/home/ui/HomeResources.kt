@@ -39,6 +39,9 @@ internal class HomeResources(private val context: Context) {
   fun pressure(): String =
     context.getString(R.string.pressure_label)
 
+  fun nowLabel(): String =
+    context.getString(R.string.now_label)
+
   fun rainfall(): String =
     context.getString(R.string.rainfall_label)
 
@@ -179,10 +182,6 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun moodPlaylistUnavailable(): String =
       stringResource(R.string.mood_playlist_unavailable)
-
-    @Composable
-    fun nowLabel(): String =
-      stringResource(R.string.now_label)
 
     @Composable
     fun openInSpotify(): String =

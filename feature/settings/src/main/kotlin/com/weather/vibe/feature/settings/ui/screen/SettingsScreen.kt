@@ -14,8 +14,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.settings.presentation.SettingsAction
@@ -87,7 +86,7 @@ private fun SettingsLoadedContent(
         .fillMaxWidth()
         .padding(innerPadding)
         .verticalScroll(rememberScrollState())
-        .padding(PaddingMedium)
+        .padding(Padding.Medium)
     ) {
       SettingsBriefToneSection(
         briefToneOptions = state.briefToneOptions,
@@ -96,11 +95,11 @@ private fun SettingsLoadedContent(
       SettingsTemperatureSection(
         isCelsius = state.isCelsius,
         onToggle = { dispatch(TemperatureUnitToggle) },
-        modifier = Modifier.padding(top = PaddingLarge)
+        modifier = Modifier.padding(top = Padding.Large)
       )
       if (state.hasExcludedGenres) {
         SettingsExcludedGenresSection(
-          modifier = Modifier.padding(top = PaddingLarge),
+          modifier = Modifier.padding(top = Padding.Large),
           genreChips = state.genreChips,
           onGenreRemove = { dispatch(GenreRemove(genre = it)) }
         )

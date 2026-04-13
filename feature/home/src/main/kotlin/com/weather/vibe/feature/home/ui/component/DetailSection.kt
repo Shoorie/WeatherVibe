@@ -17,15 +17,15 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.card.GlassCard
-import com.weather.vibe.core.designsystem.theme.AppDimens.DividerThickness
-import com.weather.vibe.core.designsystem.theme.AppDimens.EmojiSizeMetric
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.preview.DetailSectionPreview
 import com.weather.vibe.feature.home.preview.DetailSectionPreviewParams
+import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiMetric
 
 @Composable
 internal fun DetailSection(
@@ -36,7 +36,7 @@ internal fun DetailSection(
   Column(modifier = modifier.fillMaxWidth()) {
     Text(
       modifier = Modifier
-        .padding(bottom = PaddingSmall)
+        .padding(bottom = Padding.Small)
         .semantics { heading() },
       text = title,
       style = typography.titleSmall,
@@ -48,7 +48,7 @@ internal fun DetailSection(
         if (index < items.lastIndex) {
           HorizontalDivider(
             color = colors.outline,
-            thickness = DividerThickness
+            thickness = Stroke.Divider
           )
         }
       }
@@ -64,16 +64,16 @@ private fun DetailMetricRow(
   Row(
     modifier = modifier
       .fillMaxWidth()
-      .padding(vertical = PaddingSmall)
+      .padding(vertical = Padding.Small)
       .semantics(mergeDescendants = true) {},
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
       modifier = Modifier.clearAndSetSemantics {},
       text = item.icon,
-      fontSize = EmojiSizeMetric
+      fontSize = EmojiMetric
     )
-    Spacer(modifier = Modifier.width(PaddingSmall))
+    Spacer(modifier = Modifier.width(Padding.Small))
     Text(
       text = item.label,
       style = typography.bodyMedium,

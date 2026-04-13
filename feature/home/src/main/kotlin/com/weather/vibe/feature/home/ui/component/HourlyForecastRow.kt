@@ -1,45 +1,50 @@
 package com.weather.vibe.feature.home.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.components.card.GlassCardSection
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.components.label.SectionLabelText
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.preview.HourlyForecastListPreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.hourlyForecastTitle
 
 @Composable
 internal fun HourlyForecastRow(
   modifier: Modifier = Modifier,
-  hourlyForecasts: List<HourlyForecastUiState>
+  state: HourlyForecastsUiState
 ) {
-  val accentColor = colors.accent
-  val mutedColor = colors.onSurfaceVariant
-  GlassCardSection(
-    modifier = modifier,
-    title = hourlyForecastTitle()
-  ) {
-    Spacer(modifier = Modifier.height(PaddingSmall))
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(PaddingExtraSmall)) {
+  val listState = rememberLazyListState()
+  LaunchedEffect(state.items.firstOrNull()?.timeLabel) {
+    listState.animateScrollToItem(index = 0)
+  }
+  Column(modifier = modifier.fillMaxWidth()) {
+    SectionLabelText(
+      modifier = Modifier.padding(horizontal = Padding.Medium),
+      text = hourlyForecastTitle(),
+      uppercase = true
+    )
+    LazyRow(
+      state = listState,
+      horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall),
+      contentPadding = PaddingValues(horizontal = Padding.Medium)
+    ) {
       items(
-        items = hourlyForecasts,
+        items = state.items,
         key = { it.timeLabel }
       ) { hourly ->
-        HourlyForecastItem(
-          state = hourly,
-          accentColor = accentColor,
-          mutedColor = mutedColor
-        )
+        HourlyForecastItem(state = hourly)
       }
     }
   }
@@ -49,9 +54,9 @@ internal fun HourlyForecastRow(
 @Composable
 private fun Preview(
   @PreviewParameter(HourlyForecastListPreview::class)
-  forecasts: List<HourlyForecastUiState>
+  state: HourlyForecastsUiState
 ) {
   WeatherVibeTheme {
-    HourlyForecastRow(hourlyForecasts = forecasts)
+    HourlyForecastRow(state = state)
   }
 }

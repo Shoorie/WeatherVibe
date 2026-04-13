@@ -1,5 +1,6 @@
 <resources>
-  <string name="ai_briefing_label">AI Daily Briefing</string>
+  <string name="ai_briefing_label">Today\'s Vibe</string>
+  <string name="ai_briefing_music_hint">Discover today\'s sounds</string>
   <string name="ai_briefing_unavailable">Briefing unavailable</string>
   <string name="atmosphere_section_title">Atmosphere</string>
   <string name="back_content_description">Go back</string>
@@ -42,6 +43,7 @@
   <string name="uv_index_label">UV Index</string>
   <string name="visibility_label">Visibility</string>
   <string name="weather_details_title">Weather Details</string>
+  <string name="weather_details_view_all">View all details</string>
   <string name="wind_gusts_label">Wind Gusts</string>
   <string name="wind_section_title">Wind</string>
   <string name="wind_speed_label">Wind Speed</string>
@@ -64,6 +66,7 @@
   <string name="condition_unknown">Unknown</string>
 
   <string name="ai_briefing_retry">Retry</string>
+  <string name="ai_briefing_retry_content_description">Retry AI briefing</string>
   <string name="finding_better_suggestions">Finding better suggestions…</string>
   <string name="genre_remove_content_description">Remove %1$s</string>
   <string name="sun_progress_content_description">Sun progress, sunrise at %1$s, sunset at %2$s</string>

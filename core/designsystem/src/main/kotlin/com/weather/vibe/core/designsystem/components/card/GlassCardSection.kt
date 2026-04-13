@@ -10,9 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.DividerThickness
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -21,7 +20,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 fun GlassCardSection(
   modifier: Modifier = Modifier,
   title: String,
-  contentPadding: PaddingValues = PaddingValues(PaddingMedium),
+  contentPadding: PaddingValues = PaddingValues(Padding.Medium),
   showDivider: Boolean = true,
   content: @Composable ColumnScope.() -> Unit
 ) {
@@ -34,11 +33,11 @@ fun GlassCardSection(
       style = typography.titleSmall,
       color = colors.onSurfaceVariant
     )
-    Spacer(modifier = Modifier.height(PaddingSmall))
+    Spacer(modifier = Modifier.height(Padding.Small))
     if (showDivider) {
       HorizontalDivider(
         color = colors.outline,
-        thickness = DividerThickness
+        thickness = Stroke.Divider
       )
     }
     content()
@@ -50,7 +49,7 @@ fun GlassCardSection(
 private fun Preview() {
   WeatherVibeTheme {
     GlassCardSection(title = "Section title") {
-      Spacer(modifier = Modifier.height(PaddingSmall))
+      Spacer(modifier = Modifier.height(Padding.Small))
       Text(
         text = "Card content",
         style = typography.bodyMedium,

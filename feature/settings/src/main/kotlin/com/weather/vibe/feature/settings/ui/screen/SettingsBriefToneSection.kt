@@ -14,9 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
-import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -40,7 +39,7 @@ internal fun SettingsBriefToneSection(
       modifier = Modifier
         .fillMaxWidth()
         .border(
-          width = BorderThickness,
+          width = Stroke.Border,
           color = colors.glassBorder,
           shape = shapes.cardSmall
         )
@@ -64,7 +63,7 @@ private fun BriefToneRow(
     modifier = Modifier
       .fillMaxWidth()
       .clickable { onSelect() }
-      .padding(horizontal = PaddingMedium, vertical = PaddingSmall),
+      .padding(horizontal = Padding.Medium, vertical = Padding.Small),
     verticalAlignment = Alignment.CenterVertically
   ) {
     RadioButton(
@@ -72,7 +71,7 @@ private fun BriefToneRow(
       onClick = onSelect,
       colors = RadioButtonDefaults.colors(selectedColor = colors.accent)
     )
-    Column(modifier = Modifier.padding(start = PaddingSmall)) {
+    Column(modifier = Modifier.padding(start = Padding.Small)) {
       Text(
         text = option.label,
         color = colors.onBackground,

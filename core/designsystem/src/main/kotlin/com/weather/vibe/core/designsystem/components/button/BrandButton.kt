@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.BrandIconSize
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 
@@ -36,10 +36,10 @@ fun BrandButton(
     Icon(
       painter = icon,
       contentDescription = null,
-      modifier = Modifier.size(BrandIconSize),
+      modifier = Modifier.size(IconSize.Small),
       tint = colors.onBackground
     )
-    Spacer(modifier = Modifier.width(PaddingExtraSmall))
+    Spacer(modifier = Modifier.width(Padding.ExtraSmall))
     Text(
       text = text,
       color = colors.onBackground

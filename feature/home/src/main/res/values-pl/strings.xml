@@ -1,5 +1,6 @@
 <resources>
-  <string name="ai_briefing_label">Codzienny briefing AI</string>
+  <string name="ai_briefing_label">Dzisiejszy Vibe</string>
+  <string name="ai_briefing_music_hint">Odkryj dzisiejsze brzmienia</string>
   <string name="ai_briefing_unavailable">Briefing niedostępny</string>
   <string name="atmosphere_section_title">Atmosfera</string>
   <string name="back_content_description">Wróć</string>
@@ -42,6 +43,7 @@
   <string name="uv_index_label">Indeks UV</string>
   <string name="visibility_label">Widoczność</string>
   <string name="weather_details_title">Szczegóły pogody</string>
+  <string name="weather_details_view_all">Zobacz wszystkie szczegóły</string>
   <string name="wind_gusts_label">Porywy wiatru</string>
   <string name="wind_section_title">Wiatr</string>
   <string name="wind_speed_label">Prędkość wiatru</string>
@@ -63,6 +65,7 @@
   <string name="condition_unknown">Nieznane</string>
 
   <string name="ai_briefing_retry">Ponów</string>
+  <string name="ai_briefing_retry_content_description">Ponów briefing AI</string>
   <string name="finding_better_suggestions">Szukam lepszych propozycji…</string>
   <string name="genre_remove_content_description">Usuń %1$s</string>
   <string name="sun_progress_content_description">Słońce, wschód o %1$s, zachód o %2$s</string>

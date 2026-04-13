@@ -81,6 +81,9 @@ class HomeStateFactoryTest {
     every { temperatureFormatter.format(celsius = any(), unit = any()) } answers {
       "${firstArg<Double>().toInt()}°"
     }
+    every { temperatureFormatter.roundedValue(celsius = any(), unit = any()) } answers {
+      firstArg<Double>().toInt()
+    }
     every { metricsFactory.create(any(), any()) } returns METRICS_SECTIONS
   }
 
@@ -188,7 +191,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.timeLabel }
+    expectThat(result.hourlyForecast.items).map { it.timeLabel }
       .containsExactly("12:00", "13:00", "14:00")
   }
 
@@ -197,7 +200,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast[0].isCurrentHour).isTrue()
+    expectThat(result.hourlyForecast.items[0].isCurrentHour).isTrue()
   }
 
   @Test
@@ -205,7 +208,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.drop(1)).map { it.isCurrentHour }
+    expectThat(result.hourlyForecast.items.drop(1)).map { it.isCurrentHour }
       .containsExactly(false, false)
   }
 
@@ -214,7 +217,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.conditionEmoji }
+    expectThat(result.hourlyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji)
   }
 
@@ -223,7 +226,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast).map { it.temperature }
+    expectThat(result.hourlyForecast.items).map { it.temperature }
       .containsExactly("22°", "24°", "23°")
   }
 
@@ -233,7 +236,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast).map { it.conditionEmoji }
+    expectThat(result.dailyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji, RAIN.emoji)
   }
 
@@ -242,7 +245,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast[0].maxTemperature)
+    expectThat(result.dailyForecast.items[0].maxTemperature)
       .isEqualTo("25°")
   }
 
@@ -251,7 +254,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast[0].minTemperature)
+    expectThat(result.dailyForecast.items[0].minTemperature)
       .isEqualTo("12°")
   }
 

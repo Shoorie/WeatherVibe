@@ -16,9 +16,7 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.home.presentation.HomeViewModel
@@ -85,32 +83,32 @@ private fun DetailsLoadedContent(
   LazyColumn(
     modifier = modifier
       .fillMaxSize()
-      .padding(horizontal = PaddingMedium)
+      .padding(horizontal = Padding.Medium)
   ) {
-    item { Spacer(modifier = Modifier.height(PaddingSmall)) }
+    item { Spacer(modifier = Modifier.height(Padding.Small)) }
     item { SunArcSection(state = state.sunriseSunset) }
-    item { Spacer(modifier = Modifier.height(PaddingMedium)) }
+    item { Spacer(modifier = Modifier.height(Padding.Medium)) }
     item {
       DetailSection(
         title = windSectionTitle(),
         items = state.detailsSections.wind
       )
     }
-    item { Spacer(modifier = Modifier.height(PaddingMedium)) }
+    item { Spacer(modifier = Modifier.height(Padding.Medium)) }
     item {
       DetailSection(
         title = atmosphereSectionTitle(),
         items = state.detailsSections.atmosphere
       )
     }
-    item { Spacer(modifier = Modifier.height(PaddingMedium)) }
+    item { Spacer(modifier = Modifier.height(Padding.Medium)) }
     item {
       DetailSection(
         title = conditionsSectionTitle(),
         items = state.detailsSections.conditions
       )
     }
-    item { Spacer(modifier = Modifier.height(PaddingExtraLarge)) }
+    item { Spacer(modifier = Modifier.height(Padding.ExtraLarge)) }
   }
 }
 

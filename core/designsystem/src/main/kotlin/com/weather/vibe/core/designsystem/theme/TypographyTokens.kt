@@ -56,6 +56,7 @@ internal object LetterSpacingTokens {
 internal object TypographyTokens {
 
   val BodyLarge = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Normal,
     fontSize = FontSizeTokens.BodyLarge,
     lineHeight = LineHeightTokens.BodyLarge,
@@ -63,6 +64,7 @@ internal object TypographyTokens {
   )
 
   val BodyMedium = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Normal,
     fontSize = FontSizeTokens.BodyMedium,
     lineHeight = LineHeightTokens.BodyMedium,
@@ -70,6 +72,7 @@ internal object TypographyTokens {
   )
 
   val BodySmall = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Normal,
     fontSize = FontSizeTokens.BodySmall,
     lineHeight = LineHeightTokens.BodySmall,
@@ -77,6 +80,7 @@ internal object TypographyTokens {
   )
 
   val DisplayLarge = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Light,
     fontSize = FontSizeTokens.DisplayLarge,
     lineHeight = LineHeightTokens.DisplayLarge,
@@ -84,6 +88,7 @@ internal object TypographyTokens {
   )
 
   val DisplayMedium = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Light,
     fontSize = FontSizeTokens.DisplayMedium,
     lineHeight = LineHeightTokens.DisplayMedium,
@@ -91,6 +96,7 @@ internal object TypographyTokens {
   )
 
   val DisplaySmall = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Normal,
     fontSize = FontSizeTokens.DisplaySmall,
     lineHeight = LineHeightTokens.DisplaySmall,
@@ -98,6 +104,7 @@ internal object TypographyTokens {
   )
 
   val HeadlineLarge = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.SemiBold,
     fontSize = FontSizeTokens.HeadlineLarge,
     lineHeight = LineHeightTokens.HeadlineLarge,
@@ -105,6 +112,7 @@ internal object TypographyTokens {
   )
 
   val HeadlineMedium = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Normal,
     fontSize = FontSizeTokens.HeadlineMedium,
     lineHeight = LineHeightTokens.HeadlineMedium,
@@ -112,6 +120,7 @@ internal object TypographyTokens {
   )
 
   val LabelMedium = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Medium,
     fontSize = FontSizeTokens.LabelMedium,
     lineHeight = LineHeightTokens.Label,
@@ -119,6 +128,7 @@ internal object TypographyTokens {
   )
 
   val LabelSmall = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Medium,
     fontSize = FontSizeTokens.LabelSmall,
     lineHeight = LineHeightTokens.Label,
@@ -126,6 +136,7 @@ internal object TypographyTokens {
   )
 
   val TitleLarge = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.SemiBold,
     fontSize = FontSizeTokens.TitleLarge,
     lineHeight = LineHeightTokens.TitleLarge,
@@ -133,6 +144,7 @@ internal object TypographyTokens {
   )
 
   val TitleMedium = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Medium,
     fontSize = FontSizeTokens.TitleMedium,
     lineHeight = LineHeightTokens.TitleMedium,
@@ -140,6 +152,7 @@ internal object TypographyTokens {
   )
 
   val TitleSmall = TextStyle(
+    fontFamily = ManropeFontFamily,
     fontWeight = FontWeightTokens.Medium,
     fontSize = FontSizeTokens.TitleSmall,
     lineHeight = LineHeightTokens.TitleSmall,

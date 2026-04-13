@@ -28,8 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.card.GlassCard
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -102,15 +101,15 @@ internal fun SearchContent(
       .fillMaxSize()
       .background(brush = backgroundBrush)
       .statusBarsPadding()
-      .padding(horizontal = PaddingMedium)
+      .padding(horizontal = Padding.Medium)
   ) {
     SearchBar(
-      modifier = Modifier.padding(top = PaddingMedium),
+      modifier = Modifier.padding(top = Padding.Medium),
       query = state.query,
       onQueryChange = { dispatch(QueryChange(it)) },
       onBack = { dispatch(BackClick) }
     )
-    Spacer(modifier = Modifier.height(PaddingSmall))
+    Spacer(modifier = Modifier.height(Padding.Small))
     SearchStateContent(
       state = state,
       onLocationClick = { id -> dispatch(LocationSelect(id)) },
@@ -193,7 +192,7 @@ private fun LocationList(
       if (index < locations.lastIndex) {
         HorizontalDivider(
           color = colors.outline,
-          modifier = Modifier.padding(horizontal = PaddingMedium)
+          modifier = Modifier.padding(horizontal = Padding.Medium)
         )
       }
     }
@@ -205,7 +204,7 @@ private fun SearchingIndicator(modifier: Modifier = Modifier) {
   LoadingIndicator(
     modifier = modifier
       .fillMaxWidth()
-      .padding(PaddingMedium)
+      .padding(Padding.Medium)
   )
 }
 
@@ -220,7 +219,7 @@ private fun EmptyMessage(
     color = colors.onSurfaceVariant,
     modifier = modifier
       .fillMaxWidth()
-      .padding(PaddingMedium),
+      .padding(Padding.Medium),
     textAlign = TextAlign.Center
   )
 }
@@ -234,9 +233,9 @@ private fun ErrorMessage(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(PaddingMedium),
+      .padding(Padding.Medium),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+    verticalArrangement = Arrangement.spacedBy(Padding.Small)
   ) {
     Text(
       text = message,

@@ -1,29 +1,41 @@
 package com.weather.vibe.core.designsystem.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 
-val LocalWeatherColors = staticCompositionLocalOf { weatherDarkColors() }
+val LocalWeatherColors = staticCompositionLocalOf { weatherLightColors() }
 val LocalWeatherTypography = staticCompositionLocalOf { WeatherTypography() }
 val LocalWeatherShapes = staticCompositionLocalOf { WeatherShapes() }
 
 @Composable
-fun WeatherVibeTheme(content: @Composable () -> Unit) {
-  val colors = weatherDarkColors()
+fun WeatherVibeTheme(
+  darkTheme: Boolean = isSystemInDarkTheme(),
+  content: @Composable () -> Unit
+) {
+
+  val colors = remember(darkTheme) { if (darkTheme) weatherDarkColors() else weatherLightColors() }
+  val typography = remember { WeatherTypography() }
+  val shapes = remember { WeatherShapes() }
+  val colorScheme = remember(colors, darkTheme) { materialColorScheme(colors, darkTheme) }
+  val materialTypography = remember { materialTypography() }
+
   CompositionLocalProvider(
     LocalWeatherColors provides colors,
-    LocalWeatherTypography provides WeatherTypography(),
-    LocalWeatherShapes provides WeatherShapes()
+    LocalWeatherTypography provides typography,
+    LocalWeatherShapes provides shapes
   ) {
     MaterialTheme(
-      colorScheme = materialColorScheme(colors),
-      typography = materialTypography(),
+      colorScheme = colorScheme,
+      typography = materialTypography,
       content = content
     )
   }
@@ -44,24 +56,44 @@ object WeatherVibeTheme {
     get() = LocalWeatherShapes.current
 }
 
-private fun materialColorScheme(colors: WeatherColors): ColorScheme =
-  darkColorScheme(
-    primary = colors.accent,
-    onPrimary = colors.backgroundGradientEnd,
-    primaryContainer = colors.glassSurfaceHeavy,
-    onPrimaryContainer = colors.accent,
-    secondary = colors.onSurfaceVariant,
-    onSecondary = colors.backgroundGradientEnd,
-    background = colors.backgroundGradientEnd,
-    onBackground = colors.onBackground,
-    surface = colors.backgroundGradientStart,
-    onSurface = colors.onSurface,
-    surfaceVariant = colors.surfaceVariant,
-    onSurfaceVariant = colors.onSurfaceVariant,
-    outline = colors.outline,
-    error = colors.error,
-    onError = colors.onError
-  )
+private fun materialColorScheme(colors: WeatherColors, darkTheme: Boolean): ColorScheme =
+  if (darkTheme) {
+    darkColorScheme(
+      primary = colors.accent,
+      onPrimary = colors.onAccent,
+      primaryContainer = colors.primaryContainer,
+      onPrimaryContainer = colors.onPrimaryContainer,
+      secondary = colors.onSurfaceVariant,
+      onSecondary = colors.onAccent,
+      background = colors.backgroundGradientEnd,
+      onBackground = colors.onBackground,
+      surface = colors.glassSurface,
+      onSurface = colors.onSurface,
+      surfaceVariant = colors.surfaceVariant,
+      onSurfaceVariant = colors.onSurfaceVariant,
+      outline = colors.outline,
+      error = colors.error,
+      onError = colors.onError
+    )
+  } else {
+    lightColorScheme(
+      primary = colors.accent,
+      onPrimary = colors.onAccent,
+      primaryContainer = colors.primaryContainer,
+      onPrimaryContainer = colors.onPrimaryContainer,
+      secondary = colors.onSurfaceVariant,
+      onSecondary = colors.onAccent,
+      background = colors.backgroundGradientEnd,
+      onBackground = colors.onBackground,
+      surface = colors.glassSurface,
+      onSurface = colors.onSurface,
+      surfaceVariant = colors.surfaceVariant,
+      onSurfaceVariant = colors.onSurfaceVariant,
+      outline = colors.outline,
+      error = colors.error,
+      onError = colors.onError
+    )
+  }
 
 private fun materialTypography(): Typography =
   Typography(

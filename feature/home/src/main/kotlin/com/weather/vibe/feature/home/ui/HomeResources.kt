@@ -109,12 +109,24 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.ai_briefing_label)
 
     @Composable
+    fun aiBriefingMusicHint(): String =
+      stringResource(R.string.ai_briefing_music_hint)
+
+    @Composable
     fun aiBriefingRetryLabel(): String =
       stringResource(R.string.ai_briefing_retry)
 
     @Composable
+    fun aiBriefingRetryContentDescription(): String =
+      stringResource(R.string.ai_briefing_retry_content_description)
+
+    @Composable
     fun aiBriefingUnavailable(): String =
       stringResource(R.string.ai_briefing_unavailable)
+
+    @Composable
+    fun findingBetterSuggestionsLabel(): String =
+      stringResource(R.string.finding_better_suggestions)
 
     @Composable
     fun atmosphereSectionTitle(): String =
@@ -219,6 +231,10 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun weatherDetailsTitle(): String =
       stringResource(R.string.weather_details_title)
+
+    @Composable
+    fun weatherDetailsViewAll(): String =
+      stringResource(R.string.weather_details_view_all)
 
     @Composable
     fun windSectionTitle(): String =

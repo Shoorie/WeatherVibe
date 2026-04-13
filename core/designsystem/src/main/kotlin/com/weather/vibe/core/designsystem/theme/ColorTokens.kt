@@ -3,7 +3,7 @@ package com.weather.vibe.core.designsystem.theme
 import androidx.compose.ui.graphics.Color
 
 internal object ColorTokens {
-  
+
   val AccentSkyBlue = Color(0xFF4FC3F7)
   val AccentSkyBlueDark = Color(0xFF0288D1)
   val BackgroundGradientEnd = Color(0xFF0A1428)

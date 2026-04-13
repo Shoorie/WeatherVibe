@@ -1,39 +1,46 @@
-package com.weather.vibe.feature.settings.ui.screen
+package com.weather.vibe.feature.settings.ui.component.genres
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.chip.VibeInputChip
-import com.weather.vibe.core.designsystem.components.label.SectionLabel
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.settings.presentation.state.GenreChipSettingsUiState
 import com.weather.vibe.feature.settings.preview.SettingsPreviewData.genreChips
-import com.weather.vibe.feature.settings.ui.SettingsResources.Texts
+import com.weather.vibe.feature.settings.ui.SettingsResources.Emojis
+import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.excludedGenresSection
+import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.excludedGenresSectionSubtitle
+import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.genreRemoveContentDescription
+import com.weather.vibe.feature.settings.ui.component.SettingsSection
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun SettingsExcludedGenresSection(
+internal fun ExcludedGenresSection(
   modifier: Modifier = Modifier,
   genreChips: List<GenreChipSettingsUiState>,
   onGenreRemove: (String) -> Unit
 ) {
-  SectionLabel(
+  SettingsSection(
     modifier = modifier,
-    text = Texts.excludedGenresSection()
+    emoji = Emojis.excludedGenres(),
+    title = excludedGenresSection(),
+    subtitle = excludedGenresSectionSubtitle()
   ) {
     FlowRow(
-      horizontalArrangement = Arrangement.spacedBy(Padding.Small),
-      verticalArrangement = Arrangement.spacedBy(Padding.Small)
+      horizontalArrangement = Arrangement.spacedBy(Small),
+      verticalArrangement = Arrangement.spacedBy(Small)
     ) {
       genreChips.forEach { chip ->
         VibeInputChip(
           label = chip.name,
           selected = true,
-          onDismiss = { onGenreRemove(chip.name) }
+          onDismiss = { onGenreRemove(chip.name) },
+          dismissContentDescription = genreRemoveContentDescription(chip.name)
         )
       }
     }
@@ -44,7 +51,8 @@ internal fun SettingsExcludedGenresSection(
 @Composable
 private fun Preview() {
   WeatherVibeTheme {
-    SettingsExcludedGenresSection(
+    ExcludedGenresSection(
+      modifier = Modifier.fillMaxWidth(),
       genreChips = genreChips,
       onGenreRemove = {}
     )

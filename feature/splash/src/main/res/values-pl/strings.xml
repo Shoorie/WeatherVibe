@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">WeatherVibe</string>
+  <string name="app_tagline">Twoja codzienna dawka klimatu</string>
 </resources>

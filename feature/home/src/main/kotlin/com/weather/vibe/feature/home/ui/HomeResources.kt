@@ -88,6 +88,7 @@ internal class HomeResources(private val context: Context) {
     fun error(): String = "\u26A1"
     fun eye(): String = "\uD83D\uDC41\uFE0F"
     fun gauge(): String = "\uD83D\uDD36"
+    fun headphones(): String = "\uD83C\uDFA7"
     fun humidity(): String = "\uD83D\uDCA7"
     fun moon(): String = "\uD83C\uDF19"
     fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
@@ -184,8 +185,16 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.mood_playlist_content_description)
 
     @Composable
+    fun moodPlaylistErrorTitle(): String =
+      stringResource(R.string.mood_playlist_error_title)
+
+    @Composable
     fun moodPlaylistLabel(): String =
       stringResource(R.string.mood_playlist_label)
+
+    @Composable
+    fun moodPlaylistSubtitle(): String =
+      stringResource(R.string.mood_playlist_subtitle)
 
     @Composable
     fun moodPlaylistUnavailable(): String =

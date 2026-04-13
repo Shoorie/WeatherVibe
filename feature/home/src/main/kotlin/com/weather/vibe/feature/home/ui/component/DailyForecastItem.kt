@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -36,25 +35,23 @@ import com.weather.vibe.feature.home.ui.HomeDefaults.DailyRowBarWeight
 import com.weather.vibe.feature.home.ui.HomeDefaults.DailyRowDayWeight
 import com.weather.vibe.feature.home.ui.HomeDefaults.DailyRowTempWeight
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiSmall
+import com.weather.vibe.feature.home.ui.HomeTextStyles
 
 @Composable
 internal fun DailyForecastItem(
   modifier: Modifier = Modifier,
   state: DailyForecastUiState
 ) {
-  val dayColor = if (state.isToday) colors.accent else colors.onBackground
-  val baseStyle = typography.bodyMedium
-  val boldStyle = remember(baseStyle) { baseStyle.copy(fontWeight = FontWeight.SemiBold) }
-  val dayStyle = if (state.isToday) boldStyle else baseStyle
-  val contentLabel = remember(state) {
-    "${state.dayLabel}, ${state.conditionLabel}, ${state.minTemperature} – ${state.maxTemperature}"
-  }
+
+  val dayColor = HomeTextStyles.dayColor(isToday = state.isToday)
+  val dayStyle = HomeTextStyles.dayStyle(isToday = state.isToday)
+  val maxStyle = HomeTextStyles.semiBold(typography.bodyMedium)
 
   Row(
     modifier = modifier
       .fillMaxWidth()
       .padding(vertical = Padding.Small)
-      .semantics(mergeDescendants = true) { contentDescription = contentLabel },
+      .semantics(mergeDescendants = true) { contentDescription = state.contentDescription },
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Padding.Small)
   ) {
@@ -86,7 +83,7 @@ internal fun DailyForecastItem(
     Text(
       modifier = Modifier.weight(DailyRowTempWeight),
       text = state.maxTemperature,
-      style = boldStyle,
+      style = maxStyle,
       color = colors.onBackground,
       textAlign = TextAlign.End
     )
@@ -98,6 +95,7 @@ private fun DailyRangeBar(
   modifier: Modifier = Modifier,
   range: DailyRangeUiState
 ) {
+
   val trackColor = colors.outlineVariant
   val coolColor = colors.colorCool
   val warmColor = colors.colorWarm
@@ -114,6 +112,7 @@ private fun DailyRangeBar(
       .height(DailyRangeBarHeight)
       .clearAndSetSemantics {}
   ) {
+
     val thicknessPx = DailyRangeBarThickness.toPx()
     val barTop = (size.height - thicknessPx) / 2f
     val barCorner = CornerRadius(thicknessPx / 2f)
@@ -123,6 +122,7 @@ private fun DailyRangeBar(
       size = Size(size.width, thicknessPx),
       cornerRadius = barCorner
     )
+
     val fillStart = size.width * range.startFraction
     val fillWidth = (size.width * (range.endFraction - range.startFraction))
       .coerceAtLeast(thicknessPx)
@@ -132,6 +132,7 @@ private fun DailyRangeBar(
       size = Size(fillWidth, thicknessPx),
       cornerRadius = barCorner
     )
+
     val currentFraction = range.currentFraction ?: return@Canvas
     val centerX = size.width * currentFraction
     val centerY = size.height / 2f

@@ -23,10 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -38,10 +36,10 @@ import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.preview.DetailsPreviewCardPreview
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiMetric
 import com.weather.vibe.feature.home.ui.HomeDefaults.MetricGridColumns
+import com.weather.vibe.feature.home.ui.HomeDefaults.ViewAllMinHeight
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsViewAll
-
-private val ViewAllMinHeight = 48.dp
+import com.weather.vibe.feature.home.ui.HomeTextStyles
 
 @Composable
 internal fun DetailsPreviewCard(
@@ -65,9 +63,10 @@ private fun ViewAllDetailsLink(
   modifier: Modifier = Modifier,
   onClick: () -> Unit
 ) {
+
   val label = weatherDetailsViewAll()
-  val baseStyle = typography.labelMedium
-  val textStyle = remember(baseStyle) { baseStyle.copy(fontWeight = FontWeight.SemiBold) }
+  val textStyle = HomeTextStyles.semiBold(typography.labelMedium)
+
   Row(
     modifier = modifier
       .fillMaxWidth()
@@ -79,7 +78,7 @@ private fun ViewAllDetailsLink(
         role = Role.Button
       )
       .padding(vertical = Padding.Small),
-    horizontalArrangement = Arrangement.Center,
+    horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall, Alignment.CenterHorizontally),
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
@@ -87,7 +86,6 @@ private fun ViewAllDetailsLink(
       style = textStyle,
       color = colors.accent
     )
-    Spacer(modifier = Modifier.size(Padding.ExtraSmall))
     Icon(
       imageVector = Icons.AutoMirrored.Filled.ArrowForward,
       contentDescription = null,
@@ -128,8 +126,9 @@ private fun MetricTile(
   modifier: Modifier = Modifier,
   item: MetricItemUiState
 ) {
-  val baseStyle = typography.titleMedium
-  val valueStyle = remember(baseStyle) { baseStyle.copy(fontWeight = FontWeight.SemiBold) }
+
+  val valueStyle = HomeTextStyles.semiBold(typography.titleMedium)
+
   Column(
     modifier = modifier
       .clip(shapes.cardSmall)

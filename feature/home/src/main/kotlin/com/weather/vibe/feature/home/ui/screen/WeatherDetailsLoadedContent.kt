@@ -20,8 +20,14 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.header
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionSubtitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionTitle
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionSubtitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionTitle
+import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionSubtitle
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
 import com.weather.vibe.feature.home.ui.component.details.DetailSection
 import com.weather.vibe.feature.home.ui.component.sun.SunArcSection
@@ -41,21 +47,27 @@ internal fun WeatherDetailsLoadedContent(
     item { Spacer(modifier = Modifier.height(Medium)) }
     item {
       DetailSection(
+        emoji = wind(),
         title = windSectionTitle(),
+        subtitle = windSectionSubtitle(),
         items = state.detailsSections.wind
       )
     }
     item { Spacer(modifier = Modifier.height(Medium)) }
     item {
       DetailSection(
+        emoji = humidity(),
         title = atmosphereSectionTitle(),
+        subtitle = atmosphereSectionSubtitle(),
         items = state.detailsSections.atmosphere
       )
     }
     item { Spacer(modifier = Modifier.height(Medium)) }
     item {
       DetailSection(
+        emoji = cloud(),
         title = conditionsSectionTitle(),
+        subtitle = conditionsSectionSubtitle(),
         items = state.detailsSections.conditions
       )
     }

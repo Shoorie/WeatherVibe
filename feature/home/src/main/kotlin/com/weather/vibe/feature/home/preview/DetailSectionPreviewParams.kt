@@ -6,6 +6,8 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 internal data class DetailSectionPreviewParams(
+  val emoji: String,
   val items: ImmutableList<MetricItemUiState>,
+  val subtitle: String,
   val title: String
 )

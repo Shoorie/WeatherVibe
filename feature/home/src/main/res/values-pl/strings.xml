@@ -2,10 +2,12 @@
   <string name="ai_briefing_label">Dzisiejszy Vibe</string>
   <string name="ai_briefing_music_hint">Odkryj dzisiejsze brzmienia</string>
   <string name="ai_briefing_unavailable">Briefing niedostępny</string>
+  <string name="atmosphere_section_subtitle">Ciśnienie, wilgotność i punkt rosy</string>
   <string name="atmosphere_section_title">Atmosfera</string>
   <string name="back_content_description">Wróć</string>
   <string name="cloud_cover_label">Zachmurzenie</string>
   <string name="close_search_content_description">Zamknij wyszukiwanie</string>
+  <string name="conditions_section_subtitle">Opady, UV i widoczność</string>
   <string name="conditions_section_title">Warunki</string>
   <string name="daily_forecast_title">Prognoza 7-dniowa</string>
   <string name="day_length_format">%1$dh %2$dm</string>
@@ -45,6 +47,7 @@
   <string name="weather_details_title">Szczegóły pogody</string>
   <string name="weather_details_view_all">Zobacz wszystkie szczegóły</string>
   <string name="wind_gusts_label">Porywy wiatru</string>
+  <string name="wind_section_subtitle">Prędkość, kierunek i porywy</string>
   <string name="wind_section_title">Wiatr</string>
   <string name="wind_speed_label">Prędkość wiatru</string>
   <string name="wind_speed_max_label">Maks. wiatr</string>
@@ -69,6 +72,8 @@
   <string name="finding_better_suggestions">Szukam lepszych propozycji…</string>
   <string name="genre_remove_content_description">Usuń %1$s</string>
   <string name="sun_progress_content_description">Słońce, wschód o %1$s, zachód o %2$s</string>
+  <string name="sun_section_subtitle">Wschód, zachód i długość dnia</string>
+  <string name="sun_section_title">Słońce</string>
   <string name="sunrise_at_format">Wschód o %1$s</string>
   <string name="sunset_at_format">Zachód o %1$s</string>
 </resources>

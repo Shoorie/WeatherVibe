@@ -9,7 +9,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
-import com.weather.vibe.feature.search.ui.SearchScreen
+import com.weather.vibe.feature.search.ui.screen.SearchScreen
 import com.weather.vibe.feature.settings.ui.screen.SettingsScreen
 import com.weather.vibe.feature.splash.ui.screen.SplashScreen
 

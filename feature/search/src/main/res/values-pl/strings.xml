@@ -1,8 +1,20 @@
 <resources>
   <string name="search_hint">Wyszukaj miasto&#8230;</string>
-  <string name="close_search_content_description">Zamknij wyszukiwanie</string>
-  <string name="no_results_found">Brak wyników dla \"%1$s\"</string>
-  <string name="recent_locations_title">Ostatnio wyszukiwane</string>
+  <string name="search_clear_content_description">Wyczyść wyszukiwanie</string>
+
+  <string name="search_section_recents_title">Ostatnio wyszukiwane</string>
+  <string name="search_section_recents_subtitle">Wróć do miejsca, które już sprawdzałeś</string>
+
+  <string name="search_section_results_title">Wyniki</string>
+  <string name="search_section_results_subtitle">Kliknij, aby sprawdzić pogodę</string>
+
+  <string name="search_idle_title">Dokąd?</string>
+  <string name="search_idle_subtitle">Wyszukaj dowolne miasto na świecie</string>
+
+  <string name="search_empty_title">Brak wyników</string>
+  <string name="search_empty_subtitle">Brak dopasowań dla \"%1$s\"</string>
+
+  <string name="search_error_title">Coś poszło nie tak</string>
   <string name="search_error_default">Coś poszło nie tak</string>
   <string name="search_retry">Spróbuj ponownie</string>
 </resources>

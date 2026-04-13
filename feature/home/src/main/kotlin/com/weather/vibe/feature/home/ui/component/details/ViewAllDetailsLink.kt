@@ -37,7 +37,7 @@ internal fun ViewAllDetailsLink(
 ) {
 
   val label = weatherDetailsViewAll()
-  val textStyle = semiBold(typography.labelMedium)
+  val textStyle = semiBold(typography.bodyLarge)
 
   Row(
     modifier = modifier

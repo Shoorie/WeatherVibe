@@ -148,11 +148,12 @@ internal class HomeStateFactory(
   ): HourlyForecastsUiState =
     HourlyForecastsUiState(
       items = hours.mapIndexed { index, hour ->
+        val isCurrentHour = index == currentHourIndex
         HourlyForecastUiState(
           conditionEmoji = hour.condition.emoji,
-          isCurrentHour = index == currentHourIndex,
+          isCurrentHour = isCurrentHour,
           temperature = hour.temperature.formatted(unit),
-          timeLabel = formatHourLabel(hour.time)
+          timeLabel = if (isCurrentHour) resources.nowLabel() else formatHourLabel(hour.time)
         )
       }.toImmutableList()
     )

@@ -204,7 +204,7 @@ class HomeStateFactoryTest {
     val result = factory.create(WEATHER)
 
     expectThat(result.hourlyForecast.items).map { it.timeLabel }
-      .containsExactly("12:00", "13:00", "14:00")
+      .containsExactly("Now", "13:00", "14:00")
   }
 
   @Test

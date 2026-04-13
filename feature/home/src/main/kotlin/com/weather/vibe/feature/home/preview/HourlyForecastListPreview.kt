@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.mostlySunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
@@ -9,7 +10,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 
 internal class HourlyForecastListPreview :
-  PreviewParameterProvider<List<HourlyForecastUiState>> {
+  PreviewParameterProvider<HourlyForecastsUiState> {
 
   private val conditionEmojis: List<String> =
     listOf(
@@ -23,8 +24,8 @@ internal class HourlyForecastListPreview :
       mostlySunny()
     )
 
-  private val eightHours: List<HourlyForecastUiState> =
-    List(8) { index ->
+  private val eightHours = HourlyForecastsUiState(
+    items = List(8) { index ->
       HourlyForecastUiState(
         conditionEmoji = conditionEmojis[index],
         isCurrentHour = index == 0,
@@ -32,7 +33,8 @@ internal class HourlyForecastListPreview :
         timeLabel = "${14 + index}:00"
       )
     }
+  )
 
-  override val values: Sequence<List<HourlyForecastUiState>> =
+  override val values: Sequence<HourlyForecastsUiState> =
     sequenceOf(eightHours)
 }

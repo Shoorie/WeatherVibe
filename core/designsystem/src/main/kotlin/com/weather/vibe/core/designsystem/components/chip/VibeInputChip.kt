@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.BrandIconSize
+import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -37,12 +37,12 @@ fun VibeInputChip(
     trailingIcon = {
       IconButton(
         onClick = onDismiss,
-        modifier = Modifier.size(BrandIconSize)
+        modifier = Modifier.size(IconSize.Small)
       ) {
         Icon(
           imageVector = Icons.Default.Close,
           contentDescription = dismissContentDescription,
-          modifier = Modifier.size(BrandIconSize),
+          modifier = Modifier.size(IconSize.Small),
           tint = colors.onSurfaceVariant
         )
       }

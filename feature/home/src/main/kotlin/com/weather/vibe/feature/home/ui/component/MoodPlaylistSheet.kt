@@ -26,10 +26,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.button.BrandButton
 import com.weather.vibe.core.designsystem.components.chip.VibeInputChip
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -68,15 +65,15 @@ internal fun MoodPlaylistSheet(
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = PaddingMedium)
-        .padding(bottom = PaddingLarge)
+        .padding(horizontal = Padding.Medium)
+        .padding(bottom = Padding.Large)
     ) {
       Text(
         text = moodPlaylistLabel(),
         style = typography.titleMedium,
         color = colors.onBackground
       )
-      Spacer(modifier = Modifier.height(PaddingMedium))
+      Spacer(modifier = Modifier.height(Padding.Medium))
       when (state) {
         is Loading -> SheetLoadingContent()
         is Loaded -> SheetLoadedContent(
@@ -97,7 +94,7 @@ private fun SheetLoadingContent(modifier: Modifier = Modifier) {
   LoadingIndicator(
     modifier = modifier
       .fillMaxWidth()
-      .height(PaddingLarge)
+      .height(Padding.Large)
   )
 }
 
@@ -111,7 +108,7 @@ private fun SheetGeneratingContent(
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
     CircularProgressIndicator(color = colors.accent)
-    Spacer(modifier = Modifier.height(PaddingSmall))
+    Spacer(modifier = Modifier.height(Padding.Small))
     Text(
       text = message,
       style = typography.bodyMedium,
@@ -143,20 +140,20 @@ private fun SheetLoadedContent(
       style = typography.bodyMedium,
       color = colors.onBackground
     )
-    Spacer(modifier = Modifier.height(PaddingExtraSmall))
+    Spacer(modifier = Modifier.height(Padding.ExtraSmall))
     Text(
       text = state.moodDescription,
       style = typography.bodySmall,
       color = colors.onSurfaceVariant
     )
-    Spacer(modifier = Modifier.height(PaddingMedium))
+    Spacer(modifier = Modifier.height(Padding.Medium))
     GenreChips(
       genres = state.genres,
       onThumbsDown = onGenreRemoveClick
     )
-    Spacer(modifier = Modifier.height(PaddingMedium))
+    Spacer(modifier = Modifier.height(Padding.Medium))
     SpotifyButton(onClick = { onOpenSpotify(state.spotifyQuery) })
-    Spacer(modifier = Modifier.height(PaddingSmall))
+    Spacer(modifier = Modifier.height(Padding.Small))
     YtMusicButton(onClick = { onOpenYtMusic(state.ytMusicUrl) })
   }
 }
@@ -201,8 +198,8 @@ private fun GenreChips(
 ) {
   FlowRow(
     modifier = modifier,
-    horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
-    verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+    horizontalArrangement = Arrangement.spacedBy(Padding.Small),
+    verticalArrangement = Arrangement.spacedBy(Padding.Small)
   ) {
     genres.forEach { genre ->
       AnimatedVisibility(

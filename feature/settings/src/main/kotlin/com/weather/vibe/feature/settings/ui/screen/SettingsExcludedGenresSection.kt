@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.chip.VibeInputChip
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.settings.presentation.state.GenreChipSettingsUiState
 import com.weather.vibe.feature.settings.preview.SettingsPreviewData.genreChips
@@ -26,8 +26,8 @@ internal fun SettingsExcludedGenresSection(
     text = Texts.excludedGenresSection()
   ) {
     FlowRow(
-      horizontalArrangement = Arrangement.spacedBy(PaddingSmall),
-      verticalArrangement = Arrangement.spacedBy(PaddingSmall)
+      horizontalArrangement = Arrangement.spacedBy(Padding.Small),
+      verticalArrangement = Arrangement.spacedBy(Padding.Small)
     ) {
       genreChips.forEach { chip ->
         VibeInputChip(

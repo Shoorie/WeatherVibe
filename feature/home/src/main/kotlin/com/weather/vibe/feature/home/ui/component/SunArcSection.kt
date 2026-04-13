@@ -26,16 +26,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.card.GlassCard
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.SunArcHeight
-import com.weather.vibe.core.designsystem.theme.AppDimens.SunArcStrokeWidth
-import com.weather.vibe.core.designsystem.theme.AppDimens.SunDotRadius
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.preview.SunArcSectionPreview
+import com.weather.vibe.feature.home.ui.HomeDefaults.SunArcHeight
+import com.weather.vibe.feature.home.ui.HomeDefaults.SunArcStrokeWidth
+import com.weather.vibe.feature.home.ui.HomeDefaults.SunDotRadius
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunrise
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunset
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.dayLengthLabel
@@ -63,10 +62,10 @@ internal fun SunArcSection(
         .semantics { contentDescription = progressDescription },
       sunProgress = state.sunProgress
     )
-    Spacer(modifier = Modifier.height(PaddingSmall))
+    Spacer(modifier = Modifier.height(Padding.Small))
     SunTimesRow(state = state)
     if (state.dayLength.isNotEmpty()) {
-      Spacer(modifier = Modifier.height(PaddingExtraSmall))
+      Spacer(modifier = Modifier.height(Padding.ExtraSmall))
       Text(
         text = "${dayLengthLabel()}: ${state.dayLength}",
         style = typography.bodySmall,

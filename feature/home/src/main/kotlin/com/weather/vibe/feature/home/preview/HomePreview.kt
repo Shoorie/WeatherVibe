@@ -4,6 +4,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
+import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -12,6 +14,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
+import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
@@ -59,16 +62,17 @@ internal class HomePreview :
       lowTemperature = "14°"
     )
 
-  private val dailyForecast: List<DailyForecastUiState> =
-    listOf(
-      DailyForecastUiState(partlyCloudy(), "Today", "22°", "14°"),
-      DailyForecastUiState(rainfall(), "Tue", "19°", "11°"),
-      DailyForecastUiState(cloud(), "Wed", "15°", "8°"),
-      DailyForecastUiState(sunny(), "Thu", "24°", "16°"),
-      DailyForecastUiState(mostlySunny(), "Fri", "21°", "13°"),
-      DailyForecastUiState(sunShower(), "Sat", "17°", "10°"),
-      DailyForecastUiState(partlyCloudy(), "Sun", "20°", "12°")
+  private val dailyForecast: DailyForecastsUiState = DailyForecastsUiState(
+    items = listOf(
+      day("Today", partlyCloudy(), "Partly Cloudy", "22°", "14°", 0.7f, 0.95f, 0.85f, true),
+      day("Tue", rainfall(), "Rain", "19°", "11°", 0.55f, 0.78f),
+      day("Wed", cloud(), "Cloudy", "15°", "8°", 0.4f, 0.55f),
+      day("Thu", sunny(), "Sunny", "24°", "16°", 0.78f, 1f),
+      day("Fri", mostlySunny(), "Mostly Sunny", "21°", "13°", 0.62f, 0.85f),
+      day("Sat", sunShower(), "Showers", "17°", "10°", 0.48f, 0.65f),
+      day("Sun", partlyCloudy(), "Partly Cloudy", "20°", "12°", 0.58f, 0.8f)
     )
+  )
 
   private val windMetrics: List<MetricItemUiState> =
     listOf(
@@ -107,8 +111,8 @@ internal class HomePreview :
       wind = windMetrics
     )
 
-  private val hourlyForecast: List<HourlyForecastUiState> =
-    List(8) { i ->
+  private val hourlyForecast: HourlyForecastsUiState = HourlyForecastsUiState(
+    items = List(8) { i ->
       HourlyForecastUiState(
         conditionEmoji = partlyCloudy(),
         isCurrentHour = i == 0,
@@ -116,6 +120,7 @@ internal class HomePreview :
         timeLabel = "${14 + i}:00"
       )
     }
+  )
 
   private val loadingState: HomeUiState = Loading
 
@@ -163,5 +168,31 @@ internal class HomePreview :
       errorState,
       successWithForecast,
       successWithAiContent
+    )
+
+  @Suppress("LongParameterList")
+  private fun day(
+    label: String,
+    emoji: String,
+    condition: String,
+    max: String,
+    min: String,
+    rangeStart: Float,
+    rangeEnd: Float,
+    current: Float? = null,
+    isToday: Boolean = false
+  ): DailyForecastUiState =
+    DailyForecastUiState(
+      conditionEmoji = emoji,
+      conditionLabel = condition,
+      dayLabel = label,
+      isToday = isToday,
+      maxTemperature = max,
+      minTemperature = min,
+      range = DailyRangeUiState(
+        startFraction = rangeStart,
+        endFraction = rangeEnd,
+        currentFraction = current
+      )
     )
 }

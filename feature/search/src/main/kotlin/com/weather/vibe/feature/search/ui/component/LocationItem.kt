@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -35,7 +35,7 @@ internal fun LocationItem(
     modifier = modifier
       .fillMaxWidth()
       .clickable(onClick = onClick)
-      .padding(PaddingMedium),
+      .padding(Padding.Medium),
     verticalAlignment = Alignment.CenterVertically
   ) {
     if (temperature != null) {
@@ -45,7 +45,7 @@ internal fun LocationItem(
         style = typography.titleMedium,
         color = colors.accent
       )
-      Spacer(modifier = Modifier.width(PaddingMedium))
+      Spacer(modifier = Modifier.width(Padding.Medium))
     }
     Column(modifier = Modifier.weight(1f)) {
       Text(

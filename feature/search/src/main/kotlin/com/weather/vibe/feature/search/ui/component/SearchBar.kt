@@ -27,10 +27,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.theme.AppDimens.BorderThickness
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingExtraSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingMedium
-import com.weather.vibe.core.designsystem.theme.AppDimens.PaddingSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -57,7 +55,7 @@ internal fun SearchBar(
       .fillMaxWidth()
       .clip(shapes.card)
       .drawBehind { drawRect(surfaceColor) }
-      .border(BorderThickness, colors.glassBorder, shapes.card),
+      .border(Stroke.Border, colors.glassBorder, shapes.card),
     verticalAlignment = Alignment.CenterVertically
   ) {
     IconButton(onClick = onBack) {
@@ -72,7 +70,7 @@ internal fun SearchBar(
       onValueChange = onQueryChange,
       modifier = Modifier
         .weight(1f)
-        .padding(vertical = PaddingMedium)
+        .padding(vertical = Padding.Medium)
         .focusRequester(focusRequester),
       textStyle = typography.bodyLarge
         .copy(color = colors.onBackground),
@@ -98,8 +96,8 @@ internal fun SearchBar(
       contentDescription = null,
       tint = colors.onSurfaceVariant,
       modifier = Modifier.padding(
-        start = PaddingExtraSmall,
-        end = PaddingSmall
+        start = Padding.ExtraSmall,
+        end = Padding.Small
       )
     )
   }

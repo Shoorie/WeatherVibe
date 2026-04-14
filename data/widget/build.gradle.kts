@@ -11,6 +11,7 @@ android {
 
 dependencies {
   implementation(projects.domain.location)
+  implementation(projects.domain.weather)
   implementation(projects.domain.widget)
   implementation(libs.koin.android)
 

@@ -5,7 +5,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
-import androidx.glance.LocalContext
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.cornerRadius
 import androidx.glance.background
@@ -22,14 +21,13 @@ import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
 
 @Composable
 internal fun WidgetContent(state: WidgetUiState) {
-  val context = LocalContext.current
   Box(
     modifier = GlanceModifier
       .fillMaxSize()
       .background(WidgetPalette.background)
       .cornerRadius(24.dp)
       .padding(horizontal = 16.dp, vertical = 14.dp)
-      .clickable(launchAppAction(context))
+      .clickable(launchAppAction(state.locationIdOrNull()))
   ) {
     when (state) {
       is WidgetNotConfiguredUiState -> WidgetPlaceholder(state = state)
@@ -37,6 +35,11 @@ internal fun WidgetContent(state: WidgetUiState) {
       is WidgetReadyUiState -> WidgetReadyLayout(state = state)
     }
   }
+}
+
+private fun WidgetUiState.locationIdOrNull(): Long? = when (this) {
+  is WidgetReadyUiState -> locationId
+  else -> null
 }
 
 @PreviewLightDark

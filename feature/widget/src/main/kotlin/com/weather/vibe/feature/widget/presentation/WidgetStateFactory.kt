@@ -34,6 +34,7 @@ internal class WidgetStateFactory(private val resources: WidgetResources) {
         snapshot.location.name,
         snapshot.suggestion.mood
       ),
+      locationId = snapshot.location.id,
       locationName = snapshot.location.name,
       mood = snapshot.suggestion.mood,
       temperature = resources.temperature(snapshot.currentTemperature.roundToInt()),

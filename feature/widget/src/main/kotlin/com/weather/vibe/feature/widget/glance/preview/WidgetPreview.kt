@@ -16,6 +16,7 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
     WidgetReadyUiState(
       conditionEmoji = SUNNY,
       contentDescription = "Weather for Warsaw, Bright",
+      locationId = 1L,
       locationName = "Warsaw",
       mood = "Bright",
       temperature = "18°",
@@ -26,6 +27,7 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
     WidgetReadyUiState(
       conditionEmoji = RAINY,
       contentDescription = "Weather for Kraków, Cozy",
+      locationId = 2L,
       locationName = "Kraków",
       mood = "Cozy",
       temperature = "9°",

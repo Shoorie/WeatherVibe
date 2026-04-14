@@ -73,6 +73,22 @@ You MUST categorize every new module into one of the following groups:
 * **Rule:** MUST NOT contain any network DTOs or database entities. Uses models from
   `:domain:[feature]`.
 
+#### Home Screen Widget Variant
+
+A `:feature:[name]` module that ships a Glance widget follows the same rules with three
+additional sub-packages:
+
+* `.glance` — `GlanceAppWidget`, `GlanceAppWidgetReceiver`, composables, preview parameter
+  providers, and theme tokens mapped to Glance `ColorProvider` and `TextStyle`.
+* `.work` — `CoroutineWorker` implementations plus a scheduler that wires periodic refresh
+  through WorkManager.
+* `.config` — Optional `ComponentActivity` + `ViewModel` for the widget configuration screen,
+  reusing the passive-VM + `StateFactory` pattern.
+
+Widgets remain **passive**: the worker orchestrates existing domain use cases, the state
+factory maps the domain snapshot to an immutable presentation state, and composables consume
+that state only.
+
 ---
 
 ## 4. Strict Dependency Flow (DO NOT BREAK)

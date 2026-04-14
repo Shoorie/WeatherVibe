@@ -2,7 +2,6 @@ package com.weather.vibe.feature.widget.glance.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
@@ -13,10 +12,10 @@ import androidx.glance.layout.height
 import androidx.glance.text.Text
 import com.weather.vibe.feature.widget.glance.preview.WidgetPreview
 import com.weather.vibe.feature.widget.glance.theme.WidgetTextStyles
-import com.weather.vibe.feature.widget.presentation.state.WidgetNotConfiguredUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 
 @Composable
-internal fun WidgetPlaceholder(state: WidgetNotConfiguredUiState) {
+internal fun WidgetPlaceholder(state: WidgetNoLocationUiState) {
   Column(
     modifier = GlanceModifier.fillMaxSize(),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,5 +40,5 @@ internal fun WidgetPlaceholder(state: WidgetNotConfiguredUiState) {
 @PreviewLightDark
 @Composable
 private fun Preview() {
-  WidgetPlaceholder(state = WidgetPreview().notConfigured)
+  WidgetPlaceholder(state = WidgetPreview().noLocation)
 }

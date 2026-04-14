@@ -2,16 +2,11 @@
 <resources>
   <string name="widget_label">WeatherVibe</string>
   <string name="widget_description">Dzisiejsza pogoda i vibe</string>
-  <string name="widget_placeholder_title">Stuknij, aby skonfigurować</string>
-  <string name="widget_placeholder_body">Wybierz miasto, aby zobaczyć jego vibe.</string>
+  <string name="widget_no_location_title">Wybierz miasto w WeatherVibe</string>
+  <string name="widget_no_location_body">Otwórz apkę i wybierz miasto, aby zobaczyć tu jego vibe.</string>
   <string name="widget_waiting_title">Budzę vibe…</string>
   <string name="widget_waiting_body">Świeża prognoza dla %1$s zaraz się pojawi.</string>
   <string name="widget_temperature_format">%1$d°</string>
   <string name="widget_weather_content_description">Pogoda dla %1$s, %2$s</string>
   <string name="widget_tap_content_description">Otwórz WeatherVibe</string>
-  <string name="widget_config_picker_title">Wybierz miasto</string>
-  <string name="widget_config_empty_hint">Otwórz WeatherVibe, wybierz miasto i wróć tutaj, aby je przypiąć.</string>
-  <string name="widget_config_default_error">Coś poszło nie tak. Spróbuj ponownie.</string>
-  <string name="widget_config_retry">Spróbuj ponownie</string>
-  <string name="widget_config_subtitle_format">%1$s, %2$s</string>
 </resources>

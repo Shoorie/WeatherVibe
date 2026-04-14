@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.widget.glance.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.weather.vibe.feature.widget.presentation.state.WidgetNotConfiguredUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
@@ -41,11 +41,11 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
       title = "Waking up the vibe…"
     )
 
-  val notConfigured: WidgetNotConfiguredUiState =
-    WidgetNotConfiguredUiState(
-      body = "Pick a city to see its vibe.",
+  val noLocation: WidgetNoLocationUiState =
+    WidgetNoLocationUiState(
+      body = "Open the app and choose a location.",
       emoji = PINNED_LOCATION,
-      title = "Tap to configure"
+      title = "Pick a city in WeatherVibe"
     )
 
   override val values: Sequence<WidgetUiState>
@@ -53,6 +53,6 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
       sunnyReady,
       rainyReady,
       waiting,
-      notConfigured
+      noLocation
     )
 }

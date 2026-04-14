@@ -14,7 +14,7 @@ import androidx.glance.layout.padding
 import com.weather.vibe.feature.widget.glance.intent.launchAppAction
 import com.weather.vibe.feature.widget.glance.preview.WidgetPreview
 import com.weather.vibe.feature.widget.glance.theme.WidgetPalette
-import com.weather.vibe.feature.widget.presentation.state.WidgetNotConfiguredUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
@@ -30,7 +30,7 @@ internal fun WidgetContent(state: WidgetUiState) {
       .clickable(launchAppAction(state.locationIdOrNull()))
   ) {
     when (state) {
-      is WidgetNotConfiguredUiState -> WidgetPlaceholder(state = state)
+      is WidgetNoLocationUiState -> WidgetPlaceholder(state = state)
       is WidgetWaitingUiState -> WidgetWaitingLayout(state = state)
       is WidgetReadyUiState -> WidgetReadyLayout(state = state)
     }

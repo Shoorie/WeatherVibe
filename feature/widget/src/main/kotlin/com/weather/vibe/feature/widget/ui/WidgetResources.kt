@@ -1,8 +1,8 @@
 package com.weather.vibe.feature.widget.ui
 
 interface WidgetResources {
-  fun placeholderTitle(): String
-  fun placeholderBody(): String
+  fun noLocationTitle(): String
+  fun noLocationBody(): String
   fun waitingTitle(): String
   fun waitingBody(locationName: String): String
   fun temperature(degrees: Int): String

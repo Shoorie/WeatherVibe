@@ -25,6 +25,7 @@ dependencies {
   debugImplementation(libs.androidx.glance.appwidget.preview)
   debugImplementation(libs.androidx.glance.preview)
 
+  testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.locationFixtures)
   testImplementation(projects.testing.weatherFixtures)
   testImplementation(projects.testing.widgetFixtures)

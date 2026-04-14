@@ -9,4 +9,9 @@
   <string name="widget_temperature_format">%1$d°</string>
   <string name="widget_weather_content_description">Weather for %1$s, %2$s</string>
   <string name="widget_tap_content_description">Open WeatherVibe</string>
+  <string name="widget_config_picker_title">Pick a city</string>
+  <string name="widget_config_empty_hint">Open WeatherVibe to pick a city, then return here to pin it.</string>
+  <string name="widget_config_default_error">Something went wrong. Try again.</string>
+  <string name="widget_config_retry">Retry</string>
+  <string name="widget_config_subtitle_format">%1$s, %2$s</string>
 </resources>

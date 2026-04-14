@@ -27,7 +27,8 @@ class ObserveWidgetUiState internal constructor(
     emitAll(
       observeWidgetSnapshot(location.id)
         .map { snapshot ->
-          snapshot?.let(stateFactory::createReady) ?: stateFactory.createWaiting(location)
+          snapshot?.let(stateFactory::createReady)
+            ?: stateFactory.createWaiting(location)
         }
     )
   }

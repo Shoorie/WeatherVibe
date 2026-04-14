@@ -21,6 +21,10 @@ dependencies {
   implementation(libs.koin.androidx.workmanager)
   implementation(libs.kotlinx.collections.immutable)
 
+  debugImplementation(libs.androidx.compose.ui.tooling)
+  debugImplementation(libs.androidx.glance.appwidget.preview)
+  debugImplementation(libs.androidx.glance.preview)
+
   testImplementation(projects.testing.locationFixtures)
   testImplementation(projects.testing.weatherFixtures)
   testImplementation(projects.testing.widgetFixtures)

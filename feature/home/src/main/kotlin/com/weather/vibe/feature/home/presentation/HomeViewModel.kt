@@ -2,7 +2,6 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
@@ -15,8 +14,8 @@ import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
-import com.weather.vibe.feature.home.presentation.HomeAction.ResumeLifecycle
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
+import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
@@ -50,6 +49,7 @@ internal class HomeViewModel(
   val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
   private var snapshot = HomeSnapshot()
+  private var currentCoordinates: Coordinates = DEFAULT_COORDINATES
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
@@ -67,22 +67,28 @@ internal class HomeViewModel(
       is Initialize -> onInitialize(action)
       is RefreshClick -> onRefreshClick()
       is RetryWeatherSuggestion -> onRetryWeatherSuggestion()
-      is ResumeLifecycle -> onResumeLifecycle()
     }
   }
 
   private fun onInitialize(action: Initialize) {
-    val coordinates = action.location?.toCoordinates() ?: DEFAULT_LOCATION
+    val coordinates = action.location.toResolvedCoordinates()
+    if (isAlreadyShowing(coordinates)) return
     observeWeather(coordinates)
   }
 
-  private fun observeWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
+  private fun isAlreadyShowing(coordinates: Coordinates): Boolean {
+    if (_state.value !is Loaded) return false
+    return snapshot.weatherData?.coordinates == coordinates
+  }
+
+  private fun observeWeather(coordinates: Coordinates) {
+    currentCoordinates = coordinates
     _state.update { Loading }
     snapshot = HomeSnapshot()
     launchHomeDataObservation(coordinates)
   }
 
-  private fun refreshWeather(coordinates: Coordinates = DEFAULT_LOCATION) {
+  private fun refreshWeather(coordinates: Coordinates) {
     launchHomeDataObservation(coordinates)
   }
 
@@ -185,19 +191,13 @@ internal class HomeViewModel(
     val current = _state.value as? Loaded
     if (current != null) {
       _state.update { current.copy(isRefreshing = true) }
-      refreshWeather()
+      refreshWeather(currentCoordinates)
     } else {
-      observeWeather()
+      observeWeather(currentCoordinates)
     }
   }
 
   private fun onRetryWeatherSuggestion() {
-    refreshWeatherSuggestion()
-  }
-
-  private fun onResumeLifecycle() {
-    if (suggestionJob?.isActive == true) return
-    if (stateFactory.isPlaylistLoaded(_state.value)) return
     refreshWeatherSuggestion()
   }
 
@@ -279,13 +279,5 @@ internal class HomeViewModel(
         playlist = playlist
       )
     }
-  }
-
-  private companion object {
-    val DEFAULT_LOCATION = Coordinates(
-      name = "Toruń",
-      latitude = 53.0138,
-      longitude = 18.5984
-    )
   }
 }

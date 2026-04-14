@@ -1,25 +1,12 @@
-package com.weather.vibe.feature.home.presentation
+package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit
-import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.WeatherMetrics
 import com.weather.vibe.domain.weather.model.WindDirection
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeResources
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.dewDrop
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.eye
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.gauge
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.precipitation
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
 import org.koin.core.annotation.Factory
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -32,7 +19,7 @@ internal class MetricsStateFactory(
 
   fun create(
     metrics: WeatherMetrics,
-    temperatureUnit: TemperatureUnit = CELSIUS
+    temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
   ): DetailsSectionsUiState {
 
     val windItems = listOf(
@@ -71,49 +58,49 @@ internal class MetricsStateFactory(
 
   private fun humidity(value: Int): MetricItemUiState =
     MetricItemUiState(
-      icon = humidity(),
+      icon = HomeResources.Emojis.humidity(),
       label = resources.humidity(),
       value = formatPercent(value)
     )
 
   private fun windSpeed(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = wind(),
+      icon = HomeResources.Emojis.wind(),
       label = resources.windSpeed(),
       value = formatSpeed(value)
     )
 
   private fun windDirection(direction: WindDirection): MetricItemUiState =
     MetricItemUiState(
-      icon = compass(),
+      icon = HomeResources.Emojis.compass(),
       label = resources.direction(),
       value = direction.name
     )
 
   private fun precipitation(probability: Int): MetricItemUiState =
     MetricItemUiState(
-      icon = precipitation(),
+      icon = HomeResources.Emojis.precipitation(),
       label = resources.precipitation(),
       value = formatPercent(probability)
     )
 
   private fun uvIndex(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = uvIndex(),
+      icon = HomeResources.Emojis.uvIndex(),
       label = resources.uvIndex(),
-      value = String.format(Locale.US, UV_INDEX_FORMAT, value)
+      value = String.Companion.format(Locale.US, UV_INDEX_FORMAT, value)
     )
 
   private fun cloudCover(value: Int): MetricItemUiState =
     MetricItemUiState(
-      icon = cloud(),
+      icon = HomeResources.Emojis.cloud(),
       label = resources.cloudCover(),
       value = formatPercent(value)
     )
 
   private fun pressure(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = gauge(),
+      icon = HomeResources.Emojis.gauge(),
       label = resources.pressure(),
       value = "${value.roundToInt()} $PRESSURE_UNIT"
     )
@@ -125,7 +112,7 @@ internal class MetricsStateFactory(
       else -> "${meters.roundToInt()} $VISIBILITY_UNIT_M"
     }
     return MetricItemUiState(
-      icon = eye(),
+      icon = HomeResources.Emojis.eye(),
       label = resources.visibility(),
       value = formatted
     )
@@ -133,30 +120,30 @@ internal class MetricsStateFactory(
 
   private fun dewPoint(value: Double, unit: TemperatureUnit): MetricItemUiState =
     MetricItemUiState(
-      icon = dewDrop(),
+      icon = HomeResources.Emojis.dewDrop(),
       label = resources.dewPoint(),
       value = temperature.format(celsius = value, unit = unit)
     )
 
   private fun windGusts(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = windGusts(),
+      icon = HomeResources.Emojis.windGusts(),
       label = resources.windGusts(),
       value = formatSpeed(value)
     )
 
   private fun windSpeedMax(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = windMax(),
+      icon = HomeResources.Emojis.windMax(),
       label = resources.windSpeedMax(),
       value = formatSpeed(value)
     )
 
   private fun rainfall(value: Double): MetricItemUiState =
     MetricItemUiState(
-      icon = rainfall(),
+      icon = HomeResources.Emojis.rainfall(),
       label = resources.rainfall(),
-      value = String.format(Locale.getDefault(), MILLIMETERS_FORMAT, value)
+      value = String.Companion.format(Locale.getDefault(), MILLIMETERS_FORMAT, value)
     )
 
   private fun formatPercent(value: Int): String =

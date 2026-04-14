@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="widget_label">WeatherVibe</string>
+  <string name="widget_description">Dzisiejsza pogoda i vibe</string>
+  <string name="widget_placeholder_title">Stuknij, aby skonfigurować</string>
+  <string name="widget_placeholder_body">Wybierz miasto, aby zobaczyć jego vibe.</string>
+  <string name="widget_waiting_title">Budzę vibe…</string>
+  <string name="widget_waiting_body">Świeża prognoza dla %1$s zaraz się pojawi.</string>
+  <string name="widget_temperature_format">%1$d°</string>
+  <string name="widget_weather_content_description">Pogoda dla %1$s, %2$s</string>
+  <string name="widget_tap_content_description">Otwórz WeatherVibe</string>
+</resources>

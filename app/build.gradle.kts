@@ -93,10 +93,13 @@ dependencies {
   implementation(projects.data.location)
   implementation(projects.domain.settings)
   implementation(projects.data.settings)
+  implementation(projects.domain.widget)
+  implementation(projects.data.widget)
   implementation(projects.feature.home)
   implementation(projects.feature.search)
   implementation(projects.feature.settings)
   implementation(projects.feature.splash)
+  implementation(projects.feature.widget)
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.core.splashscreen)

@@ -13,5 +13,15 @@
         android:name="android.appwidget.provider"
         android:resource="@xml/weather_vibe_widget_info" />
     </receiver>
+
+    <activity
+      android:name=".config.WidgetConfigActivity"
+      android:exported="true"
+      android:label="@string/widget_config_picker_title"
+      android:theme="@style/Theme.WeatherVibe.NoActionBar">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+      </intent-filter>
+    </activity>
   </application>
 </manifest>

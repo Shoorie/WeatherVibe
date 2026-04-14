@@ -112,6 +112,7 @@ dependencies {
 
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
+  implementation(libs.koin.androidx.workmanager)
 
   implementation(libs.androidx.profileinstaller)
   baselineProfile(projects.benchmark)

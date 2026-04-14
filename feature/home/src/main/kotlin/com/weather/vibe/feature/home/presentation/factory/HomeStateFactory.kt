@@ -1,8 +1,7 @@
-package com.weather.vibe.feature.home.presentation
+package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
-import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
@@ -13,6 +12,7 @@ import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
+import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -20,7 +20,6 @@ import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
-import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
@@ -30,7 +29,6 @@ import org.koin.core.annotation.Factory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
 
 @Factory
@@ -51,20 +49,20 @@ internal class HomeStateFactory(
     current: HomeUiState,
     playlist: PlaylistUiState
   ): HomeUiState =
-    when (current is Loaded) {
+    when (current is HomeUiState.Loaded) {
       true -> current.copy(briefing = briefing, playlist = playlist)
       false -> current
     }
 
   fun applyPlaylist(current: HomeUiState, playlist: PlaylistUiState): HomeUiState =
-    when (current is Loaded) {
+    when (current is HomeUiState.Loaded) {
       true -> current.copy(playlist = playlist)
       false -> current
     }
 
   fun markGenreAsRejecting(current: HomeUiState, genre: String): HomeUiState {
 
-    if (current !is Loaded) return current
+    if (current !is HomeUiState.Loaded) return current
     val loadedPlaylist = current.playlist as? PlaylistUiState.Loaded
       ?: return current
 
@@ -78,22 +76,19 @@ internal class HomeStateFactory(
   }
 
   fun areAllGenresRejected(current: HomeUiState): Boolean {
-    val loaded = current as? Loaded ?: return false
+    val loaded = current as? HomeUiState.Loaded ?: return false
     val playlist = loaded.playlist as? PlaylistUiState.Loaded ?: return false
     return playlist.genres.all { it.isRejecting }
   }
 
-  fun isPlaylistLoaded(current: HomeUiState): Boolean =
-    (current as? Loaded)?.playlist is PlaylistUiState.Loaded
-
-  fun create(data: WeatherData, unit: TemperatureUnit = CELSIUS): Loaded {
+  fun create(data: WeatherData, unit: TemperatureUnit = TemperatureUnit.CELSIUS): HomeUiState.Loaded {
 
     val today = timeProvider.today()
     val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })
     val currentMetrics = getCurrentWeatherMetrics(data)
     val sunInfo = resolveTodaySunInfo(data.dailyForecast)
 
-    return Loaded(
+    return HomeUiState.Loaded(
       currentWeather = createCurrentWeather(data, unit),
       dailyForecast = createDailyForecast(data, unit, today),
       detailsSections = factories.metrics.create(currentMetrics, unit),
@@ -111,7 +106,7 @@ internal class HomeStateFactory(
     data: WeatherData,
     unit: TemperatureUnit
   ): HomeUiState {
-    val loaded = current as? Loaded ?: return current
+    val loaded = current as? HomeUiState.Loaded ?: return current
     return create(data, unit).copy(
       briefing = loaded.briefing,
       playlist = loaded.playlist
@@ -205,10 +200,10 @@ internal class HomeStateFactory(
     temperature.format(celsius = this, unit = unit)
 
   private val dateFormatter: DateTimeFormatter
-    get() = ofPattern(DATE_FORMAT, Locale.getDefault())
+    get() = DateTimeFormatter.ofPattern(DATE_FORMAT, Locale.getDefault())
 
   private val dayFormatter: DateTimeFormatter
-    get() = ofPattern(DAY_FORMAT, Locale.getDefault())
+    get() = DateTimeFormatter.ofPattern(DAY_FORMAT, Locale.getDefault())
 
   private companion object {
 
@@ -217,6 +212,6 @@ internal class HomeStateFactory(
     const val TIME_OUTPUT_FORMAT = "HH:mm"
 
     val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
-      ofPattern(TIME_OUTPUT_FORMAT)
+      DateTimeFormatter.ofPattern(TIME_OUTPUT_FORMAT)
   }
 }

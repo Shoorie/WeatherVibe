@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
+import com.weather.vibe.feature.home.presentation.factory.PlaylistStateFactory
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SUGGESTION
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SINGLE_GENRE
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.WHITESPACE_GENRES

@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.presentation
+package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery

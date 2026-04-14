@@ -6,16 +6,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.home.presentation.HomeViewModel
+import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.feature.home.presentation.DetailsViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
@@ -23,14 +22,15 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun WeatherDetailsScreen(
-  onNavigateBack: () -> Unit = {}
+  onNavigateBack: () -> Unit = {},
+  selectedLocation: Location? = null
 ) {
 
-  val owner = LocalContext.current as ViewModelStoreOwner
-  val viewModel = koinViewModel<HomeViewModel>(viewModelStoreOwner = owner)
+  val viewModel = koinViewModel<DetailsViewModel> { parametersOf(selectedLocation) }
   val state by viewModel.state.collectAsStateWithLifecycle()
 
   WeatherDetailsContent(

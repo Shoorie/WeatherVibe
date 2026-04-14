@@ -1,14 +1,12 @@
-package com.weather.vibe.feature.home.presentation
+package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.domain.weather.model.TodaySunInfo
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
-import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState.Companion.Empty
 import com.weather.vibe.feature.home.ui.HomeResources
 import org.koin.core.annotation.Factory
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ofPattern
 
 @Factory
 internal class SunriseSunsetStateFactory(
@@ -16,7 +14,7 @@ internal class SunriseSunsetStateFactory(
 ) {
 
   fun create(info: TodaySunInfo?): SunriseSunsetUiState {
-    info ?: return Empty
+    info ?: return SunriseSunsetUiState.Empty
     return SunriseSunsetUiState(
       dayLength = formatDayLength(info.dayLength),
       sunProgress = info.sunProgress,
@@ -40,6 +38,6 @@ internal class SunriseSunsetStateFactory(
     const val TIME_OUTPUT_FORMAT = "HH:mm"
 
     val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
-      ofPattern(TIME_OUTPUT_FORMAT)
+      DateTimeFormatter.ofPattern(TIME_OUTPUT_FORMAT)
   }
 }

@@ -30,7 +30,7 @@ fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
       when (key) {
         is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
         is HomeRoute -> NavEntry(key) { HomeEntry(key, backStack) }
-        is WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(backStack) }
+        is WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(key, backStack) }
         is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
         is SettingsRoute -> NavEntry(key) { SettingsEntry(backStack) }
         else -> NavEntry(key) {}
@@ -55,7 +55,7 @@ private fun HomeEntry(
   backStack: MutableList<NavKey>
 ) {
   HomeScreen(
-    onNavigateToDetails = { backStack.add(WeatherDetailsRoute) },
+    onNavigateToDetails = { backStack.add(WeatherDetailsRoute(route.selectedLocation)) },
     onNavigateToSearch = { backStack.add(SearchRoute) },
     onNavigateToSettings = { backStack.add(SettingsRoute) },
     selectedLocation = route.selectedLocation
@@ -63,9 +63,13 @@ private fun HomeEntry(
 }
 
 @Composable
-private fun DetailsEntry(backStack: MutableList<NavKey>) {
+private fun DetailsEntry(
+  route: WeatherDetailsRoute,
+  backStack: MutableList<NavKey>
+) {
   WeatherDetailsScreen(
-    onNavigateBack = { backStack.removeLastOrNull() }
+    onNavigateBack = { backStack.removeLastOrNull() },
+    selectedLocation = route.selectedLocation
   )
 }
 

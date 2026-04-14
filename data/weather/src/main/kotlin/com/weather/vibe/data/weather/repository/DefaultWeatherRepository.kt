@@ -8,6 +8,9 @@ import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.repository.WeatherRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 
@@ -37,4 +40,9 @@ internal class DefaultWeatherRepository(
           ?: throw exception
       }
     }
+
+  override fun observeCachedWeather(coordinates: Coordinates): Flow<WeatherData?> =
+    dao.observeWeather(coordinates.id)
+      .map { it?.let(cacheMapper::toDomain) }
+      .flowOn(Dispatchers.IO)
 }

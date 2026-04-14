@@ -19,4 +19,6 @@ data object SplashRoute : NavKey
 data object SettingsRoute : NavKey
 
 @Serializable
-data object WeatherDetailsRoute : NavKey
+data class WeatherDetailsRoute(
+  val selectedLocation: Location? = null
+) : NavKey

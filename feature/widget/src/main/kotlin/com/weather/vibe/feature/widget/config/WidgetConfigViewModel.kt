@@ -15,6 +15,7 @@ import com.weather.vibe.feature.widget.config.state.WidgetConfigUiState
 import com.weather.vibe.feature.widget.config.state.WidgetConfigUiState.Error
 import com.weather.vibe.feature.widget.config.state.WidgetConfigUiState.Loading
 import com.weather.vibe.feature.widget.config.ui.WidgetConfigResources
+import com.weather.vibe.feature.widget.work.WidgetRefreshScheduler
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,7 @@ internal class WidgetConfigViewModel(
   private val getRecentLocations: GetRecentLocations,
   private val glanceIdResolver: GlanceIdResolver,
   private val pinWidgetLocation: PinWidgetLocation,
+  private val refreshScheduler: WidgetRefreshScheduler,
   private val resources: WidgetConfigResources,
   private val stateFactory: WidgetConfigStateFactory
 ) : ViewModel() {
@@ -95,6 +97,7 @@ internal class WidgetConfigViewModel(
       return
     }
     pinWidgetLocation(glanceId, location)
+    refreshScheduler.refreshNow()
     send(Finish(appWidgetId))
   }
 

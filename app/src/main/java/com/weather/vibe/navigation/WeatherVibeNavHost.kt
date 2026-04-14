@@ -14,9 +14,12 @@ import com.weather.vibe.feature.settings.ui.screen.SettingsScreen
 import com.weather.vibe.feature.splash.ui.screen.SplashScreen
 
 @Composable
-fun WeatherVibeNavHost(modifier: Modifier = Modifier) {
+fun WeatherVibeNavHost(
+  startRoute: NavKey = SplashRoute,
+  modifier: Modifier = Modifier
+) {
 
-  val backStack = rememberNavBackStack(SplashRoute)
+  val backStack = rememberNavBackStack(startRoute)
 
   NavDisplay(
     backStack = backStack,

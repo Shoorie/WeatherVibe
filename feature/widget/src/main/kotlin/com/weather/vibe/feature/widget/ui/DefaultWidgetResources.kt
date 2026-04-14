@@ -9,11 +9,11 @@ internal class DefaultWidgetResources(
   private val context: Context
 ) : WidgetResources {
 
-  override fun placeholderTitle(): String =
-    context.getString(R.string.widget_placeholder_title)
+  override fun noLocationTitle(): String =
+    context.getString(R.string.widget_no_location_title)
 
-  override fun placeholderBody(): String =
-    context.getString(R.string.widget_placeholder_body)
+  override fun noLocationBody(): String =
+    context.getString(R.string.widget_no_location_body)
 
   override fun waitingTitle(): String =
     context.getString(R.string.widget_waiting_title)

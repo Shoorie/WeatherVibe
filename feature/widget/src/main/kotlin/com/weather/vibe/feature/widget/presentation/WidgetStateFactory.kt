@@ -2,7 +2,7 @@ package com.weather.vibe.feature.widget.presentation
 
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.widget.model.WidgetSnapshot
-import com.weather.vibe.feature.widget.presentation.state.WidgetNotConfiguredUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
 import com.weather.vibe.feature.widget.ui.WidgetEmojis
@@ -13,11 +13,11 @@ import kotlin.math.roundToInt
 @Factory
 internal class WidgetStateFactory(private val resources: WidgetResources) {
 
-  fun createNotConfigured(): WidgetNotConfiguredUiState =
-    WidgetNotConfiguredUiState(
-      body = resources.placeholderBody(),
+  fun createNoLocation(): WidgetNoLocationUiState =
+    WidgetNoLocationUiState(
+      body = resources.noLocationBody(),
       emoji = WidgetEmojis.PINNED_LOCATION,
-      title = resources.placeholderTitle()
+      title = resources.noLocationTitle()
     )
 
   fun createWaiting(location: Location): WidgetWaitingUiState =

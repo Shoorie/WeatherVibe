@@ -7,7 +7,7 @@ import com.weather.vibe.feature.widget.presentation.ObserveWidgetUiState
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class WidgetUpdater(
+class WidgetUpdater internal constructor(
   private val context: Context,
   private val observeWidgetUiState: ObserveWidgetUiState
 ) {

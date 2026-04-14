@@ -19,7 +19,7 @@ class WidgetRefreshScheduler(private val context: Context) {
       repeatInterval = REFRESH_INTERVAL_HOURS,
       repeatIntervalTimeUnit = TimeUnit.HOURS
     )
-      .setConstraints(networkConstraints)
+      .setConstraints(periodicConstraints)
       .build()
 
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -30,9 +30,7 @@ class WidgetRefreshScheduler(private val context: Context) {
   }
 
   fun refreshNow() {
-    val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
-      .setConstraints(networkConstraints)
-      .build()
+    val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>().build()
 
     WorkManager.getInstance(context).enqueueUniqueWork(
       ONE_TIME_WORK_NAME,
@@ -41,7 +39,7 @@ class WidgetRefreshScheduler(private val context: Context) {
     )
   }
 
-  private val networkConstraints: Constraints =
+  private val periodicConstraints: Constraints =
     Constraints.Builder()
       .setRequiredNetworkType(NetworkType.CONNECTED)
       .build()

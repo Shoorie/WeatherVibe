@@ -1,6 +1,6 @@
 package com.weather.vibe.feature.widget.presentation
 
-import com.weather.vibe.feature.widget.presentation.state.WidgetNotConfiguredUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
 import com.weather.vibe.feature.widget.ui.WidgetEmojis
@@ -24,8 +24,8 @@ class WidgetStateFactoryTest {
 
   @Before
   fun setUp() {
-    every { resources.placeholderTitle() } returns PLACEHOLDER_TITLE
-    every { resources.placeholderBody() } returns PLACEHOLDER_BODY
+    every { resources.noLocationTitle() } returns NO_LOCATION_TITLE
+    every { resources.noLocationBody() } returns NO_LOCATION_BODY
     every { resources.waitingTitle() } returns WAITING_TITLE
     every { resources.waitingBody(any()) } answers { "Fresh forecast for ${firstArg<String>()}" }
     every { resources.temperature(any()) } answers { "${firstArg<Int>()}°" }
@@ -38,19 +38,19 @@ class WidgetStateFactoryTest {
   }
 
   @Test
-  fun `when not configured state created, then emoji is pinned location`() {
+  fun `when no location state created, then emoji is pinned location`() {
 
-    val state = factory.createNotConfigured()
+    val state = factory.createNoLocation()
 
     expectThat(state.emoji).isEqualTo(WidgetEmojis.PINNED_LOCATION)
   }
 
   @Test
-  fun `when not configured state created, then title matches resources`() {
+  fun `when no location state created, then title matches resources`() {
 
-    val state = factory.createNotConfigured()
+    val state = factory.createNoLocation()
 
-    expectThat(state.title).isEqualTo(PLACEHOLDER_TITLE)
+    expectThat(state.title).isEqualTo(NO_LOCATION_TITLE)
   }
 
   @Test
@@ -94,7 +94,7 @@ class WidgetStateFactoryTest {
   }
 
   @Test
-  fun `when ready state created, then mood and vibe text come from suggestion`() {
+  fun `when ready state created, then vibe text comes from suggestion`() {
 
     val state = factory.createReady(SNAPSHOT)
 
@@ -103,11 +103,11 @@ class WidgetStateFactoryTest {
   }
 
   @Test
-  fun `when not configured state created, then returns dedicated type`() {
+  fun `when no location state created, then returns dedicated type`() {
 
-    val state = factory.createNotConfigured()
+    val state = factory.createNoLocation()
 
-    expectThat(state).isA<WidgetNotConfiguredUiState>()
+    expectThat(state).isA<WidgetNoLocationUiState>()
   }
 
   @Test
@@ -119,8 +119,8 @@ class WidgetStateFactoryTest {
   }
 
   private companion object {
-    const val PLACEHOLDER_TITLE = "Tap to configure"
-    const val PLACEHOLDER_BODY = "Pick a city"
+    const val NO_LOCATION_TITLE = "Pick a city in WeatherVibe"
+    const val NO_LOCATION_BODY = "Open the app"
     const val WAITING_TITLE = "Waking up the vibe"
     const val CONTENT_DESCRIPTION = "Weather for Warsaw"
   }

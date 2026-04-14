@@ -18,7 +18,7 @@ internal class WeatherVibeWidget(
   override val sizeMode: SizeMode = SizeMode.Single
 
   override suspend fun provideGlance(context: Context, id: GlanceId) {
-    val states = observeWidgetUiState(id.toString())
+    val states = observeWidgetUiState()
     val initial = states.first()
     provideContent {
       val state by states.collectAsState(initial = initial)

@@ -1,8 +1,6 @@
 package com.weather.vibe.feature.widget.glance
 
 import android.content.Context
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
@@ -20,10 +18,8 @@ internal class WeatherVibeWidget(
   override val sizeMode: SizeMode = SizeMode.Single
 
   override suspend fun provideGlance(context: Context, id: GlanceId) {
-    val state = observeWidgetUiState()
-    val initial = state.first()
+    val state = observeWidgetUiState().first()
     provideContent {
-      val state by state.collectAsState(initial = initial)
       WidgetContent(state = state)
     }
   }

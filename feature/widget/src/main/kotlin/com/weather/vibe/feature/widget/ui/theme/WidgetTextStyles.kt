@@ -1,12 +1,12 @@
-package com.weather.vibe.feature.widget.glance.theme
+package com.weather.vibe.feature.widget.ui.theme
 
 import androidx.compose.ui.unit.sp
 import androidx.glance.text.FontWeight
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
-import com.weather.vibe.feature.widget.glance.theme.WidgetPalette.onBackground
-import com.weather.vibe.feature.widget.glance.theme.WidgetPalette.onBackgroundMuted
-import com.weather.vibe.feature.widget.glance.theme.WidgetPalette.onBackgroundSubtle
+import com.weather.vibe.feature.widget.ui.theme.WidgetPalette.onBackground
+import com.weather.vibe.feature.widget.ui.theme.WidgetPalette.onBackgroundMuted
+import com.weather.vibe.feature.widget.ui.theme.WidgetPalette.onBackgroundSubtle
 
 internal object WidgetTextStyles {
 

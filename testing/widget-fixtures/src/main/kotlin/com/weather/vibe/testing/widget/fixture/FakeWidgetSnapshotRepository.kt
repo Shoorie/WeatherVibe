@@ -4,23 +4,20 @@ import com.weather.vibe.domain.widget.model.WidgetSnapshot
 import com.weather.vibe.domain.widget.repository.WidgetSnapshotRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.asStateFlow
 
 class FakeWidgetSnapshotRepository : WidgetSnapshotRepository {
 
-  private val snapshots = MutableStateFlow<Map<Long, WidgetSnapshot>>(emptyMap())
+  private val snapshot = MutableStateFlow<WidgetSnapshot?>(null)
+  private val history = mutableListOf<WidgetSnapshot>()
 
   val savedSnapshots: List<WidgetSnapshot>
-    get() = snapshots.value.values.toList()
+    get() = history.toList()
 
-  override fun observe(locationId: Long): Flow<WidgetSnapshot?> =
-    snapshots.map { it[locationId] }
-
-  override suspend fun get(locationId: Long): WidgetSnapshot? =
-    snapshots.value[locationId]
+  override fun observe(): Flow<WidgetSnapshot?> = snapshot.asStateFlow()
 
   override suspend fun save(snapshot: WidgetSnapshot) {
-    snapshots.update { it + (snapshot.location.id to snapshot) }
+    this.snapshot.value = snapshot
+    history += snapshot
   }
 }

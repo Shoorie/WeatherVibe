@@ -2,7 +2,6 @@ package com.weather.vibe.feature.widget.glance.composables
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceModifier
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -14,28 +13,29 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.text.Text
 import com.weather.vibe.feature.widget.glance.preview.sampleWeatherState
-import com.weather.vibe.feature.widget.glance.theme.WidgetTextStyles
-import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetUiState.Weather
+import com.weather.vibe.feature.widget.ui.theme.WidgetDimens
+import com.weather.vibe.feature.widget.ui.theme.WidgetTextStyles
 
 @Composable
-internal fun WidgetWeatherLayout(state: WidgetUiState.Weather) {
+internal fun WidgetWeatherLayout(state: Weather) {
   Column(modifier = GlanceModifier.fillMaxSize()) {
     WidgetWeatherHeader(
       locationName = state.locationName,
       fetchedAtLabel = state.fetchedAtLabel
     )
     WidgetConditionIcon(
-      emoji = state.conditionEmoji,
-      modifier = GlanceModifier.defaultWeight()
+      modifier = GlanceModifier.defaultWeight(),
+      emoji = state.conditionEmoji
     )
-    Spacer(modifier = GlanceModifier.height(SPACING_SM))
+    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingSmall))
     Text(
       modifier = GlanceModifier.fillMaxWidth(),
       text = state.conditionLabel,
       style = WidgetTextStyles.conditionLabel,
       maxLines = 1
     )
-    Spacer(modifier = GlanceModifier.height(SPACING_MD))
+    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingMedium))
     WidgetWeatherFooter(
       mood = state.mood,
       temperature = state.temperature
@@ -101,9 +101,6 @@ private fun WidgetWeatherFooter(
     )
   }
 }
-
-private val SPACING_SM = 4.dp
-private val SPACING_MD = 6.dp
 
 @PreviewLightDark
 @Composable

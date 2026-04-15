@@ -3,6 +3,7 @@ package com.weather.vibe.feature.widget.presentation
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.ui.WidgetEmojis
 import com.weather.vibe.feature.widget.ui.WidgetResources
+import com.weather.vibe.feature.widget.ui.WidgetTimestampFormatter
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import com.weather.vibe.testing.widget.fixture.WidgetSnapshotFixtures.SNAPSHOT
 import io.mockk.every
@@ -18,7 +19,11 @@ import strikt.assertions.isEqualTo
 class WidgetStateFactoryTest {
 
   private val resources = mockk<WidgetResources>()
-  private val factory = WidgetStateFactory(resources = resources)
+  private val formatTimestamp = mockk<WidgetTimestampFormatter>()
+  private val factory = WidgetStateFactory(
+    resources = resources,
+    formatTimestamp = formatTimestamp
+  )
 
   @Before
   fun setUp() {
@@ -30,7 +35,7 @@ class WidgetStateFactoryTest {
     every { resources.errorBody() } returns ERROR_BODY
     every { resources.temperature(any()) } answers { "${firstArg<Int>()}°" }
     every { resources.weatherContentDescription(any(), any()) } returns CONTENT_DESCRIPTION
-    every { resources.fetchTimestamp(any()) } returns FETCHED_AT_LABEL
+    every { formatTimestamp(any()) } returns FETCHED_AT_LABEL
   }
 
   @After
@@ -43,7 +48,7 @@ class WidgetStateFactoryTest {
 
     val state = factory.createNoLocation()
 
-    expectThat(state.emoji).isEqualTo(WidgetEmojis.PINNED_LOCATION)
+    expectThat(state.message.emoji).isEqualTo(WidgetEmojis.PINNED_LOCATION)
   }
 
   @Test
@@ -51,7 +56,7 @@ class WidgetStateFactoryTest {
 
     val state = factory.createNoLocation()
 
-    expectThat(state.title).isEqualTo(NO_LOCATION_TITLE)
+    expectThat(state.message.title).isEqualTo(NO_LOCATION_TITLE)
   }
 
   @Test
@@ -59,7 +64,7 @@ class WidgetStateFactoryTest {
 
     val state = factory.createWaitingFor(WARSAW)
 
-    expectThat(state.body).isEqualTo("Fresh forecast for Warsaw")
+    expectThat(state.message.body).isEqualTo("Fresh forecast for Warsaw")
   }
 
   @Test
@@ -67,13 +72,13 @@ class WidgetStateFactoryTest {
 
     val state = factory.createWaitingFor(WARSAW)
 
-    expectThat(state.emoji).isEqualTo(WidgetEmojis.HOURGLASS)
+    expectThat(state.message.emoji).isEqualTo(WidgetEmojis.HOURGLASS)
   }
 
   @Test
   fun `when weather state created, then location id preserved`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state.locationId).isEqualTo(SNAPSHOT.location.id)
   }
@@ -81,7 +86,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when weather state created, then condition emoji carried from snapshot`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state.conditionEmoji).isEqualTo(SNAPSHOT.condition.emoji)
   }
@@ -89,7 +94,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when weather state created, then temperature rounded and formatted via resources`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state.temperature).isEqualTo("${SNAPSHOT.currentTemperature.toInt()}°")
   }
@@ -97,7 +102,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when weather state created, then mood comes from snapshot`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state).isA<WidgetUiState.Weather>()
       .get { mood }.isEqualTo(SNAPSHOT.mood)
@@ -106,7 +111,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when weather state created, then fetched at label formatted from snapshot timestamp`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state.fetchedAtLabel).isEqualTo(FETCHED_AT_LABEL)
   }
@@ -114,7 +119,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when weather state created, then condition label carried from snapshot`() {
 
-    val state = factory.createWeatherFor(SNAPSHOT)
+    val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state.conditionLabel).isEqualTo(SNAPSHOT.condition.label)
   }
@@ -140,7 +145,7 @@ class WidgetStateFactoryTest {
 
     val state = factory.createError()
 
-    expectThat(state.emoji).isEqualTo(WidgetEmojis.STORM)
+    expectThat(state.message.emoji).isEqualTo(WidgetEmojis.STORM)
   }
 
   @Test
@@ -150,8 +155,8 @@ class WidgetStateFactoryTest {
 
     expectThat(state).isA<WidgetUiState.Error>()
       .and {
-        get { title }.isEqualTo(ERROR_TITLE)
-        get { body }.isEqualTo(ERROR_BODY)
+        get { message.title }.isEqualTo(ERROR_TITLE)
+        get { message.body }.isEqualTo(ERROR_BODY)
       }
   }
 

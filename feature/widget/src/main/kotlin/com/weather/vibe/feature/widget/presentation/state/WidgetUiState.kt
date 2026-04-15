@@ -21,32 +21,22 @@ sealed interface WidgetUiState {
 
   @Immutable
   sealed interface Message : WidgetUiState {
-
-    val body: String
-    val emoji: String
-    val title: String
-
+    val message: WidgetMessage
     override val locationId: Long? get() = null
   }
 
   @Immutable
   data class Waiting(
-    override val body: String,
-    override val emoji: String,
-    override val title: String
+    override val message: WidgetMessage
   ) : Message
 
   @Immutable
   data class NoLocation(
-    override val body: String,
-    override val emoji: String,
-    override val title: String
+    override val message: WidgetMessage
   ) : Message
 
   @Immutable
   data class Error(
-    override val body: String,
-    override val emoji: String,
-    override val title: String
+    override val message: WidgetMessage
   ) : Message
 }

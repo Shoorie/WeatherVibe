@@ -6,13 +6,15 @@ import com.weather.vibe.feature.widget.glance.intent.launchAppAction
 import com.weather.vibe.feature.widget.glance.preview.sampleMessageStates
 import com.weather.vibe.feature.widget.glance.preview.sampleWeatherState
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetUiState.Message
+import com.weather.vibe.feature.widget.presentation.state.WidgetUiState.Weather
 
 @Composable
 internal fun WidgetContent(state: WidgetUiState) {
   WidgetSurface(onClickAction = launchAppAction(state.locationId)) {
     when (state) {
-      is WidgetUiState.Weather -> WidgetWeatherLayout(state = state)
-      is WidgetUiState.Message -> WidgetMessageLayout(state = state)
+      is Weather -> WidgetWeatherLayout(state = state)
+      is Message -> WidgetMessageLayout(state = state)
     }
   }
 }

@@ -14,7 +14,8 @@ internal class RefreshCurrentLocationWidget(
 
   suspend operator fun invoke() {
 
-    val location = observeCurrentLocation().first() ?: return
+    val location = observeCurrentLocation()
+      .first() ?: return
 
     refreshWidgetSnapshot(location)
     widgetUpdater.redrawAllWidgets()

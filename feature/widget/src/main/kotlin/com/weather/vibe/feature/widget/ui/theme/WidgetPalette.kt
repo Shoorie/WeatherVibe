@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.widget.glance.theme
+package com.weather.vibe.feature.widget.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.glance.color.ColorProvider

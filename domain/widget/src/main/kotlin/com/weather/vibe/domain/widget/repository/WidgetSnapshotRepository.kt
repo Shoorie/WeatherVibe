@@ -4,7 +4,6 @@ import com.weather.vibe.domain.widget.model.WidgetSnapshot
 import kotlinx.coroutines.flow.Flow
 
 interface WidgetSnapshotRepository {
-  fun observe(locationId: Long): Flow<WidgetSnapshot?>
-  suspend fun get(locationId: Long): WidgetSnapshot?
+  fun observe(): Flow<WidgetSnapshot?>
   suspend fun save(snapshot: WidgetSnapshot)
 }

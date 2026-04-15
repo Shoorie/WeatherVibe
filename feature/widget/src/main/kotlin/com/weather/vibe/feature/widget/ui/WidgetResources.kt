@@ -1,10 +1,8 @@
 package com.weather.vibe.feature.widget.ui
 
 import android.content.Context
-import android.text.format.DateFormat
 import com.weather.vibe.feature.widget.R
 import org.koin.core.annotation.Factory
-import java.util.Date
 
 @Factory
 internal class WidgetResources(private val context: Context) {
@@ -32,7 +30,4 @@ internal class WidgetResources(private val context: Context) {
 
   fun weatherContentDescription(locationName: String, mood: String): String =
     context.getString(R.string.widget_weather_content_description, locationName, mood)
-
-  fun fetchTimestamp(epochMillis: Long): String =
-    DateFormat.getTimeFormat(context).format(Date(epochMillis))
 }

@@ -8,7 +8,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.weather.vibe.feature.widget.work.WidgetRefreshWorker
 import org.koin.core.annotation.Factory
-import java.util.concurrent.TimeUnit.HOURS
+import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
 
 @Factory
@@ -23,8 +23,8 @@ class SchedulePeriodicWidgetRefresh(
       .build()
 
     val work = PeriodicWorkRequestBuilder<WidgetRefreshWorker>(
-      repeatInterval = REFRESH_INTERVAL_HOURS,
-      repeatIntervalTimeUnit = HOURS
+      repeatInterval = REFRESH_INTERVAL_MINUTES,
+      repeatIntervalTimeUnit = MINUTES
     )
       .setConstraints(constraints)
       .setBackoffCriteria(EXPONENTIAL, BACKOFF_SECONDS, SECONDS)
@@ -39,7 +39,7 @@ class SchedulePeriodicWidgetRefresh(
 
   internal companion object {
     const val WORKER_NAME = "weather_vibe_widget_refresh_periodic"
-    private const val REFRESH_INTERVAL_HOURS = 1L
+    private const val REFRESH_INTERVAL_MINUTES = 15L
     private const val BACKOFF_SECONDS = 30L
   }
 }

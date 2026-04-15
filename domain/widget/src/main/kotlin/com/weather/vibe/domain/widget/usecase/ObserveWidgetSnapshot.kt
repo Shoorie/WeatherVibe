@@ -10,6 +10,6 @@ class ObserveWidgetSnapshot internal constructor(
   private val repository: WidgetSnapshotRepository
 ) {
 
-  operator fun invoke(locationId: Long): Flow<WidgetSnapshot?> =
-    repository.observe(locationId)
+  operator fun invoke(): Flow<WidgetSnapshot?> =
+    repository.observe()
 }

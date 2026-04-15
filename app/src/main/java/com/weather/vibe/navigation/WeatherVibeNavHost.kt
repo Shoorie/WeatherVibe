@@ -2,6 +2,7 @@ package com.weather.vibe.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -15,8 +16,8 @@ import com.weather.vibe.feature.splash.ui.screen.SplashScreen
 
 @Composable
 fun WeatherVibeNavHost(
-  startRoute: NavKey = SplashRoute,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  startRoute: NavKey = SplashRoute
 ) {
 
   val backStack = rememberNavBackStack(startRoute)

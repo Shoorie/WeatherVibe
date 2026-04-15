@@ -1,7 +1,10 @@
 package com.weather.vibe.feature.widget.presentation.state
 
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class WidgetWaitingUiState(
-  val body: String,
-  val emoji: String,
-  val title: String
-) : WidgetUiState
+  override val body: String,
+  override val emoji: String,
+  override val title: String
+) : WidgetMessageUiState

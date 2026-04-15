@@ -14,10 +14,9 @@ import androidx.glance.layout.padding
 import com.weather.vibe.feature.widget.glance.intent.launchAppAction
 import com.weather.vibe.feature.widget.glance.preview.WidgetPreview
 import com.weather.vibe.feature.widget.glance.theme.WidgetPalette
-import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetMessageUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
-import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
 
 @Composable
 internal fun WidgetContent(state: WidgetUiState) {
@@ -25,21 +24,20 @@ internal fun WidgetContent(state: WidgetUiState) {
     modifier = GlanceModifier
       .fillMaxSize()
       .background(WidgetPalette.background)
-      .cornerRadius(24.dp)
-      .padding(horizontal = 16.dp, vertical = 14.dp)
+      .cornerRadius(28.dp)
+      .padding(14.dp)
       .clickable(launchAppAction(state.locationIdOrNull()))
   ) {
     when (state) {
-      is WidgetNoLocationUiState -> WidgetPlaceholder(state = state)
-      is WidgetWaitingUiState -> WidgetWaitingLayout(state = state)
       is WidgetReadyUiState -> WidgetReadyLayout(state = state)
+      is WidgetMessageUiState -> WidgetMessageLayout(state = state)
     }
   }
 }
 
 private fun WidgetUiState.locationIdOrNull(): Long? = when (this) {
   is WidgetReadyUiState -> locationId
-  else -> null
+  is WidgetMessageUiState -> null
 }
 
 @PreviewLightDark

@@ -2,6 +2,8 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -71,9 +74,17 @@ internal class HomeViewModel(
   }
 
   private fun onInitialize(action: Initialize) {
-    val coordinates = action.location.toResolvedCoordinates()
-    if (isAlreadyShowing(coordinates)) return
-    observeWeather(coordinates)
+    viewModelScope.launch(errorHandler) {
+      val coordinates = resolveStartingCoordinates(action.location)
+      if (isAlreadyShowing(coordinates)) return@launch
+      observeWeather(coordinates)
+    }
+  }
+
+  private suspend fun resolveStartingCoordinates(selected: Location?): Coordinates {
+    if (selected != null) return selected.toCoordinates()
+    val lastUsed = useCases.getRecentLocations().first().getOrNull()?.firstOrNull()
+    return lastUsed?.toCoordinates() ?: DEFAULT_COORDINATES
   }
 
   private fun isAlreadyShowing(coordinates: Coordinates): Boolean {

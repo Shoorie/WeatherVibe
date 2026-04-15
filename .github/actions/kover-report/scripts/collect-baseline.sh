@@ -17,7 +17,7 @@ mkdir -p "$OUTPUT_DIR"
 for xml in $(find . -path '*/build/reports/kover/report.xml' ! -path './build/*'); do
   module_path="${xml#./}"
   module_path="${module_path%/build/reports/kover/report.xml}"
-  encoded="$(echo "$module_path" | tr '/' '__')"
+  encoded="${module_path//\//__}"
   cp "$xml" "${OUTPUT_DIR}/${encoded}.xml"
 done
 

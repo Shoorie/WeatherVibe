@@ -11,7 +11,6 @@ import com.weather.vibe.feature.widget.ui.WidgetEmojis.HOURGLASS
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.PINNED_LOCATION
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.STORM
 import com.weather.vibe.feature.widget.ui.WidgetResources
-import com.weather.vibe.feature.widget.presentation.WidgetTimestampFormatter
 import org.koin.core.annotation.Factory
 import kotlin.math.roundToInt
 

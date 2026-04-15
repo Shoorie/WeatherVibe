@@ -166,5 +166,4 @@ class WidgetStateFactoryTest {
         get { message.body }.isEqualTo(ERROR_BODY)
       }
   }
-
 }

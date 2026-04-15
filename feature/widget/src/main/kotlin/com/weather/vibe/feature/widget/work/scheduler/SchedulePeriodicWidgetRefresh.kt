@@ -30,11 +30,7 @@ class SchedulePeriodicWidgetRefresh(
       .setBackoffCriteria(EXPONENTIAL, BACKOFF_SECONDS, SECONDS)
       .build()
 
-    workManager.enqueueUniquePeriodicWork(
-      /* uniqueWorkName = */ WORKER_NAME,
-      /* existingPeriodicWorkPolicy = */ UPDATE,
-      /* periodicWork = */ work
-    )
+    workManager.enqueueUniquePeriodicWork(WORKER_NAME, UPDATE, work)
   }
 
   internal companion object {

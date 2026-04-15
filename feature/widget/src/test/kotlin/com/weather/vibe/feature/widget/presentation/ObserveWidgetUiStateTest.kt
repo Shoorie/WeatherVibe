@@ -118,7 +118,7 @@ class ObserveWidgetUiStateTest {
   @Test
   fun `given current location fails, when observed, then emits error`() = runTest {
 
-    every { observeCurrentLocation() } returns flow { throw RuntimeException("boom") }
+    every { observeCurrentLocation() } returns flow { throw IllegalStateException("boom") }
     every { observeWidgetSnapshot() } returns flowOf(null)
 
     observe().test {

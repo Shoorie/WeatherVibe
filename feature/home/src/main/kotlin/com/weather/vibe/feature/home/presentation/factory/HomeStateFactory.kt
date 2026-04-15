@@ -12,7 +12,6 @@ import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
-import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -81,7 +80,10 @@ internal class HomeStateFactory(
     return playlist.genres.all { it.isRejecting }
   }
 
-  fun create(data: WeatherData, unit: TemperatureUnit = TemperatureUnit.CELSIUS): HomeUiState.Loaded {
+  fun create(
+    data: WeatherData,
+    unit: TemperatureUnit = TemperatureUnit.CELSIUS
+  ): HomeUiState.Loaded {
 
     val today = timeProvider.today()
     val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })

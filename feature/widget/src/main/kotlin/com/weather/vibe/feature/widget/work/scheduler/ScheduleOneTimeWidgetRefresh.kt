@@ -26,11 +26,7 @@ class ScheduleOneTimeWidgetRefresh(
       .setBackoffCriteria(EXPONENTIAL, BACKOFF_SECONDS, SECONDS)
       .build()
 
-    workManager.enqueueUniqueWork(
-      /* uniqueWorkName = */ WORKER_NAME,
-      /* existingWorkPolicy = */ REPLACE,
-      /* work = */ work
-    )
+    workManager.enqueueUniqueWork(WORKER_NAME, REPLACE, work)
   }
 
   internal companion object {

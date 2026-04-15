@@ -2,9 +2,9 @@ package com.weather.vibe.feature.widget.ui.theme
 
 import androidx.compose.ui.graphics.Color
 import androidx.glance.color.ColorProvider
-import androidx.glance.unit.ColorProvider as GlanceColorProvider
 import com.weather.vibe.core.designsystem.theme.weatherDarkColors
 import com.weather.vibe.core.designsystem.theme.weatherLightColors
+import androidx.glance.unit.ColorProvider as GlanceColorProvider
 
 internal object WidgetPalette {
 

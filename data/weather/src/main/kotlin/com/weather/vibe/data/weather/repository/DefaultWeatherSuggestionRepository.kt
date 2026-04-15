@@ -14,7 +14,7 @@ internal class DefaultWeatherSuggestionRepository(
   private val mapper: WeatherSuggestionDtoMapper
 ) : WeatherSuggestionRepository {
 
-  override suspend fun generate(prompt: String): WeatherSuggestion =
+  override suspend fun getSuggestionBasedOn(prompt: String): WeatherSuggestion =
     withContext(Dispatchers.IO) {
       val rawResponse = aiService.generateText(prompt)
       mapper.toDomain(rawResponse)

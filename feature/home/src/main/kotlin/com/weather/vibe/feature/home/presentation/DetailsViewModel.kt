@@ -3,6 +3,7 @@ package com.weather.vibe.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.toCoordinatesOrDefault
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
@@ -26,7 +27,7 @@ internal class DetailsViewModel(
 ) : ViewModel() {
 
   val state: StateFlow<HomeUiState> = combine(
-    useCases.observeCachedWeather(selectedLocation.toResolvedCoordinates()),
+    useCases.observeCachedWeather(selectedLocation.toCoordinatesOrDefault()),
     useCases.observeUserSettings(),
     ::toState
   ).stateIn(

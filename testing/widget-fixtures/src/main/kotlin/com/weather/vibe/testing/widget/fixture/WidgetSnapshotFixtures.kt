@@ -5,19 +5,11 @@ import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
 import com.weather.vibe.domain.widget.model.WidgetSnapshot
+import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 
 object WidgetSnapshotFixtures {
 
   const val FETCHED_AT_EPOCH_MILLIS = 1_700_000_000_000L
-
-  val DEFAULT_LOCATION: Location = Location(
-    id = 1L,
-    name = "Warsaw",
-    admin1 = "Mazowieckie",
-    country = "Poland",
-    latitude = 52.23,
-    longitude = 21.01
-  )
 
   val SNAPSHOT: WidgetSnapshot = snapshot()
 
@@ -31,7 +23,7 @@ object WidgetSnapshotFixtures {
     condition: WeatherCondition = CLEAR_SKY,
     currentTemperature: Double = 18.0,
     fetchedAtEpochMillis: Long = FETCHED_AT_EPOCH_MILLIS,
-    location: Location = DEFAULT_LOCATION,
+    location: Location = WARSAW,
     mood: String = "Bright"
   ): WidgetSnapshot = WidgetSnapshot(
     condition = condition,

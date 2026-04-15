@@ -5,6 +5,13 @@ import com.weather.vibe.feature.widget.ui.WidgetEmojis
 import com.weather.vibe.feature.widget.ui.WidgetResources
 import com.weather.vibe.feature.widget.presentation.WidgetTimestampFormatter
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.CONTENT_DESCRIPTION
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.ERROR_BODY
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.ERROR_TITLE
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.FETCHED_AT_LABEL
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.NO_LOCATION_BODY
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.NO_LOCATION_TITLE
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.WAITING_TITLE
 import com.weather.vibe.testing.widget.fixture.WidgetSnapshotFixtures.SNAPSHOT
 import io.mockk.every
 import io.mockk.mockk
@@ -160,13 +167,4 @@ class WidgetStateFactoryTest {
       }
   }
 
-  private companion object {
-    const val NO_LOCATION_TITLE = "Pick a city in WeatherVibe"
-    const val NO_LOCATION_BODY = "Open the app"
-    const val WAITING_TITLE = "Waking up the vibe"
-    const val ERROR_TITLE = "Couldn't load the vibe"
-    const val ERROR_BODY = "Tap to open WeatherVibe"
-    const val CONTENT_DESCRIPTION = "Weather for Warsaw"
-    const val FETCHED_AT_LABEL = "12:30"
-  }
 }

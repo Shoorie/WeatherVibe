@@ -8,7 +8,8 @@ sealed interface DeepLink {
   val uri: Uri
 
   data class Home(val locationId: Long?) : DeepLink {
-    override val uri: Uri get() = HomeDeepLinkMatcher.build(locationId)
+    override val uri: Uri
+      get() = HomeDeepLinkUri.build(locationId)
   }
 
   companion object {

@@ -17,7 +17,8 @@ internal class CurrentLocationChangeObserver(
   private val scheduler: ScheduleOneTimeWidgetRefresh
 ) {
 
-  private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+  private val scope: CoroutineScope =
+    CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
   fun start() {
     observeCurrentLocation()

@@ -8,8 +8,7 @@ import org.koin.core.annotation.Factory
 
 @Factory
 internal class WidgetSnapshotCacheMapper(
-  private val locationMapper: WidgetLocationEntryMapper,
-  private val suggestionMapper: WidgetSuggestionEntryMapper
+  private val locationMapper: WidgetLocationEntryMapper
 ) {
 
   fun toDomain(entry: WidgetSnapshotEntry): WidgetSnapshot =
@@ -17,9 +16,8 @@ internal class WidgetSnapshotCacheMapper(
       condition = entry.conditionName.toWeatherCondition(),
       currentTemperature = entry.currentTemperature,
       fetchedAtEpochMillis = entry.fetchedAtEpochMillis,
-      isDay = entry.isDay,
       location = locationMapper.toDomain(entry.location),
-      suggestion = suggestionMapper.toDomain(entry.suggestion)
+      mood = entry.mood
     )
 
   fun toEntry(snapshot: WidgetSnapshot): WidgetSnapshotEntry =
@@ -27,9 +25,8 @@ internal class WidgetSnapshotCacheMapper(
       .setConditionName(snapshot.condition.name)
       .setCurrentTemperature(snapshot.currentTemperature)
       .setFetchedAtEpochMillis(snapshot.fetchedAtEpochMillis)
-      .setIsDay(snapshot.isDay)
       .setLocation(locationMapper.toEntry(snapshot.location))
-      .setSuggestion(suggestionMapper.toEntry(snapshot.suggestion))
+      .setMood(snapshot.mood)
       .build()
 
   private fun String.toWeatherCondition(): WeatherCondition =

@@ -4,7 +4,6 @@ import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
 import com.weather.vibe.domain.weather.usecase.GetWeather
@@ -24,8 +23,8 @@ class RefreshWidgetSnapshot internal constructor(
 
   suspend operator fun invoke(location: Location): WidgetSnapshot {
     val weather = fetchWeather(location)
-    val suggestion = fetchSuggestion(weather)
-    val snapshot = snapshotOf(location, weather, suggestion)
+    val mood = fetchMood(weather)
+    val snapshot = snapshotOf(location, weather, mood)
     snapshotRepository.save(snapshot)
     return snapshot
   }
@@ -33,21 +32,20 @@ class RefreshWidgetSnapshot internal constructor(
   private suspend fun fetchWeather(location: Location): WeatherData =
     getWeather(location.toCoordinates()).first().getOrThrow()
 
-  private suspend fun fetchSuggestion(weather: WeatherData): WeatherSuggestion =
+  private suspend fun fetchMood(weather: WeatherData): String =
     generateWeatherSuggestion(weather, getCurrentWeatherKey(weather))
-      .first().getOrThrow()
+      .first().getOrThrow().mood
 
   private fun snapshotOf(
     location: Location,
     weather: WeatherData,
-    suggestion: WeatherSuggestion
+    mood: String
   ): WidgetSnapshot =
     WidgetSnapshot(
       condition = weather.condition,
       currentTemperature = weather.currentTemperature,
       fetchedAtEpochMillis = timeProvider.nowEpochMillis(),
-      isDay = weather.isDay,
       location = location,
-      suggestion = suggestion
+      mood = mood
     )
 }

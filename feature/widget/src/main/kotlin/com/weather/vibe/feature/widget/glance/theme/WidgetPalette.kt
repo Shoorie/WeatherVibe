@@ -11,6 +11,9 @@ internal object WidgetPalette {
   private val light = weatherLightColors()
   private val dark = weatherDarkColors()
 
+  private const val MUTED_ALPHA = 0.8f
+  private const val SUBTLE_ALPHA = 0.6f
+
   val background: GlanceColorProvider =
     ColorProvider(day = light.accent, night = dark.accent)
 
@@ -18,8 +21,14 @@ internal object WidgetPalette {
     ColorProvider(day = Color.White, night = Color.White)
 
   val onBackgroundMuted: GlanceColorProvider =
-    ColorProvider(day = Color(0xCCFFFFFF), night = Color(0xCCFFFFFF))
+    ColorProvider(
+      day = Color.White.copy(alpha = MUTED_ALPHA),
+      night = Color.White.copy(alpha = MUTED_ALPHA)
+    )
 
   val onBackgroundSubtle: GlanceColorProvider =
-    ColorProvider(day = Color(0x99FFFFFF), night = Color(0x99FFFFFF))
+    ColorProvider(
+      day = Color.White.copy(alpha = SUBTLE_ALPHA),
+      night = Color.White.copy(alpha = SUBTLE_ALPHA)
+    )
 }

@@ -10,15 +10,9 @@ import com.weather.vibe.feature.widget.glance.theme.WidgetPalette.onBackgroundSu
 
 internal object WidgetTextStyles {
 
-  val hero: TextStyle = TextStyle(
+  val conditionEmoji: TextStyle = TextStyle(
     color = onBackground,
     fontSize = 52.sp,
-    textAlign = TextAlign.Center
-  )
-
-  val heroSmall: TextStyle = TextStyle(
-    color = onBackground,
-    fontSize = 28.sp,
     textAlign = TextAlign.Center
   )
 
@@ -29,13 +23,13 @@ internal object WidgetTextStyles {
     textAlign = TextAlign.Center
   )
 
-  val location: TextStyle = TextStyle(
+  val locationName: TextStyle = TextStyle(
     color = onBackground,
     fontSize = 12.sp,
     fontWeight = FontWeight.Bold
   )
 
-  val timestamp: TextStyle = TextStyle(
+  val fetchedAtLabel: TextStyle = TextStyle(
     color = onBackgroundSubtle,
     fontSize = 11.sp
   )
@@ -51,13 +45,19 @@ internal object WidgetTextStyles {
     fontWeight = FontWeight.Medium
   )
 
-  val title: TextStyle = TextStyle(
+  val messageEmoji: TextStyle = TextStyle(
+    color = onBackground,
+    fontSize = 28.sp,
+    textAlign = TextAlign.Center
+  )
+
+  val messageTitle: TextStyle = TextStyle(
     color = onBackground,
     fontSize = 12.sp,
     fontWeight = FontWeight.Medium
   )
 
-  val body: TextStyle = TextStyle(
+  val messageBody: TextStyle = TextStyle(
     color = onBackgroundMuted,
     fontSize = 11.sp
   )

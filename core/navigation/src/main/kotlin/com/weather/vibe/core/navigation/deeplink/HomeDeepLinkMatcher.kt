@@ -6,17 +6,18 @@ import com.weather.vibe.core.navigation.deeplink.DeepLinkUris.SCHEME
 
 internal object HomeDeepLinkMatcher : DeepLinkMatcher<Home> {
 
-  const val HOME_HOST = "home"
-  const val LOCATION_ID_PARAM = "locationId"
+  private const val HOST = "home"
+  private const val LOCATION_ID = "locationId"
 
   override fun match(uri: Uri): Home? {
 
-    if (uri.scheme != SCHEME || uri.host != HOME_HOST) return null
+    if (uri.scheme != SCHEME || uri.host != HOST) return null
 
-    val locationId = uri
-      .getQueryParameter(LOCATION_ID_PARAM)
-      ?.toLongOrNull()
-
-    return Home(locationId = locationId)
+    return Home(locationId = uri.getQueryParameter(LOCATION_ID)?.toLongOrNull())
   }
+
+  fun build(locationId: Long?): Uri =
+    DeepLinkUris.build(HOST) {
+      locationId?.let { appendQueryParameter(LOCATION_ID, it.toString()) }
+    }
 }

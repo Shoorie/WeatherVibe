@@ -73,12 +73,12 @@ class RefreshWidgetSnapshotTest {
   }
 
   @Test
-  fun `when refreshed, then saved snapshot carries generated suggestion`() = runTest {
+  fun `when refreshed, then saved snapshot carries generated mood`() = runTest {
 
     refresh(WARSAW)
 
     val saved = snapshotRepository.savedSnapshots.single()
-    expectThat(saved.suggestion).isEqualTo(SUGGESTION)
+    expectThat(saved.mood).isEqualTo(SUGGESTION.mood)
   }
 
   @Test

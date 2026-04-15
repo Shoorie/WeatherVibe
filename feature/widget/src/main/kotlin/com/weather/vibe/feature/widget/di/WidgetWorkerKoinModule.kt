@@ -9,13 +9,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.qualifier
 import org.koin.dsl.module
 
-/**
- * Manual worker registration — a workaround for koin-annotations 2.3.1, which generates
- * `worker() { ... }` without the className qualifier and reads WorkerParameters from the module
- * scope instead of `parametersOf`. `KoinWorkerFactory` then cannot locate the bean and
- * WorkManager falls back to reflection on a non-existent `(Context, WorkerParameters)`
- * constructor. Kept out of `@Module @ComponentScan` until upstream fixes the generator.
- */
+// Manual registration — koin-annotations generates a @Worker binding that KoinWorkerFactory
+// cannot resolve by class-name qualifier. Revisit once upstream is fixed.
 val widgetWorkerKoinModule = module {
 
   single { WorkManager.getInstance(androidContext()) }

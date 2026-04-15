@@ -1,8 +1,8 @@
 package com.weather.vibe.feature.widget.presentation
 
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.widget.usecase.ObserveWidgetSnapshot
-import com.weather.vibe.domain.location.usecase.GetRecentLocations
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -16,14 +16,13 @@ import org.koin.core.annotation.Factory
 @OptIn(ExperimentalCoroutinesApi::class)
 @Factory
 class ObserveWidgetUiState internal constructor(
-  private val getRecentLocations: GetRecentLocations,
+  private val observeCurrentLocation: ObserveCurrentLocation,
   private val observeWidgetSnapshot: ObserveWidgetSnapshot,
   private val stateFactory: WidgetStateFactory
 ) {
 
   operator fun invoke(): Flow<WidgetUiState> =
-    getRecentLocations()
-      .map { it.getOrNull()?.firstOrNull() }
+    observeCurrentLocation()
       .distinctUntilChanged()
       .flatMapLatest(::resolveStateFlow)
       .catch { emit(stateFactory.createError()) }
@@ -32,7 +31,7 @@ class ObserveWidgetUiState internal constructor(
     when (location) {
       null -> flowOf(stateFactory.createNoLocation())
       else -> observeWidgetSnapshot(location.id).map { snapshot ->
-        snapshot?.let(stateFactory::createReadyFor)
+        snapshot?.let(stateFactory::createWeatherFor)
           ?: stateFactory.createWaitingFor(location)
       }
     }

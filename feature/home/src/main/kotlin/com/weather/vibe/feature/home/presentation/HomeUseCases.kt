@@ -1,6 +1,6 @@
 package com.weather.vibe.feature.home.presentation
 
-import com.weather.vibe.domain.location.usecase.GetRecentLocations
+import com.weather.vibe.domain.location.usecase.GetStartingCoordinates
 import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.weather.usecase.DetermineWeatherRefreshStrategy
@@ -16,7 +16,7 @@ internal data class HomeUseCases(
   val excludeGenre: ExcludeGenre,
   val generateWeatherSuggestion: GenerateWeatherSuggestion,
   val getCurrentWeatherKey: GetCurrentWeatherKey,
-  val getRecentLocations: GetRecentLocations,
+  val getStartingCoordinates: GetStartingCoordinates,
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   val observeUserSettings: ObserveUserSettings

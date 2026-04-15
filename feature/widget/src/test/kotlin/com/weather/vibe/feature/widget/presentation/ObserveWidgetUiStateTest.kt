@@ -2,11 +2,9 @@ package com.weather.vibe.feature.widget.presentation
 
 import app.cash.turbine.test
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.usecase.GetRecentLocations
+import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.widget.usecase.ObserveWidgetSnapshot
-import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
-import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
-import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
+import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.ui.WidgetResources
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import com.weather.vibe.testing.widget.fixture.WidgetSnapshotFixtures.SNAPSHOT
@@ -22,16 +20,15 @@ import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
-import kotlin.Result.Companion.success
 
 class ObserveWidgetUiStateTest {
 
-  private val getRecentLocations = mockk<GetRecentLocations>()
+  private val observeCurrentLocation = mockk<ObserveCurrentLocation>()
   private val observeWidgetSnapshot = mockk<ObserveWidgetSnapshot>()
   private val resources = mockk<WidgetResources>(relaxed = true)
   private val stateFactory = WidgetStateFactory(resources = resources)
   private val observe = ObserveWidgetUiState(
-    getRecentLocations = getRecentLocations,
+    observeCurrentLocation = observeCurrentLocation,
     observeWidgetSnapshot = observeWidgetSnapshot,
     stateFactory = stateFactory
   )
@@ -47,37 +44,37 @@ class ObserveWidgetUiStateTest {
   }
 
   @Test
-  fun `given no recent locations, when observed, then emits no location`() = runTest {
+  fun `given no current location, when observed, then emits no location`() = runTest {
 
-    every { getRecentLocations() } returns flowOf(success(emptyList()))
+    every { observeCurrentLocation() } returns flowOf(null)
 
     observe().test {
-      expectThat(awaitItem()).isA<WidgetNoLocationUiState>()
+      expectThat(awaitItem()).isA<WidgetUiState.NoLocation>()
       awaitComplete()
     }
   }
 
   @Test
-  fun `given recent location without snapshot, when observed, then emits waiting`() = runTest {
+  fun `given current location without snapshot, when observed, then emits waiting`() = runTest {
 
-    every { getRecentLocations() } returns flowOf(success(listOf(WARSAW)))
+    every { observeCurrentLocation() } returns flowOf(WARSAW)
     every { observeWidgetSnapshot(WARSAW.id) } returns flowOf(null)
 
     observe().test {
-      expectThat(awaitItem()).isA<WidgetWaitingUiState>()
+      expectThat(awaitItem()).isA<WidgetUiState.Waiting>()
       awaitComplete()
     }
   }
 
   @Test
-  fun `given recent location with snapshot, when observed, then emits ready with location id`() = runTest {
+  fun `given current location with snapshot, when observed, then emits weather with location id`() = runTest {
 
-    every { getRecentLocations() } returns flowOf(success(listOf(WARSAW)))
+    every { observeCurrentLocation() } returns flowOf(WARSAW)
     every { observeWidgetSnapshot(WARSAW.id) } returns flowOf(SNAPSHOT)
 
     observe().test {
       val state = awaitItem()
-      expectThat(state).isA<WidgetReadyUiState>()
+      expectThat(state).isA<WidgetUiState.Weather>()
         .get { locationId }.isEqualTo(SNAPSHOT.location.id)
       awaitComplete()
     }
@@ -86,32 +83,34 @@ class ObserveWidgetUiStateTest {
   @Test
   fun `given snapshot emission changes, when observed, then downstream updates`() = runTest {
 
-    every { getRecentLocations() } returns flowOf(success(listOf(WARSAW)))
+    every { observeCurrentLocation() } returns flowOf(WARSAW)
     val snapshots = MutableStateFlow(SNAPSHOT)
     every { observeWidgetSnapshot(WARSAW.id) } returns snapshots
 
     observe().test {
-      expectThat(awaitItem()).isA<WidgetReadyUiState>()
+      expectThat(awaitItem()).isA<WidgetUiState.Weather>()
       snapshots.value = SNAPSHOT.copy(currentTemperature = 25.0)
       val updated = awaitItem()
-      expectThat(updated).isA<WidgetReadyUiState>()
+      expectThat(updated).isA<WidgetUiState.Weather>()
         .get { temperature }.isEqualTo("25°")
     }
   }
 
   @Test
-  fun `given recent locations fail, when observed, then emits no location`() = runTest {
+  fun `given current location fails, when observed, then emits error`() = runTest {
 
-    every { getRecentLocations() } returns flowOf(Result.failure(RuntimeException("boom")))
+    every { observeCurrentLocation() } returns kotlinx.coroutines.flow.flow {
+      throw RuntimeException("boom")
+    }
 
     observe().test {
-      expectThat(awaitItem()).isA<WidgetNoLocationUiState>()
+      expectThat(awaitItem()).isA<WidgetUiState.Error>()
       awaitComplete()
     }
   }
 
   @Test
-  fun `given recents list has several, when observed, then takes the first one`() = runTest {
+  fun `given current location switches, when observed, then downstream re-evaluates`() = runTest {
 
     val second = Location(
       id = 99L,
@@ -121,13 +120,16 @@ class ObserveWidgetUiStateTest {
       latitude = 1.0,
       longitude = 2.0
     )
-    every { getRecentLocations() } returns flowOf(success(listOf(WARSAW, second)))
+    val currentLocation = MutableStateFlow<Location?>(WARSAW)
+    every { observeCurrentLocation() } returns currentLocation
     every { observeWidgetSnapshot(WARSAW.id) } returns flowOf(SNAPSHOT)
+    every { observeWidgetSnapshot(second.id) } returns flowOf(null)
 
     observe().test {
-      expectThat(awaitItem()).isA<WidgetReadyUiState>()
+      expectThat(awaitItem()).isA<WidgetUiState.Weather>()
         .get { locationId }.isEqualTo(WARSAW.id)
-      awaitComplete()
+      currentLocation.value = second
+      expectThat(awaitItem()).isA<WidgetUiState.Waiting>()
     }
   }
 }

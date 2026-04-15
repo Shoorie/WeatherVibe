@@ -1,6 +1,6 @@
 package com.weather.vibe.feature.widget.work
 
-import com.weather.vibe.domain.location.usecase.GetRecentLocations
+import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.feature.widget.work.scheduler.ScheduleOneTimeWidgetRefresh
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,15 +13,15 @@ import org.koin.core.annotation.Factory
 
 @Factory
 internal class CurrentLocationChangeObserver(
-  private val getRecentLocations: GetRecentLocations,
+  private val observeCurrentLocation: ObserveCurrentLocation,
   private val scheduler: ScheduleOneTimeWidgetRefresh
 ) {
 
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
   fun start() {
-    getRecentLocations()
-      .mapNotNull { it.getOrNull()?.firstOrNull()?.id }
+    observeCurrentLocation()
+      .mapNotNull { it?.id }
       .distinctUntilChanged()
       .onEach { scheduler.schedule() }
       .launchIn(scope)

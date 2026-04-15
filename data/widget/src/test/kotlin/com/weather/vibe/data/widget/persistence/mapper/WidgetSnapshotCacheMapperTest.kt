@@ -10,8 +10,7 @@ import strikt.assertions.isEqualTo
 class WidgetSnapshotCacheMapperTest {
 
   private val mapper = WidgetSnapshotCacheMapper(
-    locationMapper = WidgetLocationEntryMapper(),
-    suggestionMapper = WidgetSuggestionEntryMapper()
+    locationMapper = WidgetLocationEntryMapper()
   )
 
   @Test

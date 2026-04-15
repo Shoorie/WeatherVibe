@@ -69,7 +69,7 @@ class GenerateWeatherSuggestion internal constructor(
       timeOfDay = weatherKey.timeOfDay,
       tone = tone
     )
-    val suggestion = repository.generate(prompt = prompt)
+    val suggestion = repository.getSuggestionBasedOn(prompt)
     cache.save(
       languageTag = languageTag,
       suggestion = suggestion,

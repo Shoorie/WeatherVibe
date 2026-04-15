@@ -75,7 +75,10 @@ private fun WidgetConditionIcon(
     modifier = modifier.fillMaxWidth(),
     contentAlignment = Alignment.Center
   ) {
-    Text(text = emoji, style = WidgetTextStyles.conditionEmoji)
+    Text(
+      text = emoji,
+      style = WidgetTextStyles.conditionEmoji
+    )
   }
 }
 

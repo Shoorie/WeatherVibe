@@ -12,21 +12,26 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.core.annotation.Factory
 
 @Factory
-class ObserveWidgetUiState internal constructor(
+internal class ObserveWidgetUiState(
   private val observeCurrentLocation: ObserveCurrentLocation,
   private val observeWidgetSnapshot: ObserveWidgetSnapshot,
   private val stateFactory: WidgetStateFactory
 ) {
 
   operator fun invoke(): Flow<WidgetUiState> =
-    combine(observeCurrentLocation(), observeWidgetSnapshot(), ::resolve)
+    combine(
+      observeCurrentLocation(),
+      observeWidgetSnapshot(),
+      ::resolve
+    )
       .distinctUntilChanged()
       .catch { emit(stateFactory.createError()) }
 
   private fun resolve(location: Location?, snapshot: WidgetSnapshot?): WidgetUiState =
     when {
       location == null -> stateFactory.createNoLocation()
-      snapshot == null || snapshot.location.id != location.id -> stateFactory.createWaitingFor(location)
+      snapshot == null || snapshot.location.id != location.id ->
+        stateFactory.createWaitingFor(location)
       else -> stateFactory.createWeather(snapshot)
     }
 }

@@ -49,7 +49,7 @@ internal class HomeViewModel(
   val state: StateFlow<HomeUiState> = _state.asStateFlow()
 
   private var snapshot = HomeSnapshot()
-  private var currentCoordinates: Coordinates = DEFAULT_COORDINATES
+  private var currentCoordinates: Coordinates? = null
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
@@ -72,7 +72,7 @@ internal class HomeViewModel(
 
   private fun onInitialize(action: Initialize) {
     viewModelScope.launch(errorHandler) {
-      val coordinates = useCases.getStartingCoordinates(action.location) ?: DEFAULT_COORDINATES
+      val coordinates = useCases.getStartingCoordinates(action.location)
       if (isAlreadyShowing(coordinates)) return@launch
       observeWeather(coordinates)
     }
@@ -190,12 +190,13 @@ internal class HomeViewModel(
   }
 
   private fun onRefreshClick() {
+    val coordinates = currentCoordinates ?: return
     val current = _state.value as? Loaded
     if (current != null) {
       _state.update { current.copy(isRefreshing = true) }
-      refreshWeather(currentCoordinates)
+      refreshWeather(coordinates)
     } else {
-      observeWeather(currentCoordinates)
+      observeWeather(coordinates)
     }
   }
 

@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.navigation)
   implementation(projects.core.time)
   implementation(projects.domain.location)
   implementation(projects.domain.settings)

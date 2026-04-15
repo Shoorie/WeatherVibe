@@ -12,8 +12,6 @@ import com.weather.vibe.domain.widget.model.WidgetSnapshot
 import com.weather.vibe.domain.widget.repository.WidgetSnapshotRepository
 import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Factory
-import kotlin.Result.Companion.failure
-import kotlin.Result.Companion.success
 
 @Factory
 class RefreshWidgetSnapshot internal constructor(
@@ -24,19 +22,20 @@ class RefreshWidgetSnapshot internal constructor(
   private val timeProvider: TimeProvider
 ) {
 
-  suspend operator fun invoke(location: Location): Result<WidgetSnapshot> {
-    val weather = fetchWeather(location).getOrElse { return failure(it) }
-    val suggestion = fetchSuggestion(weather).getOrElse { return failure(it) }
+  suspend operator fun invoke(location: Location): WidgetSnapshot {
+    val weather = fetchWeather(location)
+    val suggestion = fetchSuggestion(weather)
     val snapshot = snapshotOf(location, weather, suggestion)
     snapshotRepository.save(snapshot)
-    return success(snapshot)
+    return snapshot
   }
 
-  private suspend fun fetchWeather(location: Location): Result<WeatherData> =
-    getWeather(location.toCoordinates()).first()
+  private suspend fun fetchWeather(location: Location): WeatherData =
+    getWeather(location.toCoordinates()).first().getOrThrow()
 
-  private suspend fun fetchSuggestion(weather: WeatherData): Result<WeatherSuggestion> =
-    generateWeatherSuggestion(weather, getCurrentWeatherKey(weather)).first()
+  private suspend fun fetchSuggestion(weather: WeatherData): WeatherSuggestion =
+    generateWeatherSuggestion(weather, getCurrentWeatherKey(weather))
+      .first().getOrThrow()
 
   private fun snapshotOf(
     location: Location,

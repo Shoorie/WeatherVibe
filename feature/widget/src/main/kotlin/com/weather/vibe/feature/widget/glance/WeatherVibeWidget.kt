@@ -10,7 +10,9 @@ import androidx.glance.appwidget.provideContent
 import com.weather.vibe.feature.widget.glance.composables.WidgetContent
 import com.weather.vibe.feature.widget.presentation.ObserveWidgetUiState
 import kotlinx.coroutines.flow.first
+import org.koin.core.annotation.Single
 
+@Single
 internal class WeatherVibeWidget(
   private val observeWidgetUiState: ObserveWidgetUiState
 ) : GlanceAppWidget() {
@@ -18,10 +20,10 @@ internal class WeatherVibeWidget(
   override val sizeMode: SizeMode = SizeMode.Single
 
   override suspend fun provideGlance(context: Context, id: GlanceId) {
-    val states = observeWidgetUiState()
-    val initial = states.first()
+    val state = observeWidgetUiState()
+    val initial = state.first()
     provideContent {
-      val state by states.collectAsState(initial = initial)
+      val state by state.collectAsState(initial = initial)
       WidgetContent(state = state)
     }
   }

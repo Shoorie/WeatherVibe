@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.widget.presentation
 
+import com.weather.vibe.feature.widget.presentation.state.WidgetErrorUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
@@ -28,8 +29,11 @@ class WidgetStateFactoryTest {
     every { resources.noLocationBody() } returns NO_LOCATION_BODY
     every { resources.waitingTitle() } returns WAITING_TITLE
     every { resources.waitingBody(any()) } answers { "Fresh forecast for ${firstArg<String>()}" }
+    every { resources.errorTitle() } returns ERROR_TITLE
+    every { resources.errorBody() } returns ERROR_BODY
     every { resources.temperature(any()) } answers { "${firstArg<Int>()}°" }
     every { resources.weatherContentDescription(any(), any()) } returns CONTENT_DESCRIPTION
+    every { resources.fetchTimestamp(any()) } returns FETCHED_AT_LABEL
   }
 
   @After
@@ -56,7 +60,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when waiting state created, then body formatted with location name`() {
 
-    val state = factory.createWaiting(WARSAW)
+    val state = factory.createWaitingFor(WARSAW)
 
     expectThat(state.body).isEqualTo("Fresh forecast for Warsaw")
   }
@@ -64,7 +68,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when waiting state created, then emoji is hourglass`() {
 
-    val state = factory.createWaiting(WARSAW)
+    val state = factory.createWaitingFor(WARSAW)
 
     expectThat(state.emoji).isEqualTo(WidgetEmojis.HOURGLASS)
   }
@@ -72,7 +76,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when ready state created, then location id preserved`() {
 
-    val state = factory.createReady(SNAPSHOT)
+    val state = factory.createReadyFor(SNAPSHOT)
 
     expectThat(state.locationId).isEqualTo(SNAPSHOT.location.id)
   }
@@ -80,7 +84,7 @@ class WidgetStateFactoryTest {
   @Test
   fun `when ready state created, then condition emoji carried from snapshot`() {
 
-    val state = factory.createReady(SNAPSHOT)
+    val state = factory.createReadyFor(SNAPSHOT)
 
     expectThat(state.conditionEmoji).isEqualTo(SNAPSHOT.condition.emoji)
   }
@@ -88,18 +92,34 @@ class WidgetStateFactoryTest {
   @Test
   fun `when ready state created, then temperature rounded and formatted via resources`() {
 
-    val state = factory.createReady(SNAPSHOT)
+    val state = factory.createReadyFor(SNAPSHOT)
 
     expectThat(state.temperature).isEqualTo("${SNAPSHOT.currentTemperature.toInt()}°")
   }
 
   @Test
-  fun `when ready state created, then vibe text comes from suggestion`() {
+  fun `when ready state created, then mood comes from suggestion`() {
 
-    val state = factory.createReady(SNAPSHOT)
+    val state = factory.createReadyFor(SNAPSHOT)
 
     expectThat(state).isA<WidgetReadyUiState>()
-      .get { vibeText }.isEqualTo(SNAPSHOT.suggestion.briefText)
+      .get { mood }.isEqualTo(SNAPSHOT.suggestion.mood)
+  }
+
+  @Test
+  fun `when ready state created, then fetched at label formatted from snapshot timestamp`() {
+
+    val state = factory.createReadyFor(SNAPSHOT)
+
+    expectThat(state.fetchedAtLabel).isEqualTo(FETCHED_AT_LABEL)
+  }
+
+  @Test
+  fun `when ready state created, then condition label carried from snapshot`() {
+
+    val state = factory.createReadyFor(SNAPSHOT)
+
+    expectThat(state.conditionLabel).isEqualTo(SNAPSHOT.condition.label)
   }
 
   @Test
@@ -113,15 +133,38 @@ class WidgetStateFactoryTest {
   @Test
   fun `when waiting state created, then returns dedicated type`() {
 
-    val state = factory.createWaiting(WARSAW)
+    val state = factory.createWaitingFor(WARSAW)
 
     expectThat(state).isA<WidgetWaitingUiState>()
+  }
+
+  @Test
+  fun `when error state created, then emoji is storm`() {
+
+    val state = factory.createError()
+
+    expectThat(state.emoji).isEqualTo(WidgetEmojis.STORM)
+  }
+
+  @Test
+  fun `when error state created, then title and body come from resources`() {
+
+    val state = factory.createError()
+
+    expectThat(state).isA<WidgetErrorUiState>()
+      .and {
+        get { title }.isEqualTo(ERROR_TITLE)
+        get { body }.isEqualTo(ERROR_BODY)
+      }
   }
 
   private companion object {
     const val NO_LOCATION_TITLE = "Pick a city in WeatherVibe"
     const val NO_LOCATION_BODY = "Open the app"
     const val WAITING_TITLE = "Waking up the vibe"
+    const val ERROR_TITLE = "Couldn't load the vibe"
+    const val ERROR_BODY = "Tap to open WeatherVibe"
     const val CONTENT_DESCRIPTION = "Weather for Warsaw"
+    const val FETCHED_AT_LABEL = "12:30"
   }
 }

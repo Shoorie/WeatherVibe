@@ -1,8 +1,10 @@
 package com.weather.vibe.feature.widget.ui
 
 import android.content.Context
+import android.text.format.DateFormat
 import com.weather.vibe.feature.widget.R
 import org.koin.core.annotation.Factory
+import java.util.Date
 
 @Factory(binds = [WidgetResources::class])
 internal class DefaultWidgetResources(
@@ -21,6 +23,12 @@ internal class DefaultWidgetResources(
   override fun waitingBody(locationName: String): String =
     context.getString(R.string.widget_waiting_body, locationName)
 
+  override fun errorTitle(): String =
+    context.getString(R.string.widget_error_title)
+
+  override fun errorBody(): String =
+    context.getString(R.string.widget_error_body)
+
   override fun temperature(degrees: Int): String =
     context.getString(R.string.widget_temperature_format, degrees)
 
@@ -29,4 +37,7 @@ internal class DefaultWidgetResources(
 
   override fun weatherContentDescription(locationName: String, mood: String): String =
     context.getString(R.string.widget_weather_content_description, locationName, mood)
+
+  override fun fetchTimestamp(epochMillis: Long): String =
+    DateFormat.getTimeFormat(context).format(Date(epochMillis))
 }

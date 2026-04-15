@@ -19,8 +19,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import strikt.api.expectThat
+import strikt.api.expectThrows
 import strikt.assertions.hasSize
-import strikt.assertions.isA
 import strikt.assertions.isEmpty
 import strikt.assertions.isEqualTo
 import java.io.IOException
@@ -91,13 +91,11 @@ class RefreshWidgetSnapshotTest {
   }
 
   @Test
-  fun `given weather fetch fails, when refreshed, then failure returned`() = runTest {
+  fun `given weather fetch fails, when refreshed, then rethrows cause`() = runTest {
 
     every { getWeather(any()) } returns flowOf(failure(IOException("offline")))
 
-    val result = refresh(WARSAW)
-
-    expectThat(result.exceptionOrNull()).isA<IOException>()
+    expectThrows<IOException> { refresh(WARSAW) }
   }
 
   @Test
@@ -105,19 +103,17 @@ class RefreshWidgetSnapshotTest {
 
     every { getWeather(any()) } returns flowOf(failure(IOException("offline")))
 
-    refresh(WARSAW)
+    runCatching { refresh(WARSAW) }
 
     expectThat(snapshotRepository.savedSnapshots).isEmpty()
   }
 
   @Test
-  fun `given suggestion generation fails, when refreshed, then failure returned`() = runTest {
+  fun `given suggestion generation fails, when refreshed, then rethrows cause`() = runTest {
 
     every { generateWeatherSuggestion(WEATHER, WEATHER_KEY) } returns
       flowOf(failure(IllegalStateException("ai down")))
 
-    val result = refresh(WARSAW)
-
-    expectThat(result.exceptionOrNull()).isA<IllegalStateException>()
+    expectThrows<IllegalStateException> { refresh(WARSAW) }
   }
 }

@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.widget.glance.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.weather.vibe.feature.widget.presentation.state.WidgetErrorUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetNoLocationUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetReadyUiState
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
@@ -8,6 +9,7 @@ import com.weather.vibe.feature.widget.presentation.state.WidgetWaitingUiState
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.HOURGLASS
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.PINNED_LOCATION
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.RAINY
+import com.weather.vibe.feature.widget.ui.WidgetEmojis.STORM
 import com.weather.vibe.feature.widget.ui.WidgetEmojis.SUNNY
 
 internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
@@ -15,23 +17,25 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
   val sunnyReady: WidgetReadyUiState =
     WidgetReadyUiState(
       conditionEmoji = SUNNY,
+      conditionLabel = "Clear Sky",
       contentDescription = "Weather for Warsaw, Bright",
+      fetchedAtLabel = "12:30",
       locationId = 1L,
       locationName = "Warsaw",
       mood = "Bright",
-      temperature = "18°",
-      vibeText = "Sunny day, perfect for a walk and some fresh tunes."
+      temperature = "18°"
     )
 
   val rainyReady: WidgetReadyUiState =
     WidgetReadyUiState(
       conditionEmoji = RAINY,
+      conditionLabel = "Rain",
       contentDescription = "Weather for Kraków, Cozy",
+      fetchedAtLabel = "09:14",
       locationId = 2L,
       locationName = "Kraków",
       mood = "Cozy",
-      temperature = "9°",
-      vibeText = "Grab an umbrella, it's pouring — lo-fi playlist time."
+      temperature = "9°"
     )
 
   val waiting: WidgetWaitingUiState =
@@ -48,11 +52,19 @@ internal class WidgetPreview : PreviewParameterProvider<WidgetUiState> {
       title = "Pick a city in WeatherVibe"
     )
 
+  val error: WidgetErrorUiState =
+    WidgetErrorUiState(
+      body = "Tap to open WeatherVibe and try again.",
+      emoji = STORM,
+      title = "Couldn't load the vibe"
+    )
+
   override val values: Sequence<WidgetUiState>
     get() = sequenceOf(
       sunnyReady,
       rainyReady,
       waiting,
-      noLocation
+      noLocation,
+      error
     )
 }

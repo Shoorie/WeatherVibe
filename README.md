@@ -44,8 +44,8 @@ when constrained by unbreakable architectural rules.
 * **Token-Based Design System:** A completely custom, resource-injected UI layer.
 * **Offline Support:** Robust local caching using Room database with relational mapping.
 * **Fluid Animations:** Smooth transitions and micro-interactions.
-* **Home Screen Widget:** Glance-based widget showing weather and AI vibe for a pinned city,
-  refreshed hourly by WorkManager and deep-linked back into the app.
+* **Home Screen Widget:** Glance-based widget showing weather and AI vibe for the current city,
+  refreshed in the background via WorkManager and deep-linked back into the app.
 
 ---
 

@@ -1,12 +1,12 @@
 package com.weather.vibe.feature.widget.presentation
 
 import app.cash.turbine.test
-import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.widget.usecase.ObserveWidgetSnapshot
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.ui.WidgetResources
-import com.weather.vibe.feature.widget.ui.WidgetTimestampFormatter
+import com.weather.vibe.feature.widget.presentation.WidgetTimestampFormatter
+import com.weather.vibe.testing.location.fixture.LocationFixtures.KRAKOW
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import com.weather.vibe.testing.widget.fixture.WidgetSnapshotFixtures.SNAPSHOT
 import io.mockk.every
@@ -90,15 +90,7 @@ class ObserveWidgetUiStateTest {
   @Test
   fun `given snapshot for different location, when observed, then emits waiting`() = runTest {
 
-    val other = Location(
-      id = 99L,
-      name = "Kraków",
-      admin1 = null,
-      country = "PL",
-      latitude = 1.0,
-      longitude = 2.0
-    )
-    every { observeCurrentLocation() } returns flowOf(other)
+    every { observeCurrentLocation() } returns flowOf(KRAKOW)
     every { observeWidgetSnapshot() } returns flowOf(SNAPSHOT)
 
     observe().test {

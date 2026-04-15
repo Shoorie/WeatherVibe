@@ -3,7 +3,7 @@ package com.weather.vibe.feature.widget.presentation
 import com.weather.vibe.feature.widget.presentation.state.WidgetUiState
 import com.weather.vibe.feature.widget.ui.WidgetEmojis
 import com.weather.vibe.feature.widget.ui.WidgetResources
-import com.weather.vibe.feature.widget.ui.WidgetTimestampFormatter
+import com.weather.vibe.feature.widget.presentation.WidgetTimestampFormatter
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import com.weather.vibe.testing.widget.fixture.WidgetSnapshotFixtures.SNAPSHOT
 import io.mockk.every

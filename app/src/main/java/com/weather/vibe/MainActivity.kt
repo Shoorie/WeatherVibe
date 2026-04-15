@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
@@ -14,7 +16,6 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.navigation.DeepLinkRouteResolver
 import com.weather.vibe.navigation.SplashBackdrop
 import com.weather.vibe.navigation.WeatherVibeNavHost
-import com.weather.vibe.navigation.rememberStartRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
   private val startRoute = MutableStateFlow<NavKey?>(null)
 
   override fun onCreate(savedInstanceState: Bundle?) {
+
     val splashScreen = installSplashScreen()
     super.onCreate(savedInstanceState)
 
@@ -34,18 +36,25 @@ class MainActivity : ComponentActivity() {
     )
 
     splashScreen.setKeepOnScreenCondition { startRoute.value == null }
-    lifecycleScope.launch { startRoute.value = deepLinkRouteResolver.resolve(intent) }
+    handleDeepLinks()
 
     setContent {
       WeatherVibeTheme {
-        when (val route = rememberStartRoute(startRoute)) {
+        val value by startRoute.collectAsState()
+        when (value) {
           null -> SplashBackdrop()
           else -> WeatherVibeNavHost(
             modifier = Modifier.semantics { testTagsAsResourceId = true },
-            startRoute = route
+            startRoute = requireNotNull(value)
           )
         }
       }
+    }
+  }
+
+  private fun handleDeepLinks() {
+    lifecycleScope.launch {
+      startRoute.value = deepLinkRouteResolver.resolve(intent)
     }
   }
 }

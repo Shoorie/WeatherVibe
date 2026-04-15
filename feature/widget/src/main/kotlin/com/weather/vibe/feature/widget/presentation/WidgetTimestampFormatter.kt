@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.widget.ui
+package com.weather.vibe.feature.widget.presentation
 
 import android.content.Context
 import android.text.format.DateFormat

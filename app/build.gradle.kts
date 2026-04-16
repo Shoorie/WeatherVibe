@@ -89,6 +89,7 @@ dependencies {
   implementation(projects.core.permissions)
   implementation(projects.core.time)
   implementation(projects.core.tracing)
+  implementation(projects.core.workmanager)
   implementation(projects.domain.weather)
   implementation(projects.domain.location)
   implementation(projects.data.weather)

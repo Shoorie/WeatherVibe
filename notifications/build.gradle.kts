@@ -20,6 +20,7 @@ dependencies {
   implementation(libs.androidx.work.runtime.ktx)
   implementation(libs.koin.androidx.workmanager)
 
+  testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.locationFixtures)
   testImplementation(projects.testing.settingsFixtures)

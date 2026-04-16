@@ -1,11 +1,11 @@
 package com.weather.vibe.domain.alerts.usecase
 
 import com.weather.vibe.domain.alerts.dedupe.AlertDeduplicator
-import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.settings.usecase.AreAlertsEnabled
 import com.weather.vibe.domain.weather.usecase.GetWeather
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.THUNDERSTORM
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER
 import io.mockk.coEvery
@@ -21,7 +21,6 @@ import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.hasSize
 import strikt.assertions.isEmpty
-import java.time.LocalDateTime
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 
@@ -45,7 +44,7 @@ class GatherWeatherAlertsTest {
     coEvery { areAlertsEnabled() } returns true
     every { observeCurrentLocation() } returns flowOf(WARSAW)
     every { getWeather(WARSAW.toCoordinates()) } returns flowOf(success(WEATHER))
-    every { detectWeatherAlerts(WEATHER) } returns listOf(STORM)
+    every { detectWeatherAlerts(WEATHER) } returns listOf(THUNDERSTORM)
   }
 
   @After
@@ -94,11 +93,5 @@ class GatherWeatherAlertsTest {
     val secondCall = gather()
 
     expectThat(secondCall).isEmpty()
-  }
-
-  private companion object {
-    val STORM = WeatherAlert.ThunderstormImminent(
-      expectedAt = LocalDateTime.of(2026, 4, 16, 18, 0)
-    )
   }
 }

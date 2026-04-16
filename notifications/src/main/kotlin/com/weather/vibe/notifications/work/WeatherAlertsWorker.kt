@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CancellationException
+import org.koin.android.annotation.KoinWorker
 
+@KoinWorker
 internal class WeatherAlertsWorker(
   context: Context,
   params: WorkerParameters,

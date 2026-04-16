@@ -6,10 +6,9 @@ import androidx.work.Configuration
 import com.weather.vibe.core.tracing.TraceSections.KOIN_INITIALIZATION
 import com.weather.vibe.core.tracing.traceSection
 import com.weather.vibe.di.WeatherVibeApp
-import com.weather.vibe.notifications.di.weatherAlertsWorkerKoinModule
-import com.weather.vibe.notifications.work.WeatherNotificationsCoordinator
 import com.weather.vibe.feature.widget.di.widgetWorkerKoinModule
 import com.weather.vibe.feature.widget.work.WidgetRefreshCoordinator
+import com.weather.vibe.notifications.work.WeatherNotificationsCoordinator
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -31,7 +30,7 @@ class WeatherVibeApplication : Application(), Configuration.Provider {
       WeatherVibeApp.startKoin {
         androidLogger(Level.ERROR)
         androidContext(this@WeatherVibeApplication)
-        modules(widgetWorkerKoinModule, weatherAlertsWorkerKoinModule)
+        modules(widgetWorkerKoinModule)
       }
     }
     get<WidgetRefreshCoordinator>().start()

@@ -9,10 +9,12 @@ internal sealed interface SettingsUiState {
 
   @Immutable
   data class Loaded(
+    val alertsEnabled: Boolean,
     val briefToneOptions: List<BriefToneOptionUiState>,
     val genreChips: List<GenreChipSettingsUiState>,
     val hasExcludedGenres: Boolean,
-    val isCelsius: Boolean
+    val isCelsius: Boolean,
+    val morningBriefEnabled: Boolean
   ) : SettingsUiState
 
   @Immutable

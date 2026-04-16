@@ -1,6 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
-import com.weather.vibe.domain.weather.fake.FakeTimeProvider
+import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo

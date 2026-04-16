@@ -9,18 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.settings.presentation.SettingsAction
-import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
-import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
-import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
-import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
+import com.weather.vibe.core.permissions.openSystemNotificationSettings
+import com.weather.vibe.core.permissions.rememberNotificationPermissionGranted
+import com.weather.vibe.feature.settings.presentation.SettingsAction.NotificationPermissionLost
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
+import com.weather.vibe.feature.settings.presentation.SettingsEvent.OpenSystemNotificationSettings
 import com.weather.vibe.feature.settings.presentation.SettingsViewModel
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Error
@@ -35,18 +35,31 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 
   val viewModel: SettingsViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val permissionGranted by rememberNotificationPermissionGranted()
+  val context = LocalContext.current
+
+  val callbacks = rememberSettingsCallbacks(
+    dispatch = viewModel::dispatch,
+    notificationPermissionGranted = permissionGranted
+  )
+
+  LaunchedEffect(permissionGranted) {
+    if (!permissionGranted) viewModel.dispatch(NotificationPermissionLost)
+  }
 
   LaunchedEffect(Unit) {
     viewModel.event.collect { event ->
       when (event) {
         is NavigateBack -> onNavigateBack()
+        is OpenSystemNotificationSettings -> context.openSystemNotificationSettings()
       }
     }
   }
 
   SettingsContent(
     state = state,
-    dispatch = viewModel::dispatch
+    callbacks = callbacks,
+    notificationPermissionGranted = permissionGranted
   )
 }
 
@@ -54,7 +67,8 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 internal fun SettingsContent(
   modifier: Modifier = Modifier,
   state: SettingsUiState,
-  dispatch: (SettingsAction) -> Unit
+  callbacks: SettingsCallbacks,
+  notificationPermissionGranted: Boolean
 ) {
   Scaffold(
     modifier = modifier,
@@ -62,7 +76,7 @@ internal fun SettingsContent(
     topBar = {
       VibeTopBar(
         title = screenTitle(),
-        onNavigateBack = { dispatch(BackClick) }
+        onNavigateBack = callbacks.onBackClick
       )
     }
   ) { innerPadding ->
@@ -77,9 +91,8 @@ internal fun SettingsContent(
         is Error -> SettingsErrorState(message = state.message)
         is Loaded -> SettingsLoadedContent(
           state = state,
-          onBriefToneSelect = { dispatch(BriefToneSelect(tone = it)) },
-          onTemperatureToggle = { dispatch(TemperatureUnitToggle) },
-          onGenreRemove = { dispatch(GenreRemove(genre = it)) }
+          callbacks = callbacks,
+          notificationPermissionGranted = notificationPermissionGranted
         )
       }
     }
@@ -95,7 +108,8 @@ private fun Preview(
   WeatherVibeTheme {
     SettingsContent(
       state = state,
-      dispatch = {}
+      callbacks = SettingsCallbacks.Noop,
+      notificationPermissionGranted = true
     )
   }
 }

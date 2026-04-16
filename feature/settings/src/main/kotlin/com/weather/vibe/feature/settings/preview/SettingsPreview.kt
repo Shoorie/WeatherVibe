@@ -5,6 +5,8 @@ import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Error
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loaded
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loading
+import com.weather.vibe.feature.settings.preview.SettingsPreviewData.briefToneOptions
+import com.weather.vibe.feature.settings.preview.SettingsPreviewData.genreChips
 
 internal class SettingsPreview :
   PreviewParameterProvider<SettingsUiState> {
@@ -13,18 +15,22 @@ internal class SettingsPreview :
 
   private val loaded: SettingsUiState =
     Loaded(
-      briefToneOptions = SettingsPreviewData.briefToneOptions,
-      genreChips = SettingsPreviewData.genreChips,
+      alertsEnabled = true,
+      briefToneOptions = briefToneOptions,
+      genreChips = genreChips,
       hasExcludedGenres = true,
-      isCelsius = true
+      isCelsius = true,
+      morningBriefEnabled = true
     )
 
   private val loadedNoExcludedGenres: SettingsUiState =
     Loaded(
-      briefToneOptions = SettingsPreviewData.briefToneOptions,
+      alertsEnabled = false,
+      briefToneOptions = briefToneOptions,
       genreChips = emptyList(),
       hasExcludedGenres = false,
-      isCelsius = false
+      isCelsius = false,
+      morningBriefEnabled = false
     )
 
   private val error: SettingsUiState =

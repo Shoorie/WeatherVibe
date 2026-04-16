@@ -1,18 +1,12 @@
-package com.weather.vibe.domain.weather.fake
+package com.weather.vibe.testing.time.fixture
 
 import com.weather.vibe.core.time.TimeProvider
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-internal class FakeTimeProvider(
-  var current: LocalDateTime = LocalDateTime.of(
-    /* year = */ 2026,
-    /* month = */ 4,
-    /* dayOfMonth = */ 8,
-    /* hour = */ 12,
-    /* minute = */ 0
-  )
+class FakeTimeProvider(
+  var current: LocalDateTime = DEFAULT_NOW
 ) : TimeProvider {
 
   override fun now(): LocalDateTime =
@@ -23,4 +17,8 @@ internal class FakeTimeProvider(
 
   override fun nowEpochMillis(): Long =
     current.toInstant(ZoneOffset.UTC).toEpochMilli()
+
+  companion object {
+    val DEFAULT_NOW: LocalDateTime = LocalDateTime.of(2026, 4, 8, 12, 0)
+  }
 }

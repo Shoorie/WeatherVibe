@@ -4,10 +4,15 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 
 data class UserSettings(
+  val alertsEnabled: Boolean,
   val briefTone: BriefTone,
   val excludedGenres: Set<String>,
+  val morningBriefEnabled: Boolean,
   val temperatureUnit: TemperatureUnit
 ) {
+
+  fun withAlertsEnabled(enabled: Boolean): UserSettings =
+    copy(alertsEnabled = enabled)
 
   fun withBriefTone(tone: BriefTone): UserSettings =
     copy(briefTone = tone)
@@ -17,6 +22,9 @@ data class UserSettings(
 
   fun withIncludedGenre(genre: String): UserSettings =
     copy(excludedGenres = excludedGenres - genre)
+
+  fun withMorningBriefEnabled(enabled: Boolean): UserSettings =
+    copy(morningBriefEnabled = enabled)
 
   fun withToggledTemperatureUnit(): UserSettings =
     copy(temperatureUnit = if (temperatureUnit == CELSIUS) FAHRENHEIT else CELSIUS)

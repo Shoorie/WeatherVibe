@@ -1,10 +1,10 @@
 package com.weather.vibe.domain.alerts.usecase
 
-import com.weather.vibe.domain.alerts.model.WeatherAlert.HeavyRainImminent
-import com.weather.vibe.domain.alerts.model.WeatherAlert.SharpTemperatureDrop
-import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.HEAVY_RAIN
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.TEMPERATURE_DROP
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.THUNDERSTORM
 import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.hourlyWeather
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
@@ -66,13 +66,13 @@ class DetectWeatherAlertsTest {
   fun `when sub-detectors produce alerts, then all combined in result`() {
 
     val forecast = listOf(calm(at = NOW.plusHours(1)))
-    every { detectThunderstormAlert(any()) } returns STORM
-    every { detectHeavyRainAlert(any()) } returns RAIN
-    every { detectTemperatureDropAlert(any()) } returns DROP
+    every { detectThunderstormAlert(any()) } returns THUNDERSTORM
+    every { detectHeavyRainAlert(any()) } returns HEAVY_RAIN
+    every { detectTemperatureDropAlert(any()) } returns TEMPERATURE_DROP
 
     val alerts = detect(weatherData(hourlyForecast = forecast))
 
-    expectThat(alerts).containsExactlyInAnyOrder(STORM, RAIN, DROP)
+    expectThat(alerts).containsExactlyInAnyOrder(THUNDERSTORM, HEAVY_RAIN, TEMPERATURE_DROP)
   }
 
   private fun calm(at: LocalDateTime): HourlyWeather =
@@ -80,8 +80,5 @@ class DetectWeatherAlertsTest {
 
   private companion object {
     val NOW: LocalDateTime = LocalDateTime.of(2026, 4, 8, 12, 0)
-    val STORM = ThunderstormImminent(expectedAt = NOW.plusHours(2))
-    val RAIN = HeavyRainImminent(expectedAt = NOW.plusHours(3), millimetres = 6.0)
-    val DROP = SharpTemperatureDrop(expectedAt = NOW.plusHours(4), degreesCelsius = 9.0)
   }
 }

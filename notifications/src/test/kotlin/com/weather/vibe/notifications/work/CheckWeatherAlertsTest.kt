@@ -1,12 +1,12 @@
 package com.weather.vibe.notifications.work
 
-import com.weather.vibe.domain.alerts.model.WeatherAlert.HeavyRainImminent
-import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
 import com.weather.vibe.domain.alerts.usecase.GatherWeatherAlerts
 import com.weather.vibe.notifications.fake.fakeAlertsResources
 import com.weather.vibe.notifications.notification.AlertNotification
-import com.weather.vibe.notifications.notification.alert.AlertNotificationFactory
 import com.weather.vibe.notifications.notification.AlertNotifier
+import com.weather.vibe.notifications.notification.alert.AlertNotificationFactory
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.HEAVY_RAIN
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.THUNDERSTORM
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.unmockkAll
@@ -15,7 +15,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.time.LocalDateTime
 
 class CheckWeatherAlertsTest {
 
@@ -30,7 +29,7 @@ class CheckWeatherAlertsTest {
 
   @Before
   fun setUp() {
-    coEvery { gatherWeatherAlerts() } returns listOf(STORM, RAIN)
+    coEvery { gatherWeatherAlerts() } returns listOf(THUNDERSTORM, HEAVY_RAIN)
   }
 
   @After
@@ -54,11 +53,5 @@ class CheckWeatherAlertsTest {
     checkWeatherAlerts()
 
     verify(exactly = 0) { notifier.post(any()) }
-  }
-
-  private companion object {
-    val AT: LocalDateTime = LocalDateTime.of(2026, 4, 16, 18, 0)
-    val STORM = ThunderstormImminent(expectedAt = AT)
-    val RAIN = HeavyRainImminent(expectedAt = AT, millimetres = 7.0)
   }
 }

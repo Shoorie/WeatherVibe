@@ -35,5 +35,4 @@
 
   <string name="settings_toggle_on">Włączone</string>
   <string name="settings_toggle_off">Wyłączone</string>
-  <string name="settings_notifications_permission_blocked">Powiadomienia są zablokowane w ustawieniach systemu — włącz je, żeby dostawać alerty pogodowe.</string>
 </resources>

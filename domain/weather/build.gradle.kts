@@ -16,5 +16,6 @@ dependencies {
   implementation(libs.koin.core)
 
   testImplementation(projects.testing.settingsFixtures)
+  testImplementation(projects.testing.timeFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

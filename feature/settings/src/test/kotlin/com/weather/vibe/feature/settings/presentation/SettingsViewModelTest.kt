@@ -10,6 +10,8 @@ import com.weather.vibe.domain.settings.usecase.GetAvailableBriefTones
 import com.weather.vibe.domain.settings.usecase.IncludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.settings.usecase.SelectBriefTone
+import com.weather.vibe.domain.settings.usecase.SetMorningBriefEnabled
+import com.weather.vibe.domain.settings.usecase.SetWeatherAlertsEnabled
 import com.weather.vibe.domain.settings.usecase.ToggleTemperatureUnit
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
@@ -54,6 +56,8 @@ class SettingsViewModelTest {
   private val includeGenre = mockk<IncludeGenre>()
   private val observeUserSettings = mockk<ObserveUserSettings>()
   private val selectBriefTone = mockk<SelectBriefTone>()
+  private val setMorningBriefEnabled = mockk<SetMorningBriefEnabled>()
+  private val setWeatherAlertsEnabled = mockk<SetWeatherAlertsEnabled>()
   private val toggleTemperatureUnit = mockk<ToggleTemperatureUnit>()
   private val resources = fakeSettingsResources()
   private val stateFactory = SettingsStateFactory(resources = resources)
@@ -192,6 +196,8 @@ class SettingsViewModelTest {
       includeGenre = includeGenre,
       observeUserSettings = observeUserSettings,
       selectBriefTone = selectBriefTone,
+      setMorningBriefEnabled = setMorningBriefEnabled,
+      setWeatherAlertsEnabled = setWeatherAlertsEnabled,
       toggleTemperatureUnit = toggleTemperatureUnit
     )
     return SettingsViewModel(

@@ -19,13 +19,15 @@ internal class SettingsStateFactory(
     settings: UserSettings
   ): SettingsUiState.Loaded =
     SettingsUiState.Loaded(
+      alertsEnabled = settings.alertsEnabled,
       briefToneOptions = createBriefToneOptions(
         availableTones = availableTones,
         selected = settings.briefTone
       ),
       genreChips = createExcludedGenreChips(excluded = settings.excludedGenres),
       hasExcludedGenres = settings.excludedGenres.isNotEmpty(),
-      isCelsius = settings.temperatureUnit == CELSIUS
+      isCelsius = settings.temperatureUnit == CELSIUS,
+      morningBriefEnabled = settings.morningBriefEnabled
     )
 
   private fun createBriefToneOptions(

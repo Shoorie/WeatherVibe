@@ -8,6 +8,11 @@
   <string name="settings_section_temperature">Temperature Unit</string>
   <string name="settings_section_temperature_subtitle">Units for forecasts and briefings</string>
 
+  <string name="settings_section_alerts">Weather alerts</string>
+  <string name="settings_section_alerts_subtitle">Proactive heads-up when the weather is about to turn</string>
+  <string name="settings_section_morning_brief">Morning brief</string>
+  <string name="settings_section_morning_brief_subtitle">Daily 7:30 notification with today\'s weather vibe</string>
+
   <string name="settings_section_excluded_genres">Excluded Music Genres</string>
   <string name="settings_section_excluded_genres_subtitle">We\'ll skip these in your mood playlist</string>
 
@@ -26,4 +31,7 @@
 
   <string name="settings_error_default">Failed to load settings</string>
   <string name="settings_error_title">Something\'s off</string>
+
+  <string name="settings_toggle_on">On</string>
+  <string name="settings_toggle_off">Off</string>
 </resources>

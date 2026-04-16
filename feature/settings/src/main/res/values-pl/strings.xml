@@ -8,6 +8,12 @@
   <string name="settings_section_temperature">Jednostka temperatury</string>
   <string name="settings_section_temperature_subtitle">Dla prognoz i briefingów</string>
 
+  <string name="settings_section_alerts">Alerty pogodowe</string>
+  <string name="settings_section_alerts_subtitle">Zawczasu uprzedzę, gdy pogoda szykuje się na psikusa</string>
+
+  <string name="settings_section_morning_brief">Poranny brief</string>
+  <string name="settings_section_morning_brief_subtitle">Codziennie o 7:30 dostaniesz notyfikację z dzisiejszym vibe\'em</string>
+
   <string name="settings_section_excluded_genres">Wykluczone gatunki muzyki</string>
   <string name="settings_section_excluded_genres_subtitle">Pominiemy je w playliście nastroju</string>
 
@@ -26,4 +32,7 @@
 
   <string name="settings_error_default">Nie udało się załadować ustawień</string>
   <string name="settings_error_title">Coś poszło nie tak</string>
+
+  <string name="settings_toggle_on">Włączone</string>
+  <string name="settings_toggle_off">Wyłączone</string>
 </resources>

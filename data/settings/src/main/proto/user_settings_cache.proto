@@ -8,4 +8,6 @@ message UserSettingsCacheData {
   string excluded_genres = 2;
   string temperature_unit = 3;
   string default_city = 4;
+  bool alerts_enabled = 5;
+  bool morning_brief_enabled = 6;
 }

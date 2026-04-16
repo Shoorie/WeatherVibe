@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.feature.settings.presentation.SettingsAction.AlertsToggle
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
 import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
+import com.weather.vibe.feature.settings.presentation.SettingsAction.MorningBriefToggle
 import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
@@ -53,10 +55,24 @@ internal class SettingsViewModel(
 
   fun dispatch(action: SettingsAction) {
     when (action) {
+      is AlertsToggle -> onAlertsToggle(action)
       is BackClick -> onBackClick()
       is BriefToneSelect -> onBriefToneSelect(action)
       is GenreRemove -> onGenreRemove(action)
+      is MorningBriefToggle -> onMorningBriefToggle(action)
       is TemperatureUnitToggle -> onTemperatureUnitToggle()
+    }
+  }
+
+  private fun onAlertsToggle(action: AlertsToggle) {
+    viewModelScope.launch(errorHandler) {
+      useCases.setWeatherAlertsEnabled(action.enabled)
+    }
+  }
+
+  private fun onMorningBriefToggle(action: MorningBriefToggle) {
+    viewModelScope.launch(errorHandler) {
+      useCases.setMorningBriefEnabled(action.enabled)
     }
   }
 

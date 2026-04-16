@@ -22,7 +22,7 @@ import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.factory.MetricsStateFactory
 import com.weather.vibe.feature.home.presentation.factory.PlaylistStateFactory
 import com.weather.vibe.feature.home.presentation.factory.SunriseSunsetStateFactory
-import com.weather.vibe.feature.home.presentation.fake.FakeTimeProvider
+import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeResources
 import com.weather.vibe.feature.home.presentation.fixture.MetricFixtures.METRICS_SECTIONS
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER

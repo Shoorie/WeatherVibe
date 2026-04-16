@@ -5,9 +5,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -15,11 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.settings.presentation.SettingsAction
-import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
-import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
-import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
-import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
+import com.weather.vibe.core.permissions.rememberNotificationPermissionRequester
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.SettingsViewModel
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
@@ -27,7 +27,9 @@ import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Erro
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loaded
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loading
 import com.weather.vibe.feature.settings.preview.SettingsPreview
+import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.notificationsPermissionBlocked
 import com.weather.vibe.feature.settings.ui.SettingsResources.Texts.screenTitle
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -35,6 +37,17 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 
   val viewModel: SettingsViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val blockedMessage = notificationsPermissionBlocked()
+  val scope = rememberCoroutineScope()
+
+  val requestNotificationPermission = rememberNotificationPermissionRequester(
+    onDenied = { scope.launch { snackbarHostState.showSnackbar(blockedMessage) } }
+  )
+  val callbacks = rememberSettingsCallbacks(
+    dispatch = viewModel::dispatch,
+    requestNotificationPermission = requestNotificationPermission
+  )
 
   LaunchedEffect(Unit) {
     viewModel.event.collect { event ->
@@ -46,7 +59,8 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 
   SettingsContent(
     state = state,
-    dispatch = viewModel::dispatch
+    snackbarHostState = snackbarHostState,
+    callbacks = callbacks
   )
 }
 
@@ -54,15 +68,17 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 internal fun SettingsContent(
   modifier: Modifier = Modifier,
   state: SettingsUiState,
-  dispatch: (SettingsAction) -> Unit
+  snackbarHostState: SnackbarHostState,
+  callbacks: SettingsCallbacks
 ) {
   Scaffold(
     modifier = modifier,
     containerColor = colors.backgroundGradientEnd,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       VibeTopBar(
         title = screenTitle(),
-        onNavigateBack = { dispatch(BackClick) }
+        onNavigateBack = callbacks.onBackClick
       )
     }
   ) { innerPadding ->
@@ -75,12 +91,7 @@ internal fun SettingsContent(
       when (state) {
         is Loading -> SettingsLoadingState()
         is Error -> SettingsErrorState(message = state.message)
-        is Loaded -> SettingsLoadedContent(
-          state = state,
-          onBriefToneSelect = { dispatch(BriefToneSelect(tone = it)) },
-          onTemperatureToggle = { dispatch(TemperatureUnitToggle) },
-          onGenreRemove = { dispatch(GenreRemove(genre = it)) }
-        )
+        is Loaded -> SettingsLoadedContent(state = state, callbacks = callbacks)
       }
     }
   }
@@ -95,7 +106,8 @@ private fun Preview(
   WeatherVibeTheme {
     SettingsContent(
       state = state,
-      dispatch = {}
+      snackbarHostState = remember { SnackbarHostState() },
+      callbacks = SettingsCallbacks.Noop
     )
   }
 }

@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.permissions)
   implementation(projects.domain.settings)
 
   testImplementation(projects.testing.coroutineRules)

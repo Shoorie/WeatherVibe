@@ -1,6 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
-import com.weather.vibe.domain.weather.fake.FakeTimeProvider
+import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TemperatureRange
 import com.weather.vibe.domain.weather.model.TimeOfDay

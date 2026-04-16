@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="alerts_channel_name">Alerty pogodowe</string>
+  <string name="alerts_channel_description">Zawczasu uprzedzę, gdy pogoda szykuje się na psikusa.</string>
+  <string name="alerts_thunderstorm_title">Nadchodzi burza</string>
+  <string name="alerts_thunderstorm_body">Burza około %1$s — schroń się i naładuj telefon.</string>
+  <string name="alerts_heavy_rain_title">Ulewa na horyzoncie</string>
+  <string name="alerts_heavy_rain_body">Około %1$s spadnie około %2$d mm w godzinę. Bierz parasol.</string>
+  <string name="alerts_temperature_drop_title">Gwałtowne ochłodzenie</string>
+  <string name="alerts_temperature_drop_body">Temperatura spadnie o około %1$d° do %2$s — narzuć sweter.</string>
+  <string name="alerts_morning_brief_title">Dzisiejszy vibe</string>
+</resources>

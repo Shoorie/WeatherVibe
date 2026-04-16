@@ -11,24 +11,25 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loaded
 import com.weather.vibe.feature.settings.preview.SettingsPreviewData.briefToneOptions
 import com.weather.vibe.feature.settings.preview.SettingsPreviewData.genreChips
+import com.weather.vibe.feature.settings.ui.SettingsKeys.KEY_ALERTS
 import com.weather.vibe.feature.settings.ui.SettingsKeys.KEY_BRIEF_TONE
 import com.weather.vibe.feature.settings.ui.SettingsKeys.KEY_GENRES
+import com.weather.vibe.feature.settings.ui.SettingsKeys.KEY_MORNING_BRIEF
 import com.weather.vibe.feature.settings.ui.SettingsKeys.KEY_TEMPERATURE
+import com.weather.vibe.feature.settings.ui.component.alerts.AlertsSection
 import com.weather.vibe.feature.settings.ui.component.brieftone.BriefToneSection
 import com.weather.vibe.feature.settings.ui.component.genres.ExcludedGenresSection
+import com.weather.vibe.feature.settings.ui.component.morningbrief.MorningBriefSection
 import com.weather.vibe.feature.settings.ui.component.temperature.TemperatureSection
 
 @Composable
 internal fun SettingsLoadedContent(
   modifier: Modifier = Modifier,
   state: Loaded,
-  onBriefToneSelect: (BriefTone) -> Unit,
-  onTemperatureToggle: () -> Unit,
-  onGenreRemove: (String) -> Unit
+  callbacks: SettingsCallbacks
 ) {
 
   val contentPadding = remember {
@@ -48,20 +49,32 @@ internal fun SettingsLoadedContent(
     item(key = KEY_BRIEF_TONE) {
       BriefToneSection(
         briefToneOptions = state.briefToneOptions,
-        onBriefToneSelect = onBriefToneSelect
+        onBriefToneSelect = callbacks.onBriefToneSelect
       )
     }
     item(key = KEY_TEMPERATURE) {
       TemperatureSection(
         isCelsius = state.isCelsius,
-        onToggle = onTemperatureToggle
+        onToggle = callbacks.onTemperatureToggle
+      )
+    }
+    item(key = KEY_MORNING_BRIEF) {
+      MorningBriefSection(
+        enabled = state.morningBriefEnabled,
+        onToggle = callbacks.onMorningBriefToggle
+      )
+    }
+    item(key = KEY_ALERTS) {
+      AlertsSection(
+        enabled = state.alertsEnabled,
+        onToggle = callbacks.onAlertsToggle
       )
     }
     if (state.hasExcludedGenres) {
       item(key = KEY_GENRES) {
         ExcludedGenresSection(
           genreChips = state.genreChips,
-          onGenreRemove = onGenreRemove
+          onGenreRemove = callbacks.onGenreRemove
         )
       }
     }
@@ -74,14 +87,14 @@ private fun Preview() {
   WeatherVibeTheme {
     SettingsLoadedContent(
       state = Loaded(
+        alertsEnabled = true,
         briefToneOptions = briefToneOptions,
         genreChips = genreChips,
         hasExcludedGenres = true,
-        isCelsius = true
+        isCelsius = true,
+        morningBriefEnabled = true
       ),
-      onBriefToneSelect = {},
-      onTemperatureToggle = {},
-      onGenreRemove = {}
+      callbacks = SettingsCallbacks.Noop
     )
   }
 }

@@ -16,5 +16,6 @@ dependencies {
 
   implementation(libs.kotlinx.collections.immutable)
 
+  testImplementation(projects.testing.timeFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

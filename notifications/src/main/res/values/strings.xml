@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="alerts_channel_name">Weather alerts</string>
+  <string name="alerts_channel_description">Proactive heads-up when the weather is about to turn.</string>
+  <string name="alerts_thunderstorm_title">Thunderstorm incoming</string>
+  <string name="alerts_thunderstorm_body">Storm rolling in around %1$s — stay dry, charge your phone.</string>
+  <string name="alerts_heavy_rain_title">Heavy rain ahead</string>
+  <string name="alerts_heavy_rain_body">Around %1$s expect about %2$d mm in an hour. Grab the parasol.</string>
+  <string name="alerts_temperature_drop_title">Sharp cool-down</string>
+  <string name="alerts_temperature_drop_body">Temperature dropping about %1$d° by %2$s — grab a sweater.</string>
+  <string name="alerts_morning_brief_title">Today\'s vibe</string>
+  <string name="alerts_time_format" translatable="false">HH:mm</string>
+</resources>

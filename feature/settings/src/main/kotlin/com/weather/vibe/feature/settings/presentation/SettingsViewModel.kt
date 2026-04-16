@@ -9,12 +9,16 @@ import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
 import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
 import com.weather.vibe.feature.settings.presentation.SettingsAction.MorningBriefToggle
+import com.weather.vibe.feature.settings.presentation.SettingsAction.NotificationPermissionDenied
+import com.weather.vibe.feature.settings.presentation.SettingsAction.NotificationPermissionLost
 import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
+import com.weather.vibe.feature.settings.presentation.SettingsEvent.OpenSystemNotificationSettings
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState.Loading
 import com.weather.vibe.feature.settings.ui.SettingsResources
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.BufferOverflow.DROP_LATEST
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +41,7 @@ internal class SettingsViewModel(
   private val _state = MutableStateFlow<SettingsUiState>(Loading)
   val state: StateFlow<SettingsUiState> = _state.asStateFlow()
 
-  private val _event = Channel<SettingsEvent>()
+  private val _event = Channel<SettingsEvent>(capacity = 1, onBufferOverflow = DROP_LATEST)
   val event: Flow<SettingsEvent> = _event.receiveAsFlow()
 
   private val availableTones: List<BriefTone> =
@@ -60,6 +64,8 @@ internal class SettingsViewModel(
       is BriefToneSelect -> onBriefToneSelect(action)
       is GenreRemove -> onGenreRemove(action)
       is MorningBriefToggle -> onMorningBriefToggle(action)
+      is NotificationPermissionDenied -> onNotificationPermissionDenied()
+      is NotificationPermissionLost -> onNotificationPermissionLost()
       is TemperatureUnitToggle -> onTemperatureUnitToggle()
     }
   }
@@ -115,7 +121,20 @@ internal class SettingsViewModel(
     send(NavigateBack)
   }
 
+  private fun onNotificationPermissionDenied() {
+    send(OpenSystemNotificationSettings)
+  }
+
+  private fun onNotificationPermissionLost() {
+    viewModelScope.launch(errorHandler) {
+      useCases.setWeatherAlertsEnabled(false)
+      useCases.setMorningBriefEnabled(false)
+    }
+  }
+
   private fun send(event: SettingsEvent) {
-    viewModelScope.launch { _event.send(event) }
+    viewModelScope.launch {
+      _event.send(event)
+    }
   }
 }

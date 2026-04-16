@@ -34,5 +34,4 @@
 
   <string name="settings_toggle_on">On</string>
   <string name="settings_toggle_off">Off</string>
-  <string name="settings_notifications_permission_blocked">Notifications are blocked in system settings — enable them to receive weather alerts.</string>
 </resources>

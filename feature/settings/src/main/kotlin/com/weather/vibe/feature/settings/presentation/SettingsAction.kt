@@ -8,5 +8,7 @@ internal sealed interface SettingsAction {
   data class BriefToneSelect(val tone: BriefTone) : SettingsAction
   data class GenreRemove(val genre: String) : SettingsAction
   data class MorningBriefToggle(val enabled: Boolean) : SettingsAction
+  data object NotificationPermissionDenied : SettingsAction
+  data object NotificationPermissionLost : SettingsAction
   data object TemperatureUnitToggle : SettingsAction
 }

@@ -11,6 +11,7 @@ import com.weather.vibe.feature.settings.presentation.SettingsAction.BackClick
 import com.weather.vibe.feature.settings.presentation.SettingsAction.BriefToneSelect
 import com.weather.vibe.feature.settings.presentation.SettingsAction.GenreRemove
 import com.weather.vibe.feature.settings.presentation.SettingsAction.MorningBriefToggle
+import com.weather.vibe.feature.settings.presentation.SettingsAction.NotificationPermissionDenied
 import com.weather.vibe.feature.settings.presentation.SettingsAction.TemperatureUnitToggle
 
 @Immutable
@@ -38,21 +39,20 @@ internal data class SettingsCallbacks(
 @Composable
 internal fun rememberSettingsCallbacks(
   dispatch: (SettingsAction) -> Unit,
-  notificationPermissionGranted: Boolean,
-  onNotificationPermissionDenied: () -> Unit
+  notificationPermissionGranted: Boolean
 ): SettingsCallbacks {
 
   val onAlertsToggle = rememberNotificationToggleHandler(
     permissionGranted = notificationPermissionGranted,
     onEnable = { dispatch(AlertsToggle(enabled = true)) },
     onDisable = { dispatch(AlertsToggle(enabled = false)) },
-    onPermissionDenied = onNotificationPermissionDenied
+    onPermissionDenied = { dispatch(NotificationPermissionDenied) }
   )
   val onMorningBriefToggle = rememberNotificationToggleHandler(
     permissionGranted = notificationPermissionGranted,
     onEnable = { dispatch(MorningBriefToggle(enabled = true)) },
     onDisable = { dispatch(MorningBriefToggle(enabled = false)) },
-    onPermissionDenied = onNotificationPermissionDenied
+    onPermissionDenied = { dispatch(NotificationPermissionDenied) }
   )
 
   return remember(dispatch, onAlertsToggle, onMorningBriefToggle) {

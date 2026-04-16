@@ -105,10 +105,6 @@ internal class SettingsResources(private val context: Context) {
       stringResource(R.string.settings_screen_title)
 
     @Composable
-    fun notificationsPermissionBlocked(): String =
-      stringResource(R.string.settings_notifications_permission_blocked)
-
-    @Composable
     fun temperatureSection(): String =
       stringResource(R.string.settings_section_temperature)
 

@@ -29,7 +29,8 @@ import com.weather.vibe.feature.settings.ui.component.temperature.TemperatureSec
 internal fun SettingsLoadedContent(
   modifier: Modifier = Modifier,
   state: Loaded,
-  callbacks: SettingsCallbacks
+  callbacks: SettingsCallbacks,
+  notificationPermissionGranted: Boolean
 ) {
 
   val contentPadding = remember {
@@ -60,13 +61,13 @@ internal fun SettingsLoadedContent(
     }
     item(key = KEY_MORNING_BRIEF) {
       MorningBriefSection(
-        enabled = state.morningBriefEnabled,
+        enabled = state.morningBriefEnabled && notificationPermissionGranted,
         onToggle = callbacks.onMorningBriefToggle
       )
     }
     item(key = KEY_ALERTS) {
       AlertsSection(
-        enabled = state.alertsEnabled,
+        enabled = state.alertsEnabled && notificationPermissionGranted,
         onToggle = callbacks.onAlertsToggle
       )
     }
@@ -94,7 +95,8 @@ private fun Preview() {
         isCelsius = true,
         morningBriefEnabled = true
       ),
-      callbacks = SettingsCallbacks.Noop
+      callbacks = SettingsCallbacks.Noop,
+      notificationPermissionGranted = true
     )
   }
 }

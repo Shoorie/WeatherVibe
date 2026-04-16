@@ -3,6 +3,7 @@ package com.weather.vibe.feature.settings.ui.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
+import com.weather.vibe.core.permissions.rememberNotificationToggleHandler
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.settings.presentation.SettingsAction
 import com.weather.vibe.feature.settings.presentation.SettingsAction.AlertsToggle
@@ -37,31 +38,31 @@ internal data class SettingsCallbacks(
 @Composable
 internal fun rememberSettingsCallbacks(
   dispatch: (SettingsAction) -> Unit,
-  requestNotificationPermission: () -> Unit
-): SettingsCallbacks = remember(dispatch, requestNotificationPermission) {
-  SettingsCallbacks(
-    onAlertsToggle = togglingWithPermission(
-      dispatch = dispatch,
-      actionFactory = ::AlertsToggle,
-      requestNotificationPermission = requestNotificationPermission
-    ),
-    onBackClick = { dispatch(BackClick) },
-    onBriefToneSelect = { tone -> dispatch(BriefToneSelect(tone = tone)) },
-    onGenreRemove = { genre -> dispatch(GenreRemove(genre = genre)) },
-    onMorningBriefToggle = togglingWithPermission(
-      dispatch = dispatch,
-      actionFactory = ::MorningBriefToggle,
-      requestNotificationPermission = requestNotificationPermission
-    ),
-    onTemperatureToggle = { dispatch(TemperatureUnitToggle) }
-  )
-}
+  notificationPermissionGranted: Boolean,
+  onNotificationPermissionDenied: () -> Unit
+): SettingsCallbacks {
 
-private fun togglingWithPermission(
-  dispatch: (SettingsAction) -> Unit,
-  actionFactory: (Boolean) -> SettingsAction,
-  requestNotificationPermission: () -> Unit
-): (Boolean) -> Unit = { enabled ->
-  dispatch(actionFactory(enabled))
-  if (enabled) requestNotificationPermission()
+  val onAlertsToggle = rememberNotificationToggleHandler(
+    permissionGranted = notificationPermissionGranted,
+    onEnable = { dispatch(AlertsToggle(enabled = true)) },
+    onDisable = { dispatch(AlertsToggle(enabled = false)) },
+    onPermissionDenied = onNotificationPermissionDenied
+  )
+  val onMorningBriefToggle = rememberNotificationToggleHandler(
+    permissionGranted = notificationPermissionGranted,
+    onEnable = { dispatch(MorningBriefToggle(enabled = true)) },
+    onDisable = { dispatch(MorningBriefToggle(enabled = false)) },
+    onPermissionDenied = onNotificationPermissionDenied
+  )
+
+  return remember(dispatch, onAlertsToggle, onMorningBriefToggle) {
+    SettingsCallbacks(
+      onAlertsToggle = onAlertsToggle,
+      onBackClick = { dispatch(BackClick) },
+      onBriefToneSelect = { tone -> dispatch(BriefToneSelect(tone = tone)) },
+      onGenreRemove = { genre -> dispatch(GenreRemove(genre = genre)) },
+      onMorningBriefToggle = onMorningBriefToggle,
+      onTemperatureToggle = { dispatch(TemperatureUnitToggle) }
+    )
+  }
 }

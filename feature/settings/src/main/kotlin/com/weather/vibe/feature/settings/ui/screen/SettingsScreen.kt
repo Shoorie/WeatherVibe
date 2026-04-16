@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.permissions.rememberNotificationPermissionRequester
+import com.weather.vibe.core.permissions.rememberNotificationPermissionGranted
 import com.weather.vibe.feature.settings.presentation.SettingsEvent.NavigateBack
 import com.weather.vibe.feature.settings.presentation.SettingsViewModel
 import com.weather.vibe.feature.settings.presentation.state.SettingsUiState
@@ -37,16 +37,17 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
 
   val viewModel: SettingsViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val permissionGranted by rememberNotificationPermissionGranted()
   val snackbarHostState = remember { SnackbarHostState() }
   val blockedMessage = notificationsPermissionBlocked()
   val scope = rememberCoroutineScope()
 
-  val requestNotificationPermission = rememberNotificationPermissionRequester(
-    onDenied = { scope.launch { snackbarHostState.showSnackbar(blockedMessage) } }
-  )
   val callbacks = rememberSettingsCallbacks(
     dispatch = viewModel::dispatch,
-    requestNotificationPermission = requestNotificationPermission
+    notificationPermissionGranted = permissionGranted,
+    onNotificationPermissionDenied = {
+      scope.launch { snackbarHostState.showSnackbar(blockedMessage) }
+    }
   )
 
   LaunchedEffect(Unit) {
@@ -60,7 +61,8 @@ fun SettingsScreen(onNavigateBack: () -> Unit) {
   SettingsContent(
     state = state,
     snackbarHostState = snackbarHostState,
-    callbacks = callbacks
+    callbacks = callbacks,
+    notificationPermissionGranted = permissionGranted
   )
 }
 
@@ -69,7 +71,8 @@ internal fun SettingsContent(
   modifier: Modifier = Modifier,
   state: SettingsUiState,
   snackbarHostState: SnackbarHostState,
-  callbacks: SettingsCallbacks
+  callbacks: SettingsCallbacks,
+  notificationPermissionGranted: Boolean
 ) {
   Scaffold(
     modifier = modifier,
@@ -91,7 +94,11 @@ internal fun SettingsContent(
       when (state) {
         is Loading -> SettingsLoadingState()
         is Error -> SettingsErrorState(message = state.message)
-        is Loaded -> SettingsLoadedContent(state = state, callbacks = callbacks)
+        is Loaded -> SettingsLoadedContent(
+          state = state,
+          callbacks = callbacks,
+          notificationPermissionGranted = notificationPermissionGranted
+        )
       }
     }
   }
@@ -107,7 +114,8 @@ private fun Preview(
     SettingsContent(
       state = state,
       snackbarHostState = remember { SnackbarHostState() },
-      callbacks = SettingsCallbacks.Noop
+      callbacks = SettingsCallbacks.Noop,
+      notificationPermissionGranted = true
     )
   }
 }

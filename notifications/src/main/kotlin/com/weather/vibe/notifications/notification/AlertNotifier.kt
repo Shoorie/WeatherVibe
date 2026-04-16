@@ -1,6 +1,7 @@
 package com.weather.vibe.notifications.notification
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
@@ -11,7 +12,6 @@ import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.TIRAMISU
 import android.util.Log
-import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.BigTextStyle
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
@@ -29,14 +29,12 @@ internal class AlertNotifier(
   private val channel: AlertChannel
 ) {
 
+  @SuppressLint("MissingPermission")
   fun post(notification: AlertNotification) {
+
     if (!canPostNotifications()) return
     channel.ensureRegistered()
-    dispatch(notification)
-  }
 
-  @RequiresPermission(POST_NOTIFICATIONS)
-  private fun dispatch(notification: AlertNotification) {
     try {
       NotificationManagerCompat.from(context)
         .notify(notification.id, build(notification))

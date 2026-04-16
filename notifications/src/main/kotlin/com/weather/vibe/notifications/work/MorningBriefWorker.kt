@@ -1,9 +1,7 @@
 package com.weather.vibe.notifications.work
 
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.util.Log
-import androidx.annotation.RequiresPermission
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.CancellationException
@@ -16,7 +14,6 @@ internal class MorningBriefWorker(
   private val deliverMorningBrief: DeliverMorningBrief
 ) : CoroutineWorker(context, params) {
 
-  @RequiresPermission(POST_NOTIFICATIONS)
   override suspend fun doWork(): Result =
     try {
       deliverMorningBrief()

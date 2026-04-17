@@ -26,6 +26,7 @@ rootProject.name = "WeatherVibe"
 include(":app")
 include(":benchmark")
 include(":core:ai")
+include(":core:coroutines")
 include(":core:network")
 include(":core:designsystem")
 include(":core:navigation")

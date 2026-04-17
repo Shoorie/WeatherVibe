@@ -6,7 +6,7 @@ import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.settings.usecase.AreAlertsEnabled
 import com.weather.vibe.domain.weather.usecase.GetWeather
-import com.weather.vibe.testing.airquality.fixture.AirQualityFixtures
+import com.weather.vibe.testing.airquality.fixture.AirQualityFixtures.POOR
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.POOR_AIR_QUALITY
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.THUNDERSTORM
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
@@ -23,7 +23,6 @@ import org.junit.Test
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.contains
-import strikt.assertions.hasSize
 import strikt.assertions.isEmpty
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
@@ -53,7 +52,7 @@ class GatherWeatherAlertsTest {
     every { observeCurrentLocation() } returns flowOf(WARSAW)
     every { getWeather(WARSAW.toCoordinates()) } returns flowOf(success(WEATHER))
     every { detectWeatherAlerts(WEATHER) } returns listOf(THUNDERSTORM)
-    coEvery { getAirQuality(WARSAW.toCoordinates()) } returns AirQualityFixtures.POOR
+    coEvery { getAirQuality(WARSAW.toCoordinates()) } returns success(POOR)
     every { detectAqiAlert(any()) } returns null
   }
 
@@ -63,7 +62,7 @@ class GatherWeatherAlertsTest {
   }
 
   @Test
-  fun `when invoked, then weather alerts returned`() = runTest {
+  fun `when alerts gathered, then detected weather alert returned`() = runTest {
 
     val alerts = gather()
 
@@ -71,43 +70,50 @@ class GatherWeatherAlertsTest {
   }
 
   @Test
-  fun `when air quality alert produced, then included in result`() = runTest {
+  fun `given air quality alert detected, when alerts gathered, then air quality alert returned`() =
+    runTest {
 
-    every { detectAqiAlert(AirQualityFixtures.POOR) } returns POOR_AIR_QUALITY
+      every { detectAqiAlert(POOR) } returns POOR_AIR_QUALITY
 
-    val alerts = gather()
+      val alerts = gather()
 
-    expectThat(alerts).hasSize(2).contains(POOR_AIR_QUALITY)
-  }
-
-  @Test
-  fun `given air quality fetch fails, when invoked, then weather alerts still returned`() = runTest {
-
-    coEvery { getAirQuality(WARSAW.toCoordinates()) } throws IllegalStateException("offline")
-
-    val alerts = gather()
-
-    expectThat(alerts).contains(THUNDERSTORM)
-  }
+      expectThat(alerts).contains(POOR_AIR_QUALITY)
+    }
 
   @Test
-  fun `given alerts disabled, when invoked, then empty list returned`() = runTest {
+  fun `given air quality fetch fails, when alerts gathered, then weather alert still returned`() =
+    runTest {
+
+      coEvery { getAirQuality(WARSAW.toCoordinates()) } returns
+        failure(IllegalStateException("offline"))
+
+      val alerts = gather()
+
+      expectThat(alerts).contains(THUNDERSTORM)
+    }
+
+  @Test
+  fun `given alerts disabled, when alerts gathered, then empty list returned`() = runTest {
 
     coEvery { areAlertsEnabled() } returns false
 
-    expectThat(gather()).isEmpty()
+    val alerts = gather()
+
+    expectThat(alerts).isEmpty()
   }
 
   @Test
-  fun `given no current location, when invoked, then empty list returned`() = runTest {
+  fun `given no current location, when alerts gathered, then empty list returned`() = runTest {
 
     every { observeCurrentLocation() } returns flowOf(null)
 
-    expectThat(gather()).isEmpty()
+    val alerts = gather()
+
+    expectThat(alerts).isEmpty()
   }
 
   @Test
-  fun `given weather fetch fails, when invoked, then error propagates`() = runTest {
+  fun `given weather fetch fails, when alerts gathered, then exception thrown`() = runTest {
 
     every { getWeather(WARSAW.toCoordinates()) } returns
       flowOf(failure(IllegalStateException("offline")))
@@ -116,12 +122,13 @@ class GatherWeatherAlertsTest {
   }
 
   @Test
-  fun `given alert already notified, when invoked again, then filtered out`() = runTest {
+  fun `given alert already notified, when alerts gathered again, then empty list returned`() =
+    runTest {
 
-    gather()
+      gather()
 
-    val secondCall = gather()
+      val secondCall = gather()
 
-    expectThat(secondCall).isEmpty()
-  }
+      expectThat(secondCall).isEmpty()
+    }
 }

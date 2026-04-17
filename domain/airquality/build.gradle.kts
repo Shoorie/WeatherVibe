@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.coroutines)
   implementation(projects.domain.weather)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)

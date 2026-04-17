@@ -39,6 +39,7 @@ class CalculateDailyVibeTest {
     scorePollenBurden = ScorePollenBurden(),
     scoreRainOutlook = ScoreRainOutlook(),
     scoreTemperatureComfort = ScoreTemperatureComfort(),
+    scoreUvBurden = ScoreUvBurden(),
     scoreWindComfort = ScoreWindComfort()
   )
 

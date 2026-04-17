@@ -13,6 +13,7 @@ dependencies {
   implementation(projects.core.navigation)
   implementation(projects.domain.airquality)
   implementation(projects.domain.alerts)
+  implementation(projects.domain.weather)
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.koin.core)

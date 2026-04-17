@@ -15,6 +15,7 @@ import com.weather.vibe.domain.airquality.model.PollenSpecies.GRASS
 import com.weather.vibe.domain.airquality.model.PollenSpecies.MUGWORT
 import com.weather.vibe.domain.airquality.model.PollenSpecies.OLIVE
 import com.weather.vibe.domain.airquality.model.PollenSpecies.RAGWEED
+import com.weather.vibe.domain.weather.model.UvLevel
 import com.weather.vibe.notifications.R
 import com.weather.vibe.notifications.notification.AlertsTimeFormatter
 import org.koin.core.annotation.Factory
@@ -76,6 +77,21 @@ internal class AlertsResources(
     val joined = species.joinToString(separator) { context.getString(it.labelRes()) }
 
     return context.getString(R.string.alerts_pollen_body, joined)
+  }
+
+  fun uvAlertTitle(): String =
+    context.getString(R.string.alerts_uv_title)
+
+  fun uvAlertBody(uvIndex: Int, level: UvLevel): String =
+    context.getString(R.string.alerts_uv_body, uvLevelLabel(level), uvIndex)
+
+  fun uvLevelLabel(level: UvLevel): String =
+    context.getString(level.labelRes())
+
+  private fun UvLevel.labelRes(): Int = when (this) {
+    UvLevel.LOW, UvLevel.MODERATE, UvLevel.HIGH -> R.string.alerts_uv_level_high
+    UvLevel.VERY_HIGH -> R.string.alerts_uv_level_very_high
+    UvLevel.EXTREME -> R.string.alerts_uv_level_extreme
   }
 
   private fun AqiLevel.labelRes(): Int = when (this) {

@@ -34,7 +34,6 @@
   <string name="precipitation_value_format">%1$d%%</string>
   <string name="pressure_label">Pressure</string>
   <string name="rainfall_label">Rainfall</string>
-  <string name="refresh_content_description">Refresh weather</string>
   <string name="search_city_content_description">Search city</string>
   <string name="settings_content_description">Settings</string>
   <string name="search_hint">Search city&#8230;</string>
@@ -70,6 +69,19 @@
   <string name="condition_thunderstorm">Thunderstorm</string>
   <string name="condition_unknown">Unknown</string>
 
+  <string name="daily_vibe_score_format">%1$d/100</string>
+  <string name="daily_vibe_headline_format">%1$s  ·  %2$s</string>
+  <string name="daily_vibe_mood_radiant">Radiant day</string>
+  <string name="daily_vibe_mood_pleasant">Pleasant vibes</string>
+  <string name="daily_vibe_mood_okay">Okay day</string>
+  <string name="daily_vibe_mood_dreary">Dreary stretch</string>
+  <string name="daily_vibe_mood_rough">Rough out there</string>
+  <string name="daily_vibe_oneliner_radiant">Perfect — get out there.</string>
+  <string name="daily_vibe_oneliner_pleasant">Solid vibes all around.</string>
+  <string name="daily_vibe_oneliner_okay">Fine, nothing special.</string>
+  <string name="daily_vibe_oneliner_dreary">Meh, but liveable.</string>
+  <string name="daily_vibe_oneliner_rough">Stay in, queue up a show.</string>
+  <string name="daily_vibe_content_description_format">%1$s, vibe score %2$d out of 100. %3$s</string>
   <string name="ai_briefing_retry">Retry</string>
   <string name="ai_briefing_retry_content_description">Retry AI briefing</string>
   <string name="finding_better_suggestions">Finding better suggestions…</string>

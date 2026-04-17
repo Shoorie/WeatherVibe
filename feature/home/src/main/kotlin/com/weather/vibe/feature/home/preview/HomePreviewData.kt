@@ -4,6 +4,7 @@ import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
+import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -25,6 +26,8 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunShower
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.vibePleasant
+import com.weather.vibe.feature.home.ui.HomeResources.Emojis.vibeRough
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
@@ -47,6 +50,22 @@ internal object HomePreviewData {
       feelsLikeTemperature = "17°",
       highTemperature = "22°",
       lowTemperature = "14°"
+    )
+
+  val pleasantVibe: DailyVibeUiState =
+    DailyVibeUiState(
+      emoji = vibePleasant(),
+      headline = "78/100  ·  Pleasant vibes",
+      oneLiner = "Solid vibes all around.",
+      contentDescription = "Pleasant vibes, vibe score 78 out of 100. Solid vibes all around."
+    )
+
+  val roughVibe: DailyVibeUiState =
+    DailyVibeUiState(
+      emoji = vibeRough(),
+      headline = "22/100  ·  Rough out there",
+      oneLiner = "Stay in, queue up a show.",
+      contentDescription = "Rough out there, vibe score 22 out of 100. Stay in, queue up a show."
     )
 
   val afternoonSunInfo: SunriseSunsetUiState =

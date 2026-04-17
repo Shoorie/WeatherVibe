@@ -12,6 +12,7 @@ dependencies {
   implementation(projects.core.time)
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
+  implementation(projects.domain.vibe)
   implementation(projects.domain.weather)
 
   implementation(libs.kotlinx.collections.immutable)

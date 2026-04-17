@@ -34,7 +34,6 @@
   <string name="precipitation_value_format">%1$d%%</string>
   <string name="pressure_label">Ciśnienie</string>
   <string name="rainfall_label">Deszcz</string>
-  <string name="refresh_content_description">Odśwież</string>
   <string name="search_city_content_description">Wyszukaj miasto</string>
   <string name="settings_content_description">Ustawienia</string>
   <string name="search_hint">Szukaj miasta&#8230;</string>
@@ -69,6 +68,19 @@
   <string name="condition_thunderstorm">Burza</string>
   <string name="condition_unknown">Nieznane</string>
 
+  <string name="daily_vibe_score_format">%1$d/100</string>
+  <string name="daily_vibe_headline_format">%1$s  ·  %2$s</string>
+  <string name="daily_vibe_mood_radiant">Idealny dzień</string>
+  <string name="daily_vibe_mood_pleasant">Przyjemny klimat</string>
+  <string name="daily_vibe_mood_okay">Znośny dzień</string>
+  <string name="daily_vibe_mood_dreary">Ponury klimat</string>
+  <string name="daily_vibe_mood_rough">Kiepsko na dworze</string>
+  <string name="daily_vibe_oneliner_radiant">Idealnie — wyjdź z tego biura.</string>
+  <string name="daily_vibe_oneliner_pleasant">Spoko pogódka.</string>
+  <string name="daily_vibe_oneliner_okay">Średnio, ale ujdzie.</string>
+  <string name="daily_vibe_oneliner_dreary">Kiepsko, ale do przeżycia.</string>
+  <string name="daily_vibe_oneliner_rough">Zostań w domu, obejrzyj serial.</string>
+  <string name="daily_vibe_content_description_format">%1$s, vibe %2$d na 100. %3$s</string>
   <string name="ai_briefing_retry">Ponów</string>
   <string name="ai_briefing_retry_content_description">Ponów briefing AI</string>
   <string name="finding_better_suggestions">Szukam lepszych propozycji…</string>

@@ -98,6 +98,7 @@ dependencies {
   implementation(projects.data.settings)
   implementation(projects.domain.alerts)
   implementation(projects.domain.airquality)
+  implementation(projects.domain.vibe)
   implementation(projects.data.airquality)
   implementation(projects.domain.widget)
   implementation(projects.data.widget)

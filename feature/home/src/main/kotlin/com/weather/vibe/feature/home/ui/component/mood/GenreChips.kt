@@ -16,12 +16,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.genreRemoveContentDescription
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun GenreChips(
   modifier: Modifier = Modifier,
-  genres: List<GenreChipUiState>,
+  genres: ImmutableList<GenreChipUiState>,
   onThumbsDown: (String) -> Unit
 ) {
   FlowRow(
@@ -52,7 +54,7 @@ private fun Preview() {
   WeatherVibeTheme {
     GenreChips(
       modifier = Modifier.padding(Medium),
-      genres = listOf(
+      genres = persistentListOf(
         GenreChipUiState(name = "lo-fi hip hop"),
         GenreChipUiState(name = "acoustic"),
         GenreChipUiState(name = "rainy day indie")

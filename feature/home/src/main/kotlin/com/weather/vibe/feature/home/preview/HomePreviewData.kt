@@ -31,6 +31,7 @@ import com.weather.vibe.feature.home.ui.HomeResources.Emojis.vibeRough
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
@@ -216,24 +217,24 @@ internal object HomePreviewData {
     }.toImmutableList()
   )
 
-  private val windMetrics: List<MetricItemUiState> =
-    listOf(
+  private val windMetrics: ImmutableList<MetricItemUiState> =
+    persistentListOf(
       MetricItemUiState(wind(), "Wind Speed", "12 km/h"),
       MetricItemUiState(compass(), "Direction", "SW"),
       MetricItemUiState(windGusts(), "Wind Gusts", "20 km/h"),
       MetricItemUiState(windMax(), "Max Wind", "28 km/h")
     )
 
-  private val atmosphereMetrics: List<MetricItemUiState> =
-    listOf(
+  private val atmosphereMetrics: ImmutableList<MetricItemUiState> =
+    persistentListOf(
       MetricItemUiState(humidity(), "Humidity", "65%"),
       MetricItemUiState(gauge(), "Pressure", "1015 hPa"),
       MetricItemUiState(dewDrop(), "Dew Point", "12°"),
       MetricItemUiState(cloud(), "Cloud Cover", "45%")
     )
 
-  private val conditionsMetrics: List<MetricItemUiState> =
-    listOf(
+  private val conditionsMetrics: ImmutableList<MetricItemUiState> =
+    persistentListOf(
       MetricItemUiState(precipitation(), "Precipitation", "20%"),
       MetricItemUiState(uvIndex(), "UV Index", "3.5"),
       MetricItemUiState(eye(), "Visibility", "24 km"),
@@ -244,7 +245,7 @@ internal object HomePreviewData {
     DetailsSectionsUiState(
       atmosphere = atmosphereMetrics,
       conditions = conditionsMetrics,
-      previewItems = listOf(
+      previewItems = persistentListOf(
         atmosphereMetrics[0],
         windMetrics[0],
         conditionsMetrics[1],
@@ -255,7 +256,7 @@ internal object HomePreviewData {
 
   val loadedPlaylist: PlaylistUiState.Loaded =
     PlaylistUiState.Loaded(
-      genres = listOf(
+      genres = persistentListOf(
         GenreChipUiState(name = "lo-fi hip hop"),
         GenreChipUiState(name = "acoustic"),
         GenreChipUiState(name = "rainy day indie")

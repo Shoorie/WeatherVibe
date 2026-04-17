@@ -24,7 +24,7 @@ import com.weather.vibe.notifications.notification.NotificationIds.OPEN_APP_REQU
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class AlertNotifier(
+class AlertNotifier internal constructor(
   private val context: Context,
   private val channel: AlertChannel
 ) {

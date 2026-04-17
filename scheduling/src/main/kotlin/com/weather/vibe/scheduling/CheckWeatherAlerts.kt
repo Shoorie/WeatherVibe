@@ -1,4 +1,4 @@
-package com.weather.vibe.notifications.work
+package com.weather.vibe.scheduling
 
 import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.domain.alerts.usecase.GatherWeatherAlerts

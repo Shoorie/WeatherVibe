@@ -7,8 +7,10 @@ import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POLLEN_TIT
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.UV_TITLE
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.heavyRain
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.highPollen
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.highUvIndex
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.poorAirQuality
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.temperatureDrop
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.thunderstorm
@@ -99,6 +101,22 @@ class AlertNotificationFactoryTest {
     val notification = factory.create(highPollen())
 
     expectThat(notification.body).contains("BIRCH").contains("GRASS")
+  }
+
+  @Test
+  fun `when uv alert mapped, then title from resources`() {
+
+    val notification = factory.create(highUvIndex())
+
+    expectThat(notification.title).isEqualTo(UV_TITLE)
+  }
+
+  @Test
+  fun `when uv alert mapped, then body carries uv index value`() {
+
+    val notification = factory.create(highUvIndex(uvIndex = 9))
+
+    expectThat(notification.body).contains("9")
   }
 
   @Test

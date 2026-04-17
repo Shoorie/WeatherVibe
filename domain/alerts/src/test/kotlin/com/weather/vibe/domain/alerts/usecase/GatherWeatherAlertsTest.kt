@@ -11,6 +11,7 @@ import com.weather.vibe.testing.airquality.fixture.AirQualityFixtures.POOR
 import com.weather.vibe.testing.airquality.fixture.PollenFixtures.CALM
 import com.weather.vibe.testing.airquality.fixture.PollenFixtures.HIGH_BIRCH
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.HIGH_POLLEN
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.HIGH_UV_INDEX
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.POOR_AIR_QUALITY
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.THUNDERSTORM
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
@@ -37,6 +38,7 @@ class GatherWeatherAlertsTest {
   private val deduplicator = AlertDeduplicator()
   private val detectAqiAlert = mockk<DetectAqiAlert>()
   private val detectPollenAlert = mockk<DetectPollenAlert>()
+  private val detectUvAlert = mockk<DetectUvAlert>()
   private val detectWeatherAlerts = mockk<DetectWeatherAlerts>()
   private val getAirQuality = mockk<GetAirQuality>()
   private val getPollen = mockk<GetPollen>()
@@ -45,6 +47,7 @@ class GatherWeatherAlertsTest {
   private val detectors = AlertDetectors(
     detectAqiAlert = detectAqiAlert,
     detectPollenAlert = detectPollenAlert,
+    detectUvAlert = detectUvAlert,
     detectWeatherAlerts = detectWeatherAlerts
   )
   private val sources = AlertSources(
@@ -70,6 +73,7 @@ class GatherWeatherAlertsTest {
     coEvery { getPollen(WARSAW.toCoordinates()) } returns success(CALM)
     every { detectAqiAlert(any()) } returns null
     every { detectPollenAlert(any()) } returns null
+    every { detectUvAlert(any()) } returns null
   }
 
   @After
@@ -107,6 +111,16 @@ class GatherWeatherAlertsTest {
 
       expectThat(alerts).contains(HIGH_POLLEN)
     }
+
+  @Test
+  fun `given uv alert detected, when alerts gathered, then uv alert returned`() = runTest {
+
+    every { detectUvAlert(WEATHER) } returns HIGH_UV_INDEX
+
+    val alerts = gather()
+
+    expectThat(alerts).contains(HIGH_UV_INDEX)
+  }
 
   @Test
   fun `given air quality fetch fails, when alerts gathered, then weather alert still returned`() =

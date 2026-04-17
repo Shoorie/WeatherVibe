@@ -2,6 +2,7 @@ package com.weather.vibe.domain.alerts.model
 
 import com.weather.vibe.domain.airquality.model.AqiLevel
 import com.weather.vibe.domain.airquality.model.PollenSpecies
+import com.weather.vibe.domain.weather.model.UvLevel
 import java.time.LocalDateTime
 
 sealed interface WeatherAlert {
@@ -31,5 +32,11 @@ sealed interface WeatherAlert {
   data class HighPollen(
     override val expectedAt: LocalDateTime,
     val species: List<PollenSpecies>
+  ) : WeatherAlert
+
+  data class HighUvIndex(
+    override val expectedAt: LocalDateTime,
+    val uvIndex: Int,
+    val level: UvLevel
   ) : WeatherAlert
 }

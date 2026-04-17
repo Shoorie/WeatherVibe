@@ -6,5 +6,6 @@ import org.koin.core.annotation.Factory
 internal data class AlertDetectors(
   val detectAqiAlert: DetectAqiAlert,
   val detectPollenAlert: DetectPollenAlert,
+  val detectUvAlert: DetectUvAlert,
   val detectWeatherAlerts: DetectWeatherAlerts
 )

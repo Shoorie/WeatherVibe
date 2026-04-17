@@ -25,5 +25,10 @@
   <string name="alerts_pollen_species_olive">oliwka</string>
   <string name="alerts_pollen_species_ragweed">ambrozja</string>
   <string name="alerts_pollen_species_separator">, </string>
+  <string name="alerts_uv_title">Mocne słońce</string>
+  <string name="alerts_uv_body">%1$s UV (%2$d) — krem z filtrem i czapka przed wyjściem.</string>
+  <string name="alerts_uv_level_high">wysokie</string>
+  <string name="alerts_uv_level_very_high">bardzo wysokie</string>
+  <string name="alerts_uv_level_extreme">ekstremalne</string>
   <string name="alerts_morning_brief_title">Dzisiejszy vibe</string>
 </resources>

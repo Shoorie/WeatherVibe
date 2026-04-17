@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation.fixture
 
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
+import kotlinx.collections.immutable.persistentListOf
 
 internal object MetricFixtures {
 
@@ -12,9 +13,9 @@ internal object MetricFixtures {
   private val METRIC = MetricItemUiState(ICON, LABEL, VALUE)
 
   val METRICS_SECTIONS = DetailsSectionsUiState(
-    atmosphere = listOf(METRIC),
-    conditions = listOf(METRIC),
-    previewItems = listOf(METRIC),
-    wind = listOf(METRIC)
+    atmosphere = persistentListOf(METRIC),
+    conditions = persistentListOf(METRIC),
+    previewItems = persistentListOf(METRIC),
+    wind = persistentListOf(METRIC)
   )
 }

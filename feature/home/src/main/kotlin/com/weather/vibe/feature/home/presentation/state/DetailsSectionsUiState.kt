@@ -1,11 +1,12 @@
 package com.weather.vibe.feature.home.presentation.state
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 internal data class DetailsSectionsUiState(
-  val atmosphere: List<MetricItemUiState>,
-  val conditions: List<MetricItemUiState>,
-  val previewItems: List<MetricItemUiState>,
-  val wind: List<MetricItemUiState>
+  val atmosphere: ImmutableList<MetricItemUiState>,
+  val conditions: ImmutableList<MetricItemUiState>,
+  val previewItems: ImmutableList<MetricItemUiState>,
+  val wind: ImmutableList<MetricItemUiState>
 )

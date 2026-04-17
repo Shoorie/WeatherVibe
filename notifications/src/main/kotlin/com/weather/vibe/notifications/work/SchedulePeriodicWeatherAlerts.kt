@@ -7,7 +7,7 @@ import androidx.work.NetworkType.CONNECTED
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import org.koin.core.annotation.Factory
-import java.util.concurrent.TimeUnit.HOURS
+import java.util.concurrent.TimeUnit.MINUTES
 import java.util.concurrent.TimeUnit.SECONDS
 
 @Factory
@@ -22,8 +22,8 @@ class SchedulePeriodicWeatherAlerts internal constructor(
       .build()
 
     val work = PeriodicWorkRequestBuilder<WeatherAlertsWorker>(
-      repeatInterval = CHECK_INTERVAL_HOURS,
-      repeatIntervalTimeUnit = HOURS
+      repeatInterval = CHECK_INTERVAL_MINUTES,
+      repeatIntervalTimeUnit = MINUTES
     )
       .setConstraints(constraints)
       .setBackoffCriteria(EXPONENTIAL, BACKOFF_SECONDS, SECONDS)
@@ -38,7 +38,7 @@ class SchedulePeriodicWeatherAlerts internal constructor(
 
   internal companion object {
     const val WORKER_NAME = "weather_vibe_weather_alerts_periodic"
-    private const val CHECK_INTERVAL_HOURS = 2L
+    private const val CHECK_INTERVAL_MINUTES = 30L
     private const val BACKOFF_SECONDS = 30L
   }
 }

@@ -1,4 +1,4 @@
-package com.weather.vibe.notifications.work
+package com.weather.vibe.scheduling
 
 import androidx.work.BackoffPolicy.EXPONENTIAL
 import androidx.work.Constraints

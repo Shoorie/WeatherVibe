@@ -7,7 +7,7 @@ import com.weather.vibe.core.tracing.TraceSections.KOIN_INITIALIZATION
 import com.weather.vibe.core.tracing.traceSection
 import com.weather.vibe.di.WeatherVibeApp
 import com.weather.vibe.feature.widget.work.WidgetRefreshCoordinator
-import com.weather.vibe.notifications.work.WeatherNotificationsCoordinator
+import com.weather.vibe.scheduling.SchedulingCoordinator
 import org.koin.android.ext.android.get
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -32,6 +32,6 @@ class WeatherVibeApplication : Application(), Configuration.Provider {
       }
     }
     get<WidgetRefreshCoordinator>().start()
-    get<WeatherNotificationsCoordinator>().start()
+    get<SchedulingCoordinator>().start()
   }
 }

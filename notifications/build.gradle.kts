@@ -11,20 +11,11 @@ android {
 
 dependencies {
   implementation(projects.core.navigation)
-  implementation(projects.core.time)
-  implementation(projects.core.workmanager)
   implementation(projects.domain.airquality)
   implementation(projects.domain.alerts)
-  implementation(projects.domain.location)
-  implementation(projects.domain.settings)
-  implementation(projects.domain.weather)
 
-  implementation(libs.androidx.work.runtime.ktx)
-  implementation(libs.koin.androidx.workmanager)
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.koin.core)
 
   testImplementation(projects.testing.alertsFixtures)
-  testImplementation(projects.testing.coroutineRules)
-  testImplementation(projects.testing.locationFixtures)
-  testImplementation(projects.testing.settingsFixtures)
-  testImplementation(projects.testing.weatherFixtures)
 }

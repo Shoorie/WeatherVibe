@@ -1,10 +1,9 @@
-package com.weather.vibe.notifications.work
+package com.weather.vibe.scheduling
 
 import com.weather.vibe.domain.alerts.usecase.GetMorningBriefText
 import com.weather.vibe.notifications.notification.AlertNotification
 import com.weather.vibe.notifications.notification.AlertNotifier
 import com.weather.vibe.notifications.notification.brief.MorningBriefNotificationFactory
-import com.weather.vibe.notifications.ui.MorningBriefResources
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.BRIEF_TEXT
 import io.mockk.coEvery
 import io.mockk.every
@@ -20,10 +19,7 @@ class DeliverMorningBriefTest {
 
   private val getMorningBriefText = mockk<GetMorningBriefText>()
   private val notifier = mockk<AlertNotifier>(relaxed = true)
-  private val resources = mockk<MorningBriefResources>().apply {
-    every { title() } returns BRIEF_TITLE
-  }
-  private val notificationFactory = MorningBriefNotificationFactory(resources = resources)
+  private val notificationFactory = mockk<MorningBriefNotificationFactory>()
   private val deliver = DeliverMorningBrief(
     getMorningBriefText = getMorningBriefText,
     notificationFactory = notificationFactory,
@@ -33,6 +29,7 @@ class DeliverMorningBriefTest {
   @Before
   fun setUp() {
     coEvery { getMorningBriefText() } returns BRIEF_TEXT
+    every { notificationFactory.create(BRIEF_TEXT) } returns briefNotification(body = BRIEF_TEXT)
   }
 
   @After
@@ -41,15 +38,18 @@ class DeliverMorningBriefTest {
   }
 
   @Test
-  fun `when invoked, then notification posted with brief text as body`() = runTest {
+  fun `when morning brief delivered, then notification posted with brief text as body`() =
+    runTest {
 
-    deliver()
+      deliver()
 
-    verify { notifier.post(match<AlertNotification> { it.body == BRIEF_TEXT }) }
-  }
+      verify { notifier.post(match<AlertNotification> { it.body == BRIEF_TEXT }) }
+    }
 
   @Test
-  fun `when invoked, then notification carries morning brief title`() = runTest {
+  fun `when morning brief delivered, then notification carries morning brief title`() = runTest {
+
+    every { notificationFactory.create(BRIEF_TEXT) } returns briefNotification(title = BRIEF_TITLE)
 
     deliver()
 
@@ -57,7 +57,7 @@ class DeliverMorningBriefTest {
   }
 
   @Test
-  fun `given brief text is null, when invoked, then nothing posted`() = runTest {
+  fun `given brief text is null, when morning brief delivered, then nothing posted`() = runTest {
 
     coEvery { getMorningBriefText() } returns null
 
@@ -66,7 +66,13 @@ class DeliverMorningBriefTest {
     verify(exactly = 0) { notifier.post(any()) }
   }
 
+  private fun briefNotification(
+    title: String = BRIEF_TITLE,
+    body: String = BRIEF_TEXT
+  ): AlertNotification = AlertNotification(id = NOTIFICATION_ID, title = title, body = body)
+
   private companion object {
     const val BRIEF_TITLE = "Today's vibe"
+    const val NOTIFICATION_ID = 1100
   }
 }

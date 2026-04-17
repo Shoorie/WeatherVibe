@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.domain.vibe.model.DailyVibe
 import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
@@ -17,6 +18,7 @@ import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
+import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
@@ -58,6 +60,20 @@ internal class HomeStateFactory(
       true -> current.copy(playlist = playlist)
       false -> current
     }
+
+  fun applyDailyVibe(current: HomeUiState, state: DailyVibeUiState): HomeUiState =
+    when (current is HomeUiState.Loaded) {
+      true -> current.copy(dailyVibe = state)
+      false -> current
+    }
+
+  fun createDailyVibe(vibe: DailyVibe): DailyVibeUiState =
+    DailyVibeUiState(
+      emoji = resources.dailyVibeEmoji(vibe.mood),
+      headline = resources.dailyVibeHeadline(vibe.score, vibe.mood),
+      oneLiner = resources.dailyVibeOneLiner(vibe.mood),
+      contentDescription = resources.dailyVibeContentDescription(vibe.mood, vibe.score)
+    )
 
   fun markGenreAsRejecting(current: HomeUiState, genre: String): HomeUiState {
 
@@ -111,6 +127,7 @@ internal class HomeStateFactory(
     val loaded = current as? HomeUiState.Loaded ?: return current
     return create(data, unit).copy(
       briefing = loaded.briefing,
+      dailyVibe = loaded.dailyVibe,
       playlist = loaded.playlist
     )
   }

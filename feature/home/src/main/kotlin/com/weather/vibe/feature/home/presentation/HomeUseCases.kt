@@ -3,6 +3,7 @@ package com.weather.vibe.feature.home.presentation
 import com.weather.vibe.domain.location.usecase.GetStartingCoordinates
 import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
+import com.weather.vibe.domain.vibe.usecase.CalculateDailyVibe
 import com.weather.vibe.domain.weather.usecase.DetermineWeatherRefreshStrategy
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
@@ -12,6 +13,7 @@ import org.koin.core.annotation.Factory
 
 @Factory
 internal data class HomeUseCases(
+  val calculateDailyVibe: CalculateDailyVibe,
   val determineWeatherRefreshStrategy: DetermineWeatherRefreshStrategy,
   val excludeGenre: ExcludeGenre,
   val generateWeatherSuggestion: GenerateWeatherSuggestion,

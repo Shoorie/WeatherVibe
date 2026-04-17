@@ -5,6 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import com.weather.vibe.domain.vibe.model.VibeMood
+import com.weather.vibe.domain.vibe.model.VibeMood.DREARY
+import com.weather.vibe.domain.vibe.model.VibeMood.OKAY
+import com.weather.vibe.domain.vibe.model.VibeMood.PLEASANT
+import com.weather.vibe.domain.vibe.model.VibeMood.RADIANT
+import com.weather.vibe.domain.vibe.model.VibeMood.ROUGH
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.feature.home.R
 import org.koin.core.annotation.Factory
@@ -66,6 +72,51 @@ internal class HomeResources(private val context: Context) {
   fun windSpeedMax(): String =
     context.getString(R.string.wind_speed_max_label)
 
+  fun dailyVibeHeadline(score: Int, mood: VibeMood): String =
+    context.getString(
+      R.string.daily_vibe_headline_format,
+      context.getString(R.string.daily_vibe_score_format, score),
+      context.getString(mood.moodLabelRes())
+    )
+
+  fun dailyVibeMoodLabel(mood: VibeMood): String =
+    context.getString(mood.moodLabelRes())
+
+  fun dailyVibeOneLiner(mood: VibeMood): String =
+    context.getString(mood.oneLinerRes())
+
+  fun dailyVibeEmoji(mood: VibeMood): String = when (mood) {
+    RADIANT -> Emojis.vibeRadiant()
+    PLEASANT -> Emojis.vibePleasant()
+    OKAY -> Emojis.vibeOkay()
+    DREARY -> Emojis.vibeDreary()
+    ROUGH -> Emojis.vibeRough()
+  }
+
+  fun dailyVibeContentDescription(mood: VibeMood, score: Int): String =
+    context.getString(
+      R.string.daily_vibe_content_description_format,
+      dailyVibeMoodLabel(mood),
+      score,
+      dailyVibeOneLiner(mood)
+    )
+
+  private fun VibeMood.moodLabelRes(): Int = when (this) {
+    RADIANT -> R.string.daily_vibe_mood_radiant
+    PLEASANT -> R.string.daily_vibe_mood_pleasant
+    OKAY -> R.string.daily_vibe_mood_okay
+    DREARY -> R.string.daily_vibe_mood_dreary
+    ROUGH -> R.string.daily_vibe_mood_rough
+  }
+
+  private fun VibeMood.oneLinerRes(): Int = when (this) {
+    RADIANT -> R.string.daily_vibe_oneliner_radiant
+    PLEASANT -> R.string.daily_vibe_oneliner_pleasant
+    OKAY -> R.string.daily_vibe_oneliner_okay
+    DREARY -> R.string.daily_vibe_oneliner_dreary
+    ROUGH -> R.string.daily_vibe_oneliner_rough
+  }
+
   object Painters {
 
     @Composable
@@ -104,6 +155,11 @@ internal class HomeResources(private val context: Context) {
     fun wind(): String = "\uD83D\uDCA8"
     fun windGusts(): String = "\uD83C\uDF2C\uFE0F"
     fun windMax(): String = "\uD83D\uDCA5"
+    fun vibeRadiant(): String = "\uD83E\uDD29"
+    fun vibePleasant(): String = "\uD83D\uDE0A"
+    fun vibeOkay(): String = "\uD83D\uDE42"
+    fun vibeDreary(): String = "\uD83D\uDE15"
+    fun vibeRough(): String = "\uD83D\uDE29"
   }
 
   object Texts {
@@ -207,10 +263,6 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun openInYtMusic(): String =
       stringResource(R.string.open_in_yt_music)
-
-    @Composable
-    fun refreshContentDescription(): String =
-      stringResource(R.string.refresh_content_description)
 
     @Composable
     fun searchCityContentDescription(): String =

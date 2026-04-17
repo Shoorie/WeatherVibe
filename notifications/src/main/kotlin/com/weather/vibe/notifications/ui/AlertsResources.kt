@@ -1,6 +1,13 @@
 package com.weather.vibe.notifications.ui
 
 import android.content.Context
+import com.weather.vibe.domain.airquality.model.AqiLevel
+import com.weather.vibe.domain.airquality.model.AqiLevel.EXTREMELY_POOR
+import com.weather.vibe.domain.airquality.model.AqiLevel.FAIR
+import com.weather.vibe.domain.airquality.model.AqiLevel.GOOD
+import com.weather.vibe.domain.airquality.model.AqiLevel.MODERATE
+import com.weather.vibe.domain.airquality.model.AqiLevel.POOR
+import com.weather.vibe.domain.airquality.model.AqiLevel.VERY_POOR
 import com.weather.vibe.notifications.R
 import com.weather.vibe.notifications.notification.AlertsTimeFormatter
 import org.koin.core.annotation.Factory
@@ -43,4 +50,22 @@ internal class AlertsResources(
       degrees,
       timeFormatter.format(expectedAt)
     )
+
+  fun airQualityTitle(): String =
+    context.getString(R.string.alerts_air_quality_title)
+
+  fun airQualityBody(europeanAqi: Int, levelLabel: String): String =
+    context.getString(R.string.alerts_air_quality_body, levelLabel, europeanAqi)
+
+  fun aqiLevelLabel(level: AqiLevel): String =
+    context.getString(level.labelRes())
+
+  private fun AqiLevel.labelRes(): Int = when (this) {
+    GOOD -> R.string.alerts_aqi_level_good
+    FAIR -> R.string.alerts_aqi_level_fair
+    MODERATE -> R.string.alerts_aqi_level_moderate
+    POOR -> R.string.alerts_aqi_level_poor
+    VERY_POOR -> R.string.alerts_aqi_level_very_poor
+    EXTREMELY_POOR -> R.string.alerts_aqi_level_extremely_poor
+  }
 }

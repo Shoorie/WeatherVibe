@@ -8,5 +8,13 @@
   <string name="alerts_heavy_rain_body">Około %1$s spadnie około %2$d mm w godzinę. Bierz parasol.</string>
   <string name="alerts_temperature_drop_title">Gwałtowne ochłodzenie</string>
   <string name="alerts_temperature_drop_body">Temperatura spadnie o około %1$d° do %2$s — narzuć sweter.</string>
+  <string name="alerts_air_quality_title">Słabe powietrze</string>
+  <string name="alerts_air_quality_body">%1$s (AQI %2$d) — rozważ ograniczenie aktywności na zewnątrz.</string>
+  <string name="alerts_aqi_level_good">Dobre powietrze</string>
+  <string name="alerts_aqi_level_fair">Umiarkowane powietrze</string>
+  <string name="alerts_aqi_level_moderate">Średnie powietrze</string>
+  <string name="alerts_aqi_level_poor">Słabe powietrze</string>
+  <string name="alerts_aqi_level_very_poor">Bardzo słabe powietrze</string>
+  <string name="alerts_aqi_level_extremely_poor">Fatalne powietrze</string>
   <string name="alerts_morning_brief_title">Dzisiejszy vibe</string>
 </resources>

@@ -8,6 +8,14 @@
   <string name="alerts_heavy_rain_body">Around %1$s expect about %2$d mm in an hour. Grab the parasol.</string>
   <string name="alerts_temperature_drop_title">Sharp cool-down</string>
   <string name="alerts_temperature_drop_body">Temperature dropping about %1$d° by %2$s — grab a sweater.</string>
+  <string name="alerts_air_quality_title">Poor air quality</string>
+  <string name="alerts_air_quality_body">%1$s (AQI %2$d) — consider limiting outdoor activity.</string>
+  <string name="alerts_aqi_level_good">Good air</string>
+  <string name="alerts_aqi_level_fair">Fair air</string>
+  <string name="alerts_aqi_level_moderate">Moderate air</string>
+  <string name="alerts_aqi_level_poor">Poor air</string>
+  <string name="alerts_aqi_level_very_poor">Very poor air</string>
+  <string name="alerts_aqi_level_extremely_poor">Extremely poor air</string>
   <string name="alerts_morning_brief_title">Today\'s vibe</string>
   <string name="alerts_time_format" translatable="false">HH:mm</string>
 </resources>

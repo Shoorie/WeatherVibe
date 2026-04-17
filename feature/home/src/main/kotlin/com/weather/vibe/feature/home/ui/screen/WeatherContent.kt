@@ -17,6 +17,7 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
 import com.weather.vibe.feature.home.preview.HomePreviewData.header
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
+import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantVibe
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
 import com.weather.vibe.feature.home.ui.component.mood.MoodPlaylistSheet
@@ -72,6 +73,7 @@ private fun Preview() {
       state = Loaded(
         currentWeather = warmDayCurrent,
         dailyForecast = weekForecast,
+        dailyVibe = pleasantVibe,
         detailsSections = detailsSections,
         header = header,
         hourlyForecast = eightHoursForecast,

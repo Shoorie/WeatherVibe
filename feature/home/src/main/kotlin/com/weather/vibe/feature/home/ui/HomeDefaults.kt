@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.sp
 internal object HomeDefaults {
 
   val BriefingContentMinHeight = 56.dp
+  val DailyVibeMinHeight = 72.dp
   val ChipPaddingHorizontal = 12.dp
   val ChipPaddingVertical = 6.dp
   val DailyRangeBarHeight = 14.dp

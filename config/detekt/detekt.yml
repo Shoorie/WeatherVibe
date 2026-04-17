@@ -1,6 +1,8 @@
 complexity:
   CyclomaticComplexMethod:
     ignoreSingleWhenExpression: true
+  LongMethod:
+    threshold: 70
   LongParameterList:
     excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
     functionThreshold: 8

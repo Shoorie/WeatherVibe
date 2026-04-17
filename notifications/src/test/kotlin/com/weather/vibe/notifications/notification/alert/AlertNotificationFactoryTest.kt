@@ -1,10 +1,13 @@
 package com.weather.vibe.notifications.notification.alert
 
 import com.weather.vibe.notifications.fake.fakeAlertsResources
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.HEAVY_RAIN_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.heavyRain
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.poorAirQuality
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.temperatureDrop
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.thunderstorm
 import io.mockk.unmockkAll
@@ -62,6 +65,22 @@ class AlertNotificationFactoryTest {
     val notification = factory.create(temperatureDrop(degreesCelsius = 9.4))
 
     expectThat(notification.body).contains("9°")
+  }
+
+  @Test
+  fun `when air quality alert mapped, then title from resources`() {
+
+    val notification = factory.create(poorAirQuality(europeanAqi = 75))
+
+    expectThat(notification.title).isEqualTo(AIR_QUALITY_TITLE)
+  }
+
+  @Test
+  fun `when air quality alert mapped, then body carries level and aqi value`() {
+
+    val notification = factory.create(poorAirQuality(europeanAqi = 75))
+
+    expectThat(notification.body).contains(POOR_LEVEL_LABEL).contains("75")
   }
 
   @Test

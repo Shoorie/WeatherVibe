@@ -11,6 +11,7 @@ android {
 dependencies {
 
   implementation(projects.core.time)
+  implementation(projects.domain.airquality)
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)
@@ -18,6 +19,7 @@ dependencies {
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)
 
+  testImplementation(projects.testing.airqualityFixtures)
   testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.locationFixtures)
   testImplementation(projects.testing.settingsFixtures)

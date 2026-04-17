@@ -1,8 +1,11 @@
 package com.weather.vibe.notifications.fake
 
+import com.weather.vibe.domain.airquality.model.AqiLevel
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.CHANNEL_NAME
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.ERROR_BODY_PREFIX
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.HEAVY_RAIN_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
 import com.weather.vibe.notifications.ui.AlertsResources
@@ -27,5 +30,10 @@ internal fun fakeAlertsResources(): AlertsResources {
     every { temperatureDropBody(any(), any()) } answers {
       "Drop ${secondArg<Int>()}° by ${firstArg<java.time.LocalDateTime>().format(formatter)}"
     }
+    every { airQualityTitle() } returns AIR_QUALITY_TITLE
+    every { airQualityBody(any(), any()) } answers {
+      "${secondArg<String>()} (AQI ${firstArg<Int>()})"
+    }
+    every { aqiLevelLabel(any<AqiLevel>()) } returns POOR_LEVEL_LABEL
   }
 }

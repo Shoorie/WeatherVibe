@@ -13,6 +13,7 @@ internal sealed interface HomeUiState {
     val briefing: BriefingUiState = BriefingUiState.Loading,
     val currentWeather: CurrentWeatherUiState,
     val dailyForecast: DailyForecastsUiState,
+    val dailyVibe: DailyVibeUiState? = null,
     val detailsSections: DetailsSectionsUiState,
     val header: HeaderUiState,
     val hourlyForecast: HourlyForecastsUiState,

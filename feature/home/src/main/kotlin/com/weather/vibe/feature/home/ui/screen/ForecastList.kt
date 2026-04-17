@@ -23,10 +23,12 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
 import com.weather.vibe.feature.home.preview.HomePreviewData.header
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
+import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantVibe
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
 import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
+import com.weather.vibe.feature.home.ui.HomeKeys.DAILY_VIBE
 import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
 import com.weather.vibe.feature.home.ui.HomeKeys.HERO
 import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
@@ -36,6 +38,7 @@ import com.weather.vibe.feature.home.ui.component.daily.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.details.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.hero.HomeHeroCard
 import com.weather.vibe.feature.home.ui.component.hourly.HourlyForecastRow
+import com.weather.vibe.feature.home.ui.component.vibe.DailyVibeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,6 +81,14 @@ internal fun ForecastList(
           onNavigateToSettings = onNavigateToSettings
         )
       }
+      if (state.dailyVibe != null) {
+        item(key = DAILY_VIBE) {
+          DailyVibeCard(
+            modifier = horizontalPadding,
+            state = state.dailyVibe
+          )
+        }
+      }
       item(key = BRIEFING) {
         WeatherBriefingCard(
           modifier = horizontalPadding,
@@ -114,6 +125,7 @@ private fun Preview() {
       state = Loaded(
         currentWeather = warmDayCurrent,
         dailyForecast = weekForecast,
+        dailyVibe = pleasantVibe,
         detailsSections = detailsSections,
         header = header,
         hourlyForecast = eightHoursForecast,

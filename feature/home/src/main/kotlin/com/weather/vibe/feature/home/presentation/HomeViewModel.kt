@@ -27,6 +27,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,6 +56,7 @@ internal class HomeViewModel(
   private var suggestionJob: Job? = null
   private var invalidateJob: Job? = null
   private var genreJob: Job? = null
+  private var vibeJob: Job? = null
 
   private val errorHandler = CoroutineExceptionHandler { _, throwable ->
     if (throwable is CancellationException) return@CoroutineExceptionHandler
@@ -87,7 +89,15 @@ internal class HomeViewModel(
     currentCoordinates = coordinates
     _state.update { Loading }
     snapshot = HomeSnapshot()
+    cancelInFlightJobs()
     launchHomeDataObservation(coordinates)
+  }
+
+  private fun cancelInFlightJobs() {
+    vibeJob?.cancel()
+    suggestionJob?.cancel()
+    invalidateJob?.cancel()
+    genreJob?.cancel()
   }
 
   private fun refreshWeather(coordinates: Coordinates) {
@@ -172,7 +182,22 @@ internal class HomeViewModel(
   }
 
   private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
-    _state.update { stateFactory.create(data = weather, unit = settings.temperatureUnit) }
+    _state.update { current ->
+      val previousVibe = (current as? Loaded)?.dailyVibe
+      stateFactory.create(data = weather, unit = settings.temperatureUnit)
+        .copy(dailyVibe = previousVibe)
+    }
+    refreshDailyVibe(weather)
+  }
+
+  private fun refreshDailyVibe(weather: WeatherData) {
+    vibeJob?.cancel()
+    vibeJob = viewModelScope.launch {
+      val vibe = useCases.calculateDailyVibe(weather).getOrNull() ?: return@launch
+      val vibeState = stateFactory.createDailyVibe(vibe)
+      ensureActive()
+      _state.update { stateFactory.applyDailyVibe(it, vibeState) }
+    }
   }
 
   private fun onTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {

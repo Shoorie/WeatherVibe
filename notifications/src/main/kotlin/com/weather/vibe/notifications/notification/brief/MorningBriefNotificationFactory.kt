@@ -6,7 +6,7 @@ import com.weather.vibe.notifications.ui.MorningBriefResources
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class MorningBriefNotificationFactory(
+class MorningBriefNotificationFactory internal constructor(
   private val resources: MorningBriefResources
 ) {
 

@@ -17,7 +17,7 @@ import org.koin.core.annotation.Factory
 import kotlin.math.roundToInt
 
 @Factory
-internal class AlertNotificationFactory(
+class AlertNotificationFactory internal constructor(
   private val resources: AlertsResources
 ) {
 

@@ -1,16 +1,13 @@
 package com.weather.vibe.feature.home.ui.component.hero
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation.Card
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -30,26 +27,28 @@ internal fun HomeHeroCard(
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit
 ) {
-  Column(
-    modifier = modifier
-      .fillMaxWidth()
-      .shadow(elevation = Card, shape = shapes.cardLarge, clip = false)
-      .clip(shapes.cardLarge)
-      .background(colors.accent)
-      .padding(Large)
-      .semantics(mergeDescendants = true) {},
-    verticalArrangement = Arrangement.spacedBy(Medium)
+  VibeCard(
+    modifier = modifier.semantics(mergeDescendants = true) {},
+    shape = shapes.cardLarge,
+    containerColor = colors.accent,
+    contentPadding = Large,
+    elevation = Card
   ) {
-    HeroHeader(
-      header = header,
-      onNavigateToSearch = onNavigateToSearch,
-      onNavigateToSettings = onNavigateToSettings
-    )
-    HeroWeather(state = currentWeather)
-    HeroTempChips(
-      highTemperature = currentWeather.highTemperature,
-      lowTemperature = currentWeather.lowTemperature
-    )
+    Column(
+      modifier = Modifier.fillMaxWidth(),
+      verticalArrangement = Arrangement.spacedBy(Medium)
+    ) {
+      HeroHeader(
+        header = header,
+        onNavigateToSearch = onNavigateToSearch,
+        onNavigateToSettings = onNavigateToSettings
+      )
+      HeroWeather(state = currentWeather)
+      HeroTempChips(
+        highTemperature = currentWeather.highTemperature,
+        lowTemperature = currentWeather.lowTemperature
+      )
+    }
   }
 }
 

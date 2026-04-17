@@ -25,6 +25,11 @@
   <string name="alerts_pollen_species_olive">Olive</string>
   <string name="alerts_pollen_species_ragweed">Ragweed</string>
   <string name="alerts_pollen_species_separator">, </string>
+  <string name="alerts_uv_title">Strong sun today</string>
+  <string name="alerts_uv_body">%1$s UV (%2$d) — sunscreen and a hat before heading out.</string>
+  <string name="alerts_uv_level_high">High</string>
+  <string name="alerts_uv_level_very_high">Very high</string>
+  <string name="alerts_uv_level_extreme">Extreme</string>
   <string name="alerts_morning_brief_title">Today\'s vibe</string>
   <string name="alerts_time_format" translatable="false">HH:mm</string>
 </resources>

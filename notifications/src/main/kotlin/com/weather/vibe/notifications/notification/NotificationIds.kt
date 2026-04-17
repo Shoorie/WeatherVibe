@@ -6,6 +6,7 @@ internal object NotificationIds {
   const val TEMPERATURE_DROP = 1003
   const val POOR_AIR_QUALITY = 1004
   const val HIGH_POLLEN = 1005
+  const val HIGH_UV_INDEX = 1006
   const val MORNING_BRIEF = 1100
   const val OPEN_APP_REQUEST = 9001
 }

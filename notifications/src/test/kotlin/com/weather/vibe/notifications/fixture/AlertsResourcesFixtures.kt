@@ -9,4 +9,6 @@ internal object AlertsResourcesFixtures {
   const val AIR_QUALITY_TITLE = "Poor air quality"
   const val POOR_LEVEL_LABEL = "Poor air"
   const val POLLEN_TITLE = "High pollen levels"
+  const val UV_TITLE = "Strong sun today"
+  const val UV_LEVEL_LABEL = "Very high"
 }

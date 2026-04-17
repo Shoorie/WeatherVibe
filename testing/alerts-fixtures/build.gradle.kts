@@ -9,4 +9,5 @@ android {
 dependencies {
   implementation(projects.domain.airquality)
   implementation(projects.domain.alerts)
+  implementation(projects.domain.weather)
 }

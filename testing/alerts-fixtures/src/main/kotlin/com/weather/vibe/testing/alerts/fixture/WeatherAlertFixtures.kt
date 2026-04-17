@@ -7,9 +7,12 @@ import com.weather.vibe.domain.airquality.model.PollenSpecies.BIRCH
 import com.weather.vibe.domain.airquality.model.PollenSpecies.GRASS
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HeavyRainImminent
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
+import com.weather.vibe.domain.alerts.model.WeatherAlert.HighUvIndex
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.domain.alerts.model.WeatherAlert.SharpTemperatureDrop
 import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
+import com.weather.vibe.domain.weather.model.UvLevel
+import com.weather.vibe.domain.weather.model.UvLevel.VERY_HIGH
 import java.time.LocalDateTime
 
 object WeatherAlertFixtures {
@@ -18,6 +21,7 @@ object WeatherAlertFixtures {
   const val HEAVY_RAIN_MM = 6.0
   const val TEMPERATURE_DROP_DEGREES = 9.0
   const val POOR_AIR_QUALITY_AQI = 75
+  const val HIGH_UV_INDEX_VALUE = 9
   val HIGH_POLLEN_SPECIES: List<PollenSpecies> = listOf(BIRCH, GRASS)
 
   val THUNDERSTORM: ThunderstormImminent = thunderstorm()
@@ -25,6 +29,7 @@ object WeatherAlertFixtures {
   val TEMPERATURE_DROP: SharpTemperatureDrop = temperatureDrop()
   val POOR_AIR_QUALITY: PoorAirQuality = poorAirQuality()
   val HIGH_POLLEN: HighPollen = highPollen()
+  val HIGH_UV_INDEX: HighUvIndex = highUvIndex()
 
   fun thunderstorm(
     expectedAt: LocalDateTime = EXPECTED_AT
@@ -55,4 +60,11 @@ object WeatherAlertFixtures {
     species: List<PollenSpecies> = HIGH_POLLEN_SPECIES
   ): HighPollen =
     HighPollen(expectedAt = expectedAt, species = species)
+
+  fun highUvIndex(
+    expectedAt: LocalDateTime = EXPECTED_AT,
+    uvIndex: Int = HIGH_UV_INDEX_VALUE,
+    level: UvLevel = VERY_HIGH
+  ): HighUvIndex =
+    HighUvIndex(expectedAt = expectedAt, uvIndex = uvIndex, level = level)
 }

@@ -2,6 +2,7 @@ package com.weather.vibe.notifications.fake
 
 import com.weather.vibe.domain.airquality.model.AqiLevel
 import com.weather.vibe.domain.airquality.model.PollenSpecies
+import com.weather.vibe.domain.weather.model.UvLevel
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.CHANNEL_NAME
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.ERROR_BODY_PREFIX
@@ -10,6 +11,8 @@ import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POLLEN_TIT
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.UV_LEVEL_LABEL
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.UV_TITLE
 import com.weather.vibe.notifications.ui.AlertsResources
 import io.mockk.every
 import io.mockk.mockk
@@ -41,5 +44,10 @@ internal fun fakeAlertsResources(): AlertsResources {
     every { pollenBody(any<List<PollenSpecies>>()) } answers {
       firstArg<List<PollenSpecies>>().joinToString(", ") { it.name }
     }
+    every { uvAlertTitle() } returns UV_TITLE
+    every { uvAlertBody(any(), any()) } answers {
+      "UV ${secondArg<UvLevel>().name} (${firstArg<Int>()})"
+    }
+    every { uvLevelLabel(any<UvLevel>()) } returns UV_LEVEL_LABEL
   }
 }

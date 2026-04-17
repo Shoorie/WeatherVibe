@@ -33,7 +33,9 @@ class GatherWeatherAlerts internal constructor(
 
     val aqiAlert = airQuality?.let(detectors.detectAqiAlert::invoke)
     val pollenAlert = pollen?.let(detectors.detectPollenAlert::invoke)
-    val alerts = detectors.detectWeatherAlerts(weather) + listOfNotNull(aqiAlert, pollenAlert)
+    val uvAlert = detectors.detectUvAlert(weather)
+    val alerts =
+      detectors.detectWeatherAlerts(weather) + listOfNotNull(aqiAlert, pollenAlert, uvAlert)
 
     return alertDeduplicator.filterFresh(alerts)
   }

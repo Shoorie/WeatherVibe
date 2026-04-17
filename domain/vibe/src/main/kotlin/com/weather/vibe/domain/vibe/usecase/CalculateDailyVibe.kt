@@ -21,18 +21,21 @@ class CalculateDailyVibe internal constructor(
   private val scorePollenBurden: ScorePollenBurden,
   private val scoreRainOutlook: ScoreRainOutlook,
   private val scoreTemperatureComfort: ScoreTemperatureComfort,
+  private val scoreUvBurden: ScoreUvBurden,
   private val scoreWindComfort: ScoreWindComfort
 ) {
 
   suspend operator fun invoke(weather: WeatherData): Result<DailyVibe> =
     suspendRunCatching {
       val (airQuality, pollen) = fetchEnvironmentReadings(weather.coordinates)
+      val todayUvIndex = weather.dailyForecast.firstOrNull()?.uvIndexMax ?: 0.0
       val totalPenalty = listOf(
         scoreTemperatureComfort(weather.apparentTemperature),
         scoreRainOutlook(weather.hourlyForecast),
         scoreWindComfort(weather.windSpeed),
         scoreAqiBurden(airQuality?.level),
-        scorePollenBurden(pollen)
+        scorePollenBurden(pollen),
+        scoreUvBurden(todayUvIndex)
       ).sum()
       val score = (BASE_SCORE - totalPenalty).coerceIn(MIN_SCORE, MAX_SCORE)
       DailyVibe(score = score, mood = VibeMood.from(score))

@@ -6,4 +6,6 @@ internal object AlertsResourcesFixtures {
   const val THUNDERSTORM_TITLE = "Thunderstorm incoming"
   const val HEAVY_RAIN_TITLE = "Heavy rain ahead"
   const val TEMPERATURE_DROP_TITLE = "Sharp cool-down"
+  const val AIR_QUALITY_TITLE = "Poor air quality"
+  const val POOR_LEVEL_LABEL = "Poor air"
 }

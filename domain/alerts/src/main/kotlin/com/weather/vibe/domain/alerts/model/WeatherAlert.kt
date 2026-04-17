@@ -1,5 +1,6 @@
 package com.weather.vibe.domain.alerts.model
 
+import com.weather.vibe.domain.airquality.model.AqiLevel
 import java.time.LocalDateTime
 
 sealed interface WeatherAlert {
@@ -18,5 +19,11 @@ sealed interface WeatherAlert {
   data class SharpTemperatureDrop(
     override val expectedAt: LocalDateTime,
     val degreesCelsius: Double
+  ) : WeatherAlert
+
+  data class PoorAirQuality(
+    override val expectedAt: LocalDateTime,
+    val europeanAqi: Int,
+    val level: AqiLevel
   ) : WeatherAlert
 }

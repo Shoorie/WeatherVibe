@@ -97,6 +97,8 @@ dependencies {
   implementation(projects.domain.settings)
   implementation(projects.data.settings)
   implementation(projects.domain.alerts)
+  implementation(projects.domain.airquality)
+  implementation(projects.data.airquality)
   implementation(projects.domain.widget)
   implementation(projects.data.widget)
   implementation(projects.notifications)

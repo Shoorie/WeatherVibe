@@ -3,10 +3,12 @@ package com.weather.vibe.notifications.notification.alert
 import com.weather.vibe.notifications.fake.fakeAlertsResources
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.HEAVY_RAIN_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POLLEN_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.heavyRain
+import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.highPollen
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.poorAirQuality
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.temperatureDrop
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.thunderstorm
@@ -81,6 +83,22 @@ class AlertNotificationFactoryTest {
     val notification = factory.create(poorAirQuality(europeanAqi = 75))
 
     expectThat(notification.body).contains(POOR_LEVEL_LABEL).contains("75")
+  }
+
+  @Test
+  fun `when pollen alert mapped, then title from resources`() {
+
+    val notification = factory.create(highPollen())
+
+    expectThat(notification.title).isEqualTo(POLLEN_TITLE)
+  }
+
+  @Test
+  fun `when pollen alert mapped, then body carries species labels`() {
+
+    val notification = factory.create(highPollen())
+
+    expectThat(notification.body).contains("BIRCH").contains("GRASS")
   }
 
   @Test

@@ -2,11 +2,13 @@ package com.weather.vibe.notifications.notification.alert
 
 import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HeavyRainImminent
+import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.domain.alerts.model.WeatherAlert.SharpTemperatureDrop
 import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
 import com.weather.vibe.notifications.notification.AlertNotification
 import com.weather.vibe.notifications.notification.NotificationIds.HEAVY_RAIN
+import com.weather.vibe.notifications.notification.NotificationIds.HIGH_POLLEN
 import com.weather.vibe.notifications.notification.NotificationIds.POOR_AIR_QUALITY
 import com.weather.vibe.notifications.notification.NotificationIds.TEMPERATURE_DROP
 import com.weather.vibe.notifications.notification.NotificationIds.THUNDERSTORM
@@ -25,6 +27,7 @@ internal class AlertNotificationFactory(
       is HeavyRainImminent -> heavyRainNotification(alert)
       is SharpTemperatureDrop -> temperatureDropNotification(alert)
       is PoorAirQuality -> airQualityNotification(alert)
+      is HighPollen -> pollenNotification(alert)
     }
 
   private fun thunderstormNotification(alert: ThunderstormImminent): AlertNotification =
@@ -62,5 +65,12 @@ internal class AlertNotificationFactory(
         europeanAqi = alert.europeanAqi,
         levelLabel = resources.aqiLevelLabel(alert.level)
       )
+    )
+
+  private fun pollenNotification(alert: HighPollen): AlertNotification =
+    AlertNotification(
+      id = HIGH_POLLEN,
+      title = resources.pollenTitle(),
+      body = resources.pollenBody(alert.species)
     )
 }

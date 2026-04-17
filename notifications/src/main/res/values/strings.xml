@@ -16,6 +16,15 @@
   <string name="alerts_aqi_level_poor">Poor air</string>
   <string name="alerts_aqi_level_very_poor">Very poor air</string>
   <string name="alerts_aqi_level_extremely_poor">Extremely poor air</string>
+  <string name="alerts_pollen_title">High pollen levels</string>
+  <string name="alerts_pollen_body">Elevated pollen: %1$s — allergy sufferers, take precautions.</string>
+  <string name="alerts_pollen_species_alder">Alder</string>
+  <string name="alerts_pollen_species_birch">Birch</string>
+  <string name="alerts_pollen_species_grass">Grass</string>
+  <string name="alerts_pollen_species_mugwort">Mugwort</string>
+  <string name="alerts_pollen_species_olive">Olive</string>
+  <string name="alerts_pollen_species_ragweed">Ragweed</string>
+  <string name="alerts_pollen_species_separator">, </string>
   <string name="alerts_morning_brief_title">Today\'s vibe</string>
   <string name="alerts_time_format" translatable="false">HH:mm</string>
 </resources>

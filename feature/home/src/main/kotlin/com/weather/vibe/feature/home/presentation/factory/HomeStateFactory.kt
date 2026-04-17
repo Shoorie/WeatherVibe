@@ -85,7 +85,7 @@ internal class HomeStateFactory(
       playlist = loadedPlaylist.copy(
         genres = loadedPlaylist.genres.map {
           if (it.name == genre) it.copy(isRejecting = true) else it
-        }
+        }.toImmutableList()
       )
     )
   }

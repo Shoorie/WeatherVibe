@@ -15,46 +15,55 @@ enum class PollenLevel {
 
   companion object {
 
-    fun from(
-      species: PollenSpecies,
-      grainsPerCubicMetre: Double
-    ): PollenLevel = when (species) {
+    fun from(species: PollenSpecies, grainsPerCubicMetre: Double): PollenLevel = when (species) {
       ALDER, BIRCH -> treePollenLevel(grainsPerCubicMetre)
       GRASS, RAGWEED -> weedPollenLevel(grainsPerCubicMetre)
       MUGWORT -> mugwortPollenLevel(grainsPerCubicMetre)
       OLIVE -> olivePollenLevel(grainsPerCubicMetre)
     }
 
-    private fun treePollenLevel(grains: Double): PollenLevel =
-      when {
-        grains < 10.0 -> LOW
-        grains < 30.0 -> MODERATE
-        grains < 100.0 -> HIGH
-        else -> VERY_HIGH
-      }
+    private fun treePollenLevel(grains: Double): PollenLevel = when {
+      grains < TREE_MODERATE -> LOW
+      grains < TREE_HIGH -> MODERATE
+      grains < TREE_VERY_HIGH -> HIGH
+      else -> VERY_HIGH
+    }
 
-    private fun weedPollenLevel(grains: Double): PollenLevel =
-      when {
-        grains < 5.0 -> LOW
-        grains < 20.0 -> MODERATE
-        grains < 50.0 -> HIGH
-        else -> VERY_HIGH
-      }
+    private fun weedPollenLevel(grains: Double): PollenLevel = when {
+      grains < WEED_MODERATE -> LOW
+      grains < WEED_HIGH -> MODERATE
+      grains < WEED_VERY_HIGH -> HIGH
+      else -> VERY_HIGH
+    }
 
-    private fun mugwortPollenLevel(grains: Double): PollenLevel =
-      when {
-        grains < 10.0 -> LOW
-        grains < 30.0 -> MODERATE
-        grains < 50.0 -> HIGH
-        else -> VERY_HIGH
-      }
+    private fun mugwortPollenLevel(grains: Double): PollenLevel = when {
+      grains < MUGWORT_MODERATE -> LOW
+      grains < MUGWORT_HIGH -> MODERATE
+      grains < MUGWORT_VERY_HIGH -> HIGH
+      else -> VERY_HIGH
+    }
 
-    private fun olivePollenLevel(grains: Double): PollenLevel =
-      when {
-        grains < 20.0 -> LOW
-        grains < 200.0 -> MODERATE
-        grains < 400.0 -> HIGH
-        else -> VERY_HIGH
-      }
+    private fun olivePollenLevel(grains: Double): PollenLevel = when {
+      grains < OLIVE_MODERATE -> LOW
+      grains < OLIVE_HIGH -> MODERATE
+      grains < OLIVE_VERY_HIGH -> HIGH
+      else -> VERY_HIGH
+    }
+
+    private const val TREE_MODERATE = 10.0
+    private const val TREE_HIGH = 30.0
+    private const val TREE_VERY_HIGH = 100.0
+
+    private const val WEED_MODERATE = 5.0
+    private const val WEED_HIGH = 20.0
+    private const val WEED_VERY_HIGH = 50.0
+
+    private const val MUGWORT_MODERATE = 10.0
+    private const val MUGWORT_HIGH = 30.0
+    private const val MUGWORT_VERY_HIGH = 50.0
+
+    private const val OLIVE_MODERATE = 20.0
+    private const val OLIVE_HIGH = 200.0
+    private const val OLIVE_VERY_HIGH = 400.0
   }
 }

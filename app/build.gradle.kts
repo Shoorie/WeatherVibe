@@ -103,6 +103,7 @@ dependencies {
   implementation(projects.domain.widget)
   implementation(projects.data.widget)
   implementation(projects.notifications)
+  implementation(projects.scheduling)
   implementation(projects.feature.home)
   implementation(projects.feature.search)
   implementation(projects.feature.settings)

@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.home.presentation.state
 
 import androidx.compose.runtime.Immutable
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 internal sealed interface PlaylistUiState {
@@ -13,7 +14,7 @@ internal sealed interface PlaylistUiState {
 
   @Immutable
   data class Loaded(
-    val genres: List<GenreChipUiState>,
+    val genres: ImmutableList<GenreChipUiState>,
     val mood: String,
     val moodDescription: String,
     val spotifyQuery: String,

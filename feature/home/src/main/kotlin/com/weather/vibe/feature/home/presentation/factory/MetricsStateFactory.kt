@@ -7,6 +7,8 @@ import com.weather.vibe.domain.weather.model.WindDirection
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeResources
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
 import java.util.Locale
 import kotlin.math.roundToInt
@@ -44,15 +46,15 @@ internal class MetricsStateFactory(
     )
 
     return DetailsSectionsUiState(
-      atmosphere = atmosphereItems,
-      conditions = conditionsItems,
-      previewItems = listOf(
+      atmosphere = atmosphereItems.toImmutableList(),
+      conditions = conditionsItems.toImmutableList(),
+      previewItems = persistentListOf(
         atmosphereItems[PREVIEW_HUMIDITY_INDEX],
         windItems[PREVIEW_WIND_INDEX],
         conditionsItems[PREVIEW_UV_INDEX],
         conditionsItems[PREVIEW_PRECIPITATION_INDEX]
       ),
-      wind = windItems
+      wind = windItems.toImmutableList()
     )
   }
 

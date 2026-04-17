@@ -2,7 +2,11 @@ package com.weather.vibe.testing.alerts.fixture
 
 import com.weather.vibe.domain.airquality.model.AqiLevel
 import com.weather.vibe.domain.airquality.model.AqiLevel.POOR
+import com.weather.vibe.domain.airquality.model.PollenSpecies
+import com.weather.vibe.domain.airquality.model.PollenSpecies.BIRCH
+import com.weather.vibe.domain.airquality.model.PollenSpecies.GRASS
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HeavyRainImminent
+import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.domain.alerts.model.WeatherAlert.SharpTemperatureDrop
 import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
@@ -14,11 +18,13 @@ object WeatherAlertFixtures {
   const val HEAVY_RAIN_MM = 6.0
   const val TEMPERATURE_DROP_DEGREES = 9.0
   const val POOR_AIR_QUALITY_AQI = 75
+  val HIGH_POLLEN_SPECIES: List<PollenSpecies> = listOf(BIRCH, GRASS)
 
   val THUNDERSTORM: ThunderstormImminent = thunderstorm()
   val HEAVY_RAIN: HeavyRainImminent = heavyRain()
   val TEMPERATURE_DROP: SharpTemperatureDrop = temperatureDrop()
   val POOR_AIR_QUALITY: PoorAirQuality = poorAirQuality()
+  val HIGH_POLLEN: HighPollen = highPollen()
 
   fun thunderstorm(
     expectedAt: LocalDateTime = EXPECTED_AT
@@ -43,4 +49,10 @@ object WeatherAlertFixtures {
     level: AqiLevel = POOR
   ): PoorAirQuality =
     PoorAirQuality(expectedAt = expectedAt, europeanAqi = europeanAqi, level = level)
+
+  fun highPollen(
+    expectedAt: LocalDateTime = EXPECTED_AT,
+    species: List<PollenSpecies> = HIGH_POLLEN_SPECIES
+  ): HighPollen =
+    HighPollen(expectedAt = expectedAt, species = species)
 }

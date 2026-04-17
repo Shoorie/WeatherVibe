@@ -8,4 +8,5 @@ internal object AlertsResourcesFixtures {
   const val TEMPERATURE_DROP_TITLE = "Sharp cool-down"
   const val AIR_QUALITY_TITLE = "Poor air quality"
   const val POOR_LEVEL_LABEL = "Poor air"
+  const val POLLEN_TITLE = "High pollen levels"
 }

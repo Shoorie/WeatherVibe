@@ -1,10 +1,12 @@
 package com.weather.vibe.notifications.fake
 
 import com.weather.vibe.domain.airquality.model.AqiLevel
+import com.weather.vibe.domain.airquality.model.PollenSpecies
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.CHANNEL_NAME
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.ERROR_BODY_PREFIX
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.HEAVY_RAIN_TITLE
+import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POLLEN_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.TEMPERATURE_DROP_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.THUNDERSTORM_TITLE
@@ -35,5 +37,9 @@ internal fun fakeAlertsResources(): AlertsResources {
       "${secondArg<String>()} (AQI ${firstArg<Int>()})"
     }
     every { aqiLevelLabel(any<AqiLevel>()) } returns POOR_LEVEL_LABEL
+    every { pollenTitle() } returns POLLEN_TITLE
+    every { pollenBody(any<List<PollenSpecies>>()) } answers {
+      firstArg<List<PollenSpecies>>().joinToString(", ") { it.name }
+    }
   }
 }

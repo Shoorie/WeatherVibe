@@ -8,6 +8,13 @@ import com.weather.vibe.domain.airquality.model.AqiLevel.GOOD
 import com.weather.vibe.domain.airquality.model.AqiLevel.MODERATE
 import com.weather.vibe.domain.airquality.model.AqiLevel.POOR
 import com.weather.vibe.domain.airquality.model.AqiLevel.VERY_POOR
+import com.weather.vibe.domain.airquality.model.PollenSpecies
+import com.weather.vibe.domain.airquality.model.PollenSpecies.ALDER
+import com.weather.vibe.domain.airquality.model.PollenSpecies.BIRCH
+import com.weather.vibe.domain.airquality.model.PollenSpecies.GRASS
+import com.weather.vibe.domain.airquality.model.PollenSpecies.MUGWORT
+import com.weather.vibe.domain.airquality.model.PollenSpecies.OLIVE
+import com.weather.vibe.domain.airquality.model.PollenSpecies.RAGWEED
 import com.weather.vibe.notifications.R
 import com.weather.vibe.notifications.notification.AlertsTimeFormatter
 import org.koin.core.annotation.Factory
@@ -60,6 +67,17 @@ internal class AlertsResources(
   fun aqiLevelLabel(level: AqiLevel): String =
     context.getString(level.labelRes())
 
+  fun pollenTitle(): String =
+    context.getString(R.string.alerts_pollen_title)
+
+  fun pollenBody(species: List<PollenSpecies>): String {
+
+    val separator = context.getString(R.string.alerts_pollen_species_separator)
+    val joined = species.joinToString(separator) { context.getString(it.labelRes()) }
+
+    return context.getString(R.string.alerts_pollen_body, joined)
+  }
+
   private fun AqiLevel.labelRes(): Int = when (this) {
     GOOD -> R.string.alerts_aqi_level_good
     FAIR -> R.string.alerts_aqi_level_fair
@@ -67,5 +85,14 @@ internal class AlertsResources(
     POOR -> R.string.alerts_aqi_level_poor
     VERY_POOR -> R.string.alerts_aqi_level_very_poor
     EXTREMELY_POOR -> R.string.alerts_aqi_level_extremely_poor
+  }
+
+  private fun PollenSpecies.labelRes(): Int = when (this) {
+    ALDER -> R.string.alerts_pollen_species_alder
+    BIRCH -> R.string.alerts_pollen_species_birch
+    GRASS -> R.string.alerts_pollen_species_grass
+    MUGWORT -> R.string.alerts_pollen_species_mugwort
+    OLIVE -> R.string.alerts_pollen_species_olive
+    RAGWEED -> R.string.alerts_pollen_species_ragweed
   }
 }

@@ -92,4 +92,8 @@
   <string name="sun_section_title">Sun</string>
   <string name="sunrise_at_format">Sunrise at %1$s</string>
   <string name="sunset_at_format">Sunset at %1$s</string>
+
+  <string name="share_brief_content_description">Share today\'s vibe</string>
+  <string name="share_brief_chooser_title">Share your vibe</string>
+  <string name="share_poster_wordmark_headline">WeatherVibe</string>
 </resources>

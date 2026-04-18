@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -23,8 +24,8 @@ import com.weather.vibe.feature.home.ui.HomeTextStyles
 @Composable
 internal fun BriefingActionRow(
   modifier: Modifier = Modifier,
-  showHint: Boolean,
-  onMusicClick: () -> Unit
+  onMusicClick: () -> Unit,
+  showHint: Boolean
 ) {
   Row(
     modifier = modifier.fillMaxWidth(),
@@ -33,6 +34,7 @@ internal fun BriefingActionRow(
   ) {
     if (showHint) {
       Text(
+        modifier = Modifier.clearAndSetSemantics {},
         text = aiBriefingMusicHint(),
         style = typography.bodySmall,
         color = HomeTextStyles.mutedOnPrimaryContainer()
@@ -52,7 +54,7 @@ private fun Preview() {
         .background(colors.primaryContainer)
         .padding(Medium)
     ) {
-      BriefingActionRow(showHint = true, onMusicClick = {})
+      BriefingActionRow(onMusicClick = {}, showHint = true)
     }
   }
 }
@@ -66,7 +68,7 @@ private fun PreviewWithoutHint() {
         .background(colors.primaryContainer)
         .padding(Medium)
     ) {
-      BriefingActionRow(showHint = false, onMusicClick = {})
+      BriefingActionRow(onMusicClick = {}, showHint = false)
     }
   }
 }

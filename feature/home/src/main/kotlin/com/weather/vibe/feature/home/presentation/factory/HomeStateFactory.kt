@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.presentation.factory
 
+import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.vibe.model.DailyVibe
@@ -8,11 +9,7 @@ import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.domain.weather.usecase.BuildDailyTemperatureRanges
-import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
-import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
-import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
-import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
+import com.weather.vibe.domain.weather.model.WeatherVibeKey
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -24,25 +21,23 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
+import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
 
 @Factory
 internal class HomeStateFactory(
-  private val buildDailyTemperatureRanges: BuildDailyTemperatureRanges,
   private val factories: HomeFactories,
-  private val findCurrentHourIndex: FindCurrentHourIndex,
-  private val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
-  private val resolveTodaySunInfo: ResolveTodaySunInfo,
-  private val resolveTodayTemperatureBounds: ResolveTodayTemperatureBounds,
   private val resources: HomeResources,
   private val temperature: TemperatureFormatter,
-  private val timeProvider: TimeProvider
+  private val timeProvider: TimeProvider,
+  private val useCases: HomeFactoryUseCases
 ) {
 
   fun applyWeatherSuggestion(
@@ -102,9 +97,10 @@ internal class HomeStateFactory(
   ): HomeUiState.Loaded {
 
     val today = timeProvider.today()
-    val currentHourIndex = findCurrentHourIndex(hours = data.hourlyForecast.map { it.time })
-    val currentMetrics = getCurrentWeatherMetrics(data)
-    val sunInfo = resolveTodaySunInfo(data.dailyForecast)
+    val forecastHours = data.hourlyForecast.map { it.time }
+    val currentHourIndex = useCases.findCurrentHourIndex(hours = forecastHours)
+    val currentMetrics = useCases.getCurrentWeatherMetrics(data)
+    val sunInfo = useCases.resolveTodaySunInfo(data.dailyForecast)
 
     return HomeUiState.Loaded(
       currentWeather = createCurrentWeather(data, unit),
@@ -124,6 +120,28 @@ internal class HomeStateFactory(
       text = suggestion.briefText,
       outfit = suggestion.outfitSuggestion
     )
+
+  fun createSharePoster(
+    suggestion: WeatherSuggestion,
+    vibeOneLiner: String?,
+    weather: WeatherData,
+    unit: TemperatureUnit
+  ): SharePosterUiState {
+
+    val vibeKey = useCases.resolveWeatherVibeKey(weather)
+
+    return SharePosterUiState(
+      cityName = weather.coordinates.name,
+      conditionEmoji = weather.condition.emoji,
+      conditionLabel = resources.conditionLabel(weather.condition),
+      dateLabel = timeProvider.today().format(dateFormatter),
+      gradientKey = VIBE_TO_GRADIENT.getValue(vibeKey),
+      outfit = suggestion.outfitSuggestion,
+      quoteText = vibeOneLiner ?: suggestion.briefText,
+      temperature = weather.currentTemperature.formatted(unit),
+      wordmarkHeadline = resources.shareWordmarkHeadline()
+    )
+  }
 
   fun reformatTemperatures(
     current: HomeUiState,
@@ -149,7 +167,7 @@ internal class HomeStateFactory(
     unit: TemperatureUnit
   ): CurrentWeatherUiState {
 
-    val bounds = resolveTodayTemperatureBounds(data)
+    val bounds = useCases.resolveTodayTemperatureBounds(data)
 
     return CurrentWeatherUiState(
       conditionEmoji = data.condition.emoji,
@@ -184,7 +202,7 @@ internal class HomeStateFactory(
     today: LocalDate
   ): DailyForecastsUiState {
 
-    val ranges = buildDailyTemperatureRanges(
+    val ranges = useCases.buildDailyTemperatureRanges(
       days = data.dailyForecast,
       currentTemperatureCelsius = data.currentTemperature,
       unit = unit,
@@ -225,10 +243,10 @@ internal class HomeStateFactory(
     temperature.format(celsius = this, unit = unit)
 
   private val dateFormatter: DateTimeFormatter
-    get() = DateTimeFormatter.ofPattern(DATE_FORMAT, Locale.getDefault())
+    get() = ofPattern(DATE_FORMAT, Locale.getDefault())
 
   private val dayFormatter: DateTimeFormatter
-    get() = DateTimeFormatter.ofPattern(DAY_FORMAT, Locale.getDefault())
+    get() = ofPattern(DAY_FORMAT, Locale.getDefault())
 
   private companion object {
 
@@ -237,6 +255,15 @@ internal class HomeStateFactory(
     const val TIME_OUTPUT_FORMAT = "HH:mm"
 
     val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
-      DateTimeFormatter.ofPattern(TIME_OUTPUT_FORMAT)
+      ofPattern(TIME_OUTPUT_FORMAT)
+
+    val VIBE_TO_GRADIENT: Map<WeatherVibeKey, ShareGradientKey> = mapOf(
+      WeatherVibeKey.SUNNY to ShareGradientKey.SUNNY,
+      WeatherVibeKey.CLOUDY to ShareGradientKey.CLOUDY,
+      WeatherVibeKey.RAINY to ShareGradientKey.RAINY,
+      WeatherVibeKey.STORMY to ShareGradientKey.STORMY,
+      WeatherVibeKey.SNOWY to ShareGradientKey.SNOWY,
+      WeatherVibeKey.NIGHT to ShareGradientKey.NIGHT
+    )
   }
 }

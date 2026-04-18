@@ -72,6 +72,12 @@ internal class HomeResources(private val context: Context) {
   fun windSpeedMax(): String =
     context.getString(R.string.wind_speed_max_label)
 
+  fun shareWordmarkHeadline(): String =
+    context.getString(R.string.share_poster_wordmark_headline)
+
+  fun shareChooserTitle(): String =
+    context.getString(R.string.share_brief_chooser_title)
+
   fun dailyVibeHeadline(score: Int, mood: VibeMood): String =
     context.getString(
       R.string.daily_vibe_headline_format,
@@ -124,6 +130,10 @@ internal class HomeResources(private val context: Context) {
       painterResource(id = R.drawable.ic_music)
 
     @Composable
+    fun shareIcon(): Painter =
+      painterResource(id = R.drawable.ic_share)
+
+    @Composable
     fun spotifyIcon(): Painter =
       painterResource(id = R.drawable.ic_spotify)
 
@@ -151,6 +161,7 @@ internal class HomeResources(private val context: Context) {
     fun sunrise(): String = "\uD83C\uDF05"
     fun sunShower(): String = "\uD83C\uDF26\uFE0F"
     fun sunset(): String = "\uD83C\uDF07"
+    fun thunderstorm(): String = "\u26C8\uFE0F"
     fun uvIndex(): String = "\u2600\uFE0F"
     fun wind(): String = "\uD83D\uDCA8"
     fun windGusts(): String = "\uD83C\uDF2C\uFE0F"
@@ -303,6 +314,10 @@ internal class HomeResources(private val context: Context) {
     @Composable
     fun sunProgressContentDescription(sunriseTime: String, sunsetTime: String): String =
       stringResource(R.string.sun_progress_content_description, sunriseTime, sunsetTime)
+
+    @Composable
+    fun shareBriefContentDescription(): String =
+      stringResource(R.string.share_brief_content_description)
 
     @Composable
     fun tryAgainContentDescription(): String =

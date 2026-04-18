@@ -33,6 +33,7 @@ internal fun WeatherContent(
   onNavigateToSettings: () -> Unit,
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
+  onShareClick: () -> Unit,
   onGenreRemoveClick: (String) -> Unit
 ) {
 
@@ -50,7 +51,8 @@ internal fun WeatherContent(
     onNavigateToSettings = onNavigateToSettings,
     onRefresh = onRefresh,
     onRetrySuggestion = onRetrySuggestion,
-    onMusicClick = sheetCallbacks.onShow
+    onMusicClick = sheetCallbacks.onShow,
+    onShareClick = onShareClick
   )
 
   if (showMoodSheet) {
@@ -85,6 +87,7 @@ private fun Preview() {
       onNavigateToSettings = {},
       onRefresh = {},
       onRetrySuggestion = {},
+      onShareClick = {},
       onGenreRemoveClick = {}
     )
   }

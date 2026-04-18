@@ -16,11 +16,11 @@ import java.lang.System.currentTimeMillis
 @Factory
 class BitmapExporter(
   private val context: Context,
-  private val ioDispatcher: CoroutineDispatcher = IO
+  private val dispatcher: CoroutineDispatcher = IO
 ) {
 
   suspend fun exportPng(bitmap: Bitmap): Uri =
-    withContext(ioDispatcher) {
+    withContext(dispatcher) {
       val sharedDir = ensureSharedDir()
       val outputFile = File(sharedDir, buildFilename())
       writeBitmap(bitmap, outputFile)

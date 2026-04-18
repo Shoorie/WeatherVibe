@@ -2,12 +2,9 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
-import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.WeatherCondition.RAIN
-import com.weather.vibe.domain.weather.model.WeatherCondition.SNOW
-import com.weather.vibe.domain.weather.model.WeatherCondition.THUNDERSTORM
 import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.domain.weather.model.DailyTemperatureRange.Companion.emptyFor
 import com.weather.vibe.domain.weather.model.DailyWeather
@@ -20,7 +17,6 @@ import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
-import com.weather.vibe.domain.weather.usecase.ResolveWeatherVibeKey
 import com.weather.vibe.feature.home.presentation.factory.AirQualityStateFactory
 import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeAirQualityResources
@@ -90,8 +86,7 @@ class HomeStateFactoryTest {
     findCurrentHourIndex = FindCurrentHourIndex(timeProvider = fakeTimeProvider),
     getCurrentWeatherMetrics = getCurrentWeatherMetrics,
     resolveTodaySunInfo = resolveTodaySunInfo,
-    resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds(),
-    resolveWeatherVibeKey = ResolveWeatherVibeKey()
+    resolveTodayTemperatureBounds = ResolveTodayTemperatureBounds()
   )
 
   private val factory: HomeStateFactory = HomeStateFactory(
@@ -430,147 +425,5 @@ class HomeStateFactoryTest {
     val result = factory.createBriefing(suggestion = SUGGESTION)
 
     expectThat(result.outfit).isEqualTo("T-shirt, sunglasses, light cap")
-  }
-
-  @Test
-  fun `given vibe one-liner provided, when share poster created, then quote text uses one-liner`() {
-
-    val oneLiner = "Perfect — get out there."
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = oneLiner,
-      weather = WEATHER,
-      unit = CELSIUS
-    )
-
-    expectThat(result.quoteText).isEqualTo(oneLiner)
-  }
-
-  @Test
-  fun `given no vibe one-liner, when share poster created, then quote text falls back to brief text`() {
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = WEATHER,
-      unit = CELSIUS
-    )
-
-    expectThat(result.quoteText).isEqualTo("Beautiful sunny day, perfect for a walk!")
-  }
-
-  @Test
-  fun `when share poster created, then it contains city name`() {
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = WEATHER,
-      unit = CELSIUS
-    )
-
-    expectThat(result.cityName).isEqualTo("Warsaw")
-  }
-
-  @Test
-  fun `when share poster created, then temperature formatted from current temperature`() {
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = WEATHER,
-      unit = CELSIUS
-    )
-
-    expectThat(result.temperature).isEqualTo("22°")
-  }
-
-  @Test
-  fun `given clear sky during day, when share poster created, then gradient is sunny`() {
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = WEATHER,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.SUNNY)
-  }
-
-  @Test
-  fun `given clear sky at night, when share poster created, then gradient is night`() {
-
-    val nightWeather = weatherData(isDay = false)
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = nightWeather,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.NIGHT)
-  }
-
-  @Test
-  fun `given rain during day, when share poster created, then gradient is rainy`() {
-
-    val rainyWeather = weatherData(condition = RAIN)
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = rainyWeather,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.RAINY)
-  }
-
-  @Test
-  fun `given snow during day, when share poster created, then gradient is snowy`() {
-
-    val snowyWeather = weatherData(condition = SNOW)
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = snowyWeather,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.SNOWY)
-  }
-
-  @Test
-  fun `given thunderstorm during day, when share poster created, then gradient is stormy`() {
-
-    val stormyWeather = weatherData(condition = THUNDERSTORM)
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = stormyWeather,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.STORMY)
-  }
-
-  @Test
-  fun `given partly cloudy during day, when share poster created, then gradient is cloudy`() {
-
-    val cloudyWeather = weatherData(condition = PARTLY_CLOUDY)
-
-    val result = factory.createSharePoster(
-      suggestion = SUGGESTION,
-      vibeOneLiner = null,
-      weather = cloudyWeather,
-      unit = CELSIUS
-    )
-
-    expectThat(result.gradientKey).isEqualTo(ShareGradientKey.CLOUDY)
   }
 }

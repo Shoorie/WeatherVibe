@@ -1,6 +1,5 @@
 package com.weather.vibe.feature.home.presentation.factory
 
-import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.vibe.model.DailyVibe
@@ -9,7 +8,6 @@ import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.domain.weather.model.WeatherVibeKey
 import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
@@ -24,7 +22,6 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
-import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 import com.weather.vibe.feature.home.ui.HomeResources
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
@@ -145,28 +142,6 @@ internal class HomeStateFactory(
       outfit = suggestion.outfitSuggestion
     )
 
-  fun createSharePoster(
-    suggestion: WeatherSuggestion,
-    vibeOneLiner: String?,
-    weather: WeatherData,
-    unit: TemperatureUnit
-  ): SharePosterUiState {
-
-    val vibeKey = useCases.resolveWeatherVibeKey(weather)
-
-    return SharePosterUiState(
-      cityName = weather.coordinates.name,
-      conditionEmoji = weather.condition.emoji,
-      conditionLabel = resources.conditionLabel(weather.condition),
-      dateLabel = timeProvider.today().format(dateFormatter),
-      gradientKey = VIBE_TO_GRADIENT.getValue(vibeKey),
-      outfit = suggestion.outfitSuggestion,
-      quoteText = vibeOneLiner ?: suggestion.briefText,
-      temperature = weather.currentTemperature.formatted(unit),
-      wordmarkHeadline = resources.shareWordmarkHeadline()
-    )
-  }
-
   fun reformatTemperatures(
     current: HomeUiState,
     data: WeatherData,
@@ -279,14 +254,5 @@ internal class HomeStateFactory(
 
     val TIME_OUTPUT_FORMATTER: DateTimeFormatter =
       ofPattern(TIME_OUTPUT_FORMAT)
-
-    val VIBE_TO_GRADIENT: Map<WeatherVibeKey, ShareGradientKey> = mapOf(
-      WeatherVibeKey.SUNNY to ShareGradientKey.SUNNY,
-      WeatherVibeKey.CLOUDY to ShareGradientKey.CLOUDY,
-      WeatherVibeKey.RAINY to ShareGradientKey.RAINY,
-      WeatherVibeKey.STORMY to ShareGradientKey.STORMY,
-      WeatherVibeKey.SNOWY to ShareGradientKey.SNOWY,
-      WeatherVibeKey.NIGHT to ShareGradientKey.NIGHT
-    )
   }
 }

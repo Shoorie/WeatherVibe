@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
@@ -48,8 +51,8 @@ internal fun WeatherBriefingCard(
         if (state !is Loading) {
           Spacer(modifier = Modifier.height(Medium))
           BriefingActionRow(
-            showHint = state is Loaded,
-            onMusicClick = onMusicClick
+            onMusicClick = onMusicClick,
+            showHint = state is Loaded
           )
         }
       }
@@ -67,7 +70,8 @@ private fun BriefingContent(
     modifier = modifier
       .fillMaxWidth()
       .heightIn(min = BriefingContentMinHeight)
-      .animateContentSize(),
+      .animateContentSize()
+      .semantics { liveRegion = LiveRegionMode.Polite },
     contentAlignment = Alignment.Center
   ) {
     when (state) {

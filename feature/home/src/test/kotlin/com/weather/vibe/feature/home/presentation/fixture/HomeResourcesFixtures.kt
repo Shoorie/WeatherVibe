@@ -17,4 +17,6 @@ internal object HomeResourcesFixtures {
   const val WIND_GUSTS_LABEL = "Wind Gusts"
   const val WIND_SPEED_LABEL = "Wind Speed"
   const val WIND_SPEED_MAX_LABEL = "Max Wind Speed"
+  const val SHARE_WORDMARK_HEADLINE = "WeatherVibe"
+  const val SHARE_CHOOSER_TITLE = "Share your vibe"
 }

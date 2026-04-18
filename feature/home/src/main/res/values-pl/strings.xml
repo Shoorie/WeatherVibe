@@ -91,4 +91,8 @@
   <string name="sun_section_title">Słońce</string>
   <string name="sunrise_at_format">Wschód o %1$s</string>
   <string name="sunset_at_format">Zachód o %1$s</string>
+
+  <string name="share_brief_content_description">Udostępnij dzisiejszy vibe</string>
+  <string name="share_brief_chooser_title">Podziel się vibe\'em</string>
+  <string name="share_poster_wordmark_headline">WeatherVibe</string>
 </resources>

@@ -217,12 +217,15 @@ internal class HomeViewModel(
   private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
     val presentation = airQualityPresentation(settings.alertsEnabled)
     _state.update { current ->
-      val previousVibe = (current as? Loaded)?.dailyVibe
+      val previousVibe = (current as? Loaded)?.aiSuggestion?.dailyVibe
       val freshlyLoaded = stateFactory.create(
         data = weather,
         unit = settings.temperatureUnit
-      ).copy(dailyVibe = previousVibe)
-      stateFactory.applyAirQuality(freshlyLoaded, presentation)
+      )
+      val withVibe = freshlyLoaded.copy(
+        aiSuggestion = freshlyLoaded.aiSuggestion.copy(dailyVibe = previousVibe)
+      )
+      stateFactory.applyAirQuality(withVibe, presentation)
     }
     refreshDailyVibe(weather, settings)
   }
@@ -288,7 +291,7 @@ internal class HomeViewModel(
     val weather = snapshot.value.weatherData ?: return
     val suggestion = snapshot.value.weatherSuggestion ?: return
     val unit = currentSettings?.temperatureUnit ?: return
-    val vibeOneLiner = (_state.value as? Loaded)?.dailyVibe?.oneLiner
+    val vibeOneLiner = (_state.value as? Loaded)?.aiSuggestion?.dailyVibe?.oneLiner
     val poster = stateFactory.createSharePoster(
       suggestion = suggestion,
       vibeOneLiner = vibeOneLiner,

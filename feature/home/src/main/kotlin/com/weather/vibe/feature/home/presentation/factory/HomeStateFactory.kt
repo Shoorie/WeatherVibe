@@ -17,6 +17,8 @@ import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
 import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
+import com.weather.vibe.feature.home.presentation.state.EnvironmentSectionUiState
+import com.weather.vibe.feature.home.presentation.state.ForecastSectionUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
@@ -47,19 +49,21 @@ internal class HomeStateFactory(
     playlist: PlaylistUiState
   ): HomeUiState =
     when (current is HomeUiState.Loaded) {
-      true -> current.copy(briefing = briefing, playlist = playlist)
+      true -> current.copy(
+        aiSuggestion = current.aiSuggestion.copy(briefing = briefing, playlist = playlist)
+      )
       false -> current
     }
 
   fun applyPlaylist(current: HomeUiState, playlist: PlaylistUiState): HomeUiState =
     when (current is HomeUiState.Loaded) {
-      true -> current.copy(playlist = playlist)
+      true -> current.copy(aiSuggestion = current.aiSuggestion.copy(playlist = playlist))
       false -> current
     }
 
   fun applyDailyVibe(current: HomeUiState, state: DailyVibeUiState): HomeUiState =
     when (current is HomeUiState.Loaded) {
-      true -> current.copy(dailyVibe = state)
+      true -> current.copy(aiSuggestion = current.aiSuggestion.copy(dailyVibe = state))
       false -> current
     }
 
@@ -69,9 +73,11 @@ internal class HomeStateFactory(
   ): HomeUiState =
     when (current is HomeUiState.Loaded) {
       true -> current.copy(
-        airQualityChip = presentation.airQualityChip,
-        pollenChip = presentation.pollenChip,
-        alert = presentation.alert
+        environment = EnvironmentSectionUiState(
+          airQualityChip = presentation.airQualityChip,
+          alert = presentation.alert,
+          pollenChip = presentation.pollenChip
+        )
       )
       false -> current
     }
@@ -87,21 +93,23 @@ internal class HomeStateFactory(
   fun markGenreAsRejecting(current: HomeUiState, genre: String): HomeUiState {
 
     if (current !is HomeUiState.Loaded) return current
-    val loadedPlaylist = current.playlist as? PlaylistUiState.Loaded
+    val loadedPlaylist = current.aiSuggestion.playlist as? PlaylistUiState.Loaded
       ?: return current
 
     return current.copy(
-      playlist = loadedPlaylist.copy(
-        genres = loadedPlaylist.genres.map {
-          if (it.name == genre) it.copy(isRejecting = true) else it
-        }.toImmutableList()
+      aiSuggestion = current.aiSuggestion.copy(
+        playlist = loadedPlaylist.copy(
+          genres = loadedPlaylist.genres.map {
+            if (it.name == genre) it.copy(isRejecting = true) else it
+          }.toImmutableList()
+        )
       )
     )
   }
 
   fun areAllGenresRejected(current: HomeUiState): Boolean {
     val loaded = current as? HomeUiState.Loaded ?: return false
-    val playlist = loaded.playlist as? PlaylistUiState.Loaded ?: return false
+    val playlist = loaded.aiSuggestion.playlist as? PlaylistUiState.Loaded ?: return false
     return playlist.genres.all { it.isRejecting }
   }
 
@@ -117,12 +125,14 @@ internal class HomeStateFactory(
     val sunInfo = useCases.resolveTodaySunInfo(data.dailyForecast)
 
     return HomeUiState.Loaded(
-      currentWeather = createCurrentWeather(data, unit),
-      dailyForecast = createDailyForecast(data, unit, today),
-      detailsSections = factories.metrics.create(currentMetrics, unit),
-      header = createHeader(data, today),
-      hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
-      sunriseSunset = factories.sunriseSunset.create(sunInfo)
+      details = factories.metrics.create(currentMetrics, unit),
+      forecast = ForecastSectionUiState(
+        currentWeather = createCurrentWeather(data, unit),
+        dailyForecast = createDailyForecast(data, unit, today),
+        header = createHeader(data, today),
+        hourlyForecast = createHourlyForecast(data.hourlyForecast, unit, currentHourIndex),
+        sunriseSunset = factories.sunriseSunset.create(sunInfo)
+      )
     )
   }
 
@@ -164,12 +174,8 @@ internal class HomeStateFactory(
   ): HomeUiState {
     val loaded = current as? HomeUiState.Loaded ?: return current
     return create(data, unit).copy(
-      airQualityChip = loaded.airQualityChip,
-      alert = loaded.alert,
-      briefing = loaded.briefing,
-      dailyVibe = loaded.dailyVibe,
-      playlist = loaded.playlist,
-      pollenChip = loaded.pollenChip
+      aiSuggestion = loaded.aiSuggestion,
+      environment = loaded.environment
     )
   }
 

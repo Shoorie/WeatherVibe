@@ -87,6 +87,7 @@ dependencies {
   implementation(projects.core.designsystem)
   implementation(projects.core.navigation)
   implementation(projects.core.permissions)
+  implementation(projects.core.sharing)
   implementation(projects.core.time)
   implementation(projects.core.tracing)
   implementation(projects.core.workmanager)

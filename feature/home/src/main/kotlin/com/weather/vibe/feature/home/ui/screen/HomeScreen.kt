@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -16,12 +18,16 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
+import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
+import com.weather.vibe.feature.home.presentation.HomeEvent.SharePoster
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 import com.weather.vibe.feature.home.preview.HomePreview
+import com.weather.vibe.feature.home.ui.component.share.PosterCaptureHost
 import com.weather.vibe.feature.home.ui.screen.callbacks.HomeCallbacks
 import org.koin.androidx.compose.koinViewModel
 
@@ -35,12 +41,20 @@ fun HomeScreen(
 
   val viewModel = koinViewModel<HomeViewModel>()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  var pendingPoster by remember { mutableStateOf<SharePosterUiState?>(null) }
+  val callbacks = remember(viewModel) { HomeCallbacks(viewModel) }
 
   LaunchedEffect(selectedLocation) {
     viewModel.dispatch(Initialize(selectedLocation))
   }
 
-  val callbacks = remember(viewModel) { HomeCallbacks(viewModel) }
+  LaunchedEffect(viewModel) {
+    viewModel.event.collect { event ->
+      when (event) {
+        is SharePoster -> pendingPoster = event.state
+      }
+    }
+  }
 
   HomeContent(
     state = state,
@@ -49,8 +63,16 @@ fun HomeScreen(
     onNavigateToSettings = onNavigateToSettings,
     onRefresh = callbacks.onRefresh,
     onRetrySuggestion = callbacks.onRetrySuggestion,
+    onShareClick = callbacks.onShareClick,
     onGenreRemoveClick = callbacks.onGenreRemoveClick
   )
+
+  pendingPoster?.let { poster ->
+    PosterCaptureHost(state = poster) { bitmap ->
+      viewModel.dispatch(PosterCaptured(bitmap))
+      pendingPoster = null
+    }
+  }
 }
 
 @Composable
@@ -62,6 +84,7 @@ internal fun HomeContent(
   onNavigateToSettings: () -> Unit,
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
+  onShareClick: () -> Unit,
   onGenreRemoveClick: (String) -> Unit
 ) {
   Box(
@@ -75,6 +98,7 @@ internal fun HomeContent(
         error = state.message,
         onRetry = onRefresh
       )
+
       is Loaded -> WeatherContent(
         state = state,
         onNavigateToDetails = onNavigateToDetails,
@@ -82,6 +106,7 @@ internal fun HomeContent(
         onNavigateToSettings = onNavigateToSettings,
         onRefresh = onRefresh,
         onRetrySuggestion = onRetrySuggestion,
+        onShareClick = onShareClick,
         onGenreRemoveClick = onGenreRemoveClick
       )
     }
@@ -102,6 +127,7 @@ private fun Preview(
       onNavigateToSettings = {},
       onRefresh = {},
       onRetrySuggestion = {},
+      onShareClick = {},
       onGenreRemoveClick = {}
     )
   }

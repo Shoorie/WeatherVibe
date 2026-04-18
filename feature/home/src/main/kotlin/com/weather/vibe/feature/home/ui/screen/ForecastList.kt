@@ -17,6 +17,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
@@ -50,12 +51,17 @@ internal fun ForecastList(
   onNavigateToSettings: () -> Unit,
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
-  onMusicClick: () -> Unit
+  onMusicClick: () -> Unit,
+  onShareClick: () -> Unit
 ) {
 
+  val canShare = state.briefing is BriefingUiState.Loaded
   val horizontalPadding = remember { Modifier.padding(horizontal = Medium) }
   val listContentPadding = remember {
-    PaddingValues(top = Medium, bottom = ExtraLarge)
+    PaddingValues(
+      top = Medium,
+      bottom = ExtraLarge
+    )
   }
 
   PullToRefreshBox(
@@ -85,6 +91,8 @@ internal fun ForecastList(
         item(key = DAILY_VIBE) {
           DailyVibeCard(
             modifier = horizontalPadding,
+            canShare = canShare,
+            onShareClick = onShareClick,
             state = state.dailyVibe
           )
         }
@@ -137,7 +145,8 @@ private fun Preview() {
       onNavigateToSettings = {},
       onRefresh = {},
       onRetrySuggestion = {},
-      onMusicClick = {}
+      onMusicClick = {},
+      onShareClick = {}
     )
   }
 }

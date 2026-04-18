@@ -2,7 +2,6 @@ package com.weather.vibe.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.core.sharing.ShareBitmapAsImage
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
@@ -19,6 +18,7 @@ import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.ShareClick
 import com.weather.vibe.feature.home.presentation.HomeEvent.SharePoster
+import com.weather.vibe.feature.home.presentation.controller.ShareController
 import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
@@ -53,7 +53,7 @@ import org.koin.android.annotation.KoinViewModel
 internal class HomeViewModel(
   private val factories: HomeFactories,
   private val resources: HomeResources,
-  private val shareBitmapAsImage: ShareBitmapAsImage,
+  private val shareController: ShareController,
   private val stateFactory: HomeStateFactory,
   private val useCases: HomeUseCases,
 ) : ViewModel() {
@@ -292,11 +292,11 @@ internal class HomeViewModel(
     val suggestion = snapshot.value.weatherSuggestion ?: return
     val unit = currentSettings?.temperatureUnit ?: return
     val vibeOneLiner = (_state.value as? Loaded)?.aiSuggestion?.dailyVibe?.oneLiner
-    val poster = stateFactory.createSharePoster(
+    val poster = shareController.buildPoster(
       suggestion = suggestion,
+      unit = unit,
       vibeOneLiner = vibeOneLiner,
-      weather = weather,
-      unit = unit
+      weather = weather
     )
 
     send(SharePoster(poster))
@@ -304,10 +304,7 @@ internal class HomeViewModel(
 
   private fun onPosterCaptured(action: PosterCaptured) {
     viewModelScope.launch(errorHandler) {
-      shareBitmapAsImage(
-        bitmap = action.bitmap,
-        chooserTitle = resources.shareChooserTitle()
-      )
+      shareController.shareAsImage(bitmap = action.bitmap)
     }
   }
 

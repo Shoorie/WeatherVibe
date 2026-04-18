@@ -17,9 +17,7 @@ import com.weather.vibe.domain.weather.usecase.FindCurrentHourIndex
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.ResolveTodaySunInfo
 import com.weather.vibe.domain.weather.usecase.ResolveTodayTemperatureBounds
-import com.weather.vibe.feature.home.presentation.factory.AirQualityStateFactory
 import com.weather.vibe.feature.home.presentation.factory.HomeFactories
-import com.weather.vibe.feature.home.presentation.fake.fakeHomeAirQualityResources
 import com.weather.vibe.feature.home.presentation.factory.HomeFactoryUseCases
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.factory.MetricsStateFactory
@@ -60,12 +58,8 @@ class HomeStateFactoryTest {
   private val fakeTimeProvider = FakeTimeProvider()
 
   private val sunriseSunsetFactory = SunriseSunsetStateFactory(resources = resources)
-  private val airQualityFactory = AirQualityStateFactory(
-    resources = fakeHomeAirQualityResources()
-  )
 
   private val factories = HomeFactories(
-    airQuality = airQualityFactory,
     metrics = metricsFactory,
     playlist = playlistFactory,
     sunriseSunset = sunriseSunsetFactory

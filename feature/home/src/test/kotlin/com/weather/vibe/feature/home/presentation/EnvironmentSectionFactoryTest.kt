@@ -9,7 +9,7 @@ import com.weather.vibe.domain.airquality.model.PollenLevel.VERY_HIGH
 import com.weather.vibe.domain.airquality.model.PollenSpecies.BIRCH
 import com.weather.vibe.domain.airquality.model.PollenSpecies.GRASS
 import com.weather.vibe.domain.airquality.model.PollenSpecies.MUGWORT
-import com.weather.vibe.feature.home.presentation.factory.AirQualityStateFactory
+import com.weather.vibe.feature.home.presentation.factory.EnvironmentSectionFactory
 import com.weather.vibe.feature.home.presentation.fake.fakeHomeAirQualityResources
 import com.weather.vibe.feature.home.presentation.fixture.HomeAirQualityResourcesFixtures.AQI_ALERT_TITLE
 import com.weather.vibe.feature.home.presentation.fixture.HomeAirQualityResourcesFixtures.POLLEN_ALERT_TITLE
@@ -30,16 +30,16 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isNotNull
 import strikt.assertions.isNull
 
-class AirQualityStateFactoryTest {
+class EnvironmentSectionFactoryTest {
 
-  private val factory = AirQualityStateFactory(
+  private val factory = EnvironmentSectionFactory(
     resources = fakeHomeAirQualityResources()
   )
 
   @Test
   fun `when air quality given, then chip label matches level`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = MODERATE_AQI),
         pollen = null
@@ -56,7 +56,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `when air quality given, then chip indicator matches level`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = GOOD_AQI),
         pollen = null
@@ -73,7 +73,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `given no readings, then chips are null`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings.Empty,
       alert = null
     )
@@ -84,7 +84,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `given empty pollen readings, then chip is null`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings(
         airQuality = null,
         pollen = pollen(readings = emptyList())
@@ -105,7 +105,7 @@ class AirQualityStateFactoryTest {
       )
     )
 
-    val result = factory.createPresentation(readings = readings, alert = null)
+    val result = factory.create(readings = readings, alert = null)
 
     expectThat(result.pollenChip).isNull()
   }
@@ -124,7 +124,7 @@ class AirQualityStateFactoryTest {
       )
     )
 
-    val result = factory.createPresentation(readings = readings, alert = null)
+    val result = factory.create(readings = readings, alert = null)
 
     expectThat(result.pollenChip)
       .isNotNull()
@@ -135,7 +135,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `given aqi alert, then banner title comes from aqi resources`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings.Empty,
       alert = poorAirQuality()
     )
@@ -149,7 +149,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `given pollen alert, then banner title comes from pollen resources`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings.Empty,
       alert = highPollen()
     )
@@ -163,7 +163,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `given unrelated alert, then banner is null`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings.Empty,
       alert = thunderstorm()
     )
@@ -174,7 +174,7 @@ class AirQualityStateFactoryTest {
   @Test
   fun `when no alert passed, then banner is null`() {
 
-    val result = factory.createPresentation(
+    val result = factory.create(
       readings = EnvironmentalReadings(airQuality = airQuality(), pollen = null),
       alert = null
     )

@@ -18,10 +18,9 @@ import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.ShareClick
 import com.weather.vibe.feature.home.presentation.HomeEvent.SharePoster
+import com.weather.vibe.feature.home.presentation.controller.EnvironmentController
 import com.weather.vibe.feature.home.presentation.controller.ShareController
-import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
-import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
@@ -51,7 +50,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class HomeViewModel(
-  private val factories: HomeFactories,
+  private val environmentController: EnvironmentController,
   private val resources: HomeResources,
   private val shareController: ShareController,
   private val stateFactory: HomeStateFactory,
@@ -130,18 +129,6 @@ internal class HomeViewModel(
     ).launchIn(viewModelScope)
   }
 
-  private fun airQualityPresentation(alertsEnabled: Boolean): AirQualityPresentation {
-    val readings = snapshot.value.readings
-    val alert = useCases.resolveHomeAlert(
-      readings = readings,
-      alertsEnabled = alertsEnabled
-    )
-    return factories.airQuality.createPresentation(
-      readings = readings,
-      alert = alert
-    )
-  }
-
   private fun onHomeDataResult(
     weatherResult: Result<WeatherData>,
     settingsResult: Result<UserSettings>
@@ -215,7 +202,10 @@ internal class HomeViewModel(
   }
 
   private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
-    val presentation = airQualityPresentation(settings.alertsEnabled)
+    val section = environmentController.buildSection(
+      alertsEnabled = settings.alertsEnabled,
+      readings = snapshot.value.readings
+    )
     _state.update { current ->
       val previousVibe = (current as? Loaded)?.aiSuggestion?.dailyVibe
       val freshlyLoaded = stateFactory.create(
@@ -225,7 +215,7 @@ internal class HomeViewModel(
       val withVibe = freshlyLoaded.copy(
         aiSuggestion = freshlyLoaded.aiSuggestion.copy(dailyVibe = previousVibe)
       )
-      stateFactory.applyAirQuality(withVibe, presentation)
+      stateFactory.applyEnvironment(withVibe, section)
     }
     refreshDailyVibe(weather, settings)
   }
@@ -234,12 +224,15 @@ internal class HomeViewModel(
     vibeJob?.cancel()
     vibeJob = viewModelScope.launch(errorHandler) {
 
-      val readings = useCases.getEnvironmentalReadings(weather.coordinates)
+      val readings = environmentController.fetchReadings(weather.coordinates)
       snapshot.update { it.copy(readings = readings) }
       ensureActive()
 
-      val presentation = airQualityPresentation(settings.alertsEnabled)
-      _state.update { stateFactory.applyAirQuality(it, presentation) }
+      val section = environmentController.buildSection(
+        alertsEnabled = settings.alertsEnabled,
+        readings = readings
+      )
+      _state.update { stateFactory.applyEnvironment(it, section) }
 
       val vibe = useCases.calculateDailyVibe(weather, readings)
         .getOrNull() ?: return@launch

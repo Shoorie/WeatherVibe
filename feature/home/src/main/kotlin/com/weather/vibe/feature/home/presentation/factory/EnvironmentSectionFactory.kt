@@ -7,25 +7,25 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
-import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
+import com.weather.vibe.feature.home.presentation.state.EnvironmentSectionUiState
 import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
 import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.ui.HomeAirQualityResources
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class AirQualityStateFactory(
+internal class EnvironmentSectionFactory(
   private val resources: HomeAirQualityResources
 ) {
 
-  fun createPresentation(
+  fun create(
     readings: EnvironmentalReadings,
     alert: WeatherAlert?
-  ): AirQualityPresentation =
-    AirQualityPresentation(
+  ): EnvironmentSectionUiState =
+    EnvironmentSectionUiState(
       airQualityChip = readings.airQuality?.let(::createAirQualityChip),
-      pollenChip = readings.pollen?.notableReading?.let(::createPollenChip),
-      alert = alert?.let(::createAlert)
+      alert = alert?.let(::createAlert),
+      pollenChip = readings.pollen?.notableReading?.let(::createPollenChip)
     )
 
   private fun createAirQualityChip(

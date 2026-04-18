@@ -16,5 +16,8 @@ internal data class WeatherSuggestionDto(
   val mood: String = "",
 
   @SerialName("moodDescription")
-  val moodDescription: String = ""
+  val moodDescription: String = "",
+
+  @SerialName("outfitSuggestion")
+  val outfitSuggestion: String = ""
 )

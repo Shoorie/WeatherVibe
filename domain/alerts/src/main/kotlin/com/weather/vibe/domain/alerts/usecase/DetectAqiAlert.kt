@@ -7,7 +7,7 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class DetectAqiAlert {
+class DetectAqiAlert {
 
   operator fun invoke(airQuality: AirQuality): PoorAirQuality? {
     if (airQuality.level.ordinal < ALERT_THRESHOLD.ordinal) return null

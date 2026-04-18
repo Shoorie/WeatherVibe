@@ -96,4 +96,33 @@
   <string name="share_brief_content_description">Share today\'s vibe</string>
   <string name="share_brief_chooser_title">Share your vibe</string>
   <string name="share_poster_wordmark_headline">WeatherVibe</string>
+
+  <string name="home_aqi_level_good">Good air</string>
+  <string name="home_aqi_level_fair">Fair air</string>
+  <string name="home_aqi_level_moderate">Moderate smog</string>
+  <string name="home_aqi_level_poor">Poor smog</string>
+  <string name="home_aqi_level_very_poor">Very poor smog</string>
+  <string name="home_aqi_level_extremely_poor">Extreme smog</string>
+  <string name="home_aqi_chip_content_description_format">Air quality: %1$s, index %2$d</string>
+
+  <string name="home_pollen_level_low">Low pollen</string>
+  <string name="home_pollen_level_moderate">Moderate pollen</string>
+  <string name="home_pollen_level_high">High pollen</string>
+  <string name="home_pollen_level_very_high">Very high pollen</string>
+  <string name="home_pollen_chip_content_description_format">Pollen level: %1$s, %2$s</string>
+
+  <string name="home_pollen_species_alder">alder</string>
+  <string name="home_pollen_species_birch">birch</string>
+  <string name="home_pollen_species_grass">grass</string>
+  <string name="home_pollen_species_mugwort">mugwort</string>
+  <string name="home_pollen_species_olive">olive</string>
+  <string name="home_pollen_species_ragweed">ragweed</string>
+
+  <string name="home_aqi_alert_title">Smog warning</string>
+  <string name="home_aqi_alert_message_format">%1$s — consider limiting outdoor time.</string>
+  <string name="home_aqi_alert_content_description_format">Air quality alert: %1$s, index %2$d</string>
+
+  <string name="home_pollen_alert_title">Pollen warning</string>
+  <string name="home_pollen_alert_message_format">High levels of %1$s — allergy sufferers, take care.</string>
+  <string name="home_pollen_alert_content_description_format">Pollen alert: high levels of %1$s</string>
 </resources>

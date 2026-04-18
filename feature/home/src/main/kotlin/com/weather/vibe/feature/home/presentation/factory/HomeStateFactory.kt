@@ -10,6 +10,7 @@ import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.model.WeatherVibeKey
+import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -59,6 +60,19 @@ internal class HomeStateFactory(
   fun applyDailyVibe(current: HomeUiState, state: DailyVibeUiState): HomeUiState =
     when (current is HomeUiState.Loaded) {
       true -> current.copy(dailyVibe = state)
+      false -> current
+    }
+
+  fun applyAirQuality(
+    current: HomeUiState,
+    presentation: AirQualityPresentation
+  ): HomeUiState =
+    when (current is HomeUiState.Loaded) {
+      true -> current.copy(
+        airQualityChip = presentation.airQualityChip,
+        pollenChip = presentation.pollenChip,
+        alert = presentation.alert
+      )
       false -> current
     }
 
@@ -150,9 +164,12 @@ internal class HomeStateFactory(
   ): HomeUiState {
     val loaded = current as? HomeUiState.Loaded ?: return current
     return create(data, unit).copy(
+      airQualityChip = loaded.airQualityChip,
+      alert = loaded.alert,
       briefing = loaded.briefing,
       dailyVibe = loaded.dailyVibe,
-      playlist = loaded.playlist
+      playlist = loaded.playlist,
+      pollenChip = loaded.pollenChip
     )
   }
 

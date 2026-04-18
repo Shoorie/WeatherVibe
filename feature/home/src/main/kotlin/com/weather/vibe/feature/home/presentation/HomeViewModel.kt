@@ -19,7 +19,9 @@ import com.weather.vibe.feature.home.presentation.HomeAction.RefreshClick
 import com.weather.vibe.feature.home.presentation.HomeAction.RetryWeatherSuggestion
 import com.weather.vibe.feature.home.presentation.HomeAction.ShareClick
 import com.weather.vibe.feature.home.presentation.HomeEvent.SharePoster
+import com.weather.vibe.feature.home.presentation.factory.HomeFactories
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
+import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
@@ -49,6 +51,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class HomeViewModel(
+  private val factories: HomeFactories,
   private val resources: HomeResources,
   private val shareBitmapAsImage: ShareBitmapAsImage,
   private val stateFactory: HomeStateFactory,
@@ -61,7 +64,7 @@ internal class HomeViewModel(
   private val _event = Channel<HomeEvent>(capacity = BUFFERED)
   val event: Flow<HomeEvent> = _event.receiveAsFlow()
 
-  private var snapshot = HomeSnapshot()
+  private val snapshot = MutableStateFlow(HomeSnapshot())
   private var currentCoordinates: Coordinates? = null
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
@@ -96,18 +99,18 @@ internal class HomeViewModel(
 
   private fun isAlreadyShowing(coordinates: Coordinates): Boolean {
     if (_state.value !is Loaded) return false
-    return snapshot.weatherData?.coordinates == coordinates
+    return snapshot.value.weatherData?.coordinates == coordinates
   }
 
   private fun observeWeather(coordinates: Coordinates) {
     currentCoordinates = coordinates
     _state.update { Loading }
-    snapshot = HomeSnapshot()
-    cancelInFlightJobs()
+    snapshot.update { HomeSnapshot() }
+    cancelDerivedJobs()
     launchHomeDataObservation(coordinates)
   }
 
-  private fun cancelInFlightJobs() {
+  private fun cancelDerivedJobs() {
     vibeJob?.cancel()
     suggestionJob?.cancel()
     invalidateJob?.cancel()
@@ -127,6 +130,18 @@ internal class HomeViewModel(
     ).launchIn(viewModelScope)
   }
 
+  private fun airQualityPresentation(alertsEnabled: Boolean): AirQualityPresentation {
+    val readings = snapshot.value.readings
+    val alert = useCases.resolveHomeAlert(
+      readings = readings,
+      alertsEnabled = alertsEnabled
+    )
+    return factories.airQuality.createPresentation(
+      readings = readings,
+      alert = alert
+    )
+  }
+
   private fun onHomeDataResult(
     weatherResult: Result<WeatherData>,
     settingsResult: Result<UserSettings>
@@ -137,7 +152,10 @@ internal class HomeViewModel(
     )
   }
 
-  private fun onSettingsReady(weatherResult: Result<WeatherData>, settings: UserSettings) {
+  private fun onSettingsReady(
+    weatherResult: Result<WeatherData>,
+    settings: UserSettings
+  ) {
 
     val previousSettings = currentSettings
     currentSettings = settings
@@ -154,9 +172,9 @@ internal class HomeViewModel(
     previousSettings: UserSettings?
   ) {
 
-    val previousWeatherKey = snapshot.weatherKey
+    val previousWeatherKey = snapshot.value.weatherKey
     val weatherKey = useCases.getCurrentWeatherKey(weather)
-    snapshot = snapshot.copy(weatherData = weather, weatherKey = weatherKey)
+    snapshot.update { it.copy(weatherData = weather, weatherKey = weatherKey) }
 
     val strategy = useCases.determineWeatherRefreshStrategy(
       previousWeatherKey = previousWeatherKey,
@@ -167,7 +185,8 @@ internal class HomeViewModel(
 
     when (strategy) {
       RegenerateSuggestion -> onRegenerateSuggestion(weather, settings)
-      InvalidateAndRegenerate -> onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
+      InvalidateAndRegenerate ->
+        onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
       ReformatOnly -> onTemperaturesReformatted(weather, settings)
     }
   }
@@ -196,31 +215,42 @@ internal class HomeViewModel(
   }
 
   private fun showWeatherLoaded(weather: WeatherData, settings: UserSettings) {
+    val presentation = airQualityPresentation(settings.alertsEnabled)
     _state.update { current ->
       val previousVibe = (current as? Loaded)?.dailyVibe
-      stateFactory.create(
+      val freshlyLoaded = stateFactory.create(
         data = weather,
         unit = settings.temperatureUnit
       ).copy(dailyVibe = previousVibe)
+      stateFactory.applyAirQuality(freshlyLoaded, presentation)
     }
-    refreshDailyVibe(weather)
+    refreshDailyVibe(weather, settings)
   }
 
-  private fun refreshDailyVibe(weather: WeatherData) {
+  private fun refreshDailyVibe(weather: WeatherData, settings: UserSettings) {
     vibeJob?.cancel()
     vibeJob = viewModelScope.launch(errorHandler) {
 
-      val vibe = useCases.calculateDailyVibe(weather)
+      val readings = useCases.getEnvironmentalReadings(weather.coordinates)
+      snapshot.update { it.copy(readings = readings) }
+      ensureActive()
+
+      val presentation = airQualityPresentation(settings.alertsEnabled)
+      _state.update { stateFactory.applyAirQuality(it, presentation) }
+
+      val vibe = useCases.calculateDailyVibe(weather, readings)
         .getOrNull() ?: return@launch
+      ensureActive()
 
       val vibeState = stateFactory.createDailyVibe(vibe)
-
-      ensureActive()
       _state.update { stateFactory.applyDailyVibe(it, vibeState) }
     }
   }
 
-  private fun onTemperaturesReformatted(weather: WeatherData, settings: UserSettings) {
+  private fun onTemperaturesReformatted(
+    weather: WeatherData,
+    settings: UserSettings
+  ) {
     _state.update {
       stateFactory.reformatTemperatures(
         current = it,
@@ -231,7 +261,9 @@ internal class HomeViewModel(
   }
 
   private fun showError(error: Throwable) {
-    _state.update { HomeUiState.Error(error.message ?: resources.defaultError()) }
+    _state.update {
+      HomeUiState.Error(error.message ?: resources.defaultError())
+    }
   }
 
   private fun onRefreshClick() {
@@ -253,8 +285,8 @@ internal class HomeViewModel(
 
   private fun onShareClick() {
 
-    val weather = snapshot.weatherData ?: return
-    val suggestion = snapshot.weatherSuggestion ?: return
+    val weather = snapshot.value.weatherData ?: return
+    val suggestion = snapshot.value.weatherSuggestion ?: return
     val unit = currentSettings?.temperatureUnit ?: return
     val vibeOneLiner = (_state.value as? Loaded)?.dailyVibe?.oneLiner
     val poster = stateFactory.createSharePoster(
@@ -285,6 +317,7 @@ internal class HomeViewModel(
 
       withContext(NonCancellable) { useCases.excludeGenre(action.genre) }
 
+      ensureActive()
       _state.update { stateFactory.markGenreAsRejecting(it, action.genre) }
 
       if (stateFactory.areAllGenresRejected(_state.value)) {
@@ -297,7 +330,7 @@ internal class HomeViewModel(
 
     showPlaylistGenerating()
 
-    val weatherKey = snapshot.weatherKey ?: return
+    val weatherKey = snapshot.value.weatherKey ?: return
     useCases.invalidateWeatherSuggestion(tone = tone, weatherKey = weatherKey)
     refreshWeatherSuggestion()
   }
@@ -313,8 +346,8 @@ internal class HomeViewModel(
 
   private fun refreshWeatherSuggestion() {
 
-    val weatherData = snapshot.weatherData ?: return
-    val weatherKey = snapshot.weatherKey ?: return
+    val weatherData = snapshot.value.weatherData ?: return
+    val weatherKey = snapshot.value.weatherKey ?: return
 
     suggestionJob?.cancel()
     suggestionJob = useCases.generateWeatherSuggestion(weatherData, weatherKey)
@@ -330,7 +363,7 @@ internal class HomeViewModel(
   }
 
   private fun onWeatherSuggestionSuccess(suggestion: WeatherSuggestion) {
-    snapshot = snapshot.copy(weatherSuggestion = suggestion)
+    snapshot.update { it.copy(weatherSuggestion = suggestion) }
     showWeatherSuggestion(
       briefing = stateFactory.createBriefing(suggestion = suggestion),
       playlist = stateFactory.createPlaylist(suggestion = suggestion)

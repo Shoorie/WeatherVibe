@@ -95,4 +95,33 @@
   <string name="share_brief_content_description">Udostępnij dzisiejszy vibe</string>
   <string name="share_brief_chooser_title">Podziel się vibe\'em</string>
   <string name="share_poster_wordmark_headline">WeatherVibe</string>
+
+  <string name="home_aqi_level_good">Dobre powietrze</string>
+  <string name="home_aqi_level_fair">Niezłe powietrze</string>
+  <string name="home_aqi_level_moderate">Umiarkowany smog</string>
+  <string name="home_aqi_level_poor">Zły smog</string>
+  <string name="home_aqi_level_very_poor">Bardzo zły smog</string>
+  <string name="home_aqi_level_extremely_poor">Ekstremalny smog</string>
+  <string name="home_aqi_chip_content_description_format">Jakość powietrza: %1$s, indeks %2$d</string>
+
+  <string name="home_pollen_level_low">Niskie pyłki</string>
+  <string name="home_pollen_level_moderate">Umiarkowane pyłki</string>
+  <string name="home_pollen_level_high">Wysokie pyłki</string>
+  <string name="home_pollen_level_very_high">Bardzo wysokie pyłki</string>
+  <string name="home_pollen_chip_content_description_format">Stężenie pyłków: %1$s, %2$s</string>
+
+  <string name="home_pollen_species_alder">olcha</string>
+  <string name="home_pollen_species_birch">brzoza</string>
+  <string name="home_pollen_species_grass">trawy</string>
+  <string name="home_pollen_species_mugwort">bylica</string>
+  <string name="home_pollen_species_olive">oliwka</string>
+  <string name="home_pollen_species_ragweed">ambrozja</string>
+
+  <string name="home_aqi_alert_title">Ostrzeżenie o smogu</string>
+  <string name="home_aqi_alert_message_format">%1$s — rozważ ograniczenie aktywności na zewnątrz.</string>
+  <string name="home_aqi_alert_content_description_format">Alert jakości powietrza: %1$s, indeks %2$d</string>
+
+  <string name="home_pollen_alert_title">Ostrzeżenie pyłkowe</string>
+  <string name="home_pollen_alert_message_format">Wysokie stężenie: %1$s — alergicy, uważajcie.</string>
+  <string name="home_pollen_alert_content_description_format">Alert pyłkowy: wysokie stężenie %1$s</string>
 </resources>

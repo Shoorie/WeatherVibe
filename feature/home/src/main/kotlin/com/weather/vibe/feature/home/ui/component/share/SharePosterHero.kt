@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.share.ShareGradient
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey.SUNNY
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientPalette
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.GlassHaloCenter
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.GlassHaloMid
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.HaloColorAlpha
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeroEmojiToTemperature
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeroGlowRadius

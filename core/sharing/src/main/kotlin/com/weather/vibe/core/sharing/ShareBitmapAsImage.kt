@@ -10,9 +10,7 @@ class ShareBitmapAsImage(
 ) {
 
   suspend operator fun invoke(bitmap: Bitmap, chooserTitle: String) {
-
     val uri = exporter.exportPng(bitmap)
-
     launcher.launch(imageUri = uri, chooserTitle = chooserTitle)
   }
 }

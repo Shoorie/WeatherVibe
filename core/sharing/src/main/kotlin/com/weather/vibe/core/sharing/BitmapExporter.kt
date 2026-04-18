@@ -5,7 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat.PNG
 import android.net.Uri
 import androidx.core.content.FileProvider.getUriForFile
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Factory
 import java.io.File
@@ -13,10 +14,13 @@ import java.io.FileOutputStream
 import java.lang.System.currentTimeMillis
 
 @Factory
-class BitmapExporter(private val context: Context) {
+class BitmapExporter(
+  private val context: Context,
+  private val ioDispatcher: CoroutineDispatcher = IO
+) {
 
   suspend fun exportPng(bitmap: Bitmap): Uri =
-    withContext(Dispatchers.IO) {
+    withContext(ioDispatcher) {
       val sharedDir = ensureSharedDir()
       val outputFile = File(sharedDir, buildFilename())
       writeBitmap(bitmap, outputFile)

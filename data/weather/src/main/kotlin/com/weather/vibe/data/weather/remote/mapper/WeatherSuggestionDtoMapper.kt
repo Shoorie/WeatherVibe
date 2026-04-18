@@ -19,7 +19,8 @@ internal class WeatherSuggestionDtoMapper {
       briefText = dto.briefText,
       genres = dto.genres.map { it.trim().lowercase() },
       mood = dto.mood,
-      moodDescription = dto.moodDescription
+      moodDescription = dto.moodDescription,
+      outfitSuggestion = dto.outfitSuggestion.trim().takeIf { it.isNotEmpty() }
     )
   }
 

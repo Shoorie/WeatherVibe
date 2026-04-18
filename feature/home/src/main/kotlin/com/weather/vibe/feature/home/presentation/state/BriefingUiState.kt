@@ -9,7 +9,7 @@ internal sealed interface BriefingUiState {
   data class Error(val canRetry: Boolean) : BriefingUiState
 
   @Immutable
-  data class Loaded(val text: String) : BriefingUiState
+  data class Loaded(val text: String, val outfit: String? = null) : BriefingUiState
 
   @Immutable
   data object Loading : BriefingUiState

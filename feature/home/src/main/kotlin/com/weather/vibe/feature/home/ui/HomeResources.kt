@@ -185,6 +185,10 @@ internal class HomeResources(private val context: Context) {
       stringResource(R.string.ai_briefing_unavailable)
 
     @Composable
+    fun aiBriefingOutfitLabel(): String =
+      stringResource(R.string.ai_briefing_outfit_label)
+
+    @Composable
     fun findingBetterSuggestionsLabel(): String =
       stringResource(R.string.finding_better_suggestions)
 

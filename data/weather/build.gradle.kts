@@ -4,6 +4,7 @@ plugins {
   alias(libs.plugins.weathervibe.android.kover)
   alias(libs.plugins.weathervibe.android.room)
   alias(libs.plugins.weathervibe.android.ktor)
+  alias(libs.plugins.weathervibe.android.test)
 }
 
 android {
@@ -18,4 +19,7 @@ dependencies {
   implementation(projects.domain.weather)
 
   implementation(libs.koin.android)
+
+  testImplementation(projects.testing.settingsFixtures)
+  testImplementation(projects.testing.weatherFixtures)
 }

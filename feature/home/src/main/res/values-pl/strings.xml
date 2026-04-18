@@ -2,6 +2,7 @@
   <string name="ai_briefing_label">Dzisiejszy Vibe</string>
   <string name="ai_briefing_music_hint">Odkryj dzisiejsze brzmienia</string>
   <string name="ai_briefing_unavailable">Briefing niedostępny</string>
+  <string name="ai_briefing_outfit_label">Co założyć:</string>
   <string name="atmosphere_section_subtitle">Ciśnienie, wilgotność i punkt rosy</string>
   <string name="atmosphere_section_title">Atmosfera</string>
   <string name="back_content_description">Wróć</string>

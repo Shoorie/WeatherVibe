@@ -14,8 +14,8 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -33,7 +33,7 @@ internal fun BriefingOutfitLine(
       .semantics(mergeDescendants = true) {
         liveRegion = LiveRegionMode.Polite
       },
-    horizontalArrangement = Arrangement.spacedBy(Small)
+    horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
   ) {
     Text(
       text = aiBriefingOutfitLabel(),

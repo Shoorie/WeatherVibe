@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -23,10 +24,14 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
 import com.weather.vibe.feature.home.preview.HomePreviewData.header
+import com.weather.vibe.feature.home.preview.HomePreviewData.highPollenChip
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
+import com.weather.vibe.feature.home.preview.HomePreviewData.moderateAirQualityChip
 import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantVibe
+import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
+import com.weather.vibe.feature.home.ui.HomeKeys.ALERT
 import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY_VIBE
@@ -34,6 +39,7 @@ import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
 import com.weather.vibe.feature.home.ui.HomeKeys.HERO
 import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
 import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
+import com.weather.vibe.feature.home.ui.component.alert.HomeAlertBanner
 import com.weather.vibe.feature.home.ui.component.briefing.WeatherBriefingCard
 import com.weather.vibe.feature.home.ui.component.daily.DailyForecastList
 import com.weather.vibe.feature.home.ui.component.details.DetailsPreviewCard
@@ -78,50 +84,85 @@ internal fun ForecastList(
       contentPadding = listContentPadding,
       verticalArrangement = Arrangement.spacedBy(Large)
     ) {
-      item(key = HERO) {
-        HomeHeroCard(
-          modifier = horizontalPadding,
-          header = state.header,
-          currentWeather = state.currentWeather,
-          onNavigateToSearch = onNavigateToSearch,
-          onNavigateToSettings = onNavigateToSettings
-        )
-      }
-      if (state.dailyVibe != null) {
-        item(key = DAILY_VIBE) {
-          DailyVibeCard(
-            modifier = horizontalPadding,
-            canShare = canShare,
-            onShareClick = onShareClick,
-            state = state.dailyVibe
-          )
-        }
-      }
-      item(key = BRIEFING) {
-        WeatherBriefingCard(
-          modifier = horizontalPadding,
-          onMusicClick = onMusicClick,
-          onRetryClick = onRetrySuggestion,
-          state = state.briefing
-        )
-      }
-      item(key = HOURLY) {
-        HourlyForecastRow(state = state.hourlyForecast)
-      }
-      item(key = DAILY) {
-        DailyForecastList(
-          modifier = horizontalPadding,
-          state = state.dailyForecast
-        )
-      }
-      item(key = DETAILS) {
-        DetailsPreviewCard(
-          modifier = horizontalPadding,
-          previewItems = state.detailsSections.previewItems,
-          onClick = onNavigateToDetails
-        )
-      }
+      forecastItems(
+        state = state,
+        canShare = canShare,
+        horizontalPadding = horizontalPadding,
+        onNavigateToDetails = onNavigateToDetails,
+        onNavigateToSearch = onNavigateToSearch,
+        onNavigateToSettings = onNavigateToSettings,
+        onRetrySuggestion = onRetrySuggestion,
+        onMusicClick = onMusicClick,
+        onShareClick = onShareClick
+      )
     }
+  }
+}
+
+@Suppress("LongParameterList", "LongMethod")
+private fun LazyListScope.forecastItems(
+  state: Loaded,
+  canShare: Boolean,
+  horizontalPadding: Modifier,
+  onNavigateToDetails: () -> Unit,
+  onNavigateToSearch: () -> Unit,
+  onNavigateToSettings: () -> Unit,
+  onRetrySuggestion: () -> Unit,
+  onMusicClick: () -> Unit,
+  onShareClick: () -> Unit
+) {
+  item(key = HERO) {
+    HomeHeroCard(
+      modifier = horizontalPadding,
+      header = state.header,
+      currentWeather = state.currentWeather,
+      onNavigateToSearch = onNavigateToSearch,
+      onNavigateToSettings = onNavigateToSettings
+    )
+  }
+  if (state.dailyVibe != null) {
+    item(key = DAILY_VIBE) {
+      DailyVibeCard(
+        modifier = horizontalPadding,
+        canShare = canShare,
+        onShareClick = onShareClick,
+        state = state.dailyVibe
+      )
+    }
+  }
+  if (state.alert != null) {
+    item(key = ALERT) {
+      HomeAlertBanner(
+        modifier = horizontalPadding,
+        state = state.alert
+      )
+    }
+  }
+  item(key = BRIEFING) {
+    WeatherBriefingCard(
+      modifier = horizontalPadding,
+      airQualityChip = state.airQualityChip,
+      onMusicClick = onMusicClick,
+      onRetryClick = onRetrySuggestion,
+      pollenChip = state.pollenChip,
+      state = state.briefing
+    )
+  }
+  item(key = HOURLY) {
+    HourlyForecastRow(state = state.hourlyForecast)
+  }
+  item(key = DAILY) {
+    DailyForecastList(
+      modifier = horizontalPadding,
+      state = state.dailyForecast
+    )
+  }
+  item(key = DETAILS) {
+    DetailsPreviewCard(
+      modifier = horizontalPadding,
+      previewItems = state.detailsSections.previewItems,
+      onClick = onNavigateToDetails
+    )
   }
 }
 
@@ -131,6 +172,8 @@ private fun Preview() {
   WeatherVibeTheme {
     ForecastList(
       state = Loaded(
+        airQualityChip = moderateAirQualityChip,
+        alert = smogAlert,
         currentWeather = warmDayCurrent,
         dailyForecast = weekForecast,
         dailyVibe = pleasantVibe,
@@ -138,6 +181,7 @@ private fun Preview() {
         header = header,
         hourlyForecast = eightHoursForecast,
         playlist = loadedPlaylist,
+        pollenChip = highPollenChip,
         sunriseSunset = afternoonSunInfo
       ),
       onNavigateToDetails = {},

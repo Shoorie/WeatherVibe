@@ -10,7 +10,10 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
 import com.weather.vibe.feature.home.preview.HomePreviewData.header
+import com.weather.vibe.feature.home.preview.HomePreviewData.highPollenChip
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
+import com.weather.vibe.feature.home.preview.HomePreviewData.moderateAirQualityChip
+import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
 
@@ -34,6 +37,8 @@ internal class HomePreview :
 
   private val successWithAiContent: HomeUiState =
     Loaded(
+      airQualityChip = moderateAirQualityChip,
+      alert = smogAlert,
       briefing = BriefingUiState.Loaded(
         text = "A mild partly cloudy day with a light breeze — " +
           "great for a walk before the evening rain."
@@ -44,6 +49,7 @@ internal class HomePreview :
       header = header,
       hourlyForecast = eightHoursForecast,
       playlist = loadedPlaylist,
+      pollenChip = highPollenChip,
       sunriseSunset = afternoonSunInfo
     )
 

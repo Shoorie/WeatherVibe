@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Error
@@ -39,6 +40,11 @@ internal fun WeatherBriefingCard(
     VibeCard {
       Column(modifier = Modifier.fillMaxWidth()) {
         BriefingContent(state = state, onRetryClick = onRetryClick)
+        val outfit = (state as? Loaded)?.outfit
+        if (outfit != null) {
+          Spacer(modifier = Modifier.height(Small))
+          BriefingOutfitLine(outfit = outfit)
+        }
         if (state !is Loading) {
           Spacer(modifier = Modifier.height(Medium))
           BriefingActionRow(

@@ -20,7 +20,8 @@ internal class WeatherSuggestionEntityMapper {
         briefText = entity.briefText,
         genres = entity.genresCsv.toGenreList(),
         mood = entity.mood,
-        moodDescription = entity.moodDescription
+        moodDescription = entity.moodDescription,
+        outfitSuggestion = entity.outfitSuggestion.takeIf { it.isNotEmpty() }
       ),
       tone = BriefTone.valueOf(entity.tone),
       weatherKey = WeatherKey(
@@ -40,6 +41,7 @@ internal class WeatherSuggestionEntityMapper {
       genresCsv = cached.suggestion.genres.joinToString(separator = GENRES_SEPARATOR),
       mood = cached.suggestion.mood,
       moodDescription = cached.suggestion.moodDescription,
+      outfitSuggestion = cached.suggestion.outfitSuggestion.orEmpty(),
       simplifiedCondition = cached.weatherKey.condition.name,
       temperatureRange = cached.weatherKey.temperature.name,
       timeOfDay = cached.weatherKey.timeOfDay.name,

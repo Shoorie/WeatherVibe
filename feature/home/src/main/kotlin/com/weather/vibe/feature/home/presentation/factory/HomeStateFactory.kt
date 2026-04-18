@@ -119,6 +119,12 @@ internal class HomeStateFactory(
   fun createPlaylist(suggestion: WeatherSuggestion): PlaylistUiState.Loaded =
     factories.playlist.create(suggestion)
 
+  fun createBriefing(suggestion: WeatherSuggestion): BriefingUiState.Loaded =
+    BriefingUiState.Loaded(
+      text = suggestion.briefText,
+      outfit = suggestion.outfitSuggestion
+    )
+
   fun reformatTemperatures(
     current: HomeUiState,
     data: WeatherData,

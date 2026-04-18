@@ -15,7 +15,8 @@ internal class WeatherBriefingCardPreview :
     Loaded(
       text = "Expect a mild and partly cloudy day with " +
         "a light breeze — a good day for a " +
-        "walk before the evening rain arrives."
+        "walk before the evening rain arrives.",
+      outfit = "Light jacket, sneakers, umbrella"
     )
 
   private val error: BriefingUiState = Error(canRetry = true)

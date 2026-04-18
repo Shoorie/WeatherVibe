@@ -16,6 +16,8 @@ import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.VISIBILITY_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_GUSTS_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_SPEED_LABEL
+import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_CHOOSER_TITLE
+import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_WORDMARK_HEADLINE
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_SPEED_MAX_LABEL
 import com.weather.vibe.feature.home.ui.HomeResources
 import io.mockk.every
@@ -45,4 +47,6 @@ internal fun fakeHomeResources(): HomeResources =
     every { windSpeed() } returns WIND_SPEED_LABEL
     every { windSpeedMax() } returns WIND_SPEED_MAX_LABEL
     every { findingBetterSuggestions() } returns FINDING_BETTER_SUGGESTIONS
+    every { shareWordmarkHeadline() } returns SHARE_WORDMARK_HEADLINE
+    every { shareChooserTitle() } returns SHARE_CHOOSER_TITLE
   }

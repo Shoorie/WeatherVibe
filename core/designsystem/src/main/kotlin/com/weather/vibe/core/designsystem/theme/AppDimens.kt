@@ -17,11 +17,16 @@ object AppDimens {
   }
 
   object Stroke {
-    val Divider = 1.dp
     val Border = 1.dp
   }
 
   object IconSize {
     val Small = 20.dp
+  }
+
+  object ActionButton {
+    val Container = 40.dp
+    val SmallContainer = 28.dp
+    val DefaultIconSize = 22.dp
   }
 }

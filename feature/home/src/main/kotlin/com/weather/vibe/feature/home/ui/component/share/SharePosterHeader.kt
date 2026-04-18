@@ -16,10 +16,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.share.ShareGradient
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey.SUNNY
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientPalette
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeaderTitleToDate
 
 @Composable

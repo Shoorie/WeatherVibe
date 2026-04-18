@@ -29,18 +29,23 @@ class ResolveWeatherVibeKey {
   }
 
   private companion object {
-    val STORMY_CONDITIONS: Set<WeatherCondition> = setOf(THUNDERSTORM)
 
-    val SNOWY_CONDITIONS: Set<WeatherCondition> = setOf(SNOW, SNOW_SHOWERS)
+    val STORMY_CONDITIONS: Set<WeatherCondition> =
+      setOf(THUNDERSTORM)
 
-    val RAINY_CONDITIONS: Set<WeatherCondition> = setOf(
-      DRIZZLE,
-      FREEZING_DRIZZLE,
-      RAIN,
-      FREEZING_RAIN,
-      RAIN_SHOWERS
-    )
+    val SNOWY_CONDITIONS: Set<WeatherCondition> =
+      setOf(SNOW, SNOW_SHOWERS)
 
-    val CLOUDY_CONDITIONS: Set<WeatherCondition> = setOf(PARTLY_CLOUDY, OVERCAST, FOG)
+    val RAINY_CONDITIONS: Set<WeatherCondition> =
+      setOf(
+        DRIZZLE,
+        FREEZING_DRIZZLE,
+        RAIN,
+        FREEZING_RAIN,
+        RAIN_SHOWERS
+      )
+
+    val CLOUDY_CONDITIONS: Set<WeatherCondition> =
+      setOf(PARTLY_CLOUDY, OVERCAST, FOG)
   }
 }

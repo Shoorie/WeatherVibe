@@ -9,10 +9,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.share.ShareGradient
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey.NIGHT
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientPalette
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 
 @Composable
 internal fun SharePosterWordmark(

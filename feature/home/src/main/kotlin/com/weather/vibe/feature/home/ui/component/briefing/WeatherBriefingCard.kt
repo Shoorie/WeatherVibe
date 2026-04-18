@@ -20,19 +20,24 @@ import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Error
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.preview.WeatherBriefingCardPreview
 import com.weather.vibe.feature.home.ui.HomeDefaults.BriefingContentMinHeight
 import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingLabel
+import com.weather.vibe.feature.home.ui.component.airquality.BriefAirChipRow
 
 @Composable
 internal fun WeatherBriefingCard(
   modifier: Modifier = Modifier,
+  airQualityChip: AirQualityChipUiState?,
   onMusicClick: () -> Unit,
   onRetryClick: () -> Unit,
+  pollenChip: PollenChipUiState?,
   state: BriefingUiState
 ) {
   SectionLabel(
@@ -47,6 +52,12 @@ internal fun WeatherBriefingCard(
         if (outfit != null) {
           Spacer(modifier = Modifier.height(Small))
           BriefingOutfitLine(outfit = outfit)
+        }
+        if (airQualityChip != null || pollenChip != null) {
+          BriefAirChipRow(
+            airQualityChip = airQualityChip,
+            pollenChip = pollenChip
+          )
         }
         if (state !is Loading) {
           Spacer(modifier = Modifier.height(Medium))
@@ -93,8 +104,10 @@ private fun Preview(
 ) {
   WeatherVibeTheme {
     WeatherBriefingCard(
+      airQualityChip = null,
       onMusicClick = {},
       onRetryClick = {},
+      pollenChip = null,
       state = state
     )
   }

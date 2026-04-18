@@ -1,7 +1,6 @@
 package com.weather.vibe.domain.vibe.usecase
 
-import com.weather.vibe.domain.airquality.usecase.GetAirQuality
-import com.weather.vibe.domain.airquality.usecase.GetPollen
+import com.weather.vibe.domain.airquality.model.EnvironmentalReadings
 import com.weather.vibe.domain.vibe.model.VibeMood.OKAY
 import com.weather.vibe.domain.vibe.model.VibeMood.PLEASANT
 import com.weather.vibe.domain.vibe.model.VibeMood.RADIANT
@@ -11,30 +10,18 @@ import com.weather.vibe.testing.airquality.fixture.AirQualityFixtures.VERY_POOR_
 import com.weather.vibe.testing.airquality.fixture.AirQualityFixtures.airQuality
 import com.weather.vibe.testing.airquality.fixture.PollenFixtures.CALM
 import com.weather.vibe.testing.airquality.fixture.PollenFixtures.HIGH_BIRCH
-import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.COORDINATES
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.hourlyWeather
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.unmockkAll
 import kotlinx.coroutines.test.runTest
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import strikt.assertions.isGreaterThan
 import strikt.assertions.isLessThan
-import kotlin.Result.Companion.failure
-import kotlin.Result.Companion.success
 
 class CalculateDailyVibeTest {
 
-  private val getAirQuality = mockk<GetAirQuality>()
-  private val getPollen = mockk<GetPollen>()
   private val calculate = CalculateDailyVibe(
-    getAirQuality = getAirQuality,
-    getPollen = getPollen,
     scoreAqiBurden = ScoreAqiBurden(),
     scorePollenBurden = ScorePollenBurden(),
     scoreRainOutlook = ScoreRainOutlook(),
@@ -43,131 +30,142 @@ class CalculateDailyVibeTest {
     scoreWindComfort = ScoreWindComfort()
   )
 
-  @Before
-  fun setUp() {
-    coEvery { getAirQuality(COORDINATES) } returns success(airQuality(europeanAqi = GOOD_AQI))
-    coEvery { getPollen(COORDINATES) } returns success(CALM)
-  }
-
-  @After
-  fun tearDown() {
-    unmockkAll()
-  }
+  private val cleanReadings = EnvironmentalReadings(
+    airQuality = airQuality(europeanAqi = GOOD_AQI),
+    pollen = CALM
+  )
 
   @Test
-  fun `when ideal weather and clean environment, then mood is radiant`() = runTest {
+  fun `given ideal weather and clean readings, then mood is radiant`() = runTest {
 
     val vibe = calculate(
-      weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND)
+      weather = weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND),
+      readings = cleanReadings
     ).getOrThrow()
 
     expectThat(vibe.mood).isEqualTo(RADIANT)
   }
 
   @Test
-  fun `when apparent temperature near freezing, then score drops below comfort`() = runTest {
+  fun `given apparent temperature near freezing, then score drops below comfort`() = runTest {
 
-    val vibe = calculate(weatherData(apparentTemperature = FREEZING_TEMPERATURE)).getOrThrow()
+    val vibe = calculate(
+      weather = weatherData(apparentTemperature = FREEZING_TEMPERATURE),
+      readings = cleanReadings
+    ).getOrThrow()
 
     expectThat(vibe.score).isLessThan(COMFORT_FLOOR)
   }
 
   @Test
-  fun `when next hours bring heavy rain, then mood drops below pleasant`() = runTest {
+  fun `given heavy rain hours, then mood drops below pleasant`() = runTest {
 
-    val vibe = calculate(weatherData(hourlyForecast = rainyHours())).getOrThrow()
+    val vibe = calculate(
+      weather = weatherData(hourlyForecast = rainyHours()),
+      readings = cleanReadings
+    ).getOrThrow()
 
     expectThat(vibe.mood).isLessThan(PLEASANT)
   }
 
   @Test
-  fun `when wind speed reaches gale, then score drops below calm baseline`() = runTest {
+  fun `given gale winds, then score drops below calm baseline`() = runTest {
 
-    val calm = calculate(weatherData(windSpeed = CALM_WIND)).getOrThrow()
-    val gale = calculate(weatherData(windSpeed = GALE_WIND)).getOrThrow()
+    val calm = calculate(
+      weather = weatherData(windSpeed = CALM_WIND),
+      readings = cleanReadings
+    ).getOrThrow()
+
+    val gale = calculate(
+      weather = weatherData(windSpeed = GALE_WIND),
+      readings = cleanReadings
+    ).getOrThrow()
 
     expectThat(gale.score).isLessThan(calm.score)
   }
 
   @Test
-  fun `when air quality poor, then score clearly lower than with good air`() = runTest {
+  fun `given poor air quality, then score clearly lower than with good air`() = runTest {
 
-    val withGoodAir = calculate(weatherData()).getOrThrow()
+    val withGoodAir = calculate(
+      weather = weatherData(),
+      readings = cleanReadings
+    ).getOrThrow()
 
-    coEvery { getAirQuality(COORDINATES) } returns success(airQuality(europeanAqi = POOR_AQI))
-    val withPoorAir = calculate(weatherData()).getOrThrow()
+    val withPoorAir = calculate(
+      weather = weatherData(),
+      readings = cleanReadings.copy(airQuality = airQuality(europeanAqi = POOR_AQI))
+    ).getOrThrow()
 
     expectThat(withGoodAir.score - withPoorAir.score).isGreaterThan(POOR_AQI_GAP_FLOOR)
   }
 
   @Test
-  fun `when pollen reading reaches high, then score drops by pollen penalty`() = runTest {
+  fun `given high pollen reading, then score drops by pollen penalty`() = runTest {
 
     val calmDay = calculate(
-      weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND)
+      weather = weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND),
+      readings = cleanReadings
     ).getOrThrow()
 
-    coEvery { getPollen(COORDINATES) } returns success(HIGH_BIRCH)
     val pollenDay = calculate(
-      weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND)
+      weather = weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND),
+      readings = cleanReadings.copy(pollen = HIGH_BIRCH)
     ).getOrThrow()
 
     expectThat(calmDay.score - pollenDay.score).isEqualTo(HIGH_POLLEN_PENALTY)
   }
 
   @Test
-  fun `given air quality fetch fails, when vibe calculated, then score uses weather alone`() =
-    runTest {
-
-      coEvery { getAirQuality(COORDINATES) } returns failure(IllegalStateException("offline"))
-
-      val vibe = calculate(
-        weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND)
-      ).getOrThrow()
-
-      expectThat(vibe.mood).isEqualTo(RADIANT)
-    }
-
-  @Test
-  fun `given pollen fetch fails, when vibe calculated, then score uses weather alone`() = runTest {
-
-    coEvery { getPollen(COORDINATES) } returns failure(IllegalStateException("offline"))
+  fun `given no air quality reading, then score uses weather alone`() = runTest {
 
     val vibe = calculate(
-      weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND)
+      weather = weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND),
+      readings = cleanReadings.copy(airQuality = null)
     ).getOrThrow()
 
     expectThat(vibe.mood).isEqualTo(RADIANT)
   }
 
   @Test
-  fun `when weather harsh and air very poor, then mood is dreary or worse`() = runTest {
-
-    coEvery { getAirQuality(COORDINATES) } returns success(airQuality(europeanAqi = VERY_POOR_AQI))
+  fun `given no pollen reading, then score uses weather alone`() = runTest {
 
     val vibe = calculate(
-      weatherData(
+      weather = weatherData(apparentTemperature = IDEAL_TEMPERATURE, windSpeed = CALM_WIND),
+      readings = cleanReadings.copy(pollen = null)
+    ).getOrThrow()
+
+    expectThat(vibe.mood).isEqualTo(RADIANT)
+  }
+
+  @Test
+  fun `given harsh weather and very poor air, then mood is dreary or worse`() = runTest {
+
+    val vibe = calculate(
+      weather = weatherData(
         apparentTemperature = FREEZING_TEMPERATURE,
         hourlyForecast = rainyHours(),
         windSpeed = GALE_WIND
-      )
+      ),
+      readings = cleanReadings.copy(airQuality = airQuality(europeanAqi = VERY_POOR_AQI))
     ).getOrThrow()
 
     expectThat(vibe.mood).isLessThan(OKAY)
   }
 
   @Test
-  fun `when all penalties apply at extremes, then score stays within zero to hundred range`() =
+  fun `given extreme penalties across the board, then score stays within zero to hundred range`() =
     runTest {
 
-      coEvery { getAirQuality(COORDINATES) } returns success(airQuality(europeanAqi = VERY_POOR_AQI))
-      coEvery { getPollen(COORDINATES) } returns success(HIGH_BIRCH)
-
       val vibe = calculate(
-        weatherData(
+        weather = weatherData(
           apparentTemperature = EXTREME_HEAT,
           hourlyForecast = rainyHours(),
           windSpeed = GALE_WIND
+        ),
+        readings = EnvironmentalReadings(
+          airQuality = airQuality(europeanAqi = VERY_POOR_AQI),
+          pollen = HIGH_BIRCH
         )
       ).getOrThrow()
 

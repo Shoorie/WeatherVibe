@@ -7,7 +7,7 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class DetectPollenAlert {
+class DetectPollenAlert {
 
   operator fun invoke(pollen: Pollen): HighPollen? {
 

@@ -8,7 +8,6 @@ import com.weather.vibe.domain.weather.model.DailyTemperatureRange
 import com.weather.vibe.domain.weather.model.HourlyWeather
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.feature.home.presentation.state.AirQualityPresentation
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -64,18 +63,12 @@ internal class HomeStateFactory(
       false -> current
     }
 
-  fun applyAirQuality(
+  fun applyEnvironment(
     current: HomeUiState,
-    presentation: AirQualityPresentation
+    section: EnvironmentSectionUiState
   ): HomeUiState =
     when (current is HomeUiState.Loaded) {
-      true -> current.copy(
-        environment = EnvironmentSectionUiState(
-          airQualityChip = presentation.airQualityChip,
-          alert = presentation.alert,
-          pollenChip = presentation.pollenChip
-        )
-      )
+      true -> current.copy(environment = section)
       false -> current
     }
 

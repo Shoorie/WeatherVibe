@@ -11,6 +11,8 @@ android {
 dependencies {
   implementation(projects.core.sharing)
   implementation(projects.core.time)
+  implementation(projects.domain.airquality)
+  implementation(projects.domain.alerts)
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.vibe)
@@ -18,6 +20,8 @@ dependencies {
 
   implementation(libs.kotlinx.collections.immutable)
 
+  testImplementation(projects.testing.airqualityFixtures)
+  testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.timeFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

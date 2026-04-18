@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.preview
 
+import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
@@ -8,11 +9,14 @@ import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
+import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
+import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
+import com.weather.vibe.feature.home.ui.HomeAirQualityResources.Emojis
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.dewDrop
@@ -252,6 +256,28 @@ internal object HomePreviewData {
         conditionsMetrics[0]
       ),
       wind = windMetrics
+    )
+
+  val moderateAirQualityChip: AirQualityChipUiState =
+    AirQualityChipUiState(
+      indicator = Emojis.aqiModerate(),
+      label = "Moderate smog",
+      contentDescription = "Air quality: Moderate smog, index 55"
+    )
+
+  val highPollenChip: PollenChipUiState =
+    PollenChipUiState(
+      indicator = Emojis.pollen(),
+      label = "High pollen",
+      contentDescription = "Pollen level: High pollen, birch"
+    )
+
+  val smogAlert: HomeAlertUiState =
+    HomeAlertUiState(
+      indicator = Emojis.warning(),
+      title = "Smog warning",
+      message = "Very poor smog — consider limiting outdoor time.",
+      contentDescription = "Air quality alert: Very poor smog, index 110"
     )
 
   val loadedPlaylist: PlaylistUiState.Loaded =

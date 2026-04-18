@@ -10,19 +10,11 @@ internal sealed interface HomeUiState {
 
   @Immutable
   data class Loaded(
-    val airQualityChip: AirQualityChipUiState? = null,
-    val alert: HomeAlertUiState? = null,
-    val briefing: BriefingUiState = BriefingUiState.Loading,
-    val currentWeather: CurrentWeatherUiState,
-    val dailyForecast: DailyForecastsUiState,
-    val dailyVibe: DailyVibeUiState? = null,
-    val detailsSections: DetailsSectionsUiState,
-    val header: HeaderUiState,
-    val hourlyForecast: HourlyForecastsUiState,
-    val isRefreshing: Boolean = false,
-    val playlist: PlaylistUiState = PlaylistUiState.Loading,
-    val pollenChip: PollenChipUiState? = null,
-    val sunriseSunset: SunriseSunsetUiState
+    val aiSuggestion: AiSuggestionSectionUiState = AiSuggestionSectionUiState(),
+    val details: DetailsSectionsUiState,
+    val environment: EnvironmentSectionUiState = EnvironmentSectionUiState(),
+    val forecast: ForecastSectionUiState,
+    val isRefreshing: Boolean = false
   ) : HomeUiState
 
   @Immutable

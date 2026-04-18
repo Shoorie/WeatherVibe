@@ -6,16 +6,10 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
-import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
+import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
-import com.weather.vibe.feature.home.preview.HomePreviewData.header
-import com.weather.vibe.feature.home.preview.HomePreviewData.highPollenChip
-import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
-import com.weather.vibe.feature.home.preview.HomePreviewData.moderateAirQualityChip
-import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
-import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
-import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
+import com.weather.vibe.feature.home.preview.HomePreviewData.environmentSection
+import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
 
 internal class HomePreview :
   PreviewParameterProvider<HomeUiState> {
@@ -27,30 +21,21 @@ internal class HomePreview :
 
   private val successWithForecast: HomeUiState =
     Loaded(
-      currentWeather = warmDayCurrent,
-      dailyForecast = weekForecast,
-      detailsSections = detailsSections,
-      header = header,
-      hourlyForecast = eightHoursForecast,
-      sunriseSunset = afternoonSunInfo
+      details = detailsSections,
+      forecast = forecastSection
     )
 
   private val successWithAiContent: HomeUiState =
     Loaded(
-      airQualityChip = moderateAirQualityChip,
-      alert = smogAlert,
-      briefing = BriefingUiState.Loaded(
-        text = "A mild partly cloudy day with a light breeze — " +
-          "great for a walk before the evening rain."
+      aiSuggestion = aiSuggestionSection.copy(
+        briefing = BriefingUiState.Loaded(
+          text = "A mild partly cloudy day with a light breeze — " +
+            "great for a walk before the evening rain."
+        )
       ),
-      currentWeather = warmDayCurrent,
-      dailyForecast = weekForecast,
-      detailsSections = detailsSections,
-      header = header,
-      hourlyForecast = eightHoursForecast,
-      playlist = loadedPlaylist,
-      pollenChip = highPollenChip,
-      sunriseSunset = afternoonSunInfo
+      details = detailsSections,
+      environment = environmentSection,
+      forecast = forecastSection
     )
 
   override val values: Sequence<HomeUiState> =

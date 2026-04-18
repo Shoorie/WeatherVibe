@@ -131,7 +131,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.header.cityName).isEqualTo("Warsaw")
+    expectThat(result.forecast.header.cityName).isEqualTo("Warsaw")
   }
 
   @Test
@@ -139,7 +139,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.header.dateLabel.isNotBlank()).isTrue()
+    expectThat(result.forecast.header.dateLabel.isNotBlank()).isTrue()
   }
 
   @Test
@@ -147,7 +147,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.currentTemperature)
+    expectThat(result.forecast.currentWeather.currentTemperature)
       .isEqualTo("22°")
   }
 
@@ -156,7 +156,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.feelsLikeTemperature)
+    expectThat(result.forecast.currentWeather.feelsLikeTemperature)
       .isEqualTo("20°")
   }
 
@@ -165,7 +165,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.highTemperature)
+    expectThat(result.forecast.currentWeather.highTemperature)
       .isEqualTo("25°")
   }
 
@@ -174,7 +174,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.lowTemperature)
+    expectThat(result.forecast.currentWeather.lowTemperature)
       .isEqualTo("12°")
   }
 
@@ -183,7 +183,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.conditionEmoji)
+    expectThat(result.forecast.currentWeather.conditionEmoji)
       .isEqualTo(CLEAR_SKY.emoji)
   }
 
@@ -192,7 +192,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.currentWeather.conditionLabel)
+    expectThat(result.forecast.currentWeather.conditionLabel)
       .isEqualTo(CLEAR_SKY.label)
   }
 
@@ -203,7 +203,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(data)
 
-    expectThat(result.currentWeather.highTemperature)
+    expectThat(result.forecast.currentWeather.highTemperature)
       .isEqualTo("22°")
   }
 
@@ -214,7 +214,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(data)
 
-    expectThat(result.currentWeather.lowTemperature)
+    expectThat(result.forecast.currentWeather.lowTemperature)
       .isEqualTo("22°")
   }
 
@@ -224,7 +224,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.items).map { it.timeLabel }
+    expectThat(result.forecast.hourlyForecast.items).map { it.timeLabel }
       .containsExactly("Now", "13:00", "14:00")
   }
 
@@ -233,7 +233,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.items[0].isCurrentHour).isTrue()
+    expectThat(result.forecast.hourlyForecast.items[0].isCurrentHour).isTrue()
   }
 
   @Test
@@ -241,7 +241,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.items.drop(1)).map { it.isCurrentHour }
+    expectThat(result.forecast.hourlyForecast.items.drop(1)).map { it.isCurrentHour }
       .containsExactly(false, false)
   }
 
@@ -250,7 +250,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.items).map { it.conditionEmoji }
+    expectThat(result.forecast.hourlyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji)
   }
 
@@ -259,7 +259,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.hourlyForecast.items).map { it.temperature }
+    expectThat(result.forecast.hourlyForecast.items).map { it.temperature }
       .containsExactly("22°", "24°", "23°")
   }
 
@@ -269,7 +269,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast.items).map { it.conditionEmoji }
+    expectThat(result.forecast.dailyForecast.items).map { it.conditionEmoji }
       .containsExactly(CLEAR_SKY.emoji, PARTLY_CLOUDY.emoji, RAIN.emoji)
   }
 
@@ -278,7 +278,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast.items[0].maxTemperature)
+    expectThat(result.forecast.dailyForecast.items[0].maxTemperature)
       .isEqualTo("25°")
   }
 
@@ -287,7 +287,7 @@ class HomeStateFactoryTest {
 
     val result = factory.create(WEATHER)
 
-    expectThat(result.dailyForecast.items[0].minTemperature)
+    expectThat(result.forecast.dailyForecast.items[0].minTemperature)
       .isEqualTo("12°")
   }
 
@@ -305,7 +305,7 @@ class HomeStateFactoryTest {
     )
 
     expectThat(result).isA<HomeUiState.Loaded>()
-      .get { this.briefing }.isEqualTo(briefing)
+      .get { aiSuggestion.briefing }.isEqualTo(briefing)
   }
 
   @Test
@@ -321,7 +321,7 @@ class HomeStateFactoryTest {
     )
 
     expectThat(result).isA<HomeUiState.Loaded>()
-      .get { this.playlist }.isEqualTo(playlist)
+      .get { aiSuggestion.playlist }.isEqualTo(playlist)
   }
 
   @Test
@@ -367,7 +367,8 @@ class HomeStateFactoryTest {
   fun `given loaded state with briefing, when temperatures reformatted, then preserve briefing`() {
 
     val briefing = BriefingUiState.Loaded("Sunny!")
-    val loaded = factory.create(WEATHER).copy(briefing = briefing)
+    val created = factory.create(WEATHER)
+    val loaded = created.copy(aiSuggestion = created.aiSuggestion.copy(briefing = briefing))
 
     val result = factory.reformatTemperatures(
       current = loaded,
@@ -375,14 +376,15 @@ class HomeStateFactoryTest {
       unit = CELSIUS
     ) as HomeUiState.Loaded
 
-    expectThat(result.briefing).isEqualTo(briefing)
+    expectThat(result.aiSuggestion.briefing).isEqualTo(briefing)
   }
 
   @Test
   fun `given loaded state with playlist, when temperatures reformatted, then preserve playlist`() {
 
     val playlist = playlistFactory.create(SUGGESTION)
-    val loaded = factory.create(WEATHER).copy(playlist = playlist)
+    val created = factory.create(WEATHER)
+    val loaded = created.copy(aiSuggestion = created.aiSuggestion.copy(playlist = playlist))
 
     val result = factory.reformatTemperatures(
       current = loaded,
@@ -390,7 +392,7 @@ class HomeStateFactoryTest {
       unit = CELSIUS
     ) as HomeUiState.Loaded
 
-    expectThat(result.playlist).isEqualTo(playlist)
+    expectThat(result.aiSuggestion.playlist).isEqualTo(playlist)
   }
 
   @Test

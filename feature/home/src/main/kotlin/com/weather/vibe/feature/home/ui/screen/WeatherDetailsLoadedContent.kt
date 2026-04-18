@@ -13,13 +13,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
-import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
-import com.weather.vibe.feature.home.preview.HomePreviewData.header
-import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
-import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
-import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
+import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
 import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
@@ -43,14 +38,14 @@ internal fun WeatherDetailsLoadedContent(
       .padding(horizontal = Medium)
   ) {
     item { Spacer(modifier = Modifier.height(Small)) }
-    item { SunArcSection(state = state.sunriseSunset) }
+    item { SunArcSection(state = state.forecast.sunriseSunset) }
     item { Spacer(modifier = Modifier.height(Medium)) }
     item {
       DetailSection(
         emoji = wind(),
         title = windSectionTitle(),
         subtitle = windSectionSubtitle(),
-        items = state.detailsSections.wind
+        items = state.details.wind
       )
     }
     item { Spacer(modifier = Modifier.height(Medium)) }
@@ -59,7 +54,7 @@ internal fun WeatherDetailsLoadedContent(
         emoji = humidity(),
         title = atmosphereSectionTitle(),
         subtitle = atmosphereSectionSubtitle(),
-        items = state.detailsSections.atmosphere
+        items = state.details.atmosphere
       )
     }
     item { Spacer(modifier = Modifier.height(Medium)) }
@@ -68,7 +63,7 @@ internal fun WeatherDetailsLoadedContent(
         emoji = cloud(),
         title = conditionsSectionTitle(),
         subtitle = conditionsSectionSubtitle(),
-        items = state.detailsSections.conditions
+        items = state.details.conditions
       )
     }
     item { Spacer(modifier = Modifier.height(ExtraLarge)) }
@@ -81,13 +76,8 @@ private fun Preview() {
   WeatherVibeTheme {
     WeatherDetailsLoadedContent(
       state = Loaded(
-        currentWeather = warmDayCurrent,
-        dailyForecast = weekForecast,
-        detailsSections = detailsSections,
-        header = header,
-        hourlyForecast = eightHoursForecast,
-        playlist = loadedPlaylist,
-        sunriseSunset = afternoonSunInfo
+        details = detailsSections,
+        forecast = forecastSection
       )
     )
   }

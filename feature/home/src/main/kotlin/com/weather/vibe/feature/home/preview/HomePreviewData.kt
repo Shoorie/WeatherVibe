@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.preview
 
+import com.weather.vibe.feature.home.presentation.state.AiSuggestionSectionUiState
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
 import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
@@ -7,6 +8,8 @@ import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
 import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
+import com.weather.vibe.feature.home.presentation.state.EnvironmentSectionUiState
+import com.weather.vibe.feature.home.presentation.state.ForecastSectionUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
@@ -291,5 +294,27 @@ internal object HomePreviewData {
       moodDescription = "Stay in, grab a warm drink, and let the music match the rain",
       spotifyQuery = "spotify:search:lo-fi hip hop acoustic rainy day indie",
       ytMusicUrl = "https://music.youtube.com/search?q=lo-fi+hip+hop"
+    )
+
+  val forecastSection: ForecastSectionUiState =
+    ForecastSectionUiState(
+      currentWeather = warmDayCurrent,
+      dailyForecast = weekForecast,
+      header = header,
+      hourlyForecast = eightHoursForecast,
+      sunriseSunset = afternoonSunInfo
+    )
+
+  val aiSuggestionSection: AiSuggestionSectionUiState =
+    AiSuggestionSectionUiState(
+      dailyVibe = pleasantVibe,
+      playlist = loadedPlaylist
+    )
+
+  val environmentSection: EnvironmentSectionUiState =
+    EnvironmentSectionUiState(
+      airQualityChip = moderateAirQualityChip,
+      alert = smogAlert,
+      pollenChip = highPollenChip
     )
 }

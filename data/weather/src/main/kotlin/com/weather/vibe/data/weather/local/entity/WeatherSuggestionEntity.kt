@@ -12,6 +12,7 @@ data class WeatherSuggestionEntity(
   val genresCsv: String,
   val mood: String,
   val moodDescription: String,
+  val outfitSuggestion: String,
   val simplifiedCondition: String,
   val temperatureRange: String,
   val timeOfDay: String,

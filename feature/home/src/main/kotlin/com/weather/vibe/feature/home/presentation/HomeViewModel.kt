@@ -284,7 +284,7 @@ internal class HomeViewModel(
 
   private fun onWeatherSuggestionSuccess(suggestion: WeatherSuggestion) {
     showWeatherSuggestion(
-      briefing = BriefingUiState.Loaded(text = suggestion.briefText),
+      briefing = stateFactory.createBriefing(suggestion = suggestion),
       playlist = stateFactory.createPlaylist(suggestion = suggestion)
     )
   }

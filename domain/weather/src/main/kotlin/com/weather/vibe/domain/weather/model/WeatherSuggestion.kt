@@ -4,5 +4,6 @@ data class WeatherSuggestion(
   val briefText: String,
   val genres: List<String>,
   val mood: String,
-  val moodDescription: String
+  val moodDescription: String,
+  val outfitSuggestion: String?
 )

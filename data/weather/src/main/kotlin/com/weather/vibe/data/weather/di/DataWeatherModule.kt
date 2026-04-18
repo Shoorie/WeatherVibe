@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.weather.vibe.data.weather.local.WeatherDatabase
 import com.weather.vibe.data.weather.local.dao.WeatherCacheDao
 import com.weather.vibe.data.weather.local.dao.WeatherSuggestionDao
+import com.weather.vibe.data.weather.local.migration.Migration2To3
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
@@ -29,7 +30,8 @@ class DataWeatherModule {
       context = context,
       klass = WeatherDatabase::class.java,
       name = DATABASE_NAME
-    ).fallbackToDestructiveMigration(false)
+    ).addMigrations(Migration2To3)
+      .fallbackToDestructiveMigration(false)
       .build()
 
   private companion object {

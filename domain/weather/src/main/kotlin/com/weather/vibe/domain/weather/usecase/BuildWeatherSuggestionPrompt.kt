@@ -29,10 +29,20 @@ internal class BuildWeatherSuggestionPrompt {
       appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
       appendSection(briefSection(tone, language))
       appendSection(naturalPhrasingSection(language))
+      appendSection(outfitSection(language))
       appendSection(musicSection(excludedGenres))
       appendSection(outputFormatSection(language))
     }
   }
+
+  private fun outfitSection(language: Language): String =
+    """
+      OUTFIT SUGGESTION:
+      Based on the weather above, suggest what to wear in one short phrase in ${language.displayName}.
+      - Keep it concrete and scannable (max 6 words)
+      - Mention 2-3 garments or accessories
+      - No sentences, no emojis, no punctuation at the end
+    """.trimIndent()
 
   private fun roleSection(language: Language): String =
     """
@@ -100,12 +110,13 @@ internal class BuildWeatherSuggestionPrompt {
         "briefText": "1-2 sentence weather brief in ${language.displayName}",
         "mood": "short mood label in ${language.displayName}, max 4 words",
         "moodDescription": "one atmospheric sentence in ${language.displayName}, max 12 words",
+        "outfitSuggestion": "2-3 garments or accessories in ${language.displayName}, max 6 words",
         "genres": ["genre1", "genre2", "genre3"]
       }
 
-      briefText, mood, and moodDescription MUST be written in ${language.displayName}.
+      briefText, mood, moodDescription, and outfitSuggestion MUST be written in ${language.displayName}.
       Genres MUST always remain in English.
-      mood and moodDescription stay neutral/atmospheric regardless of brief tone.
+      mood, moodDescription, and outfitSuggestion stay neutral/practical regardless of brief tone.
     """.trimIndent()
 
   private fun StringBuilder.appendSection(content: String) {

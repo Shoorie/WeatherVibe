@@ -8,8 +8,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.ActionButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.home.ui.HomeResources.Painters.musicIcon
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistContentDescription
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistContentDescription
+import com.weather.vibe.feature.home.ui.HomePainters.musicIcon
 
 @Composable
 internal fun BriefingMusicButton(

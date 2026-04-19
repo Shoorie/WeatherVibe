@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
 import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
@@ -24,7 +24,7 @@ internal fun BriefAirChipRow(
   airQualityChip: AirQualityChipUiState?,
   pollenChip: PollenChipUiState?
 ) {
-  Spacer(modifier = Modifier.height(Small))
+  Spacer(modifier = Modifier.height(Medium))
   FlowRow(
     modifier = modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall),

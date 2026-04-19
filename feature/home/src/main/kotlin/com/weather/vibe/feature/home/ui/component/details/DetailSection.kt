@@ -16,12 +16,13 @@ import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.preview.DetailSectionPreview
 import com.weather.vibe.feature.home.preview.DetailSectionPreviewParams
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiMedium
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun DetailSection(
   modifier: Modifier = Modifier,
   emoji: String,
-  items: List<MetricItemUiState>,
+  items: ImmutableList<MetricItemUiState>,
   subtitle: String,
   title: String
 ) {

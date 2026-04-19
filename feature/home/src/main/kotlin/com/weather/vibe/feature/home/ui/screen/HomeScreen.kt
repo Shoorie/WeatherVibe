@@ -98,7 +98,6 @@ internal fun HomeContent(
         error = state.message,
         onRetry = onRefresh
       )
-
       is Loaded -> WeatherContent(
         state = state,
         onNavigateToDetails = onNavigateToDetails,

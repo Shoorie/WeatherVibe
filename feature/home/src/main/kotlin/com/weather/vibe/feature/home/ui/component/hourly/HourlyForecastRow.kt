@@ -19,7 +19,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastsUiState
 import com.weather.vibe.feature.home.preview.HourlyForecastListPreview
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.hourlyForecastTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.hourlyForecastTitle
 
 @Composable
 internal fun HourlyForecastRow(

@@ -15,7 +15,9 @@ internal class PlaylistStateFactory(
   fun create(suggestion: WeatherSuggestion): PlaylistUiState.Loaded {
     val query = buildPlaylistQuery(suggestion)
     return PlaylistUiState.Loaded(
-      genres = suggestion.genres.map { GenreChipUiState(name = it.trim()) }.toImmutableList(),
+      genres = suggestion.genres
+        .map { GenreChipUiState(name = it.trim()) }
+        .toImmutableList(),
       mood = suggestion.mood,
       moodDescription = suggestion.moodDescription,
       spotifyQuery = query.spotify,

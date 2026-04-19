@@ -9,4 +9,5 @@ android {
 
 dependencies {
   implementation(libs.androidx.material.icons.core)
+  implementation(libs.kotlinx.collections.immutable)
 }

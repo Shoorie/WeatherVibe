@@ -33,6 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
+  onNavigateToActivityPlanner: () -> Unit = {},
   onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
   onNavigateToSettings: () -> Unit = {},
@@ -58,6 +59,7 @@ fun HomeScreen(
 
   HomeContent(
     state = state,
+    onNavigateToActivityPlanner = onNavigateToActivityPlanner,
     onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch,
     onNavigateToSettings = onNavigateToSettings,
@@ -79,6 +81,7 @@ fun HomeScreen(
 internal fun HomeContent(
   modifier: Modifier = Modifier,
   state: HomeUiState,
+  onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
@@ -100,6 +103,7 @@ internal fun HomeContent(
       )
       is Loaded -> WeatherContent(
         state = state,
+        onNavigateToActivityPlanner = onNavigateToActivityPlanner,
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onNavigateToSettings = onNavigateToSettings,
@@ -121,6 +125,7 @@ private fun Preview(
   WeatherVibeTheme {
     HomeContent(
       state = state,
+      onNavigateToActivityPlanner = {},
       onNavigateToDetails = {},
       onNavigateToSearch = {},
       onNavigateToSettings = {},

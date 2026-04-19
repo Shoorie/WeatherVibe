@@ -8,10 +8,6 @@ import com.weather.vibe.feature.home.R
 internal object HomePainters {
 
   @Composable
-  fun musicIcon(): Painter =
-    painterResource(id = R.drawable.ic_music)
-
-  @Composable
   fun shareIcon(): Painter =
     painterResource(id = R.drawable.ic_share)
 

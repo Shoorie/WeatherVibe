@@ -6,6 +6,7 @@ internal object HomeKeys {
   const val ALERT = "alert"
   const val BRIEFING = "briefing"
   const val HOURLY = "hourly"
+  const val ACTIVITY_PLANNER = "activityPlanner"
   const val DAILY = "daily"
   const val DETAILS = "details"
 }

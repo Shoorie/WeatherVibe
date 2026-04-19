@@ -11,6 +11,7 @@ android {
 dependencies {
   implementation(projects.core.permissions)
   implementation(projects.domain.settings)
+  implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.settingsFixtures)

@@ -1,6 +1,7 @@
 package com.weather.vibe.core.designsystem.components.surface
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation
@@ -28,6 +30,8 @@ fun VibeCard(
   containerColor: Color = colors.primaryContainer,
   contentPadding: Dp = Medium,
   elevation: Dp = NoElevation,
+  onClick: (() -> Unit)? = null,
+  onClickLabel: String? = null,
   content: @Composable () -> Unit
 ) {
 
@@ -36,12 +40,25 @@ fun VibeCard(
     .withElevation(elevation = elevation, shape = shape)
     .clip(shape)
     .background(containerColor)
+    .withClickable(onClick = onClick, onClickLabel = onClickLabel)
     .padding(contentPadding)
 
   Box(modifier = surface) {
     content()
   }
 }
+
+private fun Modifier.withClickable(
+  onClick: (() -> Unit)?,
+  onClickLabel: String?
+): Modifier =
+  if (onClick != null)
+    clickable(
+      onClickLabel = onClickLabel,
+      role = Role.Button,
+      onClick = onClick
+    )
+  else this
 
 private fun Modifier.withElevation(elevation: Dp, shape: Shape): Modifier =
   if (elevation > NoElevation)

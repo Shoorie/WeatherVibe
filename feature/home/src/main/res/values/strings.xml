@@ -120,6 +120,7 @@
   <string name="home_pollen_species_olive">olive</string>
   <string name="home_pollen_species_ragweed">ragweed</string>
 
+  <string name="home_alert_section_label">Heads up</string>
   <string name="home_aqi_alert_title">Smog warning</string>
   <string name="home_aqi_alert_message_format">%1$s — consider limiting outdoor time.</string>
   <string name="home_aqi_alert_content_description_format">Air quality alert: %1$s, index %2$d</string>
@@ -127,4 +128,7 @@
   <string name="home_pollen_alert_title">Pollen warning</string>
   <string name="home_pollen_alert_message_format">High levels of %1$s — allergy sufferers, take care.</string>
   <string name="home_pollen_alert_content_description_format">Pollen alert: high levels of %1$s</string>
+  <string name="home_activity_planner_title">Plan your activity</string>
+  <string name="home_activity_planner_subtitle">See today\'s best windows for running, walking or cycling</string>
+  <string name="home_activity_planner_content_description">Open activity planner</string>
 </resources>

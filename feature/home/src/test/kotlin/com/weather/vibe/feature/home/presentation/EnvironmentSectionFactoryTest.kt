@@ -39,15 +39,14 @@ class EnvironmentSectionFactoryTest {
   @Test
   fun `when air quality given, then chip label matches level`() {
 
-    val result = factory.create(
+    val result = factory.buildAirQualityChip(
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = MODERATE_AQI),
         pollen = null
-      ),
-      alert = null
+      )
     )
 
-    expectThat(result.airQualityChip)
+    expectThat(result)
       .isNotNull()
       .get { label }
       .isEqualTo(aqiLabel(MODERATE))
@@ -56,47 +55,42 @@ class EnvironmentSectionFactoryTest {
   @Test
   fun `when air quality given, then chip indicator matches level`() {
 
-    val result = factory.create(
+    val result = factory.buildAirQualityChip(
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = GOOD_AQI),
         pollen = null
-      ),
-      alert = null
+      )
     )
 
-    expectThat(result.airQualityChip)
+    expectThat(result)
       .isNotNull()
       .get { indicator }
       .isEqualTo(aqiIndicator(GOOD))
   }
 
   @Test
-  fun `given no readings, then chips are null`() {
+  fun `given no readings, then air quality chip is null`() {
 
-    val result = factory.create(
-      readings = EnvironmentalReadings.Empty,
-      alert = null
-    )
+    val result = factory.buildAirQualityChip(readings = EnvironmentalReadings.Empty)
 
-    expectThat(result.airQualityChip).isNull()
+    expectThat(result).isNull()
   }
 
   @Test
-  fun `given empty pollen readings, then chip is null`() {
+  fun `given empty pollen readings, then pollen chip is null`() {
 
-    val result = factory.create(
+    val result = factory.buildPollenChip(
       readings = EnvironmentalReadings(
         airQuality = null,
         pollen = pollen(readings = emptyList())
-      ),
-      alert = null
+      )
     )
 
-    expectThat(result.pollenChip).isNull()
+    expectThat(result).isNull()
   }
 
   @Test
-  fun `given only low pollen, then chip is null`() {
+  fun `given only low pollen, then pollen chip is null`() {
 
     val readings = EnvironmentalReadings(
       airQuality = null,
@@ -105,9 +99,9 @@ class EnvironmentSectionFactoryTest {
       )
     )
 
-    val result = factory.create(readings = readings, alert = null)
+    val result = factory.buildPollenChip(readings = readings)
 
-    expectThat(result.pollenChip).isNull()
+    expectThat(result).isNull()
   }
 
   @Test
@@ -124,9 +118,9 @@ class EnvironmentSectionFactoryTest {
       )
     )
 
-    val result = factory.create(readings = readings, alert = null)
+    val result = factory.buildPollenChip(readings = readings)
 
-    expectThat(result.pollenChip)
+    expectThat(result)
       .isNotNull()
       .get { label }
       .isEqualTo(pollenLabel(VERY_HIGH))
@@ -135,12 +129,9 @@ class EnvironmentSectionFactoryTest {
   @Test
   fun `given aqi alert, then banner title comes from aqi resources`() {
 
-    val result = factory.create(
-      readings = EnvironmentalReadings.Empty,
-      alert = poorAirQuality()
-    )
+    val result = factory.buildAlert(alert = poorAirQuality())
 
-    expectThat(result.alert)
+    expectThat(result)
       .isNotNull()
       .get { title }
       .isEqualTo(AQI_ALERT_TITLE)
@@ -149,12 +140,9 @@ class EnvironmentSectionFactoryTest {
   @Test
   fun `given pollen alert, then banner title comes from pollen resources`() {
 
-    val result = factory.create(
-      readings = EnvironmentalReadings.Empty,
-      alert = highPollen()
-    )
+    val result = factory.buildAlert(alert = highPollen())
 
-    expectThat(result.alert)
+    expectThat(result)
       .isNotNull()
       .get { title }
       .isEqualTo(POLLEN_ALERT_TITLE)
@@ -163,22 +151,16 @@ class EnvironmentSectionFactoryTest {
   @Test
   fun `given unrelated alert, then banner is null`() {
 
-    val result = factory.create(
-      readings = EnvironmentalReadings.Empty,
-      alert = thunderstorm()
-    )
+    val result = factory.buildAlert(alert = thunderstorm())
 
-    expectThat(result.alert).isNull()
+    expectThat(result).isNull()
   }
 
   @Test
   fun `when no alert passed, then banner is null`() {
 
-    val result = factory.create(
-      readings = EnvironmentalReadings(airQuality = airQuality(), pollen = null),
-      alert = null
-    )
+    val result = factory.buildAlert(alert = null)
 
-    expectThat(result.alert).isNull()
+    expectThat(result).isNull()
   }
 }

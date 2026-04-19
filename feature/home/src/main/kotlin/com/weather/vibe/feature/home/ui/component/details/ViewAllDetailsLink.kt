@@ -27,7 +27,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.ui.HomeDefaults.ViewAllMinHeight
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsViewAll
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.weatherDetailsViewAll
 import com.weather.vibe.feature.home.ui.HomeTextStyles.semiBold
 
 @Composable

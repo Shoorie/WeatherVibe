@@ -15,7 +15,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.genreRemoveContentDescription
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.genreRemoveContentDescription
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

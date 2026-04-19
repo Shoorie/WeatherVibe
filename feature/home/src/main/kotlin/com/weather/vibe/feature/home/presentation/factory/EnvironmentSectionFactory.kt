@@ -7,7 +7,6 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
-import com.weather.vibe.feature.home.presentation.state.EnvironmentSectionUiState
 import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
 import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.ui.HomeAirQualityResources
@@ -18,19 +17,16 @@ internal class EnvironmentSectionFactory(
   private val resources: HomeAirQualityResources
 ) {
 
-  fun create(
-    readings: EnvironmentalReadings,
-    alert: WeatherAlert?
-  ): EnvironmentSectionUiState =
-    EnvironmentSectionUiState(
-      airQualityChip = readings.airQuality?.let(::createAirQualityChip),
-      alert = alert?.let(::createAlert),
-      pollenChip = readings.pollen?.notableReading?.let(::createPollenChip)
-    )
+  fun buildAirQualityChip(readings: EnvironmentalReadings): AirQualityChipUiState? =
+    readings.airQuality?.let(::createAirQualityChip)
 
-  private fun createAirQualityChip(
-    airQuality: AirQuality
-  ): AirQualityChipUiState =
+  fun buildPollenChip(readings: EnvironmentalReadings): PollenChipUiState? =
+    readings.pollen?.notableReading?.let(::createPollenChip)
+
+  fun buildAlert(alert: WeatherAlert?): HomeAlertUiState? =
+    alert?.let(::createAlert)
+
+  private fun createAirQualityChip(airQuality: AirQuality): AirQualityChipUiState =
     AirQualityChipUiState(
       indicator = resources.airQualityIndicator(airQuality.level),
       label = resources.airQualityLabel(airQuality.level),

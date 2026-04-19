@@ -14,12 +14,13 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.preview.DetailsPreviewCardPreview
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.weatherDetailsTitle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun DetailsPreviewCard(
   modifier: Modifier = Modifier,
-  previewItems: List<MetricItemUiState>,
+  previewItems: ImmutableList<MetricItemUiState>,
   onClick: () -> Unit
 ) {
   SectionLabel(
@@ -37,7 +38,7 @@ internal fun DetailsPreviewCard(
 @Composable
 private fun Preview(
   @PreviewParameter(DetailsPreviewCardPreview::class)
-  previewItems: List<MetricItemUiState>
+  previewItems: ImmutableList<MetricItemUiState>
 ) {
   WeatherVibeTheme {
     DetailsPreviewCard(

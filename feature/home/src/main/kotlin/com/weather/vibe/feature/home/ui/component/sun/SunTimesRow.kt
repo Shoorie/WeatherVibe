@@ -18,12 +18,12 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.preview.HomePreviewData
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunrise
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunset
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunriseAt
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunriseLabel
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunsetAt
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunsetLabel
+import com.weather.vibe.feature.home.ui.HomeEmojis.sunrise
+import com.weather.vibe.feature.home.ui.HomeEmojis.sunset
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunriseAt
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunriseLabel
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunsetAt
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunsetLabel
 
 @Composable
 internal fun SunTimesRow(

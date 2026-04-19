@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -22,11 +21,10 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistErrorTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistUnavailable
-
-private val ErrorEmojiSize = 40.sp
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistErrorTitle
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistUnavailable
+import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiError
+import com.weather.vibe.feature.home.ui.HomeEmojis as Emojis
 
 @Composable
 internal fun MoodLoadingContent(modifier: Modifier = Modifier) {
@@ -71,7 +69,7 @@ internal fun MoodErrorContent(modifier: Modifier = Modifier) {
     Text(
       modifier = Modifier.clearAndSetSemantics {},
       text = Emojis.error(),
-      fontSize = ErrorEmojiSize
+      fontSize = EmojiError
     )
     Spacer(modifier = Modifier.height(Small))
     Text(

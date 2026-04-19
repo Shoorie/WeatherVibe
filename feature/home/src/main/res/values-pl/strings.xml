@@ -1,5 +1,6 @@
 <resources>
-  <string name="ai_briefing_label">Dzisiejszy Vibe</string>
+  <string name="ai_briefing_label">Brief pogodowy</string>
+  <string name="daily_vibe_section_label">Dzisiejszy Vibe</string>
   <string name="ai_briefing_music_hint">Odkryj dzisiejsze brzmienia</string>
   <string name="ai_briefing_unavailable">Briefing niedostępny</string>
   <string name="ai_briefing_outfit_label">Co założyć:</string>
@@ -13,6 +14,7 @@
   <string name="daily_forecast_title">Prognoza 7-dniowa</string>
   <string name="day_length_format">%1$dh %2$dm</string>
   <string name="day_length_label">Długość dnia</string>
+  <string name="day_length_value_format">%1$s: %2$s</string>
   <string name="dew_point_label">Punkt rosy</string>
   <string name="direction_label">Kierunek</string>
   <string name="error_unexpected">Wystąpił nieoczekiwany błąd</string>
@@ -70,7 +72,7 @@
   <string name="condition_unknown">Nieznane</string>
 
   <string name="daily_vibe_score_format">%1$d/100</string>
-  <string name="daily_vibe_headline_format">%1$s  ·  %2$s</string>
+  <string name="daily_vibe_summary_format">%1$s  ·  %2$s</string>
   <string name="daily_vibe_mood_radiant">Idealny dzień</string>
   <string name="daily_vibe_mood_pleasant">Przyjemny klimat</string>
   <string name="daily_vibe_mood_okay">Znośny dzień</string>

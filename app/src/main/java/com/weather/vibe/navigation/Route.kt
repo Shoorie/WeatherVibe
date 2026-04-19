@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class HomeRoute(
-  val selectedLocation: Location? = null
+  val selectedLocation: Location
 ) : NavKey
 
 @Serializable
@@ -16,14 +16,17 @@ data object SearchRoute : NavKey
 data object SplashRoute : NavKey
 
 @Serializable
+data object LocationOnboardingRoute : NavKey
+
+@Serializable
 data object SettingsRoute : NavKey
 
 @Serializable
 data class WeatherDetailsRoute(
-  val selectedLocation: Location? = null
+  val selectedLocation: Location
 ) : NavKey
 
 @Serializable
 data class ActivityPlannerRoute(
-  val selectedLocation: Location? = null
+  val selectedLocation: Location
 ) : NavKey

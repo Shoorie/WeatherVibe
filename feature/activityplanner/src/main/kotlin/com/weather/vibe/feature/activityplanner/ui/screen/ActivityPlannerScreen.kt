@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -16,9 +17,6 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.domain.activityplanner.model.ActivityType
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerAction.ActivitySelect
-import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerAction.BackClick
-import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerAction.RetryClick
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerEvent.NavigateBack
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerViewModel
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState
@@ -27,17 +25,19 @@ import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlann
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Loading
 import com.weather.vibe.feature.activityplanner.preview.ActivityPlannerPreview
 import com.weather.vibe.feature.activityplanner.ui.ActivityPlannerResources.Texts.screenTitle
+import com.weather.vibe.feature.activityplanner.ui.screen.callbacks.ActivityPlannerCallbacks
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
 fun ActivityPlannerScreen(
   onNavigateBack: () -> Unit,
-  selectedLocation: Location? = null
+  selectedLocation: Location
 ) {
 
   val viewModel = koinViewModel<ActivityPlannerViewModel> { parametersOf(selectedLocation) }
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val callbacks = remember(viewModel) { ActivityPlannerCallbacks(viewModel) }
 
   LaunchedEffect(Unit) {
     viewModel.event.collect { event ->
@@ -49,9 +49,9 @@ fun ActivityPlannerScreen(
 
   ActivityPlannerContent(
     state = state,
-    onActivitySelect = { viewModel.dispatch(ActivitySelect(it)) },
-    onBackClick = { viewModel.dispatch(BackClick) },
-    onRetryClick = { viewModel.dispatch(RetryClick) }
+    onActivitySelect = callbacks.onActivitySelect,
+    onBackClick = callbacks.onBackClick,
+    onRetryClick = callbacks.onRetryClick
   )
 }
 

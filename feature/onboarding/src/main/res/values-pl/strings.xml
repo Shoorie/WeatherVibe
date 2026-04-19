@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="onboarding_headline">Pogoda tam, gdzie jesteś</string>
+  <string name="onboarding_subtitle_idle">Pozwól nam namierzyć Twoją pozycję, a pogoda znajdzie Cię sama.</string>
+  <string name="onboarding_subtitle_requesting">Czekamy na zgodę…</string>
+  <string name="onboarding_subtitle_fetching">Wyznaczamy Twoją pozycję…</string>
+  <string name="onboarding_subtitle_permanently_denied">Dostęp do lokalizacji jest wyłączony. Włącz go w ustawieniach aplikacji, a pogoda sama Cię znajdzie.</string>
+  <string name="onboarding_primary_cta_location">Użyj mojej lokalizacji</string>
+  <string name="onboarding_primary_cta_settings">Otwórz ustawienia</string>
+  <string name="onboarding_secondary_cta">Wybiorę miasto ręcznie</string>
+  <string name="onboarding_privacy_note">Używamy współrzędnych tylko do pobrania pogody. Nic nie wysyłamy dalej.</string>
+  <string name="onboarding_location_indicator_a11y">Wskaźnik lokalizacji</string>
+</resources>

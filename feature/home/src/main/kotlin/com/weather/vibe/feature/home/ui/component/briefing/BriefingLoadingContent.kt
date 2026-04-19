@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.findingBetterSuggestionsLabel
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.findingBetterSuggestionsLabel
 
 @Composable
 internal fun BriefingLoadingContent(modifier: Modifier = Modifier) {

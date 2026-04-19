@@ -18,9 +18,9 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingRetryContentDescription
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingRetryLabel
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingUnavailable
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingRetryContentDescription
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingRetryLabel
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingUnavailable
 import com.weather.vibe.feature.home.ui.HomeTextStyles.mutedOnPrimaryContainer
 
 @Composable

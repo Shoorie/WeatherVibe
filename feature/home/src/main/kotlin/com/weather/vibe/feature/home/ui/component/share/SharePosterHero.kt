@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -28,10 +29,10 @@ import com.weather.vibe.core.designsystem.theme.share.ShareGradientPalette
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.GlassHaloCenter
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.GlassHaloMid
 import com.weather.vibe.core.designsystem.theme.share.ShareSurface.HaloColorAlpha
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeroEmojiToTemperature
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeroGlowRadius
 import com.weather.vibe.feature.home.ui.component.share.SharePosterDefaults.HeroTemperatureToCondition
+import com.weather.vibe.feature.home.ui.HomeEmojis as Emojis
 
 @Composable
 internal fun SharePosterHero(
@@ -87,6 +88,7 @@ private fun HeroGlow(
         .background(haloBrush)
     )
     Text(
+      modifier = Modifier.clearAndSetSemantics {},
       text = emoji,
       style = emojiStyle,
       textAlign = TextAlign.Center

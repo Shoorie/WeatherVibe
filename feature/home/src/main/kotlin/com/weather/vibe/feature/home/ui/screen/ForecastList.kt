@@ -15,22 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
-import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
+import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
-import com.weather.vibe.feature.home.preview.HomePreviewData.header
-import com.weather.vibe.feature.home.preview.HomePreviewData.highPollenChip
-import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
-import com.weather.vibe.feature.home.preview.HomePreviewData.moderateAirQualityChip
-import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantVibe
+import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
+import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantDailyVibeCard
 import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
-import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
-import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
 import com.weather.vibe.feature.home.ui.HomeKeys.ALERT
 import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
@@ -61,7 +54,7 @@ internal fun ForecastList(
   onShareClick: () -> Unit
 ) {
 
-  val canShare = state.briefing is BriefingUiState.Loaded
+  val canShare = state.aiSuggestion.briefing is BriefingUiState.Loaded
   val horizontalPadding = remember { Modifier.padding(horizontal = Medium) }
   val listContentPadding = remember {
     PaddingValues(
@@ -82,7 +75,7 @@ internal fun ForecastList(
         .fillMaxSize()
         .testTag(FORECAST_LIST),
       contentPadding = listContentPadding,
-      verticalArrangement = Arrangement.spacedBy(Large)
+      verticalArrangement = Arrangement.spacedBy(Medium)
     ) {
       forecastItems(
         state = state,
@@ -114,11 +107,19 @@ private fun LazyListScope.forecastItems(
   item(key = HERO) {
     HomeHeroCard(
       modifier = horizontalPadding,
-      header = state.header,
-      currentWeather = state.currentWeather,
+      header = state.forecast.header,
+      currentWeather = state.forecast.currentWeather,
       onNavigateToSearch = onNavigateToSearch,
       onNavigateToSettings = onNavigateToSettings
     )
+  }
+  if (state.alert != null) {
+    item(key = ALERT) {
+      HomeAlertBanner(
+        modifier = horizontalPadding,
+        state = state.alert
+      )
+    }
   }
   if (state.dailyVibe != null) {
     item(key = DAILY_VIBE) {
@@ -130,37 +131,27 @@ private fun LazyListScope.forecastItems(
       )
     }
   }
-  if (state.alert != null) {
-    item(key = ALERT) {
-      HomeAlertBanner(
-        modifier = horizontalPadding,
-        state = state.alert
-      )
-    }
-  }
   item(key = BRIEFING) {
     WeatherBriefingCard(
       modifier = horizontalPadding,
-      airQualityChip = state.airQualityChip,
       onMusicClick = onMusicClick,
       onRetryClick = onRetrySuggestion,
-      pollenChip = state.pollenChip,
-      state = state.briefing
+      state = state.aiSuggestion.briefing
     )
   }
   item(key = HOURLY) {
-    HourlyForecastRow(state = state.hourlyForecast)
+    HourlyForecastRow(state = state.forecast.hourlyForecast)
   }
   item(key = DAILY) {
     DailyForecastList(
       modifier = horizontalPadding,
-      state = state.dailyForecast
+      state = state.forecast.dailyForecast
     )
   }
   item(key = DETAILS) {
     DetailsPreviewCard(
       modifier = horizontalPadding,
-      previewItems = state.detailsSections.previewItems,
+      previewItems = state.details.previewItems,
       onClick = onNavigateToDetails
     )
   }
@@ -172,17 +163,11 @@ private fun Preview() {
   WeatherVibeTheme {
     ForecastList(
       state = Loaded(
-        airQualityChip = moderateAirQualityChip,
+        aiSuggestion = aiSuggestionSection,
         alert = smogAlert,
-        currentWeather = warmDayCurrent,
-        dailyForecast = weekForecast,
-        dailyVibe = pleasantVibe,
-        detailsSections = detailsSections,
-        header = header,
-        hourlyForecast = eightHoursForecast,
-        playlist = loadedPlaylist,
-        pollenChip = highPollenChip,
-        sunriseSunset = afternoonSunInfo
+        dailyVibe = pleasantDailyVibeCard,
+        details = detailsSections,
+        forecast = forecastSection
       ),
       onNavigateToDetails = {},
       onNavigateToSearch = {},

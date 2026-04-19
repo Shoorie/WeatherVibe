@@ -14,15 +14,17 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeDefaults.MetricGridColumns
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.precipitation
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.precipitation
+import com.weather.vibe.feature.home.ui.HomeEmojis.uvIndex
+import com.weather.vibe.feature.home.ui.HomeEmojis.wind
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 internal fun MetricGrid(
   modifier: Modifier = Modifier,
-  items: List<MetricItemUiState>
+  items: ImmutableList<MetricItemUiState>
 ) {
   val rowsOfTwo = remember(items) { items.chunked(MetricGridColumns) }
   Column(
@@ -51,7 +53,7 @@ private fun Preview() {
   WeatherVibeTheme {
     MetricGrid(
       modifier = Modifier.padding(Padding.Medium),
-      items = listOf(
+      items = persistentListOf(
         MetricItemUiState(humidity(), "Humidity", "65%"),
         MetricItemUiState(precipitation(), "Precipitation", "20%"),
         MetricItemUiState(uvIndex(), "UV Index", "3.5"),

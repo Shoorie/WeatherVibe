@@ -4,8 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 internal data class DailyVibeUiState(
+  val contentDescription: String,
   val emoji: String,
-  val headline: String,
   val oneLiner: String,
-  val contentDescription: String
+  val summary: String
 )

@@ -18,7 +18,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.aiBriefingMusicHint
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingMusicHint
 import com.weather.vibe.feature.home.ui.HomeTextStyles
 
 @Composable

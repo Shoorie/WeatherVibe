@@ -12,8 +12,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.highTempLabel
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.lowTempLabel
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.highTempLabel
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.lowTempLabel
 
 @Composable
 internal fun HeroTempChips(

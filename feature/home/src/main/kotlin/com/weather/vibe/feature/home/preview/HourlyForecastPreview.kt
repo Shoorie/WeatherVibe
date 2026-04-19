@@ -2,8 +2,8 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.HourlyForecastUiState
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.moon
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
+import com.weather.vibe.feature.home.ui.HomeEmojis.moon
+import com.weather.vibe.feature.home.ui.HomeEmojis.partlyCloudy
 
 internal class HourlyForecastPreview :
   PreviewParameterProvider<HourlyForecastUiState> {

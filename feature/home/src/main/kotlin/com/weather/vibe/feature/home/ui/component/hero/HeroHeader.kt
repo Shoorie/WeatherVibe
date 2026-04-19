@@ -31,8 +31,10 @@ import com.weather.vibe.feature.home.presentation.state.HeaderUiState
 import com.weather.vibe.feature.home.preview.HomePreviewData
 import com.weather.vibe.feature.home.ui.HomeDefaults.HeroIconSize
 import com.weather.vibe.feature.home.ui.HomeDefaults.HeroSecondaryAlpha
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.searchCityContentDescription
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.settingsContentDescription
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.searchCityContentDescription
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.settingsContentDescription
+
+private val HeroSecondaryWhite = Color.White.copy(alpha = HeroSecondaryAlpha)
 
 @Composable
 internal fun HeroHeader(
@@ -58,8 +60,7 @@ internal fun HeroHeader(
       Text(
         text = header.dateLabel,
         style = typography.bodyMedium,
-        color = Color.White
-          .copy(alpha = HeroSecondaryAlpha)
+        color = HeroSecondaryWhite
       )
     }
     Row(horizontalArrangement = spacedBy(ExtraSmall)) {

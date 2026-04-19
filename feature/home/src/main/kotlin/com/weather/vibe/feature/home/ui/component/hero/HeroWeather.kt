@@ -24,7 +24,9 @@ import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiLarge
 import com.weather.vibe.feature.home.ui.HomeDefaults.HeroSecondaryAlpha
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.feelsLikeLabel
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.feelsLikeLabel
+
+private val HeroSecondaryWhite = Color.White.copy(alpha = HeroSecondaryAlpha)
 
 @Composable
 internal fun HeroWeather(
@@ -45,7 +47,7 @@ internal fun HeroWeather(
       Text(
         text = feelsLikeLabel(state.feelsLikeTemperature),
         style = typography.bodyMedium,
-        color = Color.White.copy(alpha = HeroSecondaryAlpha)
+        color = HeroSecondaryWhite
       )
       Spacer(modifier = Modifier.height(ExtraSmall))
       Text(

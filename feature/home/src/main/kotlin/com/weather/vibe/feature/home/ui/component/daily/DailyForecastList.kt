@@ -12,7 +12,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.preview.DailyForecastListPreview
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.dailyForecastTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.dailyForecastTitle
 
 @Composable
 internal fun DailyForecastList(

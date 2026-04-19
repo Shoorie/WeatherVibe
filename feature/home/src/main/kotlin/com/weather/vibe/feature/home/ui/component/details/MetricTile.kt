@@ -24,7 +24,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiMetric
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
 import com.weather.vibe.feature.home.ui.HomeTextStyles.semiBold
 
 @Composable

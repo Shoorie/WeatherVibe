@@ -22,11 +22,12 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.preview.SunArcSectionPreview
 import com.weather.vibe.feature.home.ui.HomeDefaults.EmojiMedium
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.dayLengthLabel
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunProgressContentDescription
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.sunSectionTitle
+import com.weather.vibe.feature.home.ui.HomeEmojis.sunny
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.dayLengthLabel
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.dayLengthValue
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunProgressContentDescription
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.sunSectionTitle
 
 @Composable
 internal fun SunArcSection(
@@ -57,7 +58,7 @@ internal fun SunArcSection(
       Spacer(modifier = Modifier.height(ExtraSmall))
       Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "${dayLengthLabel()}: ${state.dayLength}",
+        text = dayLengthValue(label = dayLengthLabel(), dayLength = state.dayLength),
         style = typography.bodySmall,
         color = colors.textTertiary,
         textAlign = TextAlign.Center

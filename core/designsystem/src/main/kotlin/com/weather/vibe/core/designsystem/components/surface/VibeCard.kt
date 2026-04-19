@@ -44,7 +44,13 @@ fun VibeCard(
 }
 
 private fun Modifier.withElevation(elevation: Dp, shape: Shape): Modifier =
-  if (elevation > NoElevation) shadow(elevation = elevation, shape = shape, clip = false) else this
+  if (elevation > NoElevation)
+    shadow(
+      elevation = elevation,
+      shape = shape,
+      clip = false
+    )
+  else this
 
 private val NoElevation: Dp = Dp(value = 0f)
 

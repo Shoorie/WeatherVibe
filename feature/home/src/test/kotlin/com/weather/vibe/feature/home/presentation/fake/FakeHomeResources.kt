@@ -11,13 +11,13 @@ import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.PRECIPITATION_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.PRESSURE_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.RAINFALL_LABEL
+import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_CHOOSER_TITLE
+import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_WORDMARK_HEADLINE
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.TODAY_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.UV_INDEX_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.VISIBILITY_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_GUSTS_LABEL
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_SPEED_LABEL
-import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_CHOOSER_TITLE
-import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.SHARE_WORDMARK_HEADLINE
 import com.weather.vibe.feature.home.presentation.fixture.HomeResourcesFixtures.WIND_SPEED_MAX_LABEL
 import com.weather.vibe.feature.home.ui.HomeResources
 import io.mockk.every

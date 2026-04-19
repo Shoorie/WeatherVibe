@@ -12,14 +12,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
-import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
+import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
-import com.weather.vibe.feature.home.preview.HomePreviewData.header
-import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
-import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantVibe
-import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
-import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
+import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
 import com.weather.vibe.feature.home.ui.component.mood.MoodPlaylistSheet
 import com.weather.vibe.feature.home.ui.screen.callbacks.MoodSheetCallbacks
 
@@ -61,7 +56,7 @@ internal fun WeatherContent(
       onGenreRemoveClick = onGenreRemoveClick,
       onOpenSpotify = sheetCallbacks.onOpenSpotify,
       onOpenYtMusic = sheetCallbacks.onOpenYtMusic,
-      state = state.playlist
+      state = state.aiSuggestion.playlist
     )
   }
 }
@@ -73,14 +68,9 @@ private fun Preview() {
   WeatherVibeTheme {
     WeatherContent(
       state = Loaded(
-        currentWeather = warmDayCurrent,
-        dailyForecast = weekForecast,
-        dailyVibe = pleasantVibe,
-        detailsSections = detailsSections,
-        header = header,
-        hourlyForecast = eightHoursForecast,
-        playlist = loadedPlaylist,
-        sunriseSunset = afternoonSunInfo
+        aiSuggestion = aiSuggestionSection,
+        details = detailsSections,
+        forecast = forecastSection
       ),
       onNavigateToDetails = {},
       onNavigateToSearch = {},

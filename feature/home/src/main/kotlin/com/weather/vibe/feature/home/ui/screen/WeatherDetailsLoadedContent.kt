@@ -13,22 +13,26 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
-import com.weather.vibe.feature.home.preview.HomePreviewData.afternoonSunInfo
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.eightHoursForecast
-import com.weather.vibe.feature.home.preview.HomePreviewData.header
-import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
-import com.weather.vibe.feature.home.preview.HomePreviewData.warmDayCurrent
-import com.weather.vibe.feature.home.preview.HomePreviewData.weekForecast
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
+import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
+import com.weather.vibe.feature.home.ui.HomeEmojis.cloud
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.wind
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.atmosphereSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.atmosphereSectionTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionTitle
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.ATMOSPHERE
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.ATMOSPHERE_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.BOTTOM_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.CONDITIONS
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.CONDITIONS_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.SUN
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.TOP_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.WIND
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.WIND_SPACER
 import com.weather.vibe.feature.home.ui.component.details.DetailSection
 import com.weather.vibe.feature.home.ui.component.sun.SunArcSection
 
@@ -42,36 +46,36 @@ internal fun WeatherDetailsLoadedContent(
       .fillMaxSize()
       .padding(horizontal = Medium)
   ) {
-    item { Spacer(modifier = Modifier.height(Small)) }
-    item { SunArcSection(state = state.sunriseSunset) }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = TOP_SPACER) { Spacer(modifier = Modifier.height(Small)) }
+    item(key = SUN) { SunArcSection(state = state.forecast.sunriseSunset) }
+    item(key = WIND_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = WIND) {
       DetailSection(
         emoji = wind(),
         title = windSectionTitle(),
         subtitle = windSectionSubtitle(),
-        items = state.detailsSections.wind
+        items = state.details.wind
       )
     }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = ATMOSPHERE_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = ATMOSPHERE) {
       DetailSection(
         emoji = humidity(),
         title = atmosphereSectionTitle(),
         subtitle = atmosphereSectionSubtitle(),
-        items = state.detailsSections.atmosphere
+        items = state.details.atmosphere
       )
     }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = CONDITIONS_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = CONDITIONS) {
       DetailSection(
         emoji = cloud(),
         title = conditionsSectionTitle(),
         subtitle = conditionsSectionSubtitle(),
-        items = state.detailsSections.conditions
+        items = state.details.conditions
       )
     }
-    item { Spacer(modifier = Modifier.height(ExtraLarge)) }
+    item(key = BOTTOM_SPACER) { Spacer(modifier = Modifier.height(ExtraLarge)) }
   }
 }
 
@@ -81,13 +85,8 @@ private fun Preview() {
   WeatherVibeTheme {
     WeatherDetailsLoadedContent(
       state = Loaded(
-        currentWeather = warmDayCurrent,
-        dailyForecast = weekForecast,
-        detailsSections = detailsSections,
-        header = header,
-        hourlyForecast = eightHoursForecast,
-        playlist = loadedPlaylist,
-        sunriseSunset = afternoonSunInfo
+        details = detailsSections,
+        forecast = forecastSection
       )
     )
   }

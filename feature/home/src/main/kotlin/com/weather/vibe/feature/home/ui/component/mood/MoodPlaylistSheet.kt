@@ -24,9 +24,9 @@ import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Generati
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.PlaylistUiState.Loading
 import com.weather.vibe.feature.home.preview.MoodPlaylistSheetPreview
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.headphones
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistLabel
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.moodPlaylistSubtitle
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistLabel
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistSubtitle
+import com.weather.vibe.feature.home.ui.HomeEmojis.headphones
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

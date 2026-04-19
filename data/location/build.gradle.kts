@@ -17,4 +17,7 @@ dependencies {
   implementation(projects.core.time)
 
   implementation(libs.koin.android)
+  implementation(libs.google.play.services.location)
+  implementation(libs.kotlinx.coroutines.android)
+  implementation(libs.kotlinx.coroutines.play.services)
 }

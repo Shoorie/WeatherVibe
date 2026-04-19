@@ -37,7 +37,7 @@ fun HomeScreen(
   onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
   onNavigateToSettings: () -> Unit = {},
-  selectedLocation: Location? = null
+  selectedLocation: Location
 ) {
 
   val viewModel = koinViewModel<HomeViewModel>()

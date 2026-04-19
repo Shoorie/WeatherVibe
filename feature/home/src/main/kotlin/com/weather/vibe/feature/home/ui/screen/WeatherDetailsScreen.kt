@@ -27,7 +27,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun WeatherDetailsScreen(
   onNavigateBack: () -> Unit = {},
-  selectedLocation: Location? = null
+  selectedLocation: Location
 ) {
 
   val viewModel = koinViewModel<DetailsViewModel> { parametersOf(selectedLocation) }

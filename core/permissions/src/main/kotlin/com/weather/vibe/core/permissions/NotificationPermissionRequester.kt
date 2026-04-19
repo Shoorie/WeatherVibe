@@ -1,9 +1,11 @@
 package com.weather.vibe.core.permissions
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 
@@ -37,6 +39,7 @@ private class NotificationToggleHandler(
   private val onDisable: () -> Unit
 ) : (Boolean) -> Unit {
 
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
   override fun invoke(enabled: Boolean) {
     when {
       !enabled -> onDisable()

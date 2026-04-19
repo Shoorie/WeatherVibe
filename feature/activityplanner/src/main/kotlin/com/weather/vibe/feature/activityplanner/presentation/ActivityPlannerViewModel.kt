@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.activityplanner.model.ActivityType
 import com.weather.vibe.domain.activityplanner.usecase.BuildActivityPlan
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.model.toCoordinatesOrDefault
+import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.GetWeather
 import com.weather.vibe.domain.weather.usecase.ObserveCachedWeather
@@ -17,7 +17,6 @@ import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlann
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Error
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Loading
 import com.weather.vibe.feature.activityplanner.ui.ActivityPlannerResources
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -37,7 +36,7 @@ import org.koin.core.annotation.InjectedParam
 
 @KoinViewModel
 internal class ActivityPlannerViewModel(
-  @InjectedParam private val selectedLocation: Location?,
+  @InjectedParam private val selectedLocation: Location,
   private val buildActivityPlan: BuildActivityPlan,
   private val getWeather: GetWeather,
   private val observeCachedWeather: ObserveCachedWeather,
@@ -45,7 +44,7 @@ internal class ActivityPlannerViewModel(
   private val stateFactory: ActivityPlannerStateFactory
 ) : ViewModel() {
 
-  private val coordinates = selectedLocation.toCoordinatesOrDefault()
+  private val coordinates = selectedLocation.toCoordinates()
   private val selectedActivity = MutableStateFlow(ActivityType.RUNNING)
 
   private val _state = MutableStateFlow<ActivityPlannerUiState>(Loading)
@@ -55,7 +54,6 @@ internal class ActivityPlannerViewModel(
   val event: Flow<ActivityPlannerEvent> = _event.receiveAsFlow()
 
   private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-    if (throwable is CancellationException) return@CoroutineExceptionHandler
     _state.update { Error(throwable.message ?: resources.defaultError()) }
   }
 

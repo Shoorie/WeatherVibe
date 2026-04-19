@@ -23,6 +23,7 @@ import com.weather.vibe.feature.home.ui.screen.callbacks.MoodSheetCallbacks
 internal fun WeatherContent(
   modifier: Modifier = Modifier,
   state: Loaded,
+  onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
@@ -41,6 +42,7 @@ internal fun WeatherContent(
   ForecastList(
     modifier = modifier,
     state = state,
+    onNavigateToActivityPlanner = onNavigateToActivityPlanner,
     onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch,
     onNavigateToSettings = onNavigateToSettings,
@@ -72,6 +74,7 @@ private fun Preview() {
         details = detailsSections,
         forecast = forecastSection
       ),
+      onNavigateToActivityPlanner = {},
       onNavigateToDetails = {},
       onNavigateToSearch = {},
       onNavigateToSettings = {},

@@ -50,10 +50,7 @@ internal fun WeatherBriefingCard(
         }
         if (state !is Loading) {
           Spacer(modifier = Modifier.height(Medium))
-          BriefingActionRow(
-            onMusicClick = onMusicClick,
-            showHint = state is Loaded
-          )
+          BriefingActionRow(onMusicClick = onMusicClick)
         }
       }
     }

@@ -22,3 +22,8 @@ data object SettingsRoute : NavKey
 data class WeatherDetailsRoute(
   val selectedLocation: Location? = null
 ) : NavKey
+
+@Serializable
+data class ActivityPlannerRoute(
+  val selectedLocation: Location? = null
+) : NavKey

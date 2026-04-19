@@ -24,18 +24,17 @@ import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionSubti
 import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionTitle
 import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionSubtitle
 import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionTitle
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.ATMOSPHERE
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.ATMOSPHERE_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.BOTTOM_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.CONDITIONS
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.CONDITIONS_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.SUN
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.TOP_SPACER
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.WIND
+import com.weather.vibe.feature.home.ui.WeatherDetailsKeys.WIND_SPACER
 import com.weather.vibe.feature.home.ui.component.details.DetailSection
 import com.weather.vibe.feature.home.ui.component.sun.SunArcSection
-
-private const val TOP_SPACER = "details-top-spacer"
-private const val SUN = "details-sun"
-private const val WIND_SPACER = "details-wind-spacer"
-private const val WIND = "details-wind"
-private const val ATMOSPHERE_SPACER = "details-atmosphere-spacer"
-private const val ATMOSPHERE = "details-atmosphere"
-private const val CONDITIONS_SPACER = "details-conditions-spacer"
-private const val CONDITIONS = "details-conditions"
-private const val BOTTOM_SPACER = "details-bottom-spacer"
 
 @Composable
 internal fun WeatherDetailsLoadedContent(

@@ -9,11 +9,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.button.IconActionButton
+import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.ActionButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
@@ -21,57 +24,78 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
+import com.weather.vibe.feature.home.presentation.state.DailyVibeCardUiState
 import com.weather.vibe.feature.home.preview.DailyVibePreview
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.dailyVibeSectionLabel
 import com.weather.vibe.feature.home.ui.HomeDefaults.DailyVibeMinHeight
-import com.weather.vibe.feature.home.ui.HomeResources.Painters.shareIcon
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.shareBriefContentDescription
+import com.weather.vibe.feature.home.ui.HomePainters.shareIcon
+import com.weather.vibe.feature.home.ui.HomeTexts.shareBriefContentDescription
+import com.weather.vibe.feature.home.ui.component.airquality.BriefAirChipRow
 
 @Composable
 internal fun DailyVibeCard(
   modifier: Modifier = Modifier,
   canShare: Boolean,
   onShareClick: () -> Unit,
-  state: DailyVibeUiState
+  state: DailyVibeCardUiState
 ) {
-  VibeCard(
-    modifier = modifier
-      .heightIn(min = DailyVibeMinHeight)
-      .semantics { heading() }
+  SectionLabel(
+    modifier = modifier.fillMaxWidth(),
+    text = dailyVibeSectionLabel(),
+    uppercase = true
   ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(Medium),
-      verticalAlignment = Alignment.CenterVertically
+    VibeCard(
+      modifier = Modifier.heightIn(min = DailyVibeMinHeight)
     ) {
-      Text(
-        text = state.emoji,
-        style = typography.headlineLarge
-      )
-      Column(
-        modifier = Modifier.weight(1f),
-        verticalArrangement = Arrangement.spacedBy(ExtraSmall)
-      ) {
-        Text(
-          text = state.headline,
-          color = colors.onPrimaryContainer,
-          style = typography.titleMedium
-        )
-        Text(
-          text = state.oneLiner,
-          color = colors.onPrimaryContainer,
-          style = typography.bodySmall
-        )
-      }
-      if (canShare) {
-        IconActionButton(
-          icon = shareIcon(),
-          contentDescription = shareBriefContentDescription(),
-          onClick = onShareClick,
-          contentColor = colors.onPrimaryContainer,
-          containerSize = ActionButton.Container,
-          iconSize = ActionButton.DefaultIconSize
-        )
+      Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+              heading()
+              contentDescription = state.vibe.contentDescription
+            },
+          horizontalArrangement = Arrangement.spacedBy(Medium),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Text(
+            modifier = Modifier.clearAndSetSemantics {},
+            text = state.vibe.emoji,
+            style = typography.headlineLarge
+          )
+          Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(ExtraSmall)
+          ) {
+            Text(
+              text = state.vibe.summary,
+              color = colors.onPrimaryContainer,
+              style = typography.titleMedium
+            )
+            Text(
+              text = state.vibe.oneLiner,
+              color = colors.onPrimaryContainer,
+              style = typography.bodySmall
+            )
+          }
+          if (canShare) {
+            IconActionButton(
+              icon = shareIcon(),
+              contentDescription = shareBriefContentDescription(),
+              onClick = onShareClick,
+              containerColor = colors.accent,
+              contentColor = colors.onAccent,
+              containerSize = ActionButton.Container,
+              iconSize = ActionButton.DefaultIconSize
+            )
+          }
+        }
+        if (state.airQualityChip != null || state.pollenChip != null) {
+          BriefAirChipRow(
+            airQualityChip = state.airQualityChip,
+            pollenChip = state.pollenChip
+          )
+        }
       }
     }
   }
@@ -81,7 +105,7 @@ internal fun DailyVibeCard(
 @Composable
 private fun Preview(
   @PreviewParameter(DailyVibePreview::class)
-  state: DailyVibeUiState
+  state: DailyVibeCardUiState
 ) {
   WeatherVibeTheme {
     DailyVibeCard(

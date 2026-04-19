@@ -15,17 +15,27 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.atmosphereSectionTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.conditionsSectionTitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionSubtitle
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.windSectionTitle
+import com.weather.vibe.feature.home.ui.HomeEmojis.cloud
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.wind
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.atmosphereSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.atmosphereSectionTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.conditionsSectionTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionSubtitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.windSectionTitle
 import com.weather.vibe.feature.home.ui.component.details.DetailSection
 import com.weather.vibe.feature.home.ui.component.sun.SunArcSection
+
+private const val TOP_SPACER = "details-top-spacer"
+private const val SUN = "details-sun"
+private const val WIND_SPACER = "details-wind-spacer"
+private const val WIND = "details-wind"
+private const val ATMOSPHERE_SPACER = "details-atmosphere-spacer"
+private const val ATMOSPHERE = "details-atmosphere"
+private const val CONDITIONS_SPACER = "details-conditions-spacer"
+private const val CONDITIONS = "details-conditions"
+private const val BOTTOM_SPACER = "details-bottom-spacer"
 
 @Composable
 internal fun WeatherDetailsLoadedContent(
@@ -37,10 +47,10 @@ internal fun WeatherDetailsLoadedContent(
       .fillMaxSize()
       .padding(horizontal = Medium)
   ) {
-    item { Spacer(modifier = Modifier.height(Small)) }
-    item { SunArcSection(state = state.forecast.sunriseSunset) }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = TOP_SPACER) { Spacer(modifier = Modifier.height(Small)) }
+    item(key = SUN) { SunArcSection(state = state.forecast.sunriseSunset) }
+    item(key = WIND_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = WIND) {
       DetailSection(
         emoji = wind(),
         title = windSectionTitle(),
@@ -48,8 +58,8 @@ internal fun WeatherDetailsLoadedContent(
         items = state.details.wind
       )
     }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = ATMOSPHERE_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = ATMOSPHERE) {
       DetailSection(
         emoji = humidity(),
         title = atmosphereSectionTitle(),
@@ -57,8 +67,8 @@ internal fun WeatherDetailsLoadedContent(
         items = state.details.atmosphere
       )
     }
-    item { Spacer(modifier = Modifier.height(Medium)) }
-    item {
+    item(key = CONDITIONS_SPACER) { Spacer(modifier = Modifier.height(Medium)) }
+    item(key = CONDITIONS) {
       DetailSection(
         emoji = cloud(),
         title = conditionsSectionTitle(),
@@ -66,7 +76,7 @@ internal fun WeatherDetailsLoadedContent(
         items = state.details.conditions
       )
     }
-    item { Spacer(modifier = Modifier.height(ExtraLarge)) }
+    item(key = BOTTOM_SPACER) { Spacer(modifier = Modifier.height(ExtraLarge)) }
   }
 }
 

@@ -2,14 +2,14 @@ package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.MetricItemUiState
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.dewDrop
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.gauge
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
+import com.weather.vibe.feature.home.ui.HomeEmojis.cloud
+import com.weather.vibe.feature.home.ui.HomeEmojis.compass
+import com.weather.vibe.feature.home.ui.HomeEmojis.dewDrop
+import com.weather.vibe.feature.home.ui.HomeEmojis.gauge
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.wind
+import com.weather.vibe.feature.home.ui.HomeEmojis.windGusts
+import com.weather.vibe.feature.home.ui.HomeEmojis.windMax
 import kotlinx.collections.immutable.toImmutableList
 
 internal class DetailSectionPreview :

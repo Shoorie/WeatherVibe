@@ -39,7 +39,7 @@ internal fun SunArcCanvas(
   val trackColor = colors.outline
   val accentColor = colors.accent
   val accentDarkColor = colors.accentDark
-  val glowColor = colors.accent.copy(alpha = GLOW_ALPHA)
+  val glowColor = remember(accentColor) { accentColor.copy(alpha = GLOW_ALPHA) }
   val gradientBrush = remember(accentColor, accentDarkColor) {
     Brush.linearGradient(colors = listOf(accentColor, accentDarkColor))
   }

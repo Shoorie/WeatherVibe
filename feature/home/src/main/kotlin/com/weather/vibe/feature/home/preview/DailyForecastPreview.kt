@@ -3,8 +3,8 @@ package com.weather.vibe.feature.home.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.snow
+import com.weather.vibe.feature.home.ui.HomeEmojis.partlyCloudy
+import com.weather.vibe.feature.home.ui.HomeEmojis.snow
 
 internal class DailyForecastPreview :
   PreviewParameterProvider<DailyForecastUiState> {

@@ -4,7 +4,9 @@ import org.koin.core.annotation.Factory
 
 @Factory
 internal data class HomeFactories(
+  val aiSuggestion: AiSuggestionSectionFactory,
+  val environment: EnvironmentSectionFactory,
+  val forecast: ForecastSectionFactory,
   val metrics: MetricsStateFactory,
-  val playlist: PlaylistStateFactory,
-  val sunriseSunset: SunriseSunsetStateFactory
+  val sharePoster: SharePosterFactory
 )

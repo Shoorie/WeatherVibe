@@ -3,7 +3,7 @@ package com.weather.vibe.feature.home.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.core.designsystem.theme.share.ShareGradientKey
 import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis
+import com.weather.vibe.feature.home.ui.HomeEmojis as Emojis
 
 internal class SharePosterPreviewProvider : PreviewParameterProvider<SharePosterUiState> {
 

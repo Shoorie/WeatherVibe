@@ -3,15 +3,13 @@ package com.weather.vibe.feature.home.ui.component.mood
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.button.BrandButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.BrandColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.feature.home.ui.HomeResources.Painters.ytMusicIcon
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.openInYtMusic
-
-private val YtMusicRed = Color(0xFFFF0000)
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.openInYtMusic
+import com.weather.vibe.feature.home.ui.HomePainters.ytMusicIcon
 
 @Composable
 internal fun YtMusicButton(
@@ -22,7 +20,7 @@ internal fun YtMusicButton(
     modifier = modifier,
     icon = ytMusicIcon(),
     text = openInYtMusic(),
-    containerColor = YtMusicRed,
+    containerColor = BrandColors.YouTubeMusicRed,
     onClick = onClick
   )
 }

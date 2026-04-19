@@ -6,9 +6,9 @@ import com.weather.vibe.feature.home.presentation.state.CurrentWeatherUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastUiState
 import com.weather.vibe.feature.home.presentation.state.DailyForecastsUiState
 import com.weather.vibe.feature.home.presentation.state.DailyRangeUiState
+import com.weather.vibe.feature.home.presentation.state.DailyVibeCardUiState
 import com.weather.vibe.feature.home.presentation.state.DailyVibeUiState
 import com.weather.vibe.feature.home.presentation.state.DetailsSectionsUiState
-import com.weather.vibe.feature.home.presentation.state.EnvironmentSectionUiState
 import com.weather.vibe.feature.home.presentation.state.ForecastSectionUiState
 import com.weather.vibe.feature.home.presentation.state.GenreChipUiState
 import com.weather.vibe.feature.home.presentation.state.HeaderUiState
@@ -20,24 +20,24 @@ import com.weather.vibe.feature.home.presentation.state.PlaylistUiState
 import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.presentation.state.SunriseSunsetUiState
 import com.weather.vibe.feature.home.ui.HomeAirQualityResources.Emojis
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.cloud
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.compass
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.dewDrop
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.eye
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.gauge
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.humidity
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.mostlySunny
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.partlyCloudy
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.precipitation
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.rainfall
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunShower
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.sunny
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.uvIndex
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.vibePleasant
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.vibeRough
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.wind
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windGusts
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.windMax
+import com.weather.vibe.feature.home.ui.HomeEmojis.cloud
+import com.weather.vibe.feature.home.ui.HomeEmojis.compass
+import com.weather.vibe.feature.home.ui.HomeEmojis.dewDrop
+import com.weather.vibe.feature.home.ui.HomeEmojis.eye
+import com.weather.vibe.feature.home.ui.HomeEmojis.gauge
+import com.weather.vibe.feature.home.ui.HomeEmojis.humidity
+import com.weather.vibe.feature.home.ui.HomeEmojis.mostlySunny
+import com.weather.vibe.feature.home.ui.HomeEmojis.partlyCloudy
+import com.weather.vibe.feature.home.ui.HomeEmojis.precipitation
+import com.weather.vibe.feature.home.ui.HomeEmojis.rainfall
+import com.weather.vibe.feature.home.ui.HomeEmojis.sunShower
+import com.weather.vibe.feature.home.ui.HomeEmojis.sunny
+import com.weather.vibe.feature.home.ui.HomeEmojis.uvIndex
+import com.weather.vibe.feature.home.ui.HomeEmojis.vibePleasant
+import com.weather.vibe.feature.home.ui.HomeEmojis.vibeRough
+import com.weather.vibe.feature.home.ui.HomeEmojis.wind
+import com.weather.vibe.feature.home.ui.HomeEmojis.windGusts
+import com.weather.vibe.feature.home.ui.HomeEmojis.windMax
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -62,18 +62,18 @@ internal object HomePreviewData {
 
   val pleasantVibe: DailyVibeUiState =
     DailyVibeUiState(
+      contentDescription = "Pleasant vibes, vibe score 78 out of 100. Solid vibes all around.",
       emoji = vibePleasant(),
-      headline = "78/100  ·  Pleasant vibes",
       oneLiner = "Solid vibes all around.",
-      contentDescription = "Pleasant vibes, vibe score 78 out of 100. Solid vibes all around."
+      summary = "78/100  ·  Pleasant vibes"
     )
 
   val roughVibe: DailyVibeUiState =
     DailyVibeUiState(
+      contentDescription = "Rough out there, vibe score 22 out of 100. Stay in, queue up a show.",
       emoji = vibeRough(),
-      headline = "22/100  ·  Rough out there",
       oneLiner = "Stay in, queue up a show.",
-      contentDescription = "Rough out there, vibe score 22 out of 100. Stay in, queue up a show."
+      summary = "22/100  ·  Rough out there"
     )
 
   val afternoonSunInfo: SunriseSunsetUiState =
@@ -306,15 +306,19 @@ internal object HomePreviewData {
     )
 
   val aiSuggestionSection: AiSuggestionSectionUiState =
-    AiSuggestionSectionUiState(
-      dailyVibe = pleasantVibe,
-      playlist = loadedPlaylist
+    AiSuggestionSectionUiState(playlist = loadedPlaylist)
+
+  val pleasantDailyVibeCard: DailyVibeCardUiState =
+    DailyVibeCardUiState(
+      airQualityChip = moderateAirQualityChip,
+      pollenChip = highPollenChip,
+      vibe = pleasantVibe
     )
 
-  val environmentSection: EnvironmentSectionUiState =
-    EnvironmentSectionUiState(
+  val roughDailyVibeCard: DailyVibeCardUiState =
+    DailyVibeCardUiState(
       airQualityChip = moderateAirQualityChip,
-      alert = smogAlert,
-      pollenChip = highPollenChip
+      pollenChip = highPollenChip,
+      vibe = roughVibe
     )
 }

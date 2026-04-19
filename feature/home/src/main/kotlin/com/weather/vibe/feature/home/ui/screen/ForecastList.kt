@@ -15,15 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.environmentSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
+import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantDailyVibeCard
+import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
 import com.weather.vibe.feature.home.ui.HomeKeys.ALERT
 import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
@@ -75,7 +75,7 @@ internal fun ForecastList(
         .fillMaxSize()
         .testTag(FORECAST_LIST),
       contentPadding = listContentPadding,
-      verticalArrangement = Arrangement.spacedBy(Large)
+      verticalArrangement = Arrangement.spacedBy(Medium)
     ) {
       forecastItems(
         state = state,
@@ -113,31 +113,29 @@ private fun LazyListScope.forecastItems(
       onNavigateToSettings = onNavigateToSettings
     )
   }
-  if (state.aiSuggestion.dailyVibe != null) {
+  if (state.alert != null) {
+    item(key = ALERT) {
+      HomeAlertBanner(
+        modifier = horizontalPadding,
+        state = state.alert
+      )
+    }
+  }
+  if (state.dailyVibe != null) {
     item(key = DAILY_VIBE) {
       DailyVibeCard(
         modifier = horizontalPadding,
         canShare = canShare,
         onShareClick = onShareClick,
-        state = state.aiSuggestion.dailyVibe
-      )
-    }
-  }
-  if (state.environment.alert != null) {
-    item(key = ALERT) {
-      HomeAlertBanner(
-        modifier = horizontalPadding,
-        state = state.environment.alert
+        state = state.dailyVibe
       )
     }
   }
   item(key = BRIEFING) {
     WeatherBriefingCard(
       modifier = horizontalPadding,
-      airQualityChip = state.environment.airQualityChip,
       onMusicClick = onMusicClick,
       onRetryClick = onRetrySuggestion,
-      pollenChip = state.environment.pollenChip,
       state = state.aiSuggestion.briefing
     )
   }
@@ -166,8 +164,9 @@ private fun Preview() {
     ForecastList(
       state = Loaded(
         aiSuggestion = aiSuggestionSection,
+        alert = smogAlert,
+        dailyVibe = pleasantDailyVibeCard,
         details = detailsSections,
-        environment = environmentSection,
         forecast = forecastSection
       ),
       onNavigateToDetails = {},

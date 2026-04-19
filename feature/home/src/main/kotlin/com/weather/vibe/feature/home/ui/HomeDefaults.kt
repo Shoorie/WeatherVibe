@@ -21,6 +21,7 @@ internal object HomeDefaults {
   val SunDotRadius = 6.dp
   val ViewAllMinHeight = 48.dp
 
+  val EmojiError = 40.sp
   val EmojiLarge = 96.sp
   val EmojiMedium = 22.sp
   val EmojiMetric = 24.sp

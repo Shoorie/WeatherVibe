@@ -11,8 +11,9 @@ internal sealed interface HomeUiState {
   @Immutable
   data class Loaded(
     val aiSuggestion: AiSuggestionSectionUiState = AiSuggestionSectionUiState(),
+    val alert: HomeAlertUiState? = null,
+    val dailyVibe: DailyVibeCardUiState? = null,
     val details: DetailsSectionsUiState,
-    val environment: EnvironmentSectionUiState = EnvironmentSectionUiState(),
     val forecast: ForecastSectionUiState,
     val isRefreshing: Boolean = false
   ) : HomeUiState

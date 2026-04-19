@@ -1,10 +1,6 @@
 package com.weather.vibe.feature.home.ui
 
 import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.vibe.model.VibeMood
 import com.weather.vibe.domain.vibe.model.VibeMood.DREARY
 import com.weather.vibe.domain.vibe.model.VibeMood.OKAY
@@ -78,9 +74,9 @@ internal class HomeResources(private val context: Context) {
   fun shareChooserTitle(): String =
     context.getString(R.string.share_brief_chooser_title)
 
-  fun dailyVibeHeadline(score: Int, mood: VibeMood): String =
+  fun dailyVibeSummary(score: Int, mood: VibeMood): String =
     context.getString(
-      R.string.daily_vibe_headline_format,
+      R.string.daily_vibe_summary_format,
       context.getString(R.string.daily_vibe_score_format, score),
       context.getString(mood.moodLabelRes())
     )
@@ -92,11 +88,11 @@ internal class HomeResources(private val context: Context) {
     context.getString(mood.oneLinerRes())
 
   fun dailyVibeEmoji(mood: VibeMood): String = when (mood) {
-    RADIANT -> Emojis.vibeRadiant()
-    PLEASANT -> Emojis.vibePleasant()
-    OKAY -> Emojis.vibeOkay()
-    DREARY -> Emojis.vibeDreary()
-    ROUGH -> Emojis.vibeRough()
+    RADIANT -> HomeEmojis.vibeRadiant()
+    PLEASANT -> HomeEmojis.vibePleasant()
+    OKAY -> HomeEmojis.vibeOkay()
+    DREARY -> HomeEmojis.vibeDreary()
+    ROUGH -> HomeEmojis.vibeRough()
   }
 
   fun dailyVibeContentDescription(mood: VibeMood, score: Int): String =
@@ -121,223 +117,6 @@ internal class HomeResources(private val context: Context) {
     OKAY -> R.string.daily_vibe_oneliner_okay
     DREARY -> R.string.daily_vibe_oneliner_dreary
     ROUGH -> R.string.daily_vibe_oneliner_rough
-  }
-
-  object Painters {
-
-    @Composable
-    fun musicIcon(): Painter =
-      painterResource(id = R.drawable.ic_music)
-
-    @Composable
-    fun shareIcon(): Painter =
-      painterResource(id = R.drawable.ic_share)
-
-    @Composable
-    fun spotifyIcon(): Painter =
-      painterResource(id = R.drawable.ic_spotify)
-
-    @Composable
-    fun ytMusicIcon(): Painter =
-      painterResource(id = R.drawable.ic_yt_music)
-  }
-
-  object Emojis {
-    fun cloud(): String = "\u2601\uFE0F"
-    fun compass(): String = "\uD83E\uDDED"
-    fun dewDrop(): String = "\uD83C\uDF3F"
-    fun error(): String = "\u26A1"
-    fun eye(): String = "\uD83D\uDC41\uFE0F"
-    fun gauge(): String = "\uD83D\uDD36"
-    fun headphones(): String = "\uD83C\uDFA7"
-    fun humidity(): String = "\uD83D\uDCA7"
-    fun moon(): String = "\uD83C\uDF19"
-    fun mostlySunny(): String = "\uD83C\uDF24\uFE0F"
-    fun partlyCloudy(): String = "\u26C5"
-    fun precipitation(): String = "\uD83C\uDF02"
-    fun rainfall(): String = "\uD83C\uDF27\uFE0F"
-    fun snow(): String = "\u2744\uFE0F"
-    fun sunny(): String = "\u2600\uFE0F"
-    fun sunrise(): String = "\uD83C\uDF05"
-    fun sunShower(): String = "\uD83C\uDF26\uFE0F"
-    fun sunset(): String = "\uD83C\uDF07"
-    fun thunderstorm(): String = "\u26C8\uFE0F"
-    fun uvIndex(): String = "\u2600\uFE0F"
-    fun wind(): String = "\uD83D\uDCA8"
-    fun windGusts(): String = "\uD83C\uDF2C\uFE0F"
-    fun windMax(): String = "\uD83D\uDCA5"
-    fun vibeRadiant(): String = "\uD83E\uDD29"
-    fun vibePleasant(): String = "\uD83D\uDE0A"
-    fun vibeOkay(): String = "\uD83D\uDE42"
-    fun vibeDreary(): String = "\uD83D\uDE15"
-    fun vibeRough(): String = "\uD83D\uDE29"
-  }
-
-  object Texts {
-
-    @Composable
-    fun aiBriefingLabel(): String =
-      stringResource(R.string.ai_briefing_label)
-
-    @Composable
-    fun aiBriefingMusicHint(): String =
-      stringResource(R.string.ai_briefing_music_hint)
-
-    @Composable
-    fun aiBriefingRetryLabel(): String =
-      stringResource(R.string.ai_briefing_retry)
-
-    @Composable
-    fun aiBriefingRetryContentDescription(): String =
-      stringResource(R.string.ai_briefing_retry_content_description)
-
-    @Composable
-    fun aiBriefingUnavailable(): String =
-      stringResource(R.string.ai_briefing_unavailable)
-
-    @Composable
-    fun aiBriefingOutfitLabel(): String =
-      stringResource(R.string.ai_briefing_outfit_label)
-
-    @Composable
-    fun findingBetterSuggestionsLabel(): String =
-      stringResource(R.string.finding_better_suggestions)
-
-    @Composable
-    fun atmosphereSectionSubtitle(): String =
-      stringResource(R.string.atmosphere_section_subtitle)
-
-    @Composable
-    fun atmosphereSectionTitle(): String =
-      stringResource(R.string.atmosphere_section_title)
-
-    @Composable
-    fun backContentDescription(): String =
-      stringResource(R.string.back_content_description)
-
-    @Composable
-    fun conditionsSectionSubtitle(): String =
-      stringResource(R.string.conditions_section_subtitle)
-
-    @Composable
-    fun conditionsSectionTitle(): String =
-      stringResource(R.string.conditions_section_title)
-
-    @Composable
-    fun dailyForecastTitle(): String =
-      stringResource(R.string.daily_forecast_title)
-
-    @Composable
-    fun dayLengthLabel(): String =
-      stringResource(R.string.day_length_label)
-
-    @Composable
-    fun feelsLikeLabel(temperature: String): String =
-      stringResource(R.string.feels_like_label, temperature)
-
-    @Composable
-    fun genreRemoveContentDescription(genre: String): String =
-      stringResource(R.string.genre_remove_content_description, genre)
-
-    @Composable
-    fun highTempLabel(temperature: String): String =
-      stringResource(R.string.high_temp_format, temperature)
-
-    @Composable
-    fun hourlyForecastTitle(): String =
-      stringResource(R.string.hourly_forecast_title)
-
-    @Composable
-    fun lowTempLabel(temperature: String): String =
-      stringResource(R.string.low_temp_format, temperature)
-
-    @Composable
-    fun moodPlaylistContentDescription(): String =
-      stringResource(R.string.mood_playlist_content_description)
-
-    @Composable
-    fun moodPlaylistErrorTitle(): String =
-      stringResource(R.string.mood_playlist_error_title)
-
-    @Composable
-    fun moodPlaylistLabel(): String =
-      stringResource(R.string.mood_playlist_label)
-
-    @Composable
-    fun moodPlaylistSubtitle(): String =
-      stringResource(R.string.mood_playlist_subtitle)
-
-    @Composable
-    fun moodPlaylistUnavailable(): String =
-      stringResource(R.string.mood_playlist_unavailable)
-
-    @Composable
-    fun openInSpotify(): String =
-      stringResource(R.string.open_in_spotify)
-
-    @Composable
-    fun openInYtMusic(): String =
-      stringResource(R.string.open_in_yt_music)
-
-    @Composable
-    fun searchCityContentDescription(): String =
-      stringResource(R.string.search_city_content_description)
-
-    @Composable
-    fun settingsContentDescription(): String =
-      stringResource(R.string.settings_content_description)
-
-    @Composable
-    fun sunSectionSubtitle(): String =
-      stringResource(R.string.sun_section_subtitle)
-
-    @Composable
-    fun sunSectionTitle(): String =
-      stringResource(R.string.sun_section_title)
-
-    @Composable
-    fun sunriseLabel(): String =
-      stringResource(R.string.sunrise_label)
-
-    @Composable
-    fun sunsetLabel(): String =
-      stringResource(R.string.sunset_label)
-
-    @Composable
-    fun sunriseAt(time: String): String =
-      stringResource(R.string.sunrise_at_format, time)
-
-    @Composable
-    fun sunsetAt(time: String): String =
-      stringResource(R.string.sunset_at_format, time)
-
-    @Composable
-    fun sunProgressContentDescription(sunriseTime: String, sunsetTime: String): String =
-      stringResource(R.string.sun_progress_content_description, sunriseTime, sunsetTime)
-
-    @Composable
-    fun shareBriefContentDescription(): String =
-      stringResource(R.string.share_brief_content_description)
-
-    @Composable
-    fun tryAgainContentDescription(): String =
-      stringResource(R.string.try_again_content_description)
-
-    @Composable
-    fun weatherDetailsTitle(): String =
-      stringResource(R.string.weather_details_title)
-
-    @Composable
-    fun weatherDetailsViewAll(): String =
-      stringResource(R.string.weather_details_view_all)
-
-    @Composable
-    fun windSectionSubtitle(): String =
-      stringResource(R.string.wind_section_subtitle)
-
-    @Composable
-    fun windSectionTitle(): String =
-      stringResource(R.string.wind_section_title)
   }
 
   private companion object {

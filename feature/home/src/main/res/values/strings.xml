@@ -1,5 +1,6 @@
 <resources>
-  <string name="ai_briefing_label">Today\'s Vibe</string>
+  <string name="ai_briefing_label">Weather Briefing</string>
+  <string name="daily_vibe_section_label">Today\'s Vibe</string>
   <string name="ai_briefing_music_hint">Discover today\'s sounds</string>
   <string name="ai_briefing_unavailable">Briefing unavailable</string>
   <string name="ai_briefing_outfit_label">What to wear:</string>
@@ -13,6 +14,7 @@
   <string name="daily_forecast_title">7-Day Forecast</string>
   <string name="day_length_format">%1$dh %2$dm</string>
   <string name="day_length_label">Day length</string>
+  <string name="day_length_value_format">%1$s: %2$s</string>
   <string name="dew_point_label">Dew Point</string>
   <string name="direction_label">Direction</string>
   <string name="error_unexpected">An unexpected error occurred</string>
@@ -71,7 +73,7 @@
   <string name="condition_unknown">Unknown</string>
 
   <string name="daily_vibe_score_format">%1$d/100</string>
-  <string name="daily_vibe_headline_format">%1$s  ·  %2$s</string>
+  <string name="daily_vibe_summary_format">%1$s  ·  %2$s</string>
   <string name="daily_vibe_mood_radiant">Radiant day</string>
   <string name="daily_vibe_mood_pleasant">Pleasant vibes</string>
   <string name="daily_vibe_mood_okay">Okay day</string>

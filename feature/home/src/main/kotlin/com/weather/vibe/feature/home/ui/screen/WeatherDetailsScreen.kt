@@ -20,7 +20,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreview
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.weatherDetailsTitle
+import com.weather.vibe.feature.home.ui.HomeForecastTexts.weatherDetailsTitle
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -56,8 +56,12 @@ internal fun WeatherDetailsContent(
     }
   ) { innerPadding ->
     when (state) {
-      is Loading,
-      is Error -> LoadingIndicator(modifier = Modifier.fillMaxSize())
+      is Loading -> LoadingIndicator(modifier = Modifier.fillMaxSize())
+      is Error -> HomeErrorContent(
+        modifier = Modifier.padding(innerPadding),
+        error = state.message,
+        onRetry = onNavigateBack
+      )
       is Loaded -> WeatherDetailsLoadedContent(
         modifier = Modifier.padding(innerPadding),
         state = state

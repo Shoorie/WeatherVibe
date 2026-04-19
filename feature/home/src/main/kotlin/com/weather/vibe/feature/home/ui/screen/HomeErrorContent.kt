@@ -25,8 +25,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.Emojis.error
-import com.weather.vibe.feature.home.ui.HomeResources.Texts.tryAgainContentDescription
+import com.weather.vibe.feature.home.ui.HomeEmojis.error
+import com.weather.vibe.feature.home.ui.HomeTexts.tryAgainContentDescription
 
 @Composable
 internal fun HomeErrorContent(

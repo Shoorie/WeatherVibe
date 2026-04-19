@@ -8,8 +8,9 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
-import com.weather.vibe.feature.home.preview.HomePreviewData.environmentSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
+import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantDailyVibeCard
+import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
 
 internal class HomePreview :
   PreviewParameterProvider<HomeUiState> {
@@ -33,8 +34,9 @@ internal class HomePreview :
             "great for a walk before the evening rain."
         )
       ),
+      alert = smogAlert,
+      dailyVibe = pleasantDailyVibeCard,
       details = detailsSections,
-      environment = environmentSection,
       forecast = forecastSection
     )
 

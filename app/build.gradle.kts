@@ -108,6 +108,7 @@ dependencies {
   implementation(projects.scheduling)
   implementation(projects.feature.activityplanner)
   implementation(projects.feature.home)
+  implementation(projects.feature.onboarding)
   implementation(projects.feature.search)
   implementation(projects.feature.settings)
   implementation(projects.feature.splash)

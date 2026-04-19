@@ -2,7 +2,6 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.airquality.usecase.GetEnvironmentalReadings
 import com.weather.vibe.domain.alerts.usecase.ResolveHomeAlert
-import com.weather.vibe.domain.location.usecase.GetStartingCoordinates
 import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.vibe.usecase.CalculateDailyVibe
@@ -21,7 +20,6 @@ internal data class HomeUseCases(
   val generateWeatherSuggestion: GenerateWeatherSuggestion,
   val getCurrentWeatherKey: GetCurrentWeatherKey,
   val getEnvironmentalReadings: GetEnvironmentalReadings,
-  val getStartingCoordinates: GetStartingCoordinates,
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   val observeUserSettings: ObserveUserSettings,

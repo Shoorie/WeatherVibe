@@ -5,3 +5,7 @@ plugins {
 android {
   namespace = "com.weather.vibe.feature.splash"
 }
+
+dependencies {
+  implementation(projects.domain.location)
+}

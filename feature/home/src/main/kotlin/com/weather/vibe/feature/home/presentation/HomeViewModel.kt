@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.core.sharing.ShareBitmapAsImage
 import com.weather.vibe.domain.airquality.model.EnvironmentalReadings
+import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
@@ -35,7 +36,6 @@ import com.weather.vibe.feature.home.presentation.state.withDailyVibe
 import com.weather.vibe.feature.home.presentation.state.withPlaylist
 import com.weather.vibe.feature.home.presentation.state.withSuggestion
 import com.weather.vibe.feature.home.ui.HomeResources
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -71,7 +71,6 @@ internal class HomeViewModel(
   private val snapshot = MutableStateFlow(HomeSnapshot())
   private var currentCoordinates: Coordinates? = null
   private var currentSettings: UserSettings? = null
-  private var initializeJob: Job? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
   private var invalidateJob: Job? = null
@@ -79,10 +78,7 @@ internal class HomeViewModel(
   private var dailyVibeJob: Job? = null
   private var posterShareJob: Job? = null
 
-  private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-    if (throwable is CancellationException) return@CoroutineExceptionHandler
-    showError(throwable)
-  }
+  private val errorHandler = CoroutineExceptionHandler { _, throwable -> showError(throwable) }
 
   fun dispatch(action: HomeAction) {
     when (action) {
@@ -96,12 +92,9 @@ internal class HomeViewModel(
   }
 
   private fun onInitialize(action: Initialize) {
-    initializeJob?.cancel()
-    initializeJob = viewModelScope.launch(errorHandler) {
-      val coordinates = useCases.getStartingCoordinates(action.location)
-      if (isAlreadyShowing(coordinates)) return@launch
-      observeWeather(coordinates)
-    }
+    val coordinates = action.location.toCoordinates()
+    if (isAlreadyShowing(coordinates)) return
+    observeWeather(coordinates)
   }
 
   private fun isAlreadyShowing(coordinates: Coordinates): Boolean {

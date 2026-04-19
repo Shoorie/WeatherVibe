@@ -1,7 +1,10 @@
 package com.weather.vibe.data.location.di
 
 import android.content.Context
+import android.location.Geocoder
 import androidx.room.Room
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.weather.vibe.data.location.local.LocationDatabase
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
 import org.koin.core.annotation.ComponentScan
@@ -23,8 +26,14 @@ class DataLocationModule {
     ).build()
 
   @Single
-  fun provideRecentLocationDao(
-    database: LocationDatabase
-  ): RecentLocationDao =
+  fun provideRecentLocationDao(database: LocationDatabase): RecentLocationDao =
     database.recentLocationDao()
+
+  @Single
+  fun provideGeocoder(context: Context): Geocoder =
+    Geocoder(context)
+
+  @Single
+  fun provideFusedLocationClient(context: Context): FusedLocationProviderClient =
+    LocationServices.getFusedLocationProviderClient(context)
 }

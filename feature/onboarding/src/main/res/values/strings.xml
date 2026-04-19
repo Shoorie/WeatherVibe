@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="onboarding_headline">Weather, right where you are</string>
+  <string name="onboarding_subtitle_idle">Let us pinpoint your spot — the weather will follow you.</string>
+  <string name="onboarding_subtitle_requesting">Waiting for your permission…</string>
+  <string name="onboarding_subtitle_fetching">Pinpointing your location…</string>
+  <string name="onboarding_subtitle_permanently_denied">Location access is off. Turn it on in app settings and the weather will find you on its own.</string>
+  <string name="onboarding_primary_cta_location">Use my location</string>
+  <string name="onboarding_primary_cta_settings">Open settings</string>
+  <string name="onboarding_secondary_cta">I\'ll pick a city</string>
+  <string name="onboarding_privacy_note">We use coordinates only to fetch weather. Nothing leaves your device.</string>
+  <string name="onboarding_location_indicator_a11y">Location indicator</string>
+</resources>

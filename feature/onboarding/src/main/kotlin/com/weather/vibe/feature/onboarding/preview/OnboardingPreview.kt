@@ -45,7 +45,7 @@ internal class OnboardingPreview :
   private val permanentlyDenied: OnboardingUiState =
     OnboardingUiState(
       phase = PERMISSION_PERMANENTLY_DENIED,
-      subtitle = "Location access is off. Turn it on in app settings and the weather will find you.",
+      subtitle = "Location access is off. Enable it in app settings.",
       primaryLabel = "Open settings",
       primaryAction = OPEN_SETTINGS,
       primaryEnabled = true,

@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.weather.vibe.feature.activityplanner.ui.screen.ActivityPlannerScreen
 import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.feature.home.ui.screen.WeatherDetailsScreen
 import com.weather.vibe.feature.search.ui.screen.SearchScreen
@@ -35,6 +36,7 @@ fun WeatherVibeNavHost(
         is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
         is HomeRoute -> NavEntry(key) { HomeEntry(key, backStack) }
         is WeatherDetailsRoute -> NavEntry(key) { DetailsEntry(key, backStack) }
+        is ActivityPlannerRoute -> NavEntry(key) { ActivityPlannerEntry(key, backStack) }
         is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
         is SettingsRoute -> NavEntry(key) { SettingsEntry(backStack) }
         else -> NavEntry(key) {}
@@ -59,9 +61,21 @@ private fun HomeEntry(
   backStack: MutableList<NavKey>
 ) {
   HomeScreen(
+    onNavigateToActivityPlanner = { backStack.add(ActivityPlannerRoute(route.selectedLocation)) },
     onNavigateToDetails = { backStack.add(WeatherDetailsRoute(route.selectedLocation)) },
     onNavigateToSearch = { backStack.add(SearchRoute) },
     onNavigateToSettings = { backStack.add(SettingsRoute) },
+    selectedLocation = route.selectedLocation
+  )
+}
+
+@Composable
+private fun ActivityPlannerEntry(
+  route: ActivityPlannerRoute,
+  backStack: MutableList<NavKey>
+) {
+  ActivityPlannerScreen(
+    onNavigateBack = { backStack.removeLastOrNull() },
     selectedLocation = route.selectedLocation
   )
 }

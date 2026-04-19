@@ -7,6 +7,10 @@ import com.weather.vibe.feature.home.R
 internal object HomeTexts {
 
   @Composable
+  fun alertSectionLabel(): String =
+    stringResource(R.string.home_alert_section_label)
+
+  @Composable
   fun shareBriefContentDescription(): String =
     stringResource(R.string.share_brief_content_description)
 

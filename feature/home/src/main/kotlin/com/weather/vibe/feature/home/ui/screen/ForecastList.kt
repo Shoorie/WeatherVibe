@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
@@ -24,6 +25,7 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.pleasantDailyVibeCard
 import com.weather.vibe.feature.home.preview.HomePreviewData.smogAlert
+import com.weather.vibe.feature.home.ui.HomeKeys.ACTIVITY_PLANNER
 import com.weather.vibe.feature.home.ui.HomeKeys.ALERT
 import com.weather.vibe.feature.home.ui.HomeKeys.BRIEFING
 import com.weather.vibe.feature.home.ui.HomeKeys.DAILY
@@ -32,6 +34,7 @@ import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
 import com.weather.vibe.feature.home.ui.HomeKeys.HERO
 import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
 import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
+import com.weather.vibe.feature.home.ui.component.activityplanner.ActivityPlannerTeaserCard
 import com.weather.vibe.feature.home.ui.component.alert.HomeAlertBanner
 import com.weather.vibe.feature.home.ui.component.briefing.WeatherBriefingCard
 import com.weather.vibe.feature.home.ui.component.daily.DailyForecastList
@@ -45,6 +48,7 @@ import com.weather.vibe.feature.home.ui.component.vibe.DailyVibeCard
 internal fun ForecastList(
   modifier: Modifier = Modifier,
   state: Loaded,
+  onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
@@ -75,12 +79,13 @@ internal fun ForecastList(
         .fillMaxSize()
         .testTag(FORECAST_LIST),
       contentPadding = listContentPadding,
-      verticalArrangement = Arrangement.spacedBy(Medium)
+      verticalArrangement = Arrangement.spacedBy(Large)
     ) {
       forecastItems(
         state = state,
         canShare = canShare,
         horizontalPadding = horizontalPadding,
+        onNavigateToActivityPlanner = onNavigateToActivityPlanner,
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onNavigateToSettings = onNavigateToSettings,
@@ -97,6 +102,7 @@ private fun LazyListScope.forecastItems(
   state: Loaded,
   canShare: Boolean,
   horizontalPadding: Modifier,
+  onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
@@ -142,6 +148,12 @@ private fun LazyListScope.forecastItems(
   item(key = HOURLY) {
     HourlyForecastRow(state = state.forecast.hourlyForecast)
   }
+  item(key = ACTIVITY_PLANNER) {
+    ActivityPlannerTeaserCard(
+      modifier = horizontalPadding,
+      onClick = onNavigateToActivityPlanner
+    )
+  }
   item(key = DAILY) {
     DailyForecastList(
       modifier = horizontalPadding,
@@ -169,6 +181,7 @@ private fun Preview() {
         details = detailsSections,
         forecast = forecastSection
       ),
+      onNavigateToActivityPlanner = {},
       onNavigateToDetails = {},
       onNavigateToSearch = {},
       onNavigateToSettings = {},

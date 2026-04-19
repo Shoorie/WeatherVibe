@@ -119,6 +119,7 @@
   <string name="home_pollen_species_olive">oliwka</string>
   <string name="home_pollen_species_ragweed">ambrozja</string>
 
+  <string name="home_alert_section_label">Uwaga</string>
   <string name="home_aqi_alert_title">Ostrzeżenie o smogu</string>
   <string name="home_aqi_alert_message_format">%1$s — rozważ ograniczenie aktywności na zewnątrz.</string>
   <string name="home_aqi_alert_content_description_format">Alert jakości powietrza: %1$s, indeks %2$d</string>
@@ -126,4 +127,7 @@
   <string name="home_pollen_alert_title">Ostrzeżenie pyłkowe</string>
   <string name="home_pollen_alert_message_format">Wysokie stężenie: %1$s — alergicy, uważajcie.</string>
   <string name="home_pollen_alert_content_description_format">Alert pyłkowy: wysokie stężenie %1$s</string>
+  <string name="home_activity_planner_title">Zaplanuj aktywność</string>
+  <string name="home_activity_planner_subtitle">Zobacz najlepsze okna dla biegania, spaceru lub roweru</string>
+  <string name="home_activity_planner_content_description">Otwórz planer aktywności</string>
 </resources>

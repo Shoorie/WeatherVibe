@@ -15,6 +15,7 @@ import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.designsystem.components.label.SectionLabel
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
@@ -24,47 +25,54 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
 import com.weather.vibe.feature.home.preview.HomeAlertBannerPreview
+import com.weather.vibe.feature.home.ui.HomeTexts.alertSectionLabel
 
 @Composable
 internal fun HomeAlertBanner(
   modifier: Modifier = Modifier,
   state: HomeAlertUiState
 ) {
-  VibeCard(
-    modifier = modifier
-      .fillMaxWidth()
-      .clearAndSetSemantics {
-        contentDescription = state.contentDescription
-        liveRegion = LiveRegionMode.Polite
-      },
-    shape = shapes.card,
-    containerColor = colors.error,
-    contentPadding = Medium
+  SectionLabel(
+    modifier = modifier.fillMaxWidth(),
+    text = alertSectionLabel(),
+    uppercase = true
   ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(Small),
-      verticalAlignment = Alignment.Top
+    VibeCard(
+      modifier = Modifier
+        .fillMaxWidth()
+        .clearAndSetSemantics {
+          contentDescription = state.contentDescription
+          liveRegion = LiveRegionMode.Polite
+        },
+      shape = shapes.card,
+      containerColor = colors.error,
+      contentPadding = Medium
     ) {
-      Text(
-        text = state.indicator,
-        style = typography.titleMedium
-      )
-      Column(
+      Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Small)
+        horizontalArrangement = Arrangement.spacedBy(Small),
+        verticalAlignment = Alignment.Top
       ) {
         Text(
-          text = state.title,
-          style = typography.titleSmall,
-          fontWeight = FontWeight.SemiBold,
-          color = colors.onError
+          text = state.indicator,
+          style = typography.titleMedium
         )
-        Text(
-          text = state.message,
-          style = typography.bodyMedium,
-          color = colors.onError
-        )
+        Column(
+          modifier = Modifier.fillMaxWidth(),
+          verticalArrangement = Arrangement.spacedBy(Small)
+        ) {
+          Text(
+            text = state.title,
+            style = typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.onError
+          )
+          Text(
+            text = state.message,
+            style = typography.bodyMedium,
+            color = colors.onError
+          )
+        }
       }
     }
   }

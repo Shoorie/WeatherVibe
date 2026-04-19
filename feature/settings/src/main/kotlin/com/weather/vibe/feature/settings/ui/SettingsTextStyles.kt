@@ -29,20 +29,4 @@ internal object SettingsTextStyles {
       if (isSelected) base.copy(fontWeight = FontWeight.SemiBold) else base
     }
   }
-
-  @Composable
-  fun segmentBackground(isSelected: Boolean): Color =
-    if (isSelected) colors.accent else Color.Transparent
-
-  @Composable
-  fun segmentLabelColor(isSelected: Boolean): Color =
-    if (isSelected) colors.onAccent else colors.onSurfaceVariant
-
-  @Composable
-  fun segmentLabelStyle(isSelected: Boolean): TextStyle {
-    val base = typography.labelMedium
-    return remember(base, isSelected) {
-      base.copy(fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium)
-    }
-  }
 }

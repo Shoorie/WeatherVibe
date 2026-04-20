@@ -10,6 +10,9 @@
   <string name="profile_header_edit_click_label">Edytuj profil</string>
   <string name="profile_header_quote">Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie.</string>
   <string name="profile_header_brief_tone_label">Ton briefu</string>
+  <string name="profile_brief_tone_witty">Dowcipny</string>
+  <string name="profile_brief_tone_formal">Formalny</string>
+  <string name="profile_brief_tone_humorous">Humorystyczny</string>
 
   <string name="profile_stat_locations_label">Lokalizacje</string>
   <string name="profile_stat_streak_label">Dni z nami</string>

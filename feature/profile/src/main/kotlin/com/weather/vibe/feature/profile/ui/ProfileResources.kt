@@ -1,13 +1,28 @@
 package com.weather.vibe.feature.profile.ui
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
+import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
+import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.feature.profile.R
 import org.koin.core.annotation.Factory
 
 @Factory
 internal class ProfileResources(private val context: Context) {
+
+  fun briefToneLabel(tone: BriefTone): String =
+    context.getString(tone.labelRes())
+
+  @StringRes
+  private fun BriefTone.labelRes(): Int = when (this) {
+    WITTY_AND_FRIENDLY -> R.string.profile_brief_tone_witty
+    FORMAL -> R.string.profile_brief_tone_formal
+    HUMOROUS -> R.string.profile_brief_tone_humorous
+  }
 
   fun ctaGreeting(): String =
     context.getString(R.string.profile_header_cta_greeting)

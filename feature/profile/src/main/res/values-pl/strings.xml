@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="profile_screen_title">Profil</string>
+  <string name="profile_coming_soon_title">Twój profil</string>
+  <string name="profile_coming_soon_body">Preferencje, dziennik nastroju i historia znajdą się tutaj.</string>
+</resources>

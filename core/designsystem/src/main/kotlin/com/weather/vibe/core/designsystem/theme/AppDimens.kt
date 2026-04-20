@@ -14,6 +14,7 @@ object AppDimens {
 
   object Elevation {
     val Card = 4.dp
+    val BottomBar = 12.dp
   }
 
   object Stroke {
@@ -26,7 +27,11 @@ object AppDimens {
 
   object ActionButton {
     val Container = 40.dp
-    val SmallContainer = 28.dp
     val DefaultIconSize = 22.dp
+  }
+
+  object Navigation {
+    val BottomBarHeight = 68.dp
+    val MinTouchTarget = 48.dp
   }
 }

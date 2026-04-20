@@ -1,37 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="settings_screen_title">Settings</string>
+  <string name="personalization_screen_title">Personalization</string>
+  <string name="personalization_section_brief_tone">AI Briefing Tone</string>
+  <string name="personalization_section_brief_tone_subtitle">How Vibe should talk to you</string>
+  <string name="personalization_section_temperature">Temperature Unit</string>
+  <string name="personalization_section_temperature_subtitle">Units for forecasts and briefings</string>
+  <string name="personalization_section_excluded_genres">Excluded Music Genres</string>
+  <string name="personalization_section_excluded_genres_subtitle">We\'ll skip these in your mood playlist</string>
+  <string name="personalization_brief_tone_witty">Witty &amp; Friendly</string>
+  <string name="personalization_brief_tone_witty_desc">Light, warm, and conversational</string>
+  <string name="personalization_brief_tone_formal">Formal &amp; Professional</string>
+  <string name="personalization_brief_tone_formal_desc">Clear, concise, and business-like</string>
+  <string name="personalization_brief_tone_humorous">Humorous</string>
+  <string name="personalization_brief_tone_humorous_desc">Light irony, dry wit, and gentle sarcasm</string>
+  <string name="personalization_brief_tone_selected_content_description">Selected</string>
+  <string name="personalization_unit_celsius">Celsius (°C)</string>
+  <string name="personalization_unit_fahrenheit">Fahrenheit (°F)</string>
+  <string name="personalization_genre_remove_content_description">Remove %1$s</string>
+  <string name="personalization_error_title">Something\'s off</string>
+  <string name="personalization_error_default">Failed to load personalization</string>
 
-  <string name="settings_section_brief_tone">AI Briefing Tone</string>
-  <string name="settings_section_brief_tone_subtitle">How Vibe should talk to you</string>
-
-  <string name="settings_section_temperature">Temperature Unit</string>
-  <string name="settings_section_temperature_subtitle">Units for forecasts and briefings</string>
-
-  <string name="settings_section_alerts">Weather alerts</string>
-  <string name="settings_section_alerts_subtitle">Proactive heads-up when the weather is about to turn</string>
-  <string name="settings_section_morning_brief">Morning brief</string>
-  <string name="settings_section_morning_brief_subtitle">Daily 7:30 notification with today\'s weather vibe</string>
-
-  <string name="settings_section_excluded_genres">Excluded Music Genres</string>
-  <string name="settings_section_excluded_genres_subtitle">We\'ll skip these in your mood playlist</string>
-
-  <string name="settings_brief_tone_witty">Witty &amp; Friendly</string>
-  <string name="settings_brief_tone_witty_desc">Light, warm, and conversational</string>
-  <string name="settings_brief_tone_formal">Formal &amp; Professional</string>
-  <string name="settings_brief_tone_formal_desc">Clear, concise, and business-like</string>
-  <string name="settings_brief_tone_humorous">Humorous</string>
-  <string name="settings_brief_tone_humorous_desc">Light irony, dry wit, and gentle sarcasm</string>
-  <string name="settings_brief_tone_selected_content_description">Selected</string>
-
-  <string name="settings_unit_celsius">Celsius (°C)</string>
-  <string name="settings_unit_fahrenheit">Fahrenheit (°F)</string>
-
-  <string name="settings_genre_remove_content_description">Remove %1$s</string>
-
-  <string name="settings_error_default">Failed to load settings</string>
-  <string name="settings_error_title">Something\'s off</string>
-
-  <string name="settings_toggle_on">On</string>
-  <string name="settings_toggle_off">Off</string>
+  <string name="notifications_screen_title">Notifications</string>
+  <string name="notifications_section_alerts">Weather alerts</string>
+  <string name="notifications_section_alerts_subtitle">Proactive heads-up when the weather is about to turn</string>
+  <string name="notifications_section_morning_brief">Morning brief</string>
+  <string name="notifications_section_morning_brief_subtitle">Daily 7:30 notification with today\'s weather vibe</string>
+  <string name="notifications_toggle_on">On</string>
+  <string name="notifications_toggle_off">Off</string>
+  <string name="notifications_error_title">Something\'s off</string>
+  <string name="notifications_error_default">Failed to load notifications</string>
 </resources>

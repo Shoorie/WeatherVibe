@@ -38,14 +38,14 @@ internal class ProfileViewModel(
 
   fun dispatch(action: ProfileAction) {
     when (action) {
-      AboutClick -> onAboutClick()
-      EditUsernameClick -> onEditUsernameClick()
-      EditUsernameDismiss -> onEditUsernameDismiss()
-      EditUsernameSubmit -> onEditUsernameSubmit()
+      is AboutClick -> onAboutClick()
+      is EditUsernameClick -> onEditUsernameClick()
+      is EditUsernameDismiss -> onEditUsernameDismiss()
+      is EditUsernameSubmit -> onEditUsernameSubmit()
       is UsernameChanged -> onUsernameChanged(action.value)
-      NotificationsClick -> onNotificationsClick()
-      PersonalizationClick -> onPersonalizationClick()
-      PrivacyClick -> onPrivacyClick()
+      is NotificationsClick -> onNotificationsClick()
+      is PersonalizationClick -> onPersonalizationClick()
+      is PrivacyClick -> onPrivacyClick()
     }
   }
 

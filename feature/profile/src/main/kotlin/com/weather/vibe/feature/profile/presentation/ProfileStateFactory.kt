@@ -61,15 +61,15 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     )
 
   private fun createGreeting(username: String): String =
-    when {
-      username.isBlank() -> resources.ctaGreeting()
-      else -> resources.greeting(username = username)
+    when (username.isBlank()) {
+      true -> resources.ctaGreeting()
+      false -> resources.greeting(username = username)
     }
 
   private fun createSubtitle(username: String): String =
-    when {
-      username.isBlank() -> resources.ctaSubtitle()
-      else -> resources.daysWithAppSubtitle(days = USAGE_DAYS)
+    when (username.isBlank()) {
+      true -> resources.ctaSubtitle()
+      false -> resources.daysWithAppSubtitle(days = USAGE_DAYS)
     }
 
   private fun createStats(): ImmutableList<ProfileStatUiState> =

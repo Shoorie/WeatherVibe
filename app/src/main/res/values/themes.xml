@@ -5,6 +5,6 @@
     <item name="postSplashScreenTheme">@style/Theme.WeatherVibe.NoActionBar</item>
   </style>
   <style name="Theme.WeatherVibe.NoActionBar" parent="android:Theme.Material.Light.NoActionBar">
-    <item name="android:windowBackground">@color/splash_background</item>
+    <item name="android:windowBackground">@color/window_background</item>
   </style>
 </resources>

@@ -1,4 +1,4 @@
-package com.weather.vibe.navigation
+package com.weather.vibe.navigation.splash
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

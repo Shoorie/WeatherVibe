@@ -13,8 +13,8 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.navigation.DeepLinkRouteResolver
-import com.weather.vibe.navigation.SplashBackdrop
+import com.weather.vibe.navigation.deeplink.DeepLinkRouteResolver
+import com.weather.vibe.navigation.splash.SplashBackdrop
 import com.weather.vibe.navigation.WeatherVibeNavHost
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

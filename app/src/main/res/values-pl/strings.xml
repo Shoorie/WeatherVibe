@@ -1,3 +1,9 @@
 <resources>
   <string name="app_name">WeatherVibe</string>
+  <string name="bottom_nav_home">Strona główna</string>
+  <string name="bottom_nav_locations">Lokalizacje</string>
+  <string name="bottom_nav_profile">Profil</string>
+  <string name="bottom_nav_home_click_label">Przełącz na stronę główną</string>
+  <string name="bottom_nav_locations_click_label">Przełącz na lokalizacje</string>
+  <string name="bottom_nav_profile_click_label">Przełącz na profil</string>
 </resources>

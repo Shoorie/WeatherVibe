@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="locations_screen_title">Locations</string>
+  <string name="locations_coming_soon_title">Locations</string>
+  <string name="locations_coming_soon_body">Saved places and quick switching are on the way.</string>
+</resources>

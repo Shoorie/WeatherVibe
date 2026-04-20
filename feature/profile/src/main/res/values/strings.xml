@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="profile_screen_title">Profile</string>
+  <string name="profile_coming_soon_title">Your profile</string>
+  <string name="profile_coming_soon_body">Preferences, mood journal, and history will live here.</string>
+</resources>

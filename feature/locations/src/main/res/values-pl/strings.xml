@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="locations_screen_title">Lokalizacje</string>
+  <string name="locations_coming_soon_title">Lokalizacje</string>
+  <string name="locations_coming_soon_body">Zapisane miejsca i szybkie przełączanie wkrótce.</string>
+</resources>

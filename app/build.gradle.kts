@@ -108,7 +108,9 @@ dependencies {
   implementation(projects.scheduling)
   implementation(projects.feature.activityplanner)
   implementation(projects.feature.home)
+  implementation(projects.feature.locations)
   implementation(projects.feature.onboarding)
+  implementation(projects.feature.profile)
   implementation(projects.feature.search)
   implementation(projects.feature.settings)
   implementation(projects.feature.splash)
@@ -116,6 +118,7 @@ dependencies {
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.core.splashscreen)
+  implementation(libs.androidx.material.icons.core)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.navigation3.runtime)
@@ -123,6 +126,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
   implementation(libs.kotlinx.serialization.json)
+  implementation(libs.kotlinx.collections.immutable)
 
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)

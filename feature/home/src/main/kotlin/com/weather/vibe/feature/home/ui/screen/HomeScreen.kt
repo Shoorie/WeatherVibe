@@ -37,6 +37,7 @@ fun HomeScreen(
   onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
   onNavigateToSettings: () -> Unit = {},
+  onContentReady: () -> Unit = {},
   selectedLocation: Location
 ) {
 
@@ -47,6 +48,12 @@ fun HomeScreen(
 
   LaunchedEffect(selectedLocation) {
     viewModel.dispatch(Initialize(selectedLocation))
+  }
+
+  LaunchedEffect(state) {
+    if (state !is Loading) {
+      onContentReady()
+    }
   }
 
   LaunchedEffect(viewModel) {

@@ -5,3 +5,7 @@ plugins {
 android {
   namespace = "com.weather.vibe.feature.profile"
 }
+
+dependencies {
+  implementation(libs.kotlinx.collections.immutable)
+}

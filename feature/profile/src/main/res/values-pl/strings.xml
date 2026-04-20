@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profil</string>
-  <string name="profile_coming_soon_title">Twój profil</string>
-  <string name="profile_coming_soon_body">Preferencje, dziennik nastroju i historia znajdą się tutaj.</string>
+
+  <string name="profile_header_cta_greeting">Cześć 👋</string>
+  <string name="profile_header_cta_subtitle">Dotknij, aby się przedstawić</string>
+  <string name="profile_header_greeting">Cześć, %1$s</string>
+  <string name="profile_header_subtitle">%1$d dni z WeatherVibe</string>
+  <string name="profile_header_edit_hint">Edytuj</string>
+  <string name="profile_header_edit_click_label">Edytuj profil</string>
+  <string name="profile_header_quote">Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie.</string>
+  <string name="profile_header_brief_tone_label">Ton briefu</string>
+
+  <string name="profile_stat_locations_label">Lokalizacje</string>
+  <string name="profile_stat_streak_label">Dni z nami</string>
+
+  <string name="profile_row_personalization_title">Personalizacja</string>
+  <string name="profile_row_personalization_body">Ton briefu, jednostki, wykluczone gatunki</string>
+  <string name="profile_row_notifications_title">Powiadomienia</string>
+  <string name="profile_row_notifications_body">Poranny brief i alerty pogodowe</string>
+  <string name="profile_row_privacy_title">Polityka prywatności</string>
+  <string name="profile_row_privacy_body">Jak dbamy o Twoje dane</string>
+  <string name="profile_row_about_title">O aplikacji</string>
+  <string name="profile_row_about_body">Wersja, licencje OSS, changelog</string>
+
+  <string name="profile_mood_title">Dziennik nastroju</string>
+  <string name="profile_mood_body">Wkrótce — zapisuj swój nastrój każdego dnia i zobacz, jak pogoda wpływa na Twoje samopoczucie.</string>
+  <string name="profile_mood_badge">Wkrótce</string>
+
+  <string name="profile_edit_sheet_title">Jak mamy Cię nazywać?</string>
+  <string name="profile_edit_sheet_body">Użyjemy imienia w powitaniach i powiadomieniach.</string>
+  <string name="profile_edit_sheet_field_label">Twoje imię</string>
+  <string name="profile_edit_sheet_save">Zapisz</string>
+
+  <string name="profile_placeholder_personalization_title">Personalizacja</string>
+  <string name="profile_placeholder_personalization_body">Wybierz ton briefu, jednostkę temperatury i ukryj gatunki muzyczne, których nie czujesz. Wkrótce jako osobny ekran.</string>
+  <string name="profile_placeholder_notifications_title">Powiadomienia</string>
+  <string name="profile_placeholder_notifications_body">Zdecyduj, czy poranny brief i alerty pogodowe mają trafiać na Twój ekran blokady. Wkrótce.</string>
+  <string name="profile_placeholder_privacy_title">Polityka prywatności</string>
+  <string name="profile_placeholder_privacy_body">WeatherVibe trzyma Twoje dane lokalnie, na urządzeniu. Pełna polityka w drodze.</string>
+  <string name="profile_placeholder_about_title">O aplikacji</string>
+  <string name="profile_placeholder_about_body">Wersja aplikacji, licencje OSS i changelog zamieszkają tutaj.</string>
 </resources>

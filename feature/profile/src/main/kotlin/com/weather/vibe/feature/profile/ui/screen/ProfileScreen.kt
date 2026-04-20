@@ -2,38 +2,146 @@ package com.weather.vibe.feature.profile.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.components.message.VibeMessage
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.comingSoonBody
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.comingSoonTitle
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
+import com.weather.vibe.feature.profile.presentation.ProfileViewModel
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
+import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
+import com.weather.vibe.feature.profile.preview.ProfilePreview
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_HERO
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_MOOD
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_QUICK_STATS
+import com.weather.vibe.feature.profile.ui.component.editsheet.EditProfileSheet
+import com.weather.vibe.feature.profile.ui.component.header.ProfileHero
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserCard
+import com.weather.vibe.feature.profile.ui.component.stats.ProfileStatCard
+import kotlinx.collections.immutable.ImmutableList
+import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
-  Column(
+fun ProfileScreen(
+  onOpenPersonalization: () -> Unit,
+  onOpenNotifications: () -> Unit,
+  onOpenPrivacy: () -> Unit,
+  onOpenAbout: () -> Unit
+) {
+
+  val viewModel: ProfileViewModel = koinViewModel()
+  val state by viewModel.state.collectAsStateWithLifecycle()
+  val callbacks = rememberProfileCallbacks(dispatch = viewModel::dispatch)
+
+  LaunchedEffect(Unit) {
+    viewModel.event.collect { event ->
+      when (event) {
+        OpenPersonalization -> onOpenPersonalization()
+        OpenNotifications -> onOpenNotifications()
+        OpenPrivacy -> onOpenPrivacy()
+        OpenAbout -> onOpenAbout()
+      }
+    }
+  }
+
+  ProfileContent(
+    state = state,
+    callbacks = callbacks
+  )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ProfileContent(
+  modifier: Modifier = Modifier,
+  state: ProfileUiState,
+  callbacks: ProfileCallbacks
+) {
+
+  val contentPadding = remember {
+    PaddingValues(
+      start = Medium,
+      end = Medium,
+      top = Medium,
+      bottom = ExtraLarge
+    )
+  }
+
+  LazyColumn(
     modifier = modifier
       .fillMaxSize()
-      .background(colors.backgroundGradientEnd),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
+      .background(colors.backgroundGradientEnd)
+      .statusBarsPadding(),
+    contentPadding = contentPadding,
+    verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
-    VibeMessage(
-      title = comingSoonTitle(),
-      message = comingSoonBody()
+    item(key = KEY_HERO) {
+      ProfileHero(
+        header = state.header,
+        onEditClick = callbacks.onEditUsernameClick
+      )
+    }
+    item(key = KEY_QUICK_STATS) { QuickStatsRow(stats = state.quickStats) }
+    item(key = KEY_MOOD) { MoodTeaserCard() }
+    navigationItems(callbacks = callbacks)
+  }
+
+  if (state.editSheet.isVisible) {
+    EditProfileSheet(
+      state = state.editSheet,
+      onDismiss = callbacks.onEditUsernameDismiss,
+      onUsernameChange = callbacks.onUsernameChange,
+      onSubmit = callbacks.onEditUsernameSubmit
     )
   }
 }
 
+@Composable
+private fun QuickStatsRow(stats: ImmutableList<ProfileStatUiState>) {
+  Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(Small)
+  ) {
+    stats.forEach { stat ->
+      ProfileStatCard(
+        modifier = Modifier.weight(1f),
+        stat = stat
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @PreviewLightDark
 @Composable
-private fun Preview() {
+private fun Preview(
+  @PreviewParameter(ProfilePreview::class)
+  state: ProfileUiState
+) {
   WeatherVibeTheme {
-    ProfileScreen()
+    ProfileContent(
+      state = state,
+      callbacks = ProfileCallbacks.Noop
+    )
   }
 }

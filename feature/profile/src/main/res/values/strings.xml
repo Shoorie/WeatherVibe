@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profile</string>
-  <string name="profile_coming_soon_title">Your profile</string>
-  <string name="profile_coming_soon_body">Preferences, mood journal, and history will live here.</string>
+
+  <string name="profile_header_cta_greeting">Hey 👋</string>
+  <string name="profile_header_cta_subtitle">Tap to introduce yourself</string>
+  <string name="profile_header_greeting">Hi, %1$s</string>
+  <string name="profile_header_subtitle">%1$d days with WeatherVibe</string>
+  <string name="profile_header_edit_hint">Edit</string>
+  <string name="profile_header_edit_click_label">Edit profile</string>
+  <string name="profile_header_quote">We can\'t control the weather, but we can control our attitude.</string>
+  <string name="profile_header_brief_tone_label">Brief tone</string>
+
+  <string name="profile_stat_locations_label">Locations</string>
+  <string name="profile_stat_streak_label">Days with us</string>
+
+  <string name="profile_row_personalization_title">Personalization</string>
+  <string name="profile_row_personalization_body">Brief tone, units, excluded genres</string>
+  <string name="profile_row_notifications_title">Notifications</string>
+  <string name="profile_row_notifications_body">Morning brief and weather alerts</string>
+  <string name="profile_row_privacy_title">Privacy policy</string>
+  <string name="profile_row_privacy_body">How we handle your data</string>
+  <string name="profile_row_about_title">About</string>
+  <string name="profile_row_about_body">Version, open-source licenses, changelog</string>
+
+  <string name="profile_mood_title">Mood journal</string>
+  <string name="profile_mood_body">Coming soon — log how you feel each day and see how the weather plays into it.</string>
+  <string name="profile_mood_badge">Soon</string>
+
+  <string name="profile_edit_sheet_title">What should we call you?</string>
+  <string name="profile_edit_sheet_body">We\'ll use your name in greetings and notifications.</string>
+  <string name="profile_edit_sheet_field_label">Your name</string>
+  <string name="profile_edit_sheet_save">Save</string>
+
+  <string name="profile_placeholder_personalization_title">Personalization</string>
+  <string name="profile_placeholder_personalization_body">Pick your brief tone, temperature unit, and hide music genres you don\'t vibe with. Coming soon as a dedicated screen.</string>
+  <string name="profile_placeholder_notifications_title">Notifications</string>
+  <string name="profile_placeholder_notifications_body">Decide whether the morning brief and weather alerts land on your lock screen. Coming soon.</string>
+  <string name="profile_placeholder_privacy_title">Privacy policy</string>
+  <string name="profile_placeholder_privacy_body">WeatherVibe keeps your data on the device. Full policy is on its way.</string>
+  <string name="profile_placeholder_about_title">About</string>
+  <string name="profile_placeholder_about_body">App version, open-source licenses, and changelog will live here.</string>
 </resources>

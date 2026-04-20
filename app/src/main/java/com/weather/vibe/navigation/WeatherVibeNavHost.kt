@@ -24,6 +24,10 @@ import com.weather.vibe.core.designsystem.components.navigation.VibeBottomBarScr
 import com.weather.vibe.core.designsystem.components.navigation.rememberVibeBottomBarScrollBehavior
 import com.weather.vibe.feature.locations.ui.screen.LocationsScreen
 import com.weather.vibe.feature.profile.ui.screen.ProfileScreen
+import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfileAboutScreen
+import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfileNotificationsScreen
+import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfilePersonalizationScreen
+import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfilePrivacyScreen
 import com.weather.vibe.navigation.bottombar.WeatherVibeBottomBar
 import com.weather.vibe.navigation.home.HomeEntry
 import com.weather.vibe.navigation.home.HomeRoute
@@ -32,6 +36,10 @@ import com.weather.vibe.navigation.onboarding.LocationOnboardingRoute
 import com.weather.vibe.navigation.onboarding.OnboardingEntry
 import com.weather.vibe.navigation.planner.ActivityPlannerEntry
 import com.weather.vibe.navigation.planner.ActivityPlannerRoute
+import com.weather.vibe.navigation.profile.ProfileAboutRoute
+import com.weather.vibe.navigation.profile.ProfileNotificationsRoute
+import com.weather.vibe.navigation.profile.ProfilePersonalizationRoute
+import com.weather.vibe.navigation.profile.ProfilePrivacyRoute
 import com.weather.vibe.navigation.profile.ProfileRoute
 import com.weather.vibe.navigation.search.SearchEntry
 import com.weather.vibe.navigation.search.SearchRoute
@@ -120,25 +128,71 @@ private fun NavDisplay(
       rememberViewModelStoreNavEntryDecorator()
     ),
     entryProvider = { key ->
-      when (key) {
-        is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
-        is LocationOnboardingRoute -> NavEntry(key) { OnboardingEntry(backStack) }
-        is HomeRoute -> NavEntry(key) {
-          HomeEntry(
-            route = key,
-            backStack = backStack,
-            onContentReady = { onHomeContentReady() }
-          )
-        }
-
-        is WeatherDetailsRoute -> NavEntry(key) { WeatherDetailsScreen(key, backStack) }
-        is ActivityPlannerRoute -> NavEntry(key) { ActivityPlannerEntry(key, backStack) }
-        is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
-        is SettingsRoute -> NavEntry(key) { SettingsEntry(backStack) }
-        is LocationsRoute -> NavEntry(key) { LocationsScreen() }
-        is ProfileRoute -> NavEntry(key) { ProfileScreen() }
-        else -> NavEntry(key) {}
-      }
+      profileEntry(key = key, backStack = backStack)
+        ?: rootEntry(
+          key = key,
+          backStack = backStack,
+          onHomeContentReady = onHomeContentReady
+        )
     }
   )
 }
+
+private fun rootEntry(
+  key: NavKey,
+  backStack: NavBackStack<NavKey>,
+  onHomeContentReady: () -> Unit
+): NavEntry<NavKey> =
+  when (key) {
+    is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
+    is LocationOnboardingRoute -> NavEntry(key) { OnboardingEntry(backStack) }
+    is HomeRoute -> NavEntry(key) {
+      HomeEntry(
+        route = key,
+        backStack = backStack,
+        onContentReady = { onHomeContentReady() }
+      )
+    }
+    is WeatherDetailsRoute -> NavEntry(key) { WeatherDetailsScreen(key, backStack) }
+    is ActivityPlannerRoute -> NavEntry(key) { ActivityPlannerEntry(key, backStack) }
+    is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
+    is SettingsRoute -> NavEntry(key) { SettingsEntry(backStack) }
+    is LocationsRoute -> NavEntry(key) { LocationsScreen() }
+    else -> NavEntry(key) {}
+  }
+
+private fun profileEntry(
+  key: NavKey,
+  backStack: NavBackStack<NavKey>
+): NavEntry<NavKey>? =
+  when (key) {
+    is ProfileRoute -> NavEntry(key) {
+      ProfileScreen(
+        onOpenPersonalization = { backStack.add(ProfilePersonalizationRoute) },
+        onOpenNotifications = { backStack.add(ProfileNotificationsRoute) },
+        onOpenPrivacy = { backStack.add(ProfilePrivacyRoute) },
+        onOpenAbout = { backStack.add(ProfileAboutRoute) }
+      )
+    }
+    is ProfilePersonalizationRoute -> NavEntry(key) {
+      ProfilePersonalizationScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
+    }
+    is ProfileNotificationsRoute -> NavEntry(key) {
+      ProfileNotificationsScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
+    }
+    is ProfilePrivacyRoute -> NavEntry(key) {
+      ProfilePrivacyScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
+    }
+    is ProfileAboutRoute -> NavEntry(key) {
+      ProfileAboutScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
+    }
+    else -> null
+  }

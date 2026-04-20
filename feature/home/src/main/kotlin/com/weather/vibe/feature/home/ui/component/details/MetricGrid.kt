@@ -37,7 +37,10 @@ internal fun MetricGrid(
         horizontalArrangement = Arrangement.spacedBy(Padding.Small)
       ) {
         row.forEach { item ->
-          MetricTile(modifier = Modifier.weight(1f), item = item)
+          MetricTile(
+            modifier = Modifier.weight(1f),
+            item = item
+          )
         }
         if (row.size < MetricGridColumns) {
           Spacer(modifier = Modifier.weight(1f))

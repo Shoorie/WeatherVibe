@@ -7,5 +7,6 @@ android {
 }
 
 dependencies {
+  implementation(projects.domain.settings)
   implementation(libs.kotlinx.collections.immutable)
 }

@@ -2,6 +2,7 @@ package com.weather.vibe.feature.profile.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +30,8 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class ProfileViewModel(
-  private val stateFactory: ProfileStateFactory
+  private val stateFactory: ProfileStateFactory,
+  private val useCases: ProfileUseCases
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(stateFactory.initial())
@@ -35,6 +39,12 @@ internal class ProfileViewModel(
 
   private val _event = Channel<ProfileEvent>()
   val event: Flow<ProfileEvent> = _event.receiveAsFlow()
+
+  init {
+    useCases.observeUserSettings()
+      .onEach(::onSettingsResult)
+      .launchIn(viewModelScope)
+  }
 
   fun dispatch(action: ProfileAction) {
     when (action) {
@@ -84,8 +94,21 @@ internal class ProfileViewModel(
       val usernameTrimmed = current.editSheet.username.trim()
       when (usernameTrimmed.isEmpty()) {
         true -> current
-        false -> stateFactory.withUsername(username = usernameTrimmed)
+        false -> stateFactory.withUsername(
+          state = current,
+          username = usernameTrimmed
+        )
       }
+    }
+  }
+
+  private fun onSettingsResult(result: Result<UserSettings>) {
+    result.onSuccess(::applyBriefTone)
+  }
+
+  private fun applyBriefTone(settings: UserSettings) {
+    _state.update { current ->
+      stateFactory.withBriefTone(state = current, tone = settings.briefTone)
     }
   }
 

@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.profile.presentation
 
+import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.profile.presentation.state.ProfileEditSheetUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
@@ -14,10 +15,37 @@ import org.koin.core.annotation.Factory
 internal class ProfileStateFactory(private val resources: ProfileResources) {
 
   fun initial(): ProfileUiState =
-    create(username = EMPTY_USERNAME)
+    ProfileUiState(
+      header = createHeader(
+        username = EMPTY_USERNAME,
+        briefToneLabel = EMPTY_TONE_LABEL
+      ),
+      quickStats = createStats(),
+      editSheet = ProfileEditSheetUiState(
+        isVisible = false,
+        username = EMPTY_USERNAME,
+        canSave = false
+      )
+    )
 
-  fun withUsername(username: String): ProfileUiState =
-    create(username = username)
+  fun withUsername(state: ProfileUiState, username: String): ProfileUiState =
+    state.copy(
+      header = createHeader(
+        username = username,
+        briefToneLabel = state.header.briefToneLabel
+      ),
+      editSheet = state.editSheet.copy(
+        isVisible = false,
+        username = username,
+        canSave = username.trim().isNotEmpty()
+      )
+    )
+
+  fun withBriefTone(state: ProfileUiState, tone: BriefTone): ProfileUiState =
+    state.copy(
+      header = state.header
+        .copy(briefToneLabel = resources.briefToneLabel(tone = tone))
+    )
 
   fun triggerEditSheet(state: ProfileUiState): ProfileUiState =
     state.copy(
@@ -41,35 +69,24 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     )
   }
 
-  private fun create(username: String): ProfileUiState =
-    ProfileUiState(
-      header = createHeader(username = username),
-      quickStats = createStats(),
-      editSheet = ProfileEditSheetUiState(
-        isVisible = false,
-        username = username,
-        canSave = username.trim().isNotEmpty()
-      )
-    )
-
-  private fun createHeader(username: String): ProfileHeaderUiState =
+  private fun createHeader(username: String, briefToneLabel: String): ProfileHeaderUiState =
     ProfileHeaderUiState(
       username = username,
       greeting = createGreeting(username = username),
       subtitle = createSubtitle(username = username),
-      briefToneLabel = BRIEF_TONE_PLACEHOLDER
+      briefToneLabel = briefToneLabel
     )
 
   private fun createGreeting(username: String): String =
-    when (username.isBlank()) {
-      true -> resources.ctaGreeting()
-      false -> resources.greeting(username = username)
+    when {
+      username.isBlank() -> resources.ctaGreeting()
+      else -> resources.greeting(username = username)
     }
 
   private fun createSubtitle(username: String): String =
-    when (username.isBlank()) {
-      true -> resources.ctaSubtitle()
-      false -> resources.daysWithAppSubtitle(days = USAGE_DAYS)
+    when {
+      username.isBlank() -> resources.ctaSubtitle()
+      else -> resources.daysWithAppSubtitle(days = USAGE_DAYS)
     }
 
   private fun createStats(): ImmutableList<ProfileStatUiState> =
@@ -88,7 +105,7 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
 
   private companion object {
     const val EMPTY_USERNAME = ""
-    const val BRIEF_TONE_PLACEHOLDER = "Chill"
+    const val EMPTY_TONE_LABEL = ""
     const val USAGE_DAYS = 1
     const val LOCATIONS_COUNT = 1
     const val STAT_LOCATIONS = "locations"

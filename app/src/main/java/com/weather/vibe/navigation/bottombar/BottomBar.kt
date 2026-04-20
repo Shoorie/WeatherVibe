@@ -44,15 +44,9 @@ internal fun WeatherVibeBottomBar(
   }
   val activeHome = homeRoute ?: return
 
-  val onHomeClick = remember(backStack, activeHome) {
-    { backStack.selectTab(activeHome) }
-  }
-  val onLocationsClick = remember(backStack) {
-    { backStack.selectTab(LocationsRoute) }
-  }
-  val onProfileClick = remember(backStack) {
-    { backStack.selectTab(ProfileRoute) }
-  }
+  val onHomeClick = remember(backStack, activeHome) { { backStack.selectTab(activeHome) } }
+  val onLocationsClick = remember(backStack) { { backStack.selectTab(LocationsRoute) } }
+  val onProfileClick = remember(backStack) { { backStack.selectTab(ProfileRoute) } }
 
   VibeBottomBar(
     items = persistentListOf(

@@ -19,7 +19,6 @@ internal object VibeBottomBarDefaults {
   const val BOTTOM_BAR_CONTENT_ANIM_LABEL = "vibeBottomBarContent"
   const val BOTTOM_BAR_ICON_SCALE_ANIM_LABEL = "vibeBottomBarIconScale"
 
-
   @Composable
   fun tabBackgroundColor(isSelected: Boolean): State<Color> =
     animateColorAsState(

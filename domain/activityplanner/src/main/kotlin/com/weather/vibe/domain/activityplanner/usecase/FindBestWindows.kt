@@ -1,5 +1,6 @@
 package com.weather.vibe.domain.activityplanner.usecase
 
+import com.weather.vibe.domain.activityplanner.model.ScoreTier.GOOD
 import com.weather.vibe.domain.activityplanner.model.ScoredHour
 import com.weather.vibe.domain.activityplanner.model.ScoredWindow
 import org.koin.core.annotation.Factory
@@ -12,8 +13,9 @@ class FindBestWindows {
       .groupIntoConsecutiveBlocks()
       .filter { it.size >= MIN_BLOCK_SIZE }
       .map(::toWindow)
-      .sortedWith(BY_SCORE_DESC_THEN_EARLIEST_FIRST)
+      .sortedByDescending(ScoredWindow::averageScore)
       .take(MAX_WINDOWS)
+      .sortedBy(ScoredWindow::start)
 
   private fun qualifies(hour: ScoredHour): Boolean =
     hour.score >= MIN_HOUR_SCORE
@@ -48,11 +50,8 @@ class FindBestWindows {
 
   private companion object {
 
-    const val MIN_HOUR_SCORE = 50
+    val MIN_HOUR_SCORE = GOOD.minScore
     const val MIN_BLOCK_SIZE = 1
     const val MAX_WINDOWS = 3
-
-    val BY_SCORE_DESC_THEN_EARLIEST_FIRST: Comparator<ScoredWindow> =
-      compareByDescending<ScoredWindow> { it.averageScore }.thenBy { it.start }
   }
 }

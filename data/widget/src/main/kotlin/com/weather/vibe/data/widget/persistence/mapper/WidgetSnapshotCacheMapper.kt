@@ -16,6 +16,7 @@ internal class WidgetSnapshotCacheMapper(
       condition = entry.conditionName.toWeatherCondition(),
       currentTemperature = entry.currentTemperature,
       fetchedAtEpochMillis = entry.fetchedAtEpochMillis,
+      isDay = entry.isDay,
       location = locationMapper.toDomain(entry.location),
       mood = entry.mood
     )
@@ -25,6 +26,7 @@ internal class WidgetSnapshotCacheMapper(
       .setConditionName(snapshot.condition.name)
       .setCurrentTemperature(snapshot.currentTemperature)
       .setFetchedAtEpochMillis(snapshot.fetchedAtEpochMillis)
+      .setIsDay(snapshot.isDay)
       .setLocation(locationMapper.toEntry(snapshot.location))
       .setMood(snapshot.mood)
       .build()

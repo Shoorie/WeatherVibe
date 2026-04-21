@@ -13,6 +13,7 @@ message WidgetSnapshotEntry {
   double current_temperature = 3;
   int64 fetched_at_epoch_millis = 4;
   string mood = 5;
+  bool is_day = 6;
 }
 
 message WidgetLocationEntry {

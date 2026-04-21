@@ -23,12 +23,14 @@ object WidgetSnapshotFixtures {
     condition: WeatherCondition = CLEAR_SKY,
     currentTemperature: Double = 18.0,
     fetchedAtEpochMillis: Long = FETCHED_AT_EPOCH_MILLIS,
+    isDay: Boolean = true,
     location: Location = WARSAW,
     mood: String = "Bright"
   ): WidgetSnapshot = WidgetSnapshot(
     condition = condition,
     currentTemperature = currentTemperature,
     fetchedAtEpochMillis = fetchedAtEpochMillis,
+    isDay = isDay,
     location = location,
     mood = mood
   )

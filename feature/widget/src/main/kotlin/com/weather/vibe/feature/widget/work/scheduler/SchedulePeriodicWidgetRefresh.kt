@@ -2,7 +2,7 @@ package com.weather.vibe.feature.widget.work.scheduler
 
 import androidx.work.BackoffPolicy.EXPONENTIAL
 import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy.KEEP
+import androidx.work.ExistingPeriodicWorkPolicy.UPDATE
 import androidx.work.NetworkType.CONNECTED
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -30,7 +30,7 @@ class SchedulePeriodicWidgetRefresh(
       .setBackoffCriteria(EXPONENTIAL, BACKOFF_SECONDS, SECONDS)
       .build()
 
-    workManager.enqueueUniquePeriodicWork(WORKER_NAME, KEEP, work)
+    workManager.enqueueUniquePeriodicWork(WORKER_NAME, UPDATE, work)
   }
 
   internal companion object {

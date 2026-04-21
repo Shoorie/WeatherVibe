@@ -62,7 +62,7 @@ internal class ForecastSectionFactory(
     val bounds = useCases.resolveTodayTemperatureBounds(data)
 
     return CurrentWeatherUiState(
-      conditionEmoji = data.condition.emoji,
+      conditionEmoji = data.condition.emojiAt(data.isDay),
       conditionLabel = resources.conditionLabel(data.condition),
       currentTemperature = data.currentTemperature.formatted(unit),
       feelsLikeTemperature = data.apparentTemperature.formatted(unit),

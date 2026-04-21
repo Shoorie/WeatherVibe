@@ -65,5 +65,10 @@ enum class WeatherCondition(val label: String, val emoji: String) {
     private const val CODE_THUNDERSTORM = 95
     private const val CODE_THUNDERSTORM_HAIL_SLIGHT = 96
     private const val CODE_THUNDERSTORM_HAIL_HEAVY = 99
+
+    private const val MOON_EMOJI = "🌙"
   }
+
+  fun emojiAt(isDay: Boolean): String =
+    if (!isDay && this == CLEAR_SKY) MOON_EMOJI else emoji
 }

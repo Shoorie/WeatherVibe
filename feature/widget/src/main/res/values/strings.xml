@@ -10,4 +10,18 @@
   <string name="widget_error_body">Tap to open WeatherVibe and try again.</string>
   <string name="widget_temperature_format">%1$d°</string>
   <string name="widget_weather_content_description">Weather for %1$s, %2$s</string>
+  <string name="widget_condition_clear_sky">Clear Sky</string>
+  <string name="widget_condition_mainly_clear">Mainly Clear</string>
+  <string name="widget_condition_partly_cloudy">Partly Cloudy</string>
+  <string name="widget_condition_overcast">Overcast</string>
+  <string name="widget_condition_fog">Foggy</string>
+  <string name="widget_condition_drizzle">Drizzle</string>
+  <string name="widget_condition_freezing_drizzle">Freezing Drizzle</string>
+  <string name="widget_condition_rain">Rain</string>
+  <string name="widget_condition_freezing_rain">Freezing Rain</string>
+  <string name="widget_condition_snow">Snow</string>
+  <string name="widget_condition_rain_showers">Rain Showers</string>
+  <string name="widget_condition_snow_showers">Snow Showers</string>
+  <string name="widget_condition_thunderstorm">Thunderstorm</string>
+  <string name="widget_condition_unknown">Unknown</string>
 </resources>

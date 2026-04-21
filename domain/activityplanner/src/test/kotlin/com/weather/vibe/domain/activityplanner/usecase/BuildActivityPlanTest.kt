@@ -1,55 +1,88 @@
 package com.weather.vibe.domain.activityplanner.usecase
 
 import com.weather.vibe.domain.activityplanner.model.ActivityType
-import com.weather.vibe.testing.time.fixture.FakeTimeProvider
+import com.weather.vibe.domain.activityplanner.model.ActivityType.RUNNING
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.hourlyWeather
+import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.hasSize
+import strikt.assertions.isEmpty
 import strikt.assertions.isEqualTo
 import java.time.LocalDateTime
 
 class BuildActivityPlanTest {
 
-  private val timeProvider = FakeTimeProvider(current = LocalDateTime.of(2026, 4, 8, 9, 0))
   private val buildActivityPlan = BuildActivityPlan(
     approximateHourlyUvIndex = ApproximateHourlyUvIndex(),
     findBestWindows = FindBestWindows(),
     scoreHourForActivity = ScoreHourForActivity(
       calculateHourPenalty = CalculateHourPenalty(),
       collectScoreReasons = CollectScoreReasons()
-    ),
-    timeProvider = timeProvider
+    )
   )
 
   @Test
-  fun `when plan built, then only today's future hours included`() {
+  fun `when plan built, then every forecast hour scored`() {
 
-    val weather = WeatherDataFixtures.weatherData()
+    val weather = weatherData()
 
-    val plan = buildActivityPlan(weather, activity = ActivityType.RUNNING)
+    val plan = buildActivityPlan(weather, activity = RUNNING)
 
     expectThat(plan.scoredHours).hasSize(3)
   }
 
   @Test
-  fun `given current time after all hours, then no hours included`() {
+  fun `given empty forecast, then plan has no scored hours`() {
 
-    timeProvider.current = LocalDateTime.of(2026, 4, 8, 20, 0)
-    val weather = WeatherDataFixtures.weatherData()
+    val weather = weatherData(hourlyForecast = emptyList())
 
-    val plan = buildActivityPlan(weather, activity = ActivityType.RUNNING)
+    val plan = buildActivityPlan(weather, activity = RUNNING)
 
-    expectThat(plan.scoredHours).hasSize(0)
+    expectThat(plan.scoredHours).isEmpty()
   }
 
   @Test
-  fun `when plan built, then plan carries selected activity`() {
+  fun `given forecast in foreign timezone, then first scored hour matches forecast start`() {
 
-    val weather = WeatherDataFixtures.weatherData()
+    val plan = buildActivityPlan(
+      weather = weatherData(hourlyForecast = foreignTimezoneHours()),
+      activity = RUNNING
+    )
+
+    expectThat(plan.scoredHours.first().time)
+      .isEqualTo(FOREIGN_FIRST_HOUR)
+  }
+
+  @Test
+  fun `given forecast in foreign timezone, then last scored hour ends 24 hour window`() {
+
+    val plan = buildActivityPlan(
+      weather = weatherData(hourlyForecast = foreignTimezoneHours()),
+      activity = RUNNING
+    )
+
+    expectThat(plan.scoredHours.last().time)
+      .isEqualTo(FOREIGN_FIRST_HOUR.plusHours(23))
+  }
+
+  @Test
+  fun `when plan built, then plan activity matches selection`() {
+
+    val weather = weatherData()
 
     val plan = buildActivityPlan(weather, activity = ActivityType.CYCLING)
 
     expectThat(plan.activity).isEqualTo(ActivityType.CYCLING)
+  }
+
+  private fun foreignTimezoneHours() =
+    (0..26).map { offset ->
+      hourlyWeather(time = FOREIGN_FIRST_HOUR.plusHours(offset.toLong()))
+    }
+
+  private companion object {
+    val FOREIGN_FIRST_HOUR: LocalDateTime = LocalDateTime.of(2026, 4, 8, 23, 0)
   }
 }

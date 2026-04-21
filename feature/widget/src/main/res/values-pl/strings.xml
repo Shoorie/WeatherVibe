@@ -10,4 +10,18 @@
   <string name="widget_error_body">Stuknij, aby otworzyć WeatherVibe i spróbować ponownie.</string>
   <string name="widget_temperature_format">%1$d°</string>
   <string name="widget_weather_content_description">Pogoda dla %1$s, %2$s</string>
+  <string name="widget_condition_clear_sky">Bezchmurnie</string>
+  <string name="widget_condition_mainly_clear">Przeważnie czyste niebo</string>
+  <string name="widget_condition_partly_cloudy">Częściowe zachmurzenie</string>
+  <string name="widget_condition_overcast">Pochmurno</string>
+  <string name="widget_condition_fog">Mgła</string>
+  <string name="widget_condition_drizzle">Mżawka</string>
+  <string name="widget_condition_freezing_drizzle">Marznąca mżawka</string>
+  <string name="widget_condition_rain">Deszcz</string>
+  <string name="widget_condition_freezing_rain">Marznący deszcz</string>
+  <string name="widget_condition_snow">Śnieg</string>
+  <string name="widget_condition_rain_showers">Przelotne opady deszczu</string>
+  <string name="widget_condition_snow_showers">Przelotne opady śniegu</string>
+  <string name="widget_condition_thunderstorm">Burza</string>
+  <string name="widget_condition_unknown">Nieznane</string>
 </resources>

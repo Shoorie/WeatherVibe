@@ -5,6 +5,7 @@ import com.weather.vibe.feature.widget.ui.WidgetEmojis
 import com.weather.vibe.feature.widget.ui.WidgetResources
 import com.weather.vibe.feature.widget.presentation.WidgetTimestampFormatter
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
+import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.CONDITION_LABEL
 import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.CONTENT_DESCRIPTION
 import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.ERROR_BODY
 import com.weather.vibe.testing.widget.fixture.WidgetResourceFixtures.ERROR_TITLE
@@ -42,6 +43,7 @@ class WidgetStateFactoryTest {
     every { resources.errorBody() } returns ERROR_BODY
     every { resources.temperature(any()) } answers { "${firstArg<Int>()}°" }
     every { resources.weatherContentDescription(any(), any()) } returns CONTENT_DESCRIPTION
+    every { resources.conditionLabel(any()) } returns CONDITION_LABEL
     every { formatTimestamp(any()) } returns FETCHED_AT_LABEL
   }
 
@@ -124,11 +126,11 @@ class WidgetStateFactoryTest {
   }
 
   @Test
-  fun `when weather state created, then condition label carried from snapshot`() {
+  fun `when weather state created, then condition label resolved via resources`() {
 
     val state = factory.createWeather(SNAPSHOT)
 
-    expectThat(state.conditionLabel).isEqualTo(SNAPSHOT.condition.label)
+    expectThat(state.conditionLabel).isEqualTo(CONDITION_LABEL)
   }
 
   @Test

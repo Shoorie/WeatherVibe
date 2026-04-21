@@ -3,6 +3,7 @@ package com.weather.vibe.domain.activityplanner.usecase
 import com.weather.vibe.domain.activityplanner.fixture.ScoredHourFixtures.scoredHourAt
 import org.junit.Test
 import strikt.api.expectThat
+import strikt.assertions.containsExactly
 import strikt.assertions.hasSize
 import strikt.assertions.isEmpty
 import strikt.assertions.isEqualTo
@@ -86,5 +87,20 @@ class FindBestWindowsTest {
 
     expectThat(windows).hasSize(3)
     expectThat(windows.first().averageScore).isEqualTo(87)
+  }
+
+  @Test
+  fun `given windows with equal score, then earliest window returned first`() {
+
+    val hours = listOf(
+      scoredHourAt(hour = 18, score = 80),
+      scoredHourAt(hour = 19, score = 80),
+      scoredHourAt(hour = 8, score = 80),
+      scoredHourAt(hour = 9, score = 80)
+    )
+
+    val windows = findBestWindows(hours)
+
+    expectThat(windows.map { it.start.hour }).containsExactly(8, 18)
   }
 }

@@ -51,7 +51,7 @@ class FindBestWindows {
     const val MIN_HOUR_SCORE = 50
     const val MIN_BLOCK_SIZE = 1
     const val MAX_WINDOWS = 3
-    
+
     val BY_SCORE_DESC_THEN_EARLIEST_FIRST: Comparator<ScoredWindow> =
       compareByDescending<ScoredWindow> { it.averageScore }.thenBy { it.start }
   }

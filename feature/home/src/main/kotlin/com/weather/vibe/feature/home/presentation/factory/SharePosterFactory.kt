@@ -34,7 +34,7 @@ internal class SharePosterFactory(
 
     return SharePosterUiState(
       cityName = weather.coordinates.name,
-      conditionEmoji = weather.condition.emoji,
+      conditionEmoji = weather.condition.emojiAt(weather.isDay),
       conditionLabel = resources.conditionLabel(weather.condition),
       dateLabel = timeProvider.today().format(dateFormatter),
       gradientKey = VIBE_TO_GRADIENT.getValue(vibeKey),

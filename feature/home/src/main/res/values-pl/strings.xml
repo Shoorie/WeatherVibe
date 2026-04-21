@@ -73,9 +73,9 @@
 
   <string name="daily_vibe_score_format">%1$d/100</string>
   <string name="daily_vibe_summary_format">%1$s  ·  %2$s</string>
-  <string name="daily_vibe_mood_radiant">Idealny dzień</string>
+  <string name="daily_vibe_mood_radiant">Idealny klimat</string>
   <string name="daily_vibe_mood_pleasant">Przyjemny klimat</string>
-  <string name="daily_vibe_mood_okay">Znośny dzień</string>
+  <string name="daily_vibe_mood_okay">Znośny klimat</string>
   <string name="daily_vibe_mood_dreary">Ponury klimat</string>
   <string name="daily_vibe_mood_rough">Kiepsko na dworze</string>
   <string name="daily_vibe_oneliner_radiant">Idealnie — wyjdź z tego biura.</string>
@@ -95,6 +95,7 @@
   <string name="sunset_at_format">Zachód o %1$s</string>
 
   <string name="share_brief_content_description">Udostępnij dzisiejszy vibe</string>
+  <string name="share_brief_action_label">Udostępnij poster</string>
   <string name="share_brief_chooser_title">Podziel się vibe\'em</string>
   <string name="share_poster_wordmark_headline">WeatherVibe</string>
 

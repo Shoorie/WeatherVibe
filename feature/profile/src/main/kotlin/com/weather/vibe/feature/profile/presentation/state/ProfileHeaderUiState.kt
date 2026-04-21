@@ -7,5 +7,6 @@ internal data class ProfileHeaderUiState(
   val username: String,
   val greeting: String,
   val subtitle: String,
-  val briefToneLabel: String
+  val briefToneLabel: String,
+  val quote: String
 )

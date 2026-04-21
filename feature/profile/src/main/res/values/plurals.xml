@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <plurals name="profile_header_subtitle">
+    <item quantity="one">%1$d day with WeatherVibe</item>
+    <item quantity="other">%1$d days with WeatherVibe</item>
+  </plurals>
+</resources>

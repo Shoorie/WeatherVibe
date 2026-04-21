@@ -16,7 +16,8 @@ internal class ProfilePreview :
         username = "Adrian",
         greeting = "Cześć, Adrian",
         subtitle = "42 dni z WeatherVibe",
-        briefToneLabel = "Chill"
+        briefToneLabel = "Dowcipny",
+        quote = "Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie."
       ),
       quickStats = persistentListOf(
         ProfileStatUiState(id = "locations", label = "Lokalizacje", value = "3"),
@@ -35,7 +36,8 @@ internal class ProfilePreview :
         username = "",
         greeting = "Hej 👋",
         subtitle = "Dotknij, aby się przedstawić",
-        briefToneLabel = "Chill"
+        briefToneLabel = "",
+        quote = ""
       ),
       quickStats = persistentListOf(
         ProfileStatUiState(id = "locations", label = "Lokalizacje", value = "1"),

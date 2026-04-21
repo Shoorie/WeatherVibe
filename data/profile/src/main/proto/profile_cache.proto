@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "com.weather.vibe.data.profile.persistence";
+option java_multiple_files = true;
+
+message ProfileCacheData {
+    string username = 1;
+}
+

@@ -1,5 +1,7 @@
 package com.weather.vibe.feature.profile.presentation
 
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
+
 internal sealed interface ProfileAction {
   data object AboutClick : ProfileAction
   data object EditUsernameClick : ProfileAction
@@ -9,4 +11,5 @@ internal sealed interface ProfileAction {
   data object NotificationsClick : ProfileAction
   data object PersonalizationClick : ProfileAction
   data object PrivacyClick : ProfileAction
+  data class StatClick(val type: ProfileStatType) : ProfileAction
 }

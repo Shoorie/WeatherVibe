@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 internal data class ProfileHeaderUiState(
   val username: String,
+  val avatarInitial: String,
   val greeting: String,
   val subtitle: String,
   val briefToneLabel: String,

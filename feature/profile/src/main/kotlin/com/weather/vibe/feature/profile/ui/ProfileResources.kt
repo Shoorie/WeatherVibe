@@ -40,6 +40,9 @@ internal class ProfileResources(private val context: Context) {
   fun unnamedSubtitle(): String =
     context.getString(R.string.profile_header_unnamed_subtitle)
 
+  fun unnamedAvatar(): String =
+    context.getString(R.string.profile_header_avatar_unnamed)
+
   fun greeting(username: String): String =
     context.getString(R.string.profile_header_greeting, username)
 
@@ -49,8 +52,26 @@ internal class ProfileResources(private val context: Context) {
   fun locationsStatLabel(): String =
     context.getString(R.string.profile_stat_locations_label)
 
-  fun streakStatLabel(): String =
-    context.getString(R.string.profile_stat_streak_label)
+  fun locationsStatClickLabel(): String =
+    context.getString(R.string.profile_stat_locations_click_label)
+
+  fun morningBriefStatLabel(): String =
+    context.getString(R.string.profile_stat_morning_brief_label)
+
+  fun morningBriefStatClickLabel(): String =
+    context.getString(R.string.profile_stat_morning_brief_click_label)
+
+  fun alertsStatLabel(): String =
+    context.getString(R.string.profile_stat_alerts_label)
+
+  fun alertsStatClickLabel(): String =
+    context.getString(R.string.profile_stat_alerts_click_label)
+
+  fun statStatus(enabled: Boolean): String =
+    context.getString(
+      if (enabled) R.string.profile_stat_status_on
+      else R.string.profile_stat_status_off
+    )
 
   object Texts {
 

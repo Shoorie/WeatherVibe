@@ -11,7 +11,9 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameS
 import com.weather.vibe.feature.profile.presentation.ProfileAction.NotificationsClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 
 @Immutable
 internal data class ProfileCallbacks(
@@ -22,6 +24,7 @@ internal data class ProfileCallbacks(
   val onNotificationsClick: () -> Unit,
   val onPersonalizationClick: () -> Unit,
   val onPrivacyClick: () -> Unit,
+  val onStatClick: (ProfileStatType) -> Unit,
   val onUsernameChange: (String) -> Unit
 ) {
 
@@ -34,6 +37,7 @@ internal data class ProfileCallbacks(
       onNotificationsClick = {},
       onPersonalizationClick = {},
       onPrivacyClick = {},
+      onStatClick = {},
       onUsernameChange = {}
     )
   }
@@ -52,6 +56,7 @@ internal fun rememberProfileCallbacks(
       onNotificationsClick = { dispatch(NotificationsClick) },
       onPersonalizationClick = { dispatch(PersonalizationClick) },
       onPrivacyClick = { dispatch(PrivacyClick) },
+      onStatClick = { type -> dispatch(StatClick(type = type)) },
       onUsernameChange = { value -> dispatch(UsernameChanged(value = value)) }
     )
   }

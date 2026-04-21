@@ -16,7 +16,14 @@
   <string name="profile_header_quote_humorous">Moje nastawienie jest dziś w trybie oszczędzania energii. Proszę nie oczekiwać słońca przed trzecią kawą.</string>
 
   <string name="profile_stat_locations_label">Lokalizacje</string>
-  <string name="profile_stat_streak_label">Dni z nami</string>
+  <string name="profile_stat_locations_click_label">Otwórz lokalizacje</string>
+  <string name="profile_stat_morning_brief_label">Poranny brief</string>
+  <string name="profile_stat_morning_brief_click_label">Otwórz powiadomienia</string>
+  <string name="profile_stat_alerts_label">Alerty</string>
+  <string name="profile_stat_alerts_click_label">Otwórz powiadomienia</string>
+  <string name="profile_stat_status_on">Wł.</string>
+  <string name="profile_stat_status_off">Wył.</string>
+  <string name="profile_header_avatar_unnamed">?</string>
 
   <string name="profile_row_personalization_title">Personalizacja</string>
   <string name="profile_row_personalization_body">Ton briefu, jednostki, wykluczone gatunki</string>

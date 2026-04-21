@@ -8,5 +8,6 @@ internal object ProfileDefaults {
   val NavIconCornerRadius = 14.dp
   val HeroChipPaddingHorizontal = 14.dp
   val HeroChipPaddingVertical = 8.dp
+  val AvatarSize = 56.dp
   const val HeroChipAlpha = 0.2f
 }

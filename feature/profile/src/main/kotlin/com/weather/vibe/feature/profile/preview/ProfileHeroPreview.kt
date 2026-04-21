@@ -9,6 +9,7 @@ internal class ProfileHeroPreview :
   val named: ProfileHeaderUiState =
     ProfileHeaderUiState(
       username = "John",
+      avatarInitial = "J",
       greeting = "Hi, John",
       subtitle = "42 days with WeatherVibe",
       briefToneLabel = "Witty",
@@ -18,6 +19,7 @@ internal class ProfileHeroPreview :
   val unnamed: ProfileHeaderUiState =
     ProfileHeaderUiState(
       username = "",
+      avatarInitial = "?",
       greeting = "Hey 👋",
       subtitle = "Tap to introduce yourself",
       briefToneLabel = "",

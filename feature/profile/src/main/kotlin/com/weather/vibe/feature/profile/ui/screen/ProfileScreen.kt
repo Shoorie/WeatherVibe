@@ -23,10 +23,12 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
 import com.weather.vibe.feature.profile.presentation.ProfileViewModel
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
 import com.weather.vibe.feature.profile.preview.ProfilePreview
@@ -46,7 +48,8 @@ fun ProfileScreen(
   onOpenPersonalization: () -> Unit,
   onOpenNotifications: () -> Unit,
   onOpenPrivacy: () -> Unit,
-  onOpenAbout: () -> Unit
+  onOpenAbout: () -> Unit,
+  onOpenLocations: () -> Unit
 ) {
 
   val viewModel: ProfileViewModel = koinViewModel()
@@ -60,6 +63,7 @@ fun ProfileScreen(
         OpenNotifications -> onOpenNotifications()
         OpenPrivacy -> onOpenPrivacy()
         OpenAbout -> onOpenAbout()
+        OpenLocations -> onOpenLocations()
       }
     }
   }
@@ -101,7 +105,12 @@ internal fun ProfileContent(
         onEditClick = callbacks.onEditUsernameClick
       )
     }
-    item(key = KEY_QUICK_STATS) { QuickStatsRow(stats = state.quickStats) }
+    item(key = KEY_QUICK_STATS) {
+      QuickStatsRow(
+        stats = state.quickStats,
+        onStatClick = callbacks.onStatClick
+      )
+    }
     item(key = KEY_MOOD) { MoodTeaserCard() }
     navigationItems(callbacks = callbacks)
   }
@@ -117,7 +126,10 @@ internal fun ProfileContent(
 }
 
 @Composable
-private fun QuickStatsRow(stats: ImmutableList<ProfileStatUiState>) {
+private fun QuickStatsRow(
+  stats: ImmutableList<ProfileStatUiState>,
+  onStatClick: (ProfileStatType) -> Unit
+) {
   Row(
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(Small)
@@ -125,7 +137,8 @@ private fun QuickStatsRow(stats: ImmutableList<ProfileStatUiState>) {
     stats.forEach { stat ->
       ProfileStatCard(
         modifier = Modifier.weight(1f),
-        stat = stat
+        stat = stat,
+        onClick = { onStatClick(stat.type) }
       )
     }
   }

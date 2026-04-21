@@ -102,7 +102,8 @@ internal fun ProfileContent(
     item(key = KEY_HERO) {
       ProfileHero(
         header = state.header,
-        onEditClick = callbacks.onEditUsernameClick
+        onEditClick = callbacks.onEditUsernameClick,
+        onBriefToneClick = callbacks.onPersonalizationClick
       )
     }
     item(key = KEY_QUICK_STATS) {

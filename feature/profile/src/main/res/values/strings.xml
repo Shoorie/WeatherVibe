@@ -8,6 +8,7 @@
   <string name="profile_header_edit_hint">Edit</string>
   <string name="profile_header_edit_click_label">Edit profile</string>
   <string name="profile_header_brief_tone_label">Brief tone</string>
+  <string name="profile_header_brief_tone_click_label">Open personalization</string>
   <string name="profile_brief_tone_witty">Witty &amp; Friendly</string>
   <string name="profile_brief_tone_formal">Formal</string>
   <string name="profile_brief_tone_humorous">Humorous</string>

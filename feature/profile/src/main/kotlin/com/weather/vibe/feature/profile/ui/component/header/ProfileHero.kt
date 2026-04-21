@@ -39,6 +39,7 @@ import com.weather.vibe.feature.profile.preview.ProfileHeroPreview
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipAlpha
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipPaddingHorizontal
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipPaddingVertical
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.briefToneClickLabel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.briefToneLabel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editHeaderClickLabel
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
@@ -47,7 +48,8 @@ import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 internal fun ProfileHero(
   modifier: Modifier = Modifier,
   header: ProfileHeaderUiState,
-  onEditClick: () -> Unit
+  onEditClick: () -> Unit,
+  onBriefToneClick: () -> Unit
 ) {
 
   val accentColor = colors.accent
@@ -84,7 +86,10 @@ internal fun ProfileHero(
         )
       }
       if (header.briefToneLabel.isNotBlank()) {
-        BriefToneRow(value = header.briefToneLabel)
+        BriefToneRow(
+          value = header.briefToneLabel,
+          onClick = onBriefToneClick
+        )
       }
     }
   }
@@ -138,7 +143,10 @@ private fun HeaderTexts(
 }
 
 @Composable
-private fun BriefToneRow(value: String) {
+private fun BriefToneRow(
+  value: String,
+  onClick: () -> Unit
+) {
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -151,16 +159,27 @@ private fun BriefToneRow(value: String) {
       style = ProfileTextStyles.heroChipLabel(),
       color = colors.onAccent
     )
-    HeroChip(value = value)
+    HeroChip(
+      value = value,
+      onClick = onClick
+    )
   }
 }
 
 @Composable
-private fun HeroChip(value: String) {
+private fun HeroChip(
+  value: String,
+  onClick: () -> Unit
+) {
   Text(
     modifier = Modifier
       .clip(shapes.pill)
       .background(colors.onAccent.copy(alpha = HeroChipAlpha))
+      .clickable(
+        role = Role.Button,
+        onClickLabel = briefToneClickLabel(),
+        onClick = onClick
+      )
       .padding(
         horizontal = HeroChipPaddingHorizontal,
         vertical = HeroChipPaddingVertical
@@ -180,7 +199,8 @@ private fun Preview(
   WeatherVibeTheme {
     ProfileHero(
       header = header,
-      onEditClick = {}
+      onEditClick = {},
+      onBriefToneClick = {}
     )
   }
 }

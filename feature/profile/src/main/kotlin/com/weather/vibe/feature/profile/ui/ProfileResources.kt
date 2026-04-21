@@ -84,6 +84,10 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_header_brief_tone_label)
 
     @Composable
+    fun briefToneClickLabel(): String =
+      stringResource(R.string.profile_header_brief_tone_click_label)
+
+    @Composable
     fun personalizationTitle(): String =
       stringResource(R.string.profile_row_personalization_title)
 

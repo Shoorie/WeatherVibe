@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.profile.ui.component.header
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +14,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarBorderWidth
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarSize
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
@@ -25,7 +27,12 @@ internal fun ProfileAvatar(
     modifier = modifier
       .size(AvatarSize)
       .clip(CircleShape)
-      .background(colors.onAccent.copy(alpha = AVATAR_BACKGROUND_ALPHA)),
+      .background(colors.accentDark)
+      .border(
+        width = AvatarBorderWidth,
+        color = colors.onAccent,
+        shape = CircleShape
+      ),
     contentAlignment = Alignment.Center
   ) {
     Text(
@@ -36,8 +43,6 @@ internal fun ProfileAvatar(
     )
   }
 }
-
-private const val AVATAR_BACKGROUND_ALPHA = 0.22f
 
 @PreviewLightDark
 @Composable

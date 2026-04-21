@@ -6,6 +6,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarInitialFontSize
 
 internal object ProfileTextStyles {
 
@@ -43,7 +44,12 @@ internal object ProfileTextStyles {
   @Composable
   fun avatarInitial(): TextStyle {
     val base = typography.titleLarge
-    return remember(base) { base.copy(fontWeight = SemiBold) }
+    return remember(base) {
+      base.copy(
+        fontSize = AvatarInitialFontSize,
+        fontWeight = SemiBold
+      )
+    }
   }
 
   @Composable

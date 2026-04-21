@@ -8,6 +8,7 @@
   <string name="profile_header_edit_hint">Edytuj</string>
   <string name="profile_header_edit_click_label">Edytuj profil</string>
   <string name="profile_header_brief_tone_label">Ton briefu</string>
+  <string name="profile_header_brief_tone_click_label">Otwórz personalizację</string>
   <string name="profile_brief_tone_witty">Dowcipny</string>
   <string name="profile_brief_tone_formal">Formalny</string>
   <string name="profile_brief_tone_humorous">Humorystyczny</string>

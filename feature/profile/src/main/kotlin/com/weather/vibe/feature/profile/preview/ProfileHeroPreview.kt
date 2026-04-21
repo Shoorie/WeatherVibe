@@ -6,24 +6,24 @@ import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
 internal class ProfileHeroPreview :
   PreviewParameterProvider<ProfileHeaderUiState> {
 
-  private val named: ProfileHeaderUiState =
+  val named: ProfileHeaderUiState =
     ProfileHeaderUiState(
-      username = "Adrian",
-      greeting = "Cześć, Adrian",
-      subtitle = "42 dni z WeatherVibe",
-      briefToneLabel = "Dowcipny",
-      quote = "Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie."
+      username = "John",
+      greeting = "Hi, John",
+      subtitle = "42 days with WeatherVibe",
+      briefToneLabel = "Witty",
+      quote = "We can't control the weather, but we can control our attitude."
     )
 
-  private val cta: ProfileHeaderUiState =
+  val unnamed: ProfileHeaderUiState =
     ProfileHeaderUiState(
       username = "",
-      greeting = "Hej 👋",
-      subtitle = "Dotknij, aby się przedstawić",
+      greeting = "Hey 👋",
+      subtitle = "Tap to introduce yourself",
       briefToneLabel = "",
       quote = ""
     )
 
   override val values: Sequence<ProfileHeaderUiState> =
-    sequenceOf(named, cta)
+    sequenceOf(named, unnamed)
 }

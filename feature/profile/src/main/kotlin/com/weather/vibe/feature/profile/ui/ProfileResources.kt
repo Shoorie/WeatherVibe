@@ -34,11 +34,11 @@ internal class ProfileResources(private val context: Context) {
     HUMOROUS -> R.string.profile_header_quote_humorous
   }
 
-  fun ctaGreeting(): String =
-    context.getString(R.string.profile_header_cta_greeting)
+  fun unnamedGreeting(): String =
+    context.getString(R.string.profile_header_unnamed_greeting)
 
-  fun ctaSubtitle(): String =
-    context.getString(R.string.profile_header_cta_subtitle)
+  fun unnamedSubtitle(): String =
+    context.getString(R.string.profile_header_unnamed_subtitle)
 
   fun greeting(username: String): String =
     context.getString(R.string.profile_header_greeting, username)

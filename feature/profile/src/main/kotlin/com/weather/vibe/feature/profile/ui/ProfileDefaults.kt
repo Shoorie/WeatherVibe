@@ -9,5 +9,4 @@ internal object ProfileDefaults {
   val HeroChipPaddingHorizontal = 14.dp
   val HeroChipPaddingVertical = 8.dp
   const val HeroChipAlpha = 0.2f
-  const val MaxUsernameLength = 24
 }

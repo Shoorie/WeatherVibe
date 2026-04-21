@@ -2,7 +2,6 @@ package com.weather.vibe.feature.profile.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.profile.presentation.state.ProfileEditSheetUiState
-import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
 import kotlinx.collections.immutable.persistentListOf
@@ -10,46 +9,40 @@ import kotlinx.collections.immutable.persistentListOf
 internal class ProfilePreview :
   PreviewParameterProvider<ProfileUiState> {
 
+  private val header = ProfileHeroPreview()
+
   private val loaded: ProfileUiState =
     ProfileUiState(
-      header = ProfileHeaderUiState(
-        username = "Adrian",
-        greeting = "Cześć, Adrian",
-        subtitle = "42 dni z WeatherVibe",
-        briefToneLabel = "Dowcipny",
-        quote = "Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie."
-      ),
+      header = header.named,
       quickStats = persistentListOf(
-        ProfileStatUiState(id = "locations", label = "Lokalizacje", value = "3"),
-        ProfileStatUiState(id = "streak", label = "Dni z nami", value = "42")
+        ProfileStatUiState(id = "locations", label = "Locations", value = "3"),
+        ProfileStatUiState(id = "streak", label = "Days with us", value = "42")
       ),
       editSheet = ProfileEditSheetUiState(
         isVisible = false,
-        username = "Adrian",
+        username = "John",
         canSave = true
-      )
+      ),
+      usageDays = 42,
+      locationsCount = 3
     )
 
-  private val empty: ProfileUiState =
+  private val unnamed: ProfileUiState =
     ProfileUiState(
-      header = ProfileHeaderUiState(
-        username = "",
-        greeting = "Hej 👋",
-        subtitle = "Dotknij, aby się przedstawić",
-        briefToneLabel = "",
-        quote = ""
-      ),
+      header = header.unnamed,
       quickStats = persistentListOf(
-        ProfileStatUiState(id = "locations", label = "Lokalizacje", value = "1"),
-        ProfileStatUiState(id = "streak", label = "Dni z nami", value = "1")
+        ProfileStatUiState(id = "locations", label = "Locations", value = "1"),
+        ProfileStatUiState(id = "streak", label = "Days with us", value = "0")
       ),
       editSheet = ProfileEditSheetUiState(
         isVisible = false,
         username = "",
         canSave = false
-      )
+      ),
+      usageDays = 0,
+      locationsCount = 1
     )
 
   override val values: Sequence<ProfileUiState> =
-    sequenceOf(loaded, empty)
+    sequenceOf(loaded, unnamed)
 }

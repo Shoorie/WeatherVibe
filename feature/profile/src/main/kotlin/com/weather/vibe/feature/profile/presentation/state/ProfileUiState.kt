@@ -7,5 +7,7 @@ import kotlinx.collections.immutable.ImmutableList
 internal data class ProfileUiState(
   val header: ProfileHeaderUiState,
   val quickStats: ImmutableList<ProfileStatUiState>,
-  val editSheet: ProfileEditSheetUiState
+  val editSheet: ProfileEditSheetUiState,
+  val usageDays: Int,
+  val locationsCount: Int
 )

@@ -151,10 +151,10 @@ internal class ProfileStateFactoryTest {
 
     val result = factory.withProfile(
       state = factory.initial(),
-      profile = profileSummary(username = "adrian")
+      profile = profileSummary(username = "john")
     )
 
-    expectThat(result.header.avatarInitial).isEqualTo("A")
+    expectThat(result.header.avatarInitial).isEqualTo("J")
   }
 
   @Test

@@ -26,7 +26,6 @@ internal object ProfileFixtures {
   const val QUOTE_FORMAL = "Quote formal"
   const val QUOTE_HUMOROUS = "Quote humorous"
   const val USERNAME_JOHN = "John"
-  const val USERNAME_LONG = "NameWayTooLongToFitInsideTheUsernameFieldLimit"
 
   fun greeting(username: String): String =
     "Hi, $username"

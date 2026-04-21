@@ -16,9 +16,6 @@ object VibeSegmentDefaults {
   val MinHeight = 44.dp
   val Padding = 4.dp
 
-  fun widthFractionFor(segmentCount: Int): Float =
-    1f / segmentCount.coerceAtLeast(1)
-
   @Composable
   @ReadOnlyComposable
   fun segmentTextColor(selected: Boolean): Color =
@@ -26,7 +23,6 @@ object VibeSegmentDefaults {
 
   @Composable
   fun segmentTextStyle(selected: Boolean): TextStyle {
-
     val base = typography.labelMedium
     return remember(base, selected) {
       base.copy(fontWeight = if (selected) SemiBold else Medium)

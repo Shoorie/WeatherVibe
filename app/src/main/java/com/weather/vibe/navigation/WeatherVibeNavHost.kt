@@ -32,6 +32,7 @@ import com.weather.vibe.navigation.bottombar.WeatherVibeBottomBar
 import com.weather.vibe.navigation.home.HomeEntry
 import com.weather.vibe.navigation.home.HomeRoute
 import com.weather.vibe.navigation.locations.LocationsRoute
+import com.weather.vibe.navigation.selectTab
 import com.weather.vibe.navigation.onboarding.LocationOnboardingRoute
 import com.weather.vibe.navigation.onboarding.OnboardingEntry
 import com.weather.vibe.navigation.planner.ActivityPlannerEntry
@@ -168,7 +169,8 @@ private fun profileEntry(
         onOpenPersonalization = { backStack.add(ProfilePersonalizationRoute) },
         onOpenNotifications = { backStack.add(ProfileNotificationsRoute) },
         onOpenPrivacy = { backStack.add(ProfilePrivacyRoute) },
-        onOpenAbout = { backStack.add(ProfileAboutRoute) }
+        onOpenAbout = { backStack.add(ProfileAboutRoute) },
+        onOpenLocations = { backStack.selectTab(LocationsRoute) }
       )
     }
     is ProfilePersonalizationRoute -> NavEntry(key) {

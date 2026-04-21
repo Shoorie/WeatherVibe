@@ -13,16 +13,22 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameS
 import com.weather.vibe.feature.profile.presentation.ProfileAction.NotificationsClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
 import com.weather.vibe.feature.profile.presentation.fake.fakeProfileResources
+import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.STATUS_ON
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.TONE_LABEL_FORMAL
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.USERNAME_JOHN
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.greeting
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.profileSummary
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCATIONS
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.MORNING_BRIEF
 import com.weather.vibe.testing.coroutines.MainDispatcherRule
 import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
 import io.mockk.coJustRun
@@ -92,16 +98,15 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when profile emitted, then streak stat updates`() = runTest {
+  fun `when profile emitted, then avatar shows first letter`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 42))
+    every { observeProfile() } returns flowOf(profileSummary(username = USERNAME_JOHN))
     every { observeUserSettings() } returns flowOf(success(userSettings()))
 
     val viewModel = createViewModel()
     runCurrent()
 
-    val streak = viewModel.state.value.quickStats.first { it.id == "streak" }
-    expectThat(streak.value).isEqualTo("42")
+    expectThat(viewModel.state.value.header.avatarInitial).isEqualTo("J")
   }
 
   @Test
@@ -118,11 +123,35 @@ class ProfileViewModelTest {
   }
 
   @Test
+  fun `when morning brief enabled, then brief stat shows on`() = runTest {
+
+    every { observeProfile() } returns flowOf(profileSummary(usageDays = 1))
+    every { observeUserSettings() } returns flowOf(success(userSettings(morningBriefEnabled = true)))
+
+    val viewModel = createViewModel()
+    runCurrent()
+
+    val brief = viewModel.state.value.quickStats.first { it.type == MORNING_BRIEF }
+    expectThat(brief.value).isEqualTo(STATUS_ON)
+  }
+
+  @Test
+  fun `when alerts enabled, then alerts stat shows on`() = runTest {
+
+    every { observeProfile() } returns flowOf(profileSummary(usageDays = 1))
+    every { observeUserSettings() } returns flowOf(success(userSettings(alertsEnabled = true)))
+
+    val viewModel = createViewModel()
+    runCurrent()
+
+    val alerts = viewModel.state.value.quickStats.first { it.type == ALERTS }
+    expectThat(alerts.value).isEqualTo(STATUS_ON)
+  }
+
+  @Test
   fun `given settings failure, when profile emitted, then header still updates`() = runTest {
 
-    every { observeProfile() } returns flowOf(
-      profileSummary(usageDays = 7)
-    )
+    every { observeProfile() } returns flowOf(profileSummary(usageDays = 7))
     every { observeUserSettings() } returns flowOf(failure(RuntimeException("boom")))
 
     val viewModel = createViewModel()
@@ -209,7 +238,6 @@ class ProfileViewModelTest {
     val viewModel = createViewModel()
 
     viewModel.event.test {
-
       viewModel.dispatch(AboutClick)
 
       expectThat(awaitItem()).isA<OpenAbout>()
@@ -222,7 +250,6 @@ class ProfileViewModelTest {
     val viewModel = createViewModel()
 
     viewModel.event.test {
-
       viewModel.dispatch(PersonalizationClick)
 
       expectThat(awaitItem()).isA<OpenPersonalization>()
@@ -235,7 +262,6 @@ class ProfileViewModelTest {
     val viewModel = createViewModel()
 
     viewModel.event.test {
-
       viewModel.dispatch(NotificationsClick)
 
       expectThat(awaitItem()).isA<OpenNotifications>()
@@ -248,10 +274,45 @@ class ProfileViewModelTest {
     val viewModel = createViewModel()
 
     viewModel.event.test {
-
       viewModel.dispatch(PrivacyClick)
 
       expectThat(awaitItem()).isA<OpenPrivacy>()
+    }
+  }
+
+  @Test
+  fun `when locations stat clicked, then open locations event emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(StatClick(type = LOCATIONS))
+
+      expectThat(awaitItem()).isA<OpenLocations>()
+    }
+  }
+
+  @Test
+  fun `when morning brief stat clicked, then open notifications event emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(StatClick(type = MORNING_BRIEF))
+
+      expectThat(awaitItem()).isA<OpenNotifications>()
+    }
+  }
+
+  @Test
+  fun `when alerts stat clicked, then open notifications event emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(StatClick(type = ALERTS))
+
+      expectThat(awaitItem()).isA<OpenNotifications>()
     }
   }
 

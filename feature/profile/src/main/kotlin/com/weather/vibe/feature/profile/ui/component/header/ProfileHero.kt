@@ -21,10 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -41,7 +39,6 @@ import com.weather.vibe.feature.profile.preview.ProfileHeroPreview
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipAlpha
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipPaddingHorizontal
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipPaddingVertical
-import com.weather.vibe.feature.profile.ui.ProfileEmojis
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.briefToneLabel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editHeaderClickLabel
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
@@ -102,7 +99,7 @@ private fun HeroTopRow(header: ProfileHeaderUiState) {
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Medium)
   ) {
-    HeroEmoji()
+    ProfileAvatar(initial = header.avatarInitial)
     HeaderTexts(
       modifier = Modifier.weight(1f),
       greeting = header.greeting,
@@ -115,16 +112,6 @@ private fun HeroTopRow(header: ProfileHeaderUiState) {
       tint = colors.onAccent
     )
   }
-}
-
-@Composable
-private fun HeroEmoji() {
-  Text(
-    modifier = Modifier.clearAndSetSemantics {},
-    text = ProfileEmojis.HERO,
-    style = TextStyle.Default,
-    fontSize = ProfileEmojis.HeroSize
-  )
 }
 
 @Composable

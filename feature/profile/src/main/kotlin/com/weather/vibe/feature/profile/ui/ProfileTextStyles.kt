@@ -41,6 +41,12 @@ internal object ProfileTextStyles {
   }
 
   @Composable
+  fun avatarInitial(): TextStyle {
+    val base = typography.titleLarge
+    return remember(base) { base.copy(fontWeight = SemiBold) }
+  }
+
+  @Composable
   fun statLabel(): TextStyle =
     typography.labelSmall
 

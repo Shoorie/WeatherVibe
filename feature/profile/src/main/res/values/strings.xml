@@ -16,7 +16,14 @@
   <string name="profile_header_quote_humorous">My attitude is in power-saving mode today. Please do not expect any sunshine before the third cup of coffee.</string>
 
   <string name="profile_stat_locations_label">Locations</string>
-  <string name="profile_stat_streak_label">Days with us</string>
+  <string name="profile_stat_locations_click_label">Open locations</string>
+  <string name="profile_stat_morning_brief_label">Morning brief</string>
+  <string name="profile_stat_morning_brief_click_label">Open notifications</string>
+  <string name="profile_stat_alerts_label">Alerts</string>
+  <string name="profile_stat_alerts_click_label">Open notifications</string>
+  <string name="profile_stat_status_on">On</string>
+  <string name="profile_stat_status_off">Off</string>
+  <string name="profile_header_avatar_unnamed">?</string>
 
   <string name="profile_row_personalization_title">Personalization</string>
   <string name="profile_row_personalization_body">Brief tone, units, excluded genres</string>

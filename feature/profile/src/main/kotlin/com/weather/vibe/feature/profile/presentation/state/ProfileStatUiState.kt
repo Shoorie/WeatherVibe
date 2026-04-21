@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 internal data class ProfileStatUiState(
-  val id: String,
+  val type: ProfileStatType,
   val label: String,
-  val value: String
+  val value: String,
+  val onClickLabel: String
 )

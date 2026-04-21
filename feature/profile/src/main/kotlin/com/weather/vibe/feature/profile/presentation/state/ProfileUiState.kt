@@ -8,6 +8,7 @@ internal data class ProfileUiState(
   val header: ProfileHeaderUiState,
   val quickStats: ImmutableList<ProfileStatUiState>,
   val editSheet: ProfileEditSheetUiState,
-  val usageDays: Int,
-  val locationsCount: Int
+  val locationsCount: Int,
+  val morningBriefEnabled: Boolean,
+  val alertsEnabled: Boolean
 )

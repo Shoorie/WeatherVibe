@@ -15,17 +15,21 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
 internal fun ProfileStatCard(
   modifier: Modifier = Modifier,
-  stat: ProfileStatUiState
+  stat: ProfileStatUiState,
+  onClick: () -> Unit
 ) {
   VibeCard(
     modifier = modifier,
-    contentPadding = Medium
+    contentPadding = Medium,
+    onClick = onClick,
+    onClickLabel = stat.onClickLabel
   ) {
     Column(
       modifier = Modifier
@@ -56,10 +60,12 @@ private fun Preview() {
   WeatherVibeTheme {
     ProfileStatCard(
       stat = ProfileStatUiState(
-        id = "streak",
-        label = "Dni z nami",
-        value = "42"
-      )
+        type = ProfileStatType.MORNING_BRIEF,
+        label = "Morning brief",
+        value = "On",
+        onClickLabel = "Open notifications"
+      ),
+      onClick = {}
     )
   }
 }

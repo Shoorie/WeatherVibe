@@ -12,11 +12,17 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameS
 import com.weather.vibe.feature.profile.presentation.ProfileAction.NotificationsClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCATIONS
+import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.MORNING_BRIEF
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
@@ -68,6 +74,7 @@ internal class ProfileViewModel(
       is NotificationsClick -> onNotificationsClick()
       is PersonalizationClick -> onPersonalizationClick()
       is PrivacyClick -> onPrivacyClick()
+      is StatClick -> onStatClick(action.type)
     }
   }
 
@@ -87,6 +94,13 @@ internal class ProfileViewModel(
     send(OpenPrivacy)
   }
 
+  private fun onStatClick(type: ProfileStatType) {
+    when (type) {
+      LOCATIONS -> send(OpenLocations)
+      MORNING_BRIEF, ALERTS -> send(OpenNotifications)
+    }
+  }
+
   private fun onEditUsernameClick() {
     _state.update(stateFactory::triggerEditSheet)
   }
@@ -97,10 +111,7 @@ internal class ProfileViewModel(
 
   private fun onUsernameChanged(value: String) {
     _state.update { current ->
-      stateFactory.editUsername(
-        state = current,
-        value = value
-      )
+      stateFactory.editUsername(state = current, value = value)
     }
   }
 
@@ -120,7 +131,7 @@ internal class ProfileViewModel(
   private fun onProfileSnapshot(snapshot: ProfileSnapshot) {
     applyProfile(snapshot.profile)
     snapshot.settingsResult
-      .onSuccess(::applyBriefTone)
+      .onSuccess(::applySettings)
       .onFailure(::onSettingsError)
   }
 
@@ -133,11 +144,11 @@ internal class ProfileViewModel(
     }
   }
 
-  private fun applyBriefTone(settings: UserSettings) {
+  private fun applySettings(settings: UserSettings) {
     _state.update { current ->
-      stateFactory.withBriefTone(
+      stateFactory.withSettings(
         state = current,
-        tone = settings.briefTone
+        settings = settings
       )
     }
   }

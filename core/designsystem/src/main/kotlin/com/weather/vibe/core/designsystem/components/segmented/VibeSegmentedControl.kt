@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.IntOffset
 import com.weather.vibe.core.designsystem.components.segmented.VibeSegmentDefaults.MinHeight
 import com.weather.vibe.core.designsystem.components.segmented.VibeSegmentDefaults.Padding
 import com.weather.vibe.core.designsystem.components.segmented.VibeSegmentDefaults.segmentTextStyle
-import com.weather.vibe.core.designsystem.components.segmented.VibeSegmentDefaults.widthFractionFor
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke.Border
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -132,6 +131,9 @@ private fun Modifier.pillFrame(): Modifier =
 
 private fun indicatorOffset(position: Float, widthPx: Int): Int =
   (position * widthPx).roundToInt()
+
+private fun widthFractionFor(segmentCount: Int): Float =
+  1f / segmentCount.coerceAtLeast(1)
 
 @PreviewLightDark
 @Composable

@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.time)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)
 }

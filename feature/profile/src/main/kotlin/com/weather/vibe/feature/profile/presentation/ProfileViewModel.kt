@@ -3,6 +3,7 @@ package com.weather.vibe.feature.profile.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.profile.model.ProfileSummary
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -47,11 +49,12 @@ internal class ProfileViewModel(
   }
 
   init {
-    useCases.observeUserSettings()
-      .onEach(::onSettingsResult)
-      .launchIn(viewModelScope)
-    useCases.observeUsername()
-      .onEach(::applyUsername)
+    combine(
+      useCases.observeProfile(),
+      useCases.observeUserSettings(),
+      ::ProfileSnapshot
+    )
+      .onEach(::onProfileSnapshot)
       .launchIn(viewModelScope)
   }
 
@@ -94,7 +97,10 @@ internal class ProfileViewModel(
 
   private fun onUsernameChanged(value: String) {
     _state.update { current ->
-      stateFactory.editUsername(state = current, value = value)
+      stateFactory.editUsername(
+        state = current,
+        value = value
+      )
     }
   }
 
@@ -111,20 +117,33 @@ internal class ProfileViewModel(
     }
   }
 
-  private fun applyUsername(username: String) {
-    _state.update { current ->
-      stateFactory.withUsername(state = current, username = username)
-    }
+  private fun onProfileSnapshot(snapshot: ProfileSnapshot) {
+    applyProfile(snapshot.profile)
+    snapshot.settingsResult
+      .onSuccess(::applyBriefTone)
+      .onFailure(::onSettingsError)
   }
 
-  private fun onSettingsResult(result: Result<UserSettings>) {
-    result.onSuccess(::applyBriefTone)
+  private fun applyProfile(profile: ProfileSummary) {
+    _state.update { current ->
+      stateFactory.withProfile(
+        state = current,
+        profile = profile
+      )
+    }
   }
 
   private fun applyBriefTone(settings: UserSettings) {
     _state.update { current ->
-      stateFactory.withBriefTone(state = current, tone = settings.briefTone)
+      stateFactory.withBriefTone(
+        state = current,
+        tone = settings.briefTone
+      )
     }
+  }
+
+  private fun onSettingsError(throwable: Throwable) {
+    Log.e(TAG, "Failed to observe user settings", throwable)
   }
 
   private fun send(event: ProfileEvent) {
@@ -132,6 +151,11 @@ internal class ProfileViewModel(
       _event.send(event)
     }
   }
+
+  private data class ProfileSnapshot(
+    val profile: ProfileSummary,
+    val settingsResult: Result<UserSettings>
+  )
 
   private companion object {
     const val TAG = "ProfileViewModel"

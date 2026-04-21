@@ -2,8 +2,8 @@
 <resources>
   <string name="profile_screen_title">Profil</string>
 
-  <string name="profile_header_cta_greeting">Cześć 👋</string>
-  <string name="profile_header_cta_subtitle">Dotknij, aby się przedstawić</string>
+  <string name="profile_header_unnamed_greeting">Cześć 👋</string>
+  <string name="profile_header_unnamed_subtitle">Dotknij, aby się przedstawić</string>
   <string name="profile_header_greeting">Cześć, %1$s</string>
   <string name="profile_header_edit_hint">Edytuj</string>
   <string name="profile_header_edit_click_label">Edytuj profil</string>

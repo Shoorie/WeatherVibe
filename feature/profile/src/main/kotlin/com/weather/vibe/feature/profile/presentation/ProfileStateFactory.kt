@@ -4,7 +4,6 @@ import com.weather.vibe.domain.profile.model.ProfileSummary
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.profile.presentation.state.ProfileEditSheetUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
-import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCATIONS
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.MORNING_BRIEF

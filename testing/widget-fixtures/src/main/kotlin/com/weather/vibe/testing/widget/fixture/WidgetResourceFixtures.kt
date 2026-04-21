@@ -8,4 +8,5 @@ object WidgetResourceFixtures {
   const val ERROR_BODY = "Tap to open WeatherVibe"
   const val CONTENT_DESCRIPTION = "Weather for Warsaw"
   const val FETCHED_AT_LABEL = "12:30"
+  const val CONDITION_LABEL = "Clear Sky"
 }

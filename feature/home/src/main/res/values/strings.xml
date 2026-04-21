@@ -74,9 +74,9 @@
 
   <string name="daily_vibe_score_format">%1$d/100</string>
   <string name="daily_vibe_summary_format">%1$s  ·  %2$s</string>
-  <string name="daily_vibe_mood_radiant">Radiant day</string>
+  <string name="daily_vibe_mood_radiant">Radiant vibes</string>
   <string name="daily_vibe_mood_pleasant">Pleasant vibes</string>
-  <string name="daily_vibe_mood_okay">Okay day</string>
+  <string name="daily_vibe_mood_okay">Okay vibes</string>
   <string name="daily_vibe_mood_dreary">Dreary stretch</string>
   <string name="daily_vibe_mood_rough">Rough out there</string>
   <string name="daily_vibe_oneliner_radiant">Perfect — get out there.</string>
@@ -96,6 +96,7 @@
   <string name="sunset_at_format">Sunset at %1$s</string>
 
   <string name="share_brief_content_description">Share today\'s vibe</string>
+  <string name="share_brief_action_label">Share poster</string>
   <string name="share_brief_chooser_title">Share your vibe</string>
   <string name="share_poster_wordmark_headline">WeatherVibe</string>
 

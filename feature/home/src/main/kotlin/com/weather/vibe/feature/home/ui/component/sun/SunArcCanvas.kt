@@ -1,15 +1,24 @@
 package com.weather.vibe.feature.home.ui.component.sun
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.snap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -21,14 +30,15 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.home.ui.HomeDefaults.SunArcHeight
 import com.weather.vibe.feature.home.ui.HomeDefaults.SunArcStrokeWidth
 import com.weather.vibe.feature.home.ui.HomeDefaults.SunDotRadius
+import com.weather.vibe.feature.home.ui.component.sun.SunArcAnimates.EnterAnimationSpec
+import com.weather.vibe.feature.home.ui.component.sun.SunArcDefaults.ArcPaddingRatio
+import com.weather.vibe.feature.home.ui.component.sun.SunArcDefaults.ArcStartAngleDegrees
+import com.weather.vibe.feature.home.ui.component.sun.SunArcDefaults.ArcSweepDegrees
+import com.weather.vibe.feature.home.ui.component.sun.SunArcDefaults.GlowAlpha
+import com.weather.vibe.feature.home.ui.component.sun.SunArcDefaults.GlowRadiusMultiplier
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
-
-private const val ARC_PADDING_RATIO = 0.08f
-private const val ARC_SWEEP = 180f
-private const val GLOW_ALPHA = 0.3f
-private const val GLOW_MULTIPLIER = 2.5f
 
 @Composable
 internal fun SunArcCanvas(
@@ -36,89 +46,128 @@ internal fun SunArcCanvas(
   sunProgress: Float
 ) {
 
-  val trackColor = colors.outline
-  val accentColor = colors.accent
-  val accentDarkColor = colors.accentDark
-  val glowColor = remember(accentColor) { accentColor.copy(alpha = GLOW_ALPHA) }
-  val gradientBrush = remember(accentColor, accentDarkColor) {
-    Brush.linearGradient(colors = listOf(accentColor, accentDarkColor))
-  }
+  val animatedProgress by rememberAnimatedSunProgress(target = sunProgress)
+  val palette = rememberSunArcPalette()
 
   Canvas(
     modifier = modifier
       .fillMaxWidth()
       .height(SunArcHeight)
   ) {
-    val padding = ARC_PADDING_RATIO * size.width
-    val strokeWidth = SunArcStrokeWidth.toPx()
-    val dotRadius = SunDotRadius.toPx()
-    val arcWidth = size.width - padding * 2
-    val arcHeight = size.height - dotRadius * 2
-    val arcTopLeft = Offset(padding, dotRadius)
-    val arcSize = Size(arcWidth, arcHeight * 2)
-    val arcStroke = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+    val arc = computeArcGeometry()
+    drawArcTrack(geometry = arc, color = palette.track)
+    drawArcProgress(geometry = arc, progress = animatedProgress, brush = palette.progress)
+    drawSunDot(geometry = arc, progress = animatedProgress, palette = palette)
+  }
+}
 
-    drawArc(
-      color = trackColor,
-      startAngle = 180f,
-      sweepAngle = 180f,
-      useCenter = false,
-      topLeft = arcTopLeft,
-      size = arcSize,
-      style = arcStroke
-    )
+@Composable
+private fun rememberAnimatedSunProgress(target: Float): State<Float> {
 
-    if (sunProgress > 0f) {
-      drawArc(
-        brush = gradientBrush,
-        startAngle = 180f,
-        sweepAngle = ARC_SWEEP * sunProgress,
-        useCenter = false,
-        topLeft = arcTopLeft,
-        size = arcSize,
-        style = arcStroke
-      )
-    }
+  var shouldPlayEnterAnimation by rememberSaveable { mutableStateOf(true) }
+  val animator = remember {
+    Animatable(initialValue = if (shouldPlayEnterAnimation) 0f else target)
+  }
+  val spec = if (shouldPlayEnterAnimation) EnterAnimationSpec else snap()
 
-    drawSunDot(
-      sunProgress = sunProgress,
-      accentColor = accentColor,
-      glowColor = glowColor,
-      arcLeft = padding,
-      arcWidth = arcWidth,
-      arcHeight = arcHeight,
-      dotRadius = dotRadius
+  LaunchedEffect(target) {
+    animator.animateTo(targetValue = target, animationSpec = spec)
+    shouldPlayEnterAnimation = false
+  }
+  return animator.asState()
+}
+
+@Composable
+private fun rememberSunArcPalette(): SunArcPalette {
+
+  val accent = colors.accent
+  val accentDark = colors.accentDark
+  val track = colors.outline
+
+  return remember(accent, accentDark, track) {
+    SunArcPalette(
+      accent = accent,
+      glow = accent.copy(alpha = GlowAlpha),
+      progress = linearGradient(colors = listOf(accent, accentDark)),
+      track = track
     )
   }
 }
 
-private fun DrawScope.drawSunDot(
-  sunProgress: Float,
-  accentColor: Color,
-  glowColor: Color,
-  arcLeft: Float,
-  arcWidth: Float,
-  arcHeight: Float,
-  dotRadius: Float
+private fun DrawScope.computeArcGeometry(): SunArcGeometry {
+
+  val padding = ArcPaddingRatio * size.width
+  val dotRadius = SunDotRadius.toPx()
+  val arcWidth = size.width - padding * 2
+  val arcHeight = size.height - dotRadius * 2
+
+  return SunArcGeometry(
+    topLeft = Offset(x = padding, y = dotRadius),
+    size = Size(width = arcWidth, height = arcHeight * 2),
+    stroke = Stroke(width = SunArcStrokeWidth.toPx(), cap = StrokeCap.Round),
+    leftEdgeX = padding,
+    width = arcWidth,
+    height = arcHeight,
+    dotRadius = dotRadius
+  )
+}
+
+private fun DrawScope.drawArcTrack(geometry: SunArcGeometry, color: Color) {
+  drawArc(
+    color = color,
+    startAngle = ArcStartAngleDegrees,
+    sweepAngle = ArcSweepDegrees,
+    useCenter = false,
+    topLeft = geometry.topLeft,
+    size = geometry.size,
+    style = geometry.stroke
+  )
+}
+
+private fun DrawScope.drawArcProgress(
+  geometry: SunArcGeometry,
+  progress: Float,
+  brush: Brush
 ) {
-
-  val angle = PI + PI * sunProgress
-  val centerX = arcLeft + arcWidth / 2
-  val centerY = dotRadius + arcHeight
-  val dotCenter = Offset(
-    x = centerX + (arcWidth / 2) * cos(angle).toFloat(),
-    y = centerY + arcHeight * sin(angle).toFloat()
+  if (progress <= 0f) return
+  drawArc(
+    brush = brush,
+    startAngle = ArcStartAngleDegrees,
+    sweepAngle = ArcSweepDegrees * progress,
+    useCenter = false,
+    topLeft = geometry.topLeft,
+    size = geometry.size,
+    style = geometry.stroke
   )
+}
 
+private fun DrawScope.drawSunDot(
+  geometry: SunArcGeometry,
+  progress: Float,
+  palette: SunArcPalette
+) {
+  val center = sunDotCenter(geometry = geometry, progress = progress)
   drawCircle(
-    color = glowColor,
-    radius = dotRadius * GLOW_MULTIPLIER,
-    center = dotCenter
+    color = palette.glow,
+    radius = geometry.dotRadius * GlowRadiusMultiplier,
+    center = center
   )
   drawCircle(
-    color = accentColor,
-    radius = dotRadius,
-    center = dotCenter
+    color = palette.accent,
+    radius = geometry.dotRadius,
+    center = center
+  )
+}
+
+private fun sunDotCenter(geometry: SunArcGeometry, progress: Float): Offset {
+
+  val angle = PI + PI * progress
+  val centerX = geometry.leftEdgeX + geometry.width / 2
+  val centerY = geometry.dotRadius + geometry.height
+
+  return Offset(
+    x = centerX + (geometry.width / 2) * cos(angle).toFloat(),
+    y = centerY + geometry.height * sin(angle).toFloat()
   )
 }
 

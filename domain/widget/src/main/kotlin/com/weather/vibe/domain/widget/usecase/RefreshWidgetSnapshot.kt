@@ -46,6 +46,7 @@ class RefreshWidgetSnapshot internal constructor(
       condition = weather.condition,
       currentTemperature = weather.currentTemperature,
       fetchedAtEpochMillis = timeProvider.nowEpochMillis(),
+      isDay = weather.isDay,
       location = location,
       mood = mood
     )

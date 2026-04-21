@@ -50,7 +50,7 @@ internal class WidgetStateFactory(
   fun createWeather(snapshot: WidgetSnapshot): Weather =
     Weather(
       conditionEmoji = snapshot.condition.emoji,
-      conditionLabel = snapshot.condition.label,
+      conditionLabel = resources.conditionLabel(snapshot.condition),
       contentDescription = resources.weatherContentDescription(
         snapshot.location.name,
         snapshot.mood

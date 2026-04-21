@@ -22,3 +22,5 @@ release-notes.txt
 
 # Claude Code (skills installed from claude-code-kit)
 .claude/
+
+.kotlin/

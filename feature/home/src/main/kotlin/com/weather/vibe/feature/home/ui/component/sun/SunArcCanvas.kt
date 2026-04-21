@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.home.ui.component.sun
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.snap
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -9,7 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -59,12 +63,16 @@ internal fun SunArcCanvas(
 
 @Composable
 private fun rememberAnimatedSunProgress(target: Float): State<Float> {
-  val animator = remember { Animatable(initialValue = 0f) }
+
+  var shouldPlayEnterAnimation by rememberSaveable { mutableStateOf(true) }
+  val animator = remember {
+    Animatable(initialValue = if (shouldPlayEnterAnimation) 0f else target)
+  }
+  val spec = if (shouldPlayEnterAnimation) EnterAnimationSpec else snap()
+
   LaunchedEffect(target) {
-    animator.animateTo(
-      targetValue = target,
-      animationSpec = EnterAnimationSpec
-    )
+    animator.animateTo(targetValue = target, animationSpec = spec)
+    shouldPlayEnterAnimation = false
   }
   return animator.asState()
 }

@@ -129,7 +129,7 @@ private fun Preview() {
     EditProfileSheet(
       state = ProfileEditSheetUiState(
         isVisible = true,
-        username = "Adrian",
+        username = "John",
         canSave = true
       ),
       onDismiss = {},

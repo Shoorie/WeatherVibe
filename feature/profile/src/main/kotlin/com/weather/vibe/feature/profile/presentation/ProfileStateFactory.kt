@@ -18,7 +18,8 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     ProfileUiState(
       header = createHeader(
         username = EMPTY_USERNAME,
-        briefToneLabel = EMPTY_TONE_LABEL
+        briefToneLabel = EMPTY_TONE_LABEL,
+        quote = EMPTY_QUOTE
       ),
       quickStats = createStats(),
       editSheet = ProfileEditSheetUiState(
@@ -32,19 +33,17 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     state.copy(
       header = createHeader(
         username = username,
-        briefToneLabel = state.header.briefToneLabel
-      ),
-      editSheet = state.editSheet.copy(
-        isVisible = false,
-        username = username,
-        canSave = username.trim().isNotEmpty()
+        briefToneLabel = state.header.briefToneLabel,
+        quote = state.header.quote
       )
     )
 
   fun withBriefTone(state: ProfileUiState, tone: BriefTone): ProfileUiState =
     state.copy(
-      header = state.header
-        .copy(briefToneLabel = resources.briefToneLabel(tone = tone))
+      header = state.header.copy(
+        briefToneLabel = resources.briefToneLabel(tone = tone),
+        quote = resources.heroQuote(tone = tone)
+      )
     )
 
   fun triggerEditSheet(state: ProfileUiState): ProfileUiState =
@@ -69,12 +68,17 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     )
   }
 
-  private fun createHeader(username: String, briefToneLabel: String): ProfileHeaderUiState =
+  private fun createHeader(
+    username: String,
+    briefToneLabel: String,
+    quote: String
+  ): ProfileHeaderUiState =
     ProfileHeaderUiState(
       username = username,
       greeting = createGreeting(username = username),
       subtitle = createSubtitle(username = username),
-      briefToneLabel = briefToneLabel
+      briefToneLabel = briefToneLabel,
+      quote = quote
     )
 
   private fun createGreeting(username: String): String =
@@ -106,6 +110,7 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
   private companion object {
     const val EMPTY_USERNAME = ""
     const val EMPTY_TONE_LABEL = ""
+    const val EMPTY_QUOTE = ""
     const val USAGE_DAYS = 1
     const val LOCATIONS_COUNT = 1
     const val STAT_LOCATIONS = "locations"

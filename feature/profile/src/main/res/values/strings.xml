@@ -5,14 +5,15 @@
   <string name="profile_header_cta_greeting">Hey 👋</string>
   <string name="profile_header_cta_subtitle">Tap to introduce yourself</string>
   <string name="profile_header_greeting">Hi, %1$s</string>
-  <string name="profile_header_subtitle">%1$d days with WeatherVibe</string>
   <string name="profile_header_edit_hint">Edit</string>
   <string name="profile_header_edit_click_label">Edit profile</string>
-  <string name="profile_header_quote">We can\'t control the weather, but we can control our attitude.</string>
   <string name="profile_header_brief_tone_label">Brief tone</string>
   <string name="profile_brief_tone_witty">Witty &amp; Friendly</string>
   <string name="profile_brief_tone_formal">Formal</string>
   <string name="profile_brief_tone_humorous">Humorous</string>
+  <string name="profile_header_quote_witty">We can\'t control the weather, but we can control our attitude.</string>
+  <string name="profile_header_quote_formal">External circumstances remain beyond our control; however, it is the discipline of internal perspective that defines our efficacy.</string>
+  <string name="profile_header_quote_humorous">My attitude is in power-saving mode today. Please do not expect any sunshine before the third cup of coffee.</string>
 
   <string name="profile_stat_locations_label">Locations</string>
   <string name="profile_stat_streak_label">Days with us</string>

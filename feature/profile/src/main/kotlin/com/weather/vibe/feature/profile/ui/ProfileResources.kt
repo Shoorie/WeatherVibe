@@ -17,11 +17,21 @@ internal class ProfileResources(private val context: Context) {
   fun briefToneLabel(tone: BriefTone): String =
     context.getString(tone.labelRes())
 
+  fun heroQuote(tone: BriefTone): String =
+    context.getString(tone.quoteRes())
+
   @StringRes
   private fun BriefTone.labelRes(): Int = when (this) {
     WITTY_AND_FRIENDLY -> R.string.profile_brief_tone_witty
     FORMAL -> R.string.profile_brief_tone_formal
     HUMOROUS -> R.string.profile_brief_tone_humorous
+  }
+
+  @StringRes
+  private fun BriefTone.quoteRes(): Int = when (this) {
+    WITTY_AND_FRIENDLY -> R.string.profile_header_quote_witty
+    FORMAL -> R.string.profile_header_quote_formal
+    HUMOROUS -> R.string.profile_header_quote_humorous
   }
 
   fun ctaGreeting(): String =
@@ -34,7 +44,7 @@ internal class ProfileResources(private val context: Context) {
     context.getString(R.string.profile_header_greeting, username)
 
   fun daysWithAppSubtitle(days: Int): String =
-    context.getString(R.string.profile_header_subtitle, days)
+    context.resources.getQuantityString(R.plurals.profile_header_subtitle, days, days)
 
   fun locationsStatLabel(): String =
     context.getString(R.string.profile_stat_locations_label)
@@ -47,10 +57,6 @@ internal class ProfileResources(private val context: Context) {
     @Composable
     fun editHeaderClickLabel(): String =
       stringResource(R.string.profile_header_edit_click_label)
-
-    @Composable
-    fun heroQuote(): String =
-      stringResource(R.string.profile_header_quote)
 
     @Composable
     fun briefToneLabel(): String =

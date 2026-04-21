@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.profile.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.UserSettings
@@ -16,6 +17,7 @@ import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotificati
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,9 +42,16 @@ internal class ProfileViewModel(
   private val _event = Channel<ProfileEvent>()
   val event: Flow<ProfileEvent> = _event.receiveAsFlow()
 
+  private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+    Log.e(TAG, "Profile operation failed", throwable)
+  }
+
   init {
     useCases.observeUserSettings()
       .onEach(::onSettingsResult)
+      .launchIn(viewModelScope)
+    useCases.observeUsername()
+      .onEach(::applyUsername)
       .launchIn(viewModelScope)
   }
 
@@ -90,15 +99,21 @@ internal class ProfileViewModel(
   }
 
   private fun onEditUsernameSubmit() {
+    val trimmed = _state.value.editSheet.username.trim()
+    if (trimmed.isEmpty()) return
+    persistUsername(trimmed)
+    _state.update(stateFactory::dismissEditSheet)
+  }
+
+  private fun persistUsername(username: String) {
+    viewModelScope.launch(errorHandler) {
+      useCases.saveUsername(username = username)
+    }
+  }
+
+  private fun applyUsername(username: String) {
     _state.update { current ->
-      val usernameTrimmed = current.editSheet.username.trim()
-      when (usernameTrimmed.isEmpty()) {
-        true -> current
-        false -> stateFactory.withUsername(
-          state = current,
-          username = usernameTrimmed
-        )
-      }
+      stateFactory.withUsername(state = current, username = username)
     }
   }
 
@@ -116,5 +131,9 @@ internal class ProfileViewModel(
     viewModelScope.launch {
       _event.send(event)
     }
+  }
+
+  private companion object {
+    const val TAG = "ProfileViewModel"
   }
 }

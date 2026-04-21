@@ -44,7 +44,6 @@ import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipPaddingVertic
 import com.weather.vibe.feature.profile.ui.ProfileEmojis
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.briefToneLabel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editHeaderClickLabel
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.heroQuote
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
@@ -79,12 +78,14 @@ internal fun ProfileHero(
   ) {
     Column(verticalArrangement = Arrangement.spacedBy(Medium)) {
       HeroTopRow(header = header)
-      Text(
-        text = heroQuote(),
-        textAlign = TextAlign.Center,
-        style = ProfileTextStyles.heroQuote(),
-        color = colors.onAccent
-      )
+      if (header.quote.isNotBlank()) {
+        Text(
+          text = header.quote,
+          textAlign = TextAlign.Center,
+          style = ProfileTextStyles.heroQuote(),
+          color = colors.onAccent
+        )
+      }
       if (header.briefToneLabel.isNotBlank()) {
         BriefToneRow(value = header.briefToneLabel)
       }

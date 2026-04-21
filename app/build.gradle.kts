@@ -97,6 +97,8 @@ dependencies {
   implementation(projects.data.location)
   implementation(projects.domain.settings)
   implementation(projects.data.settings)
+  implementation(projects.domain.profile)
+  implementation(projects.data.profile)
   implementation(projects.domain.alerts)
   implementation(projects.domain.airquality)
   implementation(projects.domain.vibe)

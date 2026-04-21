@@ -116,11 +116,11 @@ import com .[company].[app].core.designsystem.theme.AppDimens.PaddingMedium
 @Composable
 internal fun MyComponent(modifier: Modifier = Modifier) {
   Text(
+    modifier = modifier.padding(PaddingMedium),
     text = "Hello",
     // 3. Direct usage without any prefixes or local variables!
     style = typography.bodyMedium,
-    color = colors.onBackground,
-    modifier = modifier.padding(PaddingMedium)
+    color = colors.onBackground
   )
 }
 ```

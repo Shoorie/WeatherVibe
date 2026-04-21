@@ -5,14 +5,15 @@
   <string name="profile_header_cta_greeting">Cześć 👋</string>
   <string name="profile_header_cta_subtitle">Dotknij, aby się przedstawić</string>
   <string name="profile_header_greeting">Cześć, %1$s</string>
-  <string name="profile_header_subtitle">%1$d dni z WeatherVibe</string>
   <string name="profile_header_edit_hint">Edytuj</string>
   <string name="profile_header_edit_click_label">Edytuj profil</string>
-  <string name="profile_header_quote">Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie.</string>
   <string name="profile_header_brief_tone_label">Ton briefu</string>
   <string name="profile_brief_tone_witty">Dowcipny</string>
   <string name="profile_brief_tone_formal">Formalny</string>
   <string name="profile_brief_tone_humorous">Humorystyczny</string>
+  <string name="profile_header_quote_witty">Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie.</string>
+  <string name="profile_header_quote_formal">Zewnętrzne okoliczności pozostają poza zakresem naszej kontroli; niemniej jednak to dyscyplina wewnętrznej perspektywy definiuje naszą skuteczność.</string>
+  <string name="profile_header_quote_humorous">Moje nastawienie jest dziś w trybie oszczędzania energii. Proszę nie oczekiwać słońca przed trzecią kawą.</string>
 
   <string name="profile_stat_locations_label">Lokalizacje</string>
   <string name="profile_stat_streak_label">Dni z nami</string>

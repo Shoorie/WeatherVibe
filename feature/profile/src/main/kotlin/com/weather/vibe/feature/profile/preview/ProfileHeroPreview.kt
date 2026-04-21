@@ -11,7 +11,8 @@ internal class ProfileHeroPreview :
       username = "Adrian",
       greeting = "Cześć, Adrian",
       subtitle = "42 dni z WeatherVibe",
-      briefToneLabel = "Chill"
+      briefToneLabel = "Dowcipny",
+      quote = "Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie."
     )
 
   private val cta: ProfileHeaderUiState =
@@ -19,7 +20,8 @@ internal class ProfileHeroPreview :
       username = "",
       greeting = "Hej 👋",
       subtitle = "Dotknij, aby się przedstawić",
-      briefToneLabel = "Chill"
+      briefToneLabel = "",
+      quote = ""
     )
 
   override val values: Sequence<ProfileHeaderUiState> =

@@ -15,6 +15,10 @@ internal object HomeTexts {
     stringResource(R.string.share_brief_content_description)
 
   @Composable
+  fun shareBriefActionLabel(): String =
+    stringResource(R.string.share_brief_action_label)
+
+  @Composable
   fun tryAgainContentDescription(): String =
     stringResource(R.string.try_again_content_description)
 }

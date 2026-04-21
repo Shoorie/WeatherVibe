@@ -9,7 +9,6 @@ import com.weather.vibe.domain.activityplanner.usecase.ClassifyScore
 import com.weather.vibe.domain.activityplanner.usecase.ClassifyTemperatureComfort
 import com.weather.vibe.domain.activityplanner.usecase.ClassifyUvCategory
 import com.weather.vibe.domain.activityplanner.usecase.ClassifyWindCategory
-import com.weather.vibe.domain.activityplanner.usecase.IsDateToday
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Loaded
 import com.weather.vibe.feature.activityplanner.presentation.state.TimelineHourUiState
@@ -31,7 +30,6 @@ internal class ActivityPlannerStateFactory(
   private val classifyTemperatureComfort: ClassifyTemperatureComfort,
   private val classifyUvCategory: ClassifyUvCategory,
   private val classifyWindCategory: ClassifyWindCategory,
-  private val isDateToday: IsDateToday,
   private val resources: ActivityPlannerResources
 ) {
 
@@ -103,14 +101,11 @@ internal class ActivityPlannerStateFactory(
       end = hourLabel(window.end)
     )
 
-  private fun hourLabel(dateTime: LocalDateTime): String {
-
-    val hour = dateTime.format(HOUR_MINUTE)
-    if (isDateToday(dateTime.toLocalDate())) return hour
-
-    val dayAbbreviation = dateTime.format(DAY_ABBREVIATION)
-    return resources.hourWithDay(hour = hour, day = dayAbbreviation)
-  }
+  private fun hourLabel(dateTime: LocalDateTime): String =
+    resources.hourWithDay(
+      hour = dateTime.format(HOUR_MINUTE),
+      day = dateTime.format(DAY_ABBREVIATION)
+    )
 
   private fun temperatureMetric(celsius: Double): WindowMetricUiState =
     describeMetric(

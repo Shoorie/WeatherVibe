@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import com.weather.vibe.data.location.local.entity.LocationWeatherSnapshotEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -25,11 +24,4 @@ interface LocationWeatherSnapshotDao {
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun upsert(entity: LocationWeatherSnapshotEntity)
-
-  @Transaction
-  suspend fun upsertIfFavoriteExists(entity: LocationWeatherSnapshotEntity): Boolean {
-    if (!favoriteExists(locationId = entity.locationId)) return false
-    upsert(entity = entity)
-    return true
-  }
 }

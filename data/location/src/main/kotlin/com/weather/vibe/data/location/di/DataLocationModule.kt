@@ -6,10 +6,11 @@ import androidx.room.Room
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.weather.vibe.data.location.local.LocationDatabase
-import com.weather.vibe.data.location.local.dao.FavoriteDao
+import com.weather.vibe.data.location.local.dao.LocationFavoriteDao
 import com.weather.vibe.data.location.local.dao.LocationWeatherSnapshotDao
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
 import com.weather.vibe.data.location.local.migration.Migration1To2
+import com.weather.vibe.data.location.local.migration.Migration2To3
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
@@ -27,7 +28,7 @@ class DataLocationModule {
       klass = LocationDatabase::class.java,
       name = "location.db"
     )
-      .addMigrations(Migration1To2)
+      .addMigrations(Migration1To2, Migration2To3)
       .build()
 
   @Single
@@ -35,7 +36,7 @@ class DataLocationModule {
     database.recentLocationDao()
 
   @Single
-  fun provideFavoriteDao(database: LocationDatabase): FavoriteDao =
+  fun provideFavoriteDao(database: LocationDatabase): LocationFavoriteDao =
     database.favoriteDao()
 
   @Single

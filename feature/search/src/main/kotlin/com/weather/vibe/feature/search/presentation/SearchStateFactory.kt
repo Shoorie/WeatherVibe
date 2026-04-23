@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.search.presentation
 
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.usecase.AddFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
@@ -65,7 +65,7 @@ internal class SearchStateFactory(
     locations: List<Location>,
     favoriteLocationIds: Set<Long>
   ): ImmutableList<LocationItemUiState> {
-    val hasCapacity = favoriteLocationIds.size < AddFavorite.FAVORITES_LIMIT
+    val hasCapacity = favoriteLocationIds.size < LocationFavoritesPolicy.MAX_FAVORITES
     return locations
       .map { location ->
         createItem(

@@ -26,10 +26,13 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.domain.location.model.WeatherAdvantage
-import com.weather.vibe.feature.locations.presentation.state.LocationComparePair
-import com.weather.vibe.feature.locations.presentation.state.LocationCompareUi
-import com.weather.vibe.feature.locations.ui.LocationsResources.Emojis
+import com.weather.vibe.domain.location.model.LocationWeatherAdvantage
+import com.weather.vibe.domain.location.model.LocationWeatherAdvantage.FirstLocation
+import com.weather.vibe.domain.location.model.LocationWeatherAdvantage.SecondLocation
+import com.weather.vibe.feature.locations.presentation.state.LocationComparePairUiState
+import com.weather.vibe.feature.locations.presentation.state.LocationCompareUiState
+import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareFeelsLike
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.metricHumidity
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.metricRain
@@ -43,7 +46,7 @@ import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.valueWind
 @Composable
 internal fun LocationComparePanel(
   modifier: Modifier = Modifier,
-  pair: LocationComparePair
+  pair: LocationComparePairUiState
 ) {
   Column(
     modifier = modifier
@@ -60,14 +63,18 @@ internal fun LocationComparePanel(
   ) {
     CompareHeader(first = pair.first, second = pair.second)
     HorizontalDivider(color = colors.outlineVariant)
-    LocationCompareTimeline(first = pair.first, second = pair.second)
+    LocationCompareTemperatureChart(
+      first = pair.first,
+      second = pair.second,
+      axis = pair.temperatureAxis
+    )
     HorizontalDivider(color = colors.outlineVariant)
     MetricBreakdown(pair = pair)
   }
 }
 
 @Composable
-private fun MetricBreakdown(pair: LocationComparePair) {
+private fun MetricBreakdown(pair: LocationComparePairUiState) {
   TemperatureMetric(pair = pair)
   WindMetric(pair = pair)
   HumidityMetric(pair = pair)
@@ -75,20 +82,20 @@ private fun MetricBreakdown(pair: LocationComparePair) {
 }
 
 @Composable
-private fun TemperatureMetric(pair: LocationComparePair) {
+private fun TemperatureMetric(pair: LocationComparePairUiState) {
   MetricRow(
-    emoji = Emojis.metricTemperature(),
+    emoji = LocationsEmojis.metricTemperature(),
     label = metricTemperature(),
-    valueFirst = valueTemperature(pair.first.temperatureC),
-    valueSecond = valueTemperature(pair.second.temperatureC),
+    valueFirst = valueTemperature(pair.first.temperature),
+    valueSecond = valueTemperature(pair.second.temperature),
     winnerSide = pair.winners.temperature
   )
 }
 
 @Composable
-private fun WindMetric(pair: LocationComparePair) {
+private fun WindMetric(pair: LocationComparePairUiState) {
   MetricRow(
-    emoji = Emojis.metricWind(),
+    emoji = LocationsEmojis.metricWind(),
     label = metricWind(),
     valueFirst = valueWind(pair.first.windKph),
     valueSecond = valueWind(pair.second.windKph),
@@ -97,9 +104,9 @@ private fun WindMetric(pair: LocationComparePair) {
 }
 
 @Composable
-private fun HumidityMetric(pair: LocationComparePair) {
+private fun HumidityMetric(pair: LocationComparePairUiState) {
   MetricRow(
-    emoji = Emojis.metricHumidity(),
+    emoji = LocationsEmojis.metricHumidity(),
     label = metricHumidity(),
     valueFirst = valueHumidity(pair.first.humidityPercent),
     valueSecond = valueHumidity(pair.second.humidityPercent),
@@ -108,9 +115,9 @@ private fun HumidityMetric(pair: LocationComparePair) {
 }
 
 @Composable
-private fun RainMetric(pair: LocationComparePair) {
+private fun RainMetric(pair: LocationComparePairUiState) {
   MetricRow(
-    emoji = Emojis.metricRain(),
+    emoji = LocationsEmojis.metricRain(),
     label = metricRain(),
     valueFirst = valueRain(pair.first.precipitationChancePercent),
     valueSecond = valueRain(pair.second.precipitationChancePercent),
@@ -120,8 +127,8 @@ private fun RainMetric(pair: LocationComparePair) {
 
 @Composable
 private fun CompareHeader(
-  first: LocationCompareUi,
-  second: LocationCompareUi
+  first: LocationCompareUiState,
+  second: LocationCompareUiState
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
@@ -134,7 +141,7 @@ private fun CompareHeader(
       textAlign = TextAlign.Start
     )
     Text(
-      text = Emojis.versus(),
+      text = LocationsEmojis.versus(),
       style = typography.titleMedium,
       color = colors.textTertiary
     )
@@ -150,7 +157,7 @@ private fun CompareHeader(
 @Composable
 private fun HeaderSide(
   modifier: Modifier = Modifier,
-  side: LocationCompareUi,
+  side: LocationCompareUiState,
   alignment: Alignment.Horizontal,
   textAlign: TextAlign
 ) {
@@ -172,7 +179,7 @@ private fun HeaderSide(
       textAlign = textAlign
     )
     Text(
-      text = compareFeelsLike(side.feelsLikeC),
+      text = compareFeelsLike(side.feelsLike),
       style = typography.labelSmall,
       color = colors.textTertiary,
       textAlign = textAlign
@@ -186,7 +193,7 @@ private fun MetricRow(
   label: String,
   valueFirst: String,
   valueSecond: String,
-  winnerSide: WeatherAdvantage
+  winnerSide: LocationWeatherAdvantage
 ) {
   Row(
     modifier = Modifier.fillMaxWidth(),
@@ -196,10 +203,10 @@ private fun MetricRow(
       modifier = Modifier.weight(1f),
       text = valueFirst,
       textAlign = TextAlign.Start,
-      color = valueColor(isWinner = winnerSide == WeatherAdvantage.FirstLocation)
+      color = valueColor(isWinner = winnerSide == FirstLocation)
     )
     MetricLabel(
-      modifier = Modifier.weight(METRIC_LABEL_WEIGHT),
+      modifier = Modifier.weight(LocationsDefaults.MetricLabelWeight),
       emoji = emoji,
       label = label
     )
@@ -207,7 +214,7 @@ private fun MetricRow(
       modifier = Modifier.weight(1f),
       text = valueSecond,
       textAlign = TextAlign.End,
-      color = valueColor(isWinner = winnerSide == WeatherAdvantage.SecondLocation)
+      color = valueColor(isWinner = winnerSide == SecondLocation)
     )
   }
 }
@@ -258,8 +265,6 @@ private fun MetricLabel(
 @Composable
 private fun valueColor(isWinner: Boolean): Color =
   if (isWinner) colors.accent else colors.textTertiary
-
-private const val METRIC_LABEL_WEIGHT: Float = 1.1f
 
 @PreviewLightDark
 @Composable

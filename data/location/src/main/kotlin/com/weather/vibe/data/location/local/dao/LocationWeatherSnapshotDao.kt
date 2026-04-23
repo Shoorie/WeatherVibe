@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.weather.vibe.data.location.local.entity.LocationWeatherSnapshotEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -16,9 +17,19 @@ interface LocationWeatherSnapshotDao {
   @Query("SELECT * FROM location_weather_snapshot WHERE locationId = :locationId")
   suspend fun findById(locationId: Long): LocationWeatherSnapshotEntity?
 
+  @Query("DELETE FROM location_weather_snapshot WHERE locationId = :locationId")
+  suspend fun deleteById(locationId: Long)
+
+  @Query("SELECT EXISTS(SELECT 1 FROM favorite_locations WHERE locationId = :locationId)")
+  suspend fun favoriteExists(locationId: Long): Boolean
+
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun upsert(entity: LocationWeatherSnapshotEntity)
 
-  @Query("DELETE FROM location_weather_snapshot WHERE locationId = :locationId")
-  suspend fun deleteById(locationId: Long)
+  @Transaction
+  suspend fun upsertIfFavoriteExists(entity: LocationWeatherSnapshotEntity): Boolean {
+    if (!favoriteExists(locationId = entity.locationId)) return false
+    upsert(entity = entity)
+    return true
+  }
 }

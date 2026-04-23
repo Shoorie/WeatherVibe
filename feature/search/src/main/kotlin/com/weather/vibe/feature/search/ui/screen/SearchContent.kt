@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.domain.location.usecase.AddFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
@@ -33,7 +33,7 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searchin
 import com.weather.vibe.feature.search.preview.SearchPreview
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacity
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacityFull
-import com.weather.vibe.feature.search.ui.component.banner.FavoritesCapacityBanner
+import com.weather.vibe.feature.search.ui.component.banner.LocationFavoritesCapacityBanner
 import com.weather.vibe.feature.search.ui.component.bar.SearchTopBar
 import com.weather.vibe.feature.search.ui.component.list.RecentsSection
 import com.weather.vibe.feature.search.ui.component.list.ResultsSection
@@ -86,9 +86,9 @@ internal fun SearchContent(
 
 @Composable
 private fun CapacityBanner(used: Int) {
-  val limit = AddFavorite.FAVORITES_LIMIT
+  val limit = LocationFavoritesPolicy.MAX_FAVORITES
   val isFull = used >= limit
-  FavoritesCapacityBanner(
+  LocationFavoritesCapacityBanner(
     label = when {
       isFull -> favoritesCapacityFull(limit = limit)
       else -> favoritesCapacity(used = used, limit = limit)

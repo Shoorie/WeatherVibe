@@ -1,12 +1,13 @@
 package com.weather.vibe.feature.search.presentation
 
 import app.cash.turbine.test
-import com.weather.vibe.domain.location.model.Favorite
+import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.usecase.AddFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
+import com.weather.vibe.domain.location.usecase.AddLocationFavorite
 import com.weather.vibe.domain.location.usecase.GetRecentLocations
-import com.weather.vibe.domain.location.usecase.ObserveFavorites
-import com.weather.vibe.domain.location.usecase.RemoveFavorite
+import com.weather.vibe.domain.location.usecase.ObserveLocationFavorites
+import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.SaveRecentLocation
 import com.weather.vibe.domain.location.usecase.SearchLocation
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
@@ -24,7 +25,7 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.ui.SearchResources
 import com.weather.vibe.testing.coroutines.MainDispatcherRule
-import com.weather.vibe.testing.location.fixture.FavoriteFixtures
+import com.weather.vibe.testing.location.fixture.LocationFavoriteFixtures
 import com.weather.vibe.testing.location.fixture.LocationFixtures.KRAKOW
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
 import io.mockk.coEvery
@@ -59,10 +60,10 @@ class SearchViewModelTest {
   @get:Rule
   val rule = MainDispatcherRule()
 
-  private val addFavorite = mockk<AddFavorite>()
+  private val addFavorite = mockk<AddLocationFavorite>()
   private val getRecentLocations = mockk<GetRecentLocations>()
-  private val observeFavorites = mockk<ObserveFavorites>()
-  private val removeFavorite = mockk<RemoveFavorite>()
+  private val observeFavorites = mockk<ObserveLocationFavorites>()
+  private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val saveRecentLocation = mockk<SaveRecentLocation>()
   private val searchLocation = mockk<SearchLocation>()
   private val resources = mockk<SearchResources>()
@@ -108,7 +109,7 @@ class SearchViewModelTest {
   fun `given favorite location exists, when recents loaded, then matching item is favorite`() = runTest {
 
     mockRecentsReturn(locations = listOf(WARSAW))
-    mockFavoritesReturn(favorites = listOf(FavoriteFixtures.WARSAW_FAVORITE))
+    mockFavoritesReturn(favorites = listOf(LocationFavoriteFixtures.WARSAW_FAVORITE))
 
     val viewModel = createViewModel()
 
@@ -279,13 +280,13 @@ class SearchViewModelTest {
   fun `given already favorite, when heart clicked, then favorite removed`() = runTest {
 
     mockRecentsReturn(locations = listOf(WARSAW))
-    mockFavoritesReturn(favorites = listOf(FavoriteFixtures.WARSAW_FAVORITE))
+    mockFavoritesReturn(favorites = listOf(LocationFavoriteFixtures.WARSAW_FAVORITE))
 
     val viewModel = createViewModel()
 
     viewModel.dispatch(HeartClick(id = WARSAW.id))
 
-    coVerify { removeFavorite(id = FavoriteFixtures.WARSAW_FAVORITE.id) }
+    coVerify { removeFavorite(id = LocationFavoriteFixtures.WARSAW_FAVORITE.id) }
   }
 
   @Test
@@ -346,9 +347,9 @@ class SearchViewModelTest {
     expectThat(viewModel.state.value).isA<Recents>()
   }
 
-  private fun capacityFullFavorites(): List<Favorite> =
-    (1..AddFavorite.FAVORITES_LIMIT).map { offset ->
-      FavoriteFixtures.favorite(
+  private fun capacityFullFavorites(): List<LocationFavorite> =
+    (1..LocationFavoritesPolicy.MAX_FAVORITES).map { offset ->
+      LocationFavoriteFixtures.favorite(
         id = offset.toLong(),
         location = WARSAW.copy(id = FAVORITES_LOCATION_OFFSET + offset)
       )
@@ -376,7 +377,7 @@ class SearchViewModelTest {
     every { getRecentLocations() } returns flowOf(failure(error))
   }
 
-  private fun mockFavoritesReturn(favorites: List<Favorite>) {
+  private fun mockFavoritesReturn(favorites: List<LocationFavorite>) {
     every { observeFavorites() } returns flowOf(success(favorites))
   }
 

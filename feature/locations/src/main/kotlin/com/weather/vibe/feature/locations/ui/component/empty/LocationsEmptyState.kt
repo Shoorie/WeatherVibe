@@ -21,6 +21,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.emptyBody
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.emptyTitle
 
@@ -44,7 +45,7 @@ internal fun LocationsEmptyState(modifier: Modifier = Modifier) {
       verticalArrangement = Arrangement.spacedBy(Small)
     ) {
       Text(
-        text = "♥️",
+        text = LocationsEmojis.emptyHeart(),
         style = typography.displayMedium
       )
       VibeMessage(

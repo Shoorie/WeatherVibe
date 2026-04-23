@@ -31,15 +31,16 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.feature.locations.presentation.state.LocationCardUi
+import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowInfoFeels
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowTemperature
 
 @Composable
 internal fun LocationRow(
   modifier: Modifier = Modifier,
-  card: LocationCardUi,
+  card: LocationCardUiState,
   positionIndex: Int,
   compareMode: Boolean,
   isSelected: Boolean,
@@ -58,7 +59,7 @@ internal fun LocationRow(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
-    WeatherEmoji(emoji = card.weather?.emoji ?: FALLBACK_EMOJI)
+    WeatherEmoji(emoji = card.weather?.emoji ?: LocationsEmojis.fallback())
     LocationLabels(
       modifier = Modifier.weight(1f),
       card = card,
@@ -114,7 +115,7 @@ private fun WeatherEmoji(emoji: String) {
 @Composable
 private fun LocationLabels(
   modifier: Modifier = Modifier,
-  card: LocationCardUi,
+  card: LocationCardUiState,
   positionIndex: Int
 ) {
   Column(modifier = modifier) {
@@ -131,7 +132,7 @@ private fun LocationLabels(
 
 @Composable
 private fun NameRow(
-  card: LocationCardUi,
+  card: LocationCardUiState,
   positionIndex: Int
 ) {
   Row(
@@ -152,7 +153,7 @@ private fun NameRow(
 
 @Composable
 private fun LabelPill(
-  card: LocationCardUi,
+  card: LocationCardUiState,
   positionIndex: Int
 ) {
   val label = card.label ?: return
@@ -165,17 +166,18 @@ private fun LabelPill(
 }
 
 @Composable
-private fun TemperatureBlock(card: LocationCardUi) {
+private fun TemperatureBlock(card: LocationCardUiState) {
+  val temperature = card.temperature
   Column(horizontalAlignment = Alignment.End) {
     Text(
-      text = temperatureLabel(temperatureC = card.temperatureC),
+      text = temperature?.let { rowTemperature(value = it) } ?: LocationsDefaults.TemperaturePlaceholder,
       style = typography.titleLarge,
-      color = if (card.temperatureC == null) colors.textTertiary else colors.onBackground,
+      color = if (temperature == null) colors.textTertiary else colors.onBackground,
       textAlign = TextAlign.End
     )
-    card.feelsLikeC?.let { feels ->
+    card.feelsLike?.let { feels ->
       Text(
-        text = rowInfoFeels(feels),
+        text = rowInfoFeels(value = feels),
         style = typography.labelSmall,
         color = colors.textTertiary,
         maxLines = 1
@@ -183,10 +185,6 @@ private fun TemperatureBlock(card: LocationCardUi) {
     }
   }
 }
-
-@Composable
-private fun temperatureLabel(temperatureC: Int?): String =
-  temperatureC?.let { rowTemperature(it) } ?: TEMPERATURE_PLACEHOLDER
 
 @Composable
 private fun TrailingAffordance(
@@ -214,9 +212,6 @@ private fun SelectionDot(isSelected: Boolean) {
       .background(if (isSelected) colors.accent else colors.outlineVariant)
   )
 }
-
-private const val FALLBACK_EMOJI: String = "📍"
-private const val TEMPERATURE_PLACEHOLDER: String = "—"
 
 @PreviewLightDark
 @Composable

@@ -1,10 +1,12 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
-import com.weather.vibe.domain.location.model.FavoriteWithWeather
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures.KRAKOW_FAVORITE
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures.WARSAW_FAVORITE
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures.WARSAW_SNAPSHOT
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
+import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.KRAKOW_FAVORITE
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_FAVORITE
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_SNAPSHOT
 import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi
 import com.weather.vibe.testing.location.fixture.LocationFixtures
 import org.junit.Test
@@ -14,74 +16,90 @@ import strikt.assertions.isNull
 
 class LocationCardFactoryTest {
 
-  private val factory = LocationCardFactory(weatherFactory = LocationWeatherFactory())
+  private val temperatureFormatter = fakeTemperatureFormatter()
+  private val factory = LocationCardFactory(
+    temperatureFormatter = temperatureFormatter,
+    weatherFactory = LocationWeatherFactory()
+  )
 
   @Test
-  fun `given snapshot with temperature, when card created, then temperature rounded`() {
+  fun `snapshot with temperature rounds and formats value`() {
 
-    val source = FavoriteWithWeather(
+    val source = LocationFavoriteWithWeather(
       favorite = WARSAW_FAVORITE,
-      snapshot = FavoriteFixtures.snapshot(temperatureC = 22.6)
+      snapshot = LocationFavoriteFixtures.snapshot(temperatureC = 22.6)
     )
 
-    val result = factory.create(source = source)
+    val result = factory.create(source = source, temperatureUnit = CELSIUS)
 
-    expectThat(result.temperatureC).isEqualTo(23)
+    expectThat(result.temperature).isEqualTo("23°")
   }
 
   @Test
-  fun `given no snapshot, when card created, then temperature and weather are null`() {
+  fun `missing snapshot leaves temperature and weather null`() {
 
-    val source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
+    val source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
 
-    val result = factory.create(source = source)
+    val result = factory.create(source = source, temperatureUnit = CELSIUS)
 
-    expectThat(result.temperatureC).isNull()
+    expectThat(result.temperature).isNull()
     expectThat(result.weather).isNull()
   }
 
   @Test
-  fun `given favorite with custom label, when card created, then label is preserved`() {
+  fun `favorite with custom label keeps the label on the card`() {
 
-    val result = factory.create(source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT))
+    val result = factory.create(
+      source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT),
+      temperatureUnit = CELSIUS
+    )
 
-    expectThat(result.label).isEqualTo(FavoriteFixtures.DEFAULT_LABEL)
+    expectThat(result.label).isEqualTo(LocationFavoriteFixtures.DEFAULT_LABEL)
   }
 
   @Test
-  fun `given favorite without label, when card created, then label is null`() {
+  fun `favorite without label leaves card label null`() {
 
-    val result = factory.create(source = FavoriteWithWeather(favorite = KRAKOW_FAVORITE, snapshot = null))
+    val result = factory.create(
+      source = LocationFavoriteWithWeather(favorite = KRAKOW_FAVORITE, snapshot = null),
+      temperatureUnit = CELSIUS
+    )
 
     expectThat(result.label).isNull()
   }
 
   @Test
-  fun `given favorite with admin1, when card created, then region uses admin1`() {
+  fun `favorite with admin1 fills region from admin1`() {
 
-    val result = factory.create(source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null))
+    val result = factory.create(
+      source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null),
+      temperatureUnit = CELSIUS
+    )
 
     expectThat(result.region).isEqualTo(LocationFixtures.ADMIN1)
   }
 
   @Test
-  fun `given favorite without admin1, when card created, then region falls back to country`() {
+  fun `favorite without admin1 falls back to country`() {
 
-    val favorite = FavoriteFixtures.favorite(
+    val favorite = LocationFavoriteFixtures.favorite(
       location = LocationFixtures.location(admin1 = null)
     )
 
-    val result = factory.create(source = FavoriteWithWeather(favorite = favorite, snapshot = null))
+    val result = factory.create(
+      source = LocationFavoriteWithWeather(favorite = favorite, snapshot = null),
+      temperatureUnit = CELSIUS
+    )
 
     expectThat(result.region).isEqualTo(LocationFixtures.COUNTRY)
   }
 
   @Test
-  fun `given sunny day snapshot, when card created, then weather is sunny`() {
+  fun `sunny day snapshot yields sunny weather`() {
 
-    val source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT)
+    val source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT)
 
-    val result = factory.create(source = source)
+    val result = factory.create(source = source, temperatureUnit = CELSIUS)
 
     expectThat(result.weather).isEqualTo(LocationWeatherUi.Sunny)
   }

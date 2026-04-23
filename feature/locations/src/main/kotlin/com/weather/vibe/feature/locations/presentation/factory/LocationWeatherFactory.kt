@@ -8,20 +8,26 @@ import com.weather.vibe.domain.weather.model.SimplifiedCondition.SNOWY
 import com.weather.vibe.domain.weather.model.SimplifiedCondition.STORMY
 import com.weather.vibe.domain.weather.model.SimplifiedCondition.SUNNY
 import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Cloudy
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Night
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.PartlyCloudy
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Rain
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Snow
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Sunny
 import org.koin.core.annotation.Factory
 
 @Factory
 internal class LocationWeatherFactory {
 
   fun create(snapshot: LocationWeatherSnapshot): LocationWeatherUi {
-    if (!snapshot.isDay) return LocationWeatherUi.Night
+    if (!snapshot.isDay) return Night
     return when (snapshot.condition) {
-      SUNNY -> LocationWeatherUi.Sunny
-      CLOUDY -> LocationWeatherUi.PartlyCloudy
-      RAINY -> LocationWeatherUi.Rain
-      SNOWY -> LocationWeatherUi.Snow
-      STORMY -> LocationWeatherUi.Rain
-      FOGGY -> LocationWeatherUi.Cloudy
+      SUNNY -> Sunny
+      CLOUDY -> PartlyCloudy
+      RAINY -> Rain
+      SNOWY -> Snow
+      STORMY -> Rain
+      FOGGY -> Cloudy
     }
   }
 }

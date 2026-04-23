@@ -11,10 +11,6 @@ internal object LocationsDefaults {
   val RowMenuItemHeight = 44.dp
   val RowMenuIconBadgeSize = 32.dp
   val RowMenuPopupWidth = 200.dp
-  val RowTrailingWidth = 72.dp
-  val SparklineWidth = 56.dp
-  val SparklineHeight = 24.dp
-  val SparklineStrokeWidth = 2.dp
   val MiniSparklineWidth = 56.dp
   val MiniSparklineHeight = 28.dp
   val MiniSparklineStroke = 1.5.dp
@@ -23,11 +19,16 @@ internal object LocationsDefaults {
   val TimelineStrokeWidth = 2.5.dp
   val TimelineDotRadius = 4.dp
   val FabBottomOffset = 24.dp
-  val CompareLoadingMinHeight = 200.dp
 
-  const val SelectionLimit = 2
-  const val CurvePointCount = 24
+  const val CompareMinCards: Int = 2
+  const val IconBadgeAlpha = 0.18f
   const val LabelMaxLength = 20
   const val LockedAlpha = 0.35f
-  const val IconBadgeAlpha = 0.18f
+  const val MetricLabelWeight: Float = 1.1f
+  const val PathSmoothing: Float = 0.16f
+  const val RefreshRotationDurationMs: Int = 900
+  const val SelectionLimit = 2
+  const val TimelineAxisPadding: Float = 1f
+  const val TimelineGridLineCount: Int = 4
+  const val TemperaturePlaceholder: String = "—"
 }

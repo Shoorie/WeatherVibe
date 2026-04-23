@@ -24,8 +24,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.feature.locations.presentation.state.LocationComparePair
+import com.weather.vibe.feature.locations.presentation.state.LocationComparePairUiState
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData.comparePair
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareSubtitle
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareTitle
 
@@ -33,7 +33,7 @@ import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareTit
 @Composable
 internal fun LocationCompareSheet(
   modifier: Modifier = Modifier,
-  pair: LocationComparePair,
+  pair: LocationComparePairUiState,
   onDismiss: () -> Unit,
   sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 ) {
@@ -98,7 +98,7 @@ private fun CompareSheetHeader(
 private fun Preview() {
   WeatherVibeTheme {
     LocationCompareSheet(
-      pair = LocationsPreviewData.comparePair,
+      pair = comparePair,
       onDismiss = {}
     )
   }

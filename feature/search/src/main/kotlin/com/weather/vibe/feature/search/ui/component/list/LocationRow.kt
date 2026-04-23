@@ -83,7 +83,7 @@ internal fun LocationRow(
         isFavorite -> heartStateAdded()
         else -> heartStateNotAdded()
       }
-      FavoriteHeartButton(
+      LocationFavoriteHeartButton(
         isFavorite = isFavorite,
         enabled = canToggleFavorite,
         contentDescription = description,

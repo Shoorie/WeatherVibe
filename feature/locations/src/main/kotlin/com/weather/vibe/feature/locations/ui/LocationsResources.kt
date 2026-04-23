@@ -25,9 +25,6 @@ internal class LocationsResources(private val context: Context) {
     context.getString(R.string.locations_snackbar_undo)
 
   object Emojis {
-    fun modeBrowse(): String = "🗂️"
-    fun modeCompare(): String = "⚖️"
-    fun empty(): String = "📍"
     fun versus(): String = "VS"
     fun metricTemperature(): String = "🌡️"
     fun metricWind(): String = "💨"
@@ -36,10 +33,6 @@ internal class LocationsResources(private val context: Context) {
   }
 
   object Texts {
-
-    @Composable
-    fun screenTitle(): String =
-      stringResource(R.string.locations_screen_title)
 
     @Composable
     fun headerTitle(): String =
@@ -59,10 +52,6 @@ internal class LocationsResources(private val context: Context) {
     @Composable
     fun modeCompare(): String =
       stringResource(R.string.locations_mode_compare)
-
-    @Composable
-    fun compareDisabledHint(): String =
-      stringResource(R.string.locations_mode_compare_disabled_hint)
 
     @Composable
     fun compareHintPickZero(): String =
@@ -89,28 +78,16 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_action_more)
 
     @Composable
-    fun rowSelected(): String =
-      stringResource(R.string.locations_row_selected)
-
-    @Composable
-    fun rowTemperature(value: Int): String =
+    fun rowTemperature(value: String): String =
       stringResource(R.string.locations_row_temperature, value)
 
     @Composable
-    fun rowHighLow(high: Int, low: Int): String =
-      stringResource(R.string.locations_row_high_low, high, low)
-
-    @Composable
-    fun rowInfoFeels(value: Int): String =
+    fun rowInfoFeels(value: String): String =
       stringResource(R.string.locations_row_info_feels, value)
 
     @Composable
-    fun rowInfoRain(value: Int): String =
-      stringResource(R.string.locations_row_info_rain, value)
-
-    @Composable
-    fun rowInfoWind(value: Int): String =
-      stringResource(R.string.locations_row_info_wind, value)
+    fun rowHighLow(high: String, low: String): String =
+      stringResource(R.string.locations_row_high_low, high, low)
 
     @Composable
     fun menuRename(): String =
@@ -177,7 +154,7 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_compare_timeline_title)
 
     @Composable
-    fun compareFeelsLike(value: Int): String =
+    fun compareFeelsLike(value: String): String =
       stringResource(R.string.locations_compare_feels_like, value)
 
     @Composable
@@ -197,7 +174,7 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_compare_metric_rain)
 
     @Composable
-    fun valueTemperature(value: Int): String =
+    fun valueTemperature(value: String): String =
       stringResource(R.string.locations_compare_value_temperature, value)
 
     @Composable

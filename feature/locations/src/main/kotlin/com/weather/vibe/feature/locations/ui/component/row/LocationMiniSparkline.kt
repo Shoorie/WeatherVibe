@@ -6,15 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.MiniSparklineHeight
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.MiniSparklineStroke
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.MiniSparklineWidth
+import com.weather.vibe.feature.locations.ui.util.buildSmoothPath
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -30,8 +31,8 @@ internal fun LocationMiniSparkline(
   val range = (maxValue - minValue).takeIf { it > 0f } ?: 1f
   Canvas(
     modifier = modifier.size(
-      width = LocationsDefaults.MiniSparklineWidth,
-      height = LocationsDefaults.MiniSparklineHeight
+      width = MiniSparklineWidth,
+      height = MiniSparklineHeight
     )
   ) {
     val offsets = points.mapIndexed { index, value ->
@@ -44,39 +45,13 @@ internal fun LocationMiniSparkline(
       path = buildSmoothPath(offsets = offsets),
       color = color,
       style = Stroke(
-        width = LocationsDefaults.MiniSparklineStroke.toPx(),
+        width = MiniSparklineStroke.toPx(),
         cap = StrokeCap.Round,
         join = StrokeJoin.Round
       )
     )
   }
 }
-
-private fun buildSmoothPath(offsets: List<Offset>): Path = Path().apply {
-  if (offsets.isEmpty()) return@apply
-  moveTo(offsets.first().x, offsets.first().y)
-  for (index in 0 until offsets.size - 1) {
-    val previous = offsets.getOrElse(index - 1) { offsets.first() }
-    val current = offsets[index]
-    val next = offsets[index + 1]
-    val after = offsets.getOrElse(index + 2) { offsets.last() }
-    val controlStart = Offset(
-      x = current.x + (next.x - previous.x) * SMOOTHING,
-      y = current.y + (next.y - previous.y) * SMOOTHING
-    )
-    val controlEnd = Offset(
-      x = next.x - (after.x - current.x) * SMOOTHING,
-      y = next.y - (after.y - current.y) * SMOOTHING
-    )
-    cubicTo(
-      controlStart.x, controlStart.y,
-      controlEnd.x, controlEnd.y,
-      next.x, next.y
-    )
-  }
-}
-
-private const val SMOOTHING: Float = 0.16f
 
 @PreviewLightDark
 @Composable

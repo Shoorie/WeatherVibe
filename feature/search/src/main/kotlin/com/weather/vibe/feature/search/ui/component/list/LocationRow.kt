@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
@@ -26,9 +24,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.search.preview.LocationItemPreview
 import com.weather.vibe.feature.search.preview.params.LocationItemPreviewParams
 import com.weather.vibe.feature.search.ui.SearchDefaults.LocationRowMinHeight
-import com.weather.vibe.feature.search.ui.SearchDefaults.TemperatureMinWidth
 import com.weather.vibe.feature.search.ui.SearchTextStyles.locationNameStyle
-import com.weather.vibe.feature.search.ui.SearchTextStyles.temperatureStyle
 
 @Composable
 internal fun LocationRow(
@@ -36,7 +32,10 @@ internal fun LocationRow(
   emoji: String,
   name: String,
   subtitle: String,
-  temperature: String? = null,
+  showHeart: Boolean = false,
+  isFavorite: Boolean = false,
+  canToggleFavorite: Boolean = true,
+  onHeartClick: () -> Unit = {},
   onClick: () -> Unit
 ) {
   Row(
@@ -45,7 +44,7 @@ internal fun LocationRow(
       .semantics(mergeDescendants = true) {}
       .clickable(role = Role.Button, onClick = onClick)
       .defaultMinSize(minHeight = LocationRowMinHeight)
-      .padding(horizontal = Medium)
+      .padding(start = Medium, end = Small)
       .padding(vertical = Small),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Medium)
@@ -71,13 +70,11 @@ internal fun LocationRow(
         )
       }
     }
-    if (temperature != null) {
-      Text(
-        modifier = Modifier.widthIn(min = TemperatureMinWidth),
-        text = temperature,
-        style = temperatureStyle(),
-        color = colors.accent,
-        textAlign = TextAlign.End
+    if (showHeart) {
+      LocationFavoriteHeartButton(
+        isFavorite = isFavorite,
+        enabled = canToggleFavorite,
+        onClick = onHeartClick
       )
     }
   }
@@ -94,7 +91,8 @@ private fun Preview(
       emoji = params.emoji,
       name = params.name,
       subtitle = params.subtitle,
-      temperature = params.temperature,
+      showHeart = true,
+      isFavorite = params.isFavorite,
       onClick = {}
     )
   }

@@ -7,5 +7,5 @@ internal data class LocationItemPreviewParams(
   val emoji: String,
   val name: String,
   val subtitle: String,
-  val temperature: String? = null
+  val isFavorite: Boolean = false
 )

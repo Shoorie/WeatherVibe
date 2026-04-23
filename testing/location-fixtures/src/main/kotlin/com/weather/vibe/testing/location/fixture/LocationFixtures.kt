@@ -1,7 +1,6 @@
 package com.weather.vibe.testing.location.fixture
 
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.model.LocationWithTemperature
 
 object LocationFixtures {
 
@@ -11,7 +10,6 @@ object LocationFixtures {
   const val COUNTRY = "Poland"
   const val LATITUDE = 52.23
   const val LONGITUDE = 21.01
-  const val CURRENT_TEMPERATURE = 15.0
 
   val WARSAW: Location = location()
 
@@ -45,13 +43,5 @@ object LocationFixtures {
     country = country,
     latitude = latitude,
     longitude = longitude
-  )
-
-  fun locationWithTemperature(
-    location: Location = WARSAW,
-    currentTemperature: Double? = CURRENT_TEMPERATURE
-  ): LocationWithTemperature = LocationWithTemperature(
-    location = location,
-    currentTemperature = currentTemperature
   )
 }

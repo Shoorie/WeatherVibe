@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
@@ -38,6 +37,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.core.permissions.openAppDetailsSettings
 import com.weather.vibe.core.permissions.rememberLocationPermissionGranted
 import com.weather.vibe.core.permissions.rememberLocationPermissionRequester
@@ -117,16 +117,10 @@ internal fun OnboardingContent(
   onOpenSettings: () -> Unit
 ) {
 
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  val backgroundBrush = remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(colors = listOf(gradientStart, gradientEnd))
-  }
-
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(backgroundBrush)
+      .background(rememberAppBackgroundBrush())
       .padding(horizontal = Large),
     contentAlignment = Alignment.Center
   ) {

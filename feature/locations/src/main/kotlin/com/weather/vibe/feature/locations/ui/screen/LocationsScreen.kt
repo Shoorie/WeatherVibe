@@ -75,10 +75,13 @@ private suspend fun onEvent(
       snackbarHostState = host,
       dispatch = dispatch
     )
-    is ShowLimitReachedSnackbar -> host.showSnackbar(
-      message = resources.limitReached(MAX_FAVORITES),
-      duration = Short
-    )
+    is ShowLimitReachedSnackbar -> {
+      host.currentSnackbarData?.dismiss()
+      host.showSnackbar(
+        message = resources.limitReached(MAX_FAVORITES),
+        duration = Short
+      )
+    }
   }
 }
 

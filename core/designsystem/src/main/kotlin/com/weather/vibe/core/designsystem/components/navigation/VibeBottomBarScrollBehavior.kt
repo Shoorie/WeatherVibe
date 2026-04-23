@@ -18,13 +18,36 @@ class VibeBottomBarScrollBehavior internal constructor() {
 
   val nestedScrollConnection: NestedScrollConnection = object : NestedScrollConnection {
 
-    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-      when {
-        available.y < -SCROLL_THRESHOLD_PX && isVisible -> isVisible = false
-        available.y > SCROLL_THRESHOLD_PX && !isVisible -> isVisible = true
-      }
+    override fun onPostScroll(
+      consumed: Offset,
+      available: Offset,
+      source: NestedScrollSource
+    ): Offset {
+      reactToScroll(consumed = consumed, available = available)
       return Offset.Zero
     }
+  }
+
+  private fun reactToScroll(consumed: Offset, available: Offset) {
+    when {
+      userPullsContentDown(consumed = consumed, available = available) -> show()
+      contentActuallyScrollsUp(consumed) -> hide()
+    }
+  }
+
+  private fun userPullsContentDown(consumed: Offset, available: Offset): Boolean =
+    consumed.y > SCROLL_THRESHOLD_PX ||
+      available.y > SCROLL_THRESHOLD_PX
+
+  private fun contentActuallyScrollsUp(consumed: Offset): Boolean =
+    consumed.y < -SCROLL_THRESHOLD_PX
+
+  fun show() {
+    isVisible = true
+  }
+
+  private fun hide() {
+    isVisible = false
   }
 
   private companion object {

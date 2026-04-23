@@ -13,6 +13,7 @@ android {
 dependencies {
 
   implementation(projects.domain.location)
+  implementation(projects.domain.weather)
   implementation(projects.core.network)
   implementation(projects.core.time)
 

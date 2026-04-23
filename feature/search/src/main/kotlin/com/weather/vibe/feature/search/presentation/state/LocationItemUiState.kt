@@ -7,5 +7,6 @@ internal data class LocationItemUiState(
   val id: Long,
   val name: String,
   val subtitle: String,
-  val temperature: String?
+  val isFavorite: Boolean,
+  val canToggleFavorite: Boolean
 )

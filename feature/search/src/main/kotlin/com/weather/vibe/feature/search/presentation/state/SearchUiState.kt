@@ -7,6 +7,7 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Idle
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
+import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 internal sealed interface SearchUiState {
@@ -26,13 +27,13 @@ internal sealed interface SearchUiState {
   @Immutable
   data class Recents(
     override val query: String,
-    val locations: List<LocationItemUiState>
+    val locations: ImmutableList<LocationItemUiState>
   ) : SearchUiState
 
   @Immutable
   data class Results(
     override val query: String,
-    val locations: List<LocationItemUiState>
+    val locations: ImmutableList<LocationItemUiState>
   ) : SearchUiState
 
   @Immutable

@@ -1,0 +1,231 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "aa8061ee9f55ba589a0c5df8adad2776",
+    "entities": [
+      {
+        "tableName": "recent_locations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `admin1` TEXT, `country` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `name` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "admin1",
+            "columnName": "admin1",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "favorite_locations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `admin1` TEXT, `country` TEXT NOT NULL, `isDefault` INTEGER NOT NULL, `label` TEXT, `latitude` REAL NOT NULL, `locationId` INTEGER NOT NULL, `longitude` REAL NOT NULL, `name` TEXT NOT NULL, `position` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "admin1",
+            "columnName": "admin1",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDefault",
+            "columnName": "isDefault",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "label",
+            "columnName": "label",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locationId",
+            "columnName": "locationId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_favorite_locations_locationId",
+            "unique": true,
+            "columnNames": [
+              "locationId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_favorite_locations_locationId` ON `${TABLE_NAME}` (`locationId`)"
+          }
+        ]
+      },
+      {
+        "tableName": "location_weather_snapshot",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`locationId` INTEGER NOT NULL, `condition` TEXT NOT NULL, `feelsLikeC` REAL NOT NULL, `highC` REAL NOT NULL, `hourlyTemperaturesJson` TEXT NOT NULL, `humidityPercent` INTEGER NOT NULL, `isDay` INTEGER NOT NULL, `lowC` REAL NOT NULL, `precipitationChancePercent` INTEGER NOT NULL, `temperatureC` REAL NOT NULL, `updatedAtEpochMs` INTEGER NOT NULL, `windKph` REAL NOT NULL, PRIMARY KEY(`locationId`))",
+        "fields": [
+          {
+            "fieldPath": "locationId",
+            "columnName": "locationId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition",
+            "columnName": "condition",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feelsLikeC",
+            "columnName": "feelsLikeC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "highC",
+            "columnName": "highC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourlyTemperaturesJson",
+            "columnName": "hourlyTemperaturesJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidityPercent",
+            "columnName": "humidityPercent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDay",
+            "columnName": "isDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lowC",
+            "columnName": "lowC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipitationChancePercent",
+            "columnName": "precipitationChancePercent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "temperatureC",
+            "columnName": "temperatureC",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updatedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windKph",
+            "columnName": "windKph",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "locationId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa8061ee9f55ba589a0c5df8adad2776')"
+    ]
+  }
+}

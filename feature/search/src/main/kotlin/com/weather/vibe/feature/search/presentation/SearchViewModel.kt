@@ -2,22 +2,20 @@ package com.weather.vibe.feature.search.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.location.error.FavoritesLimitReached
+import com.weather.vibe.domain.location.model.Favorite
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.model.LocationWithTemperature
-import com.weather.vibe.domain.settings.model.TemperatureUnit
-import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
+import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
 import com.weather.vibe.feature.search.presentation.SearchAction.Retry
+import com.weather.vibe.feature.search.presentation.SearchAction.SetMode
+import com.weather.vibe.feature.search.presentation.SearchEvent.LimitReached
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
-import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
-import com.weather.vibe.feature.search.presentation.state.SearchUiState.Error
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Idle
-import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
-import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
 import com.weather.vibe.feature.search.presentation.state.withQuery
 import com.weather.vibe.feature.search.ui.SearchResources
@@ -50,57 +48,42 @@ internal class SearchViewModel(
   private val _state = MutableStateFlow<SearchUiState>(Idle())
   val state: StateFlow<SearchUiState> = _state.asStateFlow()
 
+  private val _favoritesCount = MutableStateFlow(0)
+  val favoritesCount: StateFlow<Int> = _favoritesCount.asStateFlow()
+
   private val _event = Channel<SearchEvent>()
   val event: Flow<SearchEvent> = _event.receiveAsFlow()
 
+  private var mode: SearchMode = SearchMode.Picker
   private var lastLocations: List<Location> = emptyList()
-  private var lastRecentEntries: List<LocationWithTemperature> = emptyList()
-  private var temperatureUnit: TemperatureUnit = CELSIUS
+  private var lastRecents: List<Location> = emptyList()
+  private var favorites: List<Favorite> = emptyList()
+  private val favoriteLocationIds: Set<Long>
+    get() = favorites.mapTo(mutableSetOf()) { it.location.id }
 
-  private val errorHandler = CoroutineExceptionHandler { _, _ ->
-    showError()
+  private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+    onBackgroundError(throwable)
   }
 
   init {
-    observeTemperatureUnit()
+    observeFavorites()
     loadRecentLocations()
     observeQueryChanges()
-  }
-
-  private fun observeTemperatureUnit() {
-    useCases.observeTemperatureUnit()
-      .onEach(::onTemperatureUnitChanged)
-      .launchIn(viewModelScope)
-  }
-
-  private fun onTemperatureUnitChanged(unit: TemperatureUnit) {
-    temperatureUnit = unit
-    rebuildRecentsIfShown()
-  }
-
-  private fun rebuildRecentsIfShown() {
-
-    val current = _state.value
-    if (current !is Recents) return
-
-    _state.update {
-      Recents(
-        query = current.query,
-        locations = stateFactory.createItems(
-          entries = lastRecentEntries,
-          unit = temperatureUnit
-        )
-      )
-    }
   }
 
   fun dispatch(action: SearchAction) {
     when (action) {
       is BackClick -> onBackClick()
+      is HeartClick -> onHeartClick(action.id)
       is LocationSelect -> onLocationSelect(action.id)
       is QueryChange -> onQueryChange(action.query)
       is Retry -> onRetry()
+      is SetMode -> onSetMode(action.mode)
     }
+  }
+
+  private fun onSetMode(nextMode: SearchMode) {
+    mode = nextMode
   }
 
   private fun onBackClick() {
@@ -108,10 +91,36 @@ internal class SearchViewModel(
   }
 
   private fun onLocationSelect(id: Long) {
+    when (mode) {
+      SearchMode.Picker -> pickLocation(id = id)
+      SearchMode.Favorites -> onHeartClick(id = id)
+    }
+  }
+
+  private fun pickLocation(id: Long) {
     val location = findLocation(id) ?: return
     viewModelScope.launch(errorHandler) {
       useCases.saveRecentLocation(location)
       send(NavigateBackWithResult(location))
+    }
+  }
+
+  private fun onHeartClick(id: Long) {
+    val location = findLocation(id = id) ?: return
+    val existing = findFavoriteByLocationId(locationId = id)
+    viewModelScope.launch(errorHandler) {
+      toggleFavorite(location = location, existing = existing)
+    }
+  }
+
+  private fun findFavoriteByLocationId(locationId: Long): Favorite? =
+    favorites.firstOrNull { it.location.id == locationId }
+
+  private suspend fun toggleFavorite(location: Location, existing: Favorite?) {
+    if (existing != null) {
+      useCases.removeFavorite(id = existing.id)
+    } else {
+      useCases.addFavorite(location = location, label = null)
     }
   }
 
@@ -128,30 +137,58 @@ internal class SearchViewModel(
     }
   }
 
+  private fun observeFavorites() {
+    useCases.observeFavorites()
+      .onEach(::onFavoritesResult)
+      .launchIn(viewModelScope)
+  }
+
+  private fun onFavoritesResult(result: Result<List<Favorite>>) {
+    result.fold(
+      onSuccess = ::onFavoritesChanged,
+      onFailure = { showError() }
+    )
+  }
+
+  private fun onFavoritesChanged(next: List<Favorite>) {
+    favorites = next
+    _favoritesCount.update { next.size }
+    rebuildListsWithLatestFavorites()
+  }
+
+  private fun rebuildListsWithLatestFavorites() {
+    _state.update { current ->
+      stateFactory.refreshFavorites(
+        current = current,
+        recents = lastRecents,
+        lastResults = lastLocations,
+        favoriteLocationIds = favoriteLocationIds
+      )
+    }
+  }
+
   private fun loadRecentLocations() {
-    useCases.getRecentLocationsWithTemperature()
+    useCases.getRecentLocations()
       .onEach(::onRecentLocationsResult)
       .launchIn(viewModelScope)
   }
 
-  private fun onRecentLocationsResult(result: Result<List<LocationWithTemperature>>) {
+  private fun onRecentLocationsResult(result: Result<List<Location>>) {
     result.fold(
       onSuccess = ::onRecentLocationsSuccess,
       onFailure = { showError() }
     )
   }
 
-  private fun onRecentLocationsSuccess(entries: List<LocationWithTemperature>) {
-    lastLocations = entries.map { it.location }
-    lastRecentEntries = entries
+  private fun onRecentLocationsSuccess(locations: List<Location>) {
+    lastRecents = locations
+    lastLocations = locations
     _state.update { current ->
-      when (entries.isEmpty()) {
-        true -> Idle(query = current.query)
-        false -> Recents(
-          query = current.query,
-          locations = stateFactory.createItems(entries = entries, unit = temperatureUnit)
-        )
-      }
+      stateFactory.recentsStateOrIdle(
+        query = current.query,
+        locations = locations,
+        favoriteLocationIds = favoriteLocationIds
+      )
     }
   }
 
@@ -188,28 +225,27 @@ internal class SearchViewModel(
   }
 
   private fun onSearchSuccess(locations: List<Location>) {
-
     lastLocations = locations
     val query = currentQuery()
-    val entries = locations.map { LocationWithTemperature(location = it) }
-
     _state.update {
-      when (entries.isEmpty()) {
-        true -> Empty(query = query)
-        false -> Results(
-          query = query,
-          locations = stateFactory.createItems(entries = entries, unit = temperatureUnit)
-        )
-      }
+      stateFactory.resultsStateOrEmpty(
+        query = query,
+        locations = locations,
+        favoriteLocationIds = favoriteLocationIds
+      )
+    }
+  }
+
+  private fun onBackgroundError(throwable: Throwable) {
+    when (throwable) {
+      is FavoritesLimitReached -> send(LimitReached)
+      else -> showError()
     }
   }
 
   private fun showError() {
     _state.update { current ->
-      Error(
-        query = current.query,
-        message = resources.defaultError()
-      )
+      stateFactory.errorState(query = current.query, message = resources.defaultError())
     }
   }
 
@@ -223,7 +259,7 @@ internal class SearchViewModel(
     length >= MIN_QUERY_LENGTH
 
   private fun send(event: SearchEvent) {
-    viewModelScope.launch { _event.send(event) }
+    viewModelScope.launch(errorHandler) { _event.send(event) }
   }
 
   private companion object {

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,8 @@ import com.weather.vibe.feature.settings.personalization.ui.screen.Personalizati
 import com.weather.vibe.navigation.bottombar.WeatherVibeBottomBar
 import com.weather.vibe.navigation.home.HomeEntry
 import com.weather.vibe.navigation.home.HomeRoute
+import com.weather.vibe.navigation.locations.AddFavoriteEntry
+import com.weather.vibe.navigation.locations.AddFavoriteRoute
 import com.weather.vibe.navigation.locations.LocationsRoute
 import com.weather.vibe.navigation.onboarding.LocationOnboardingRoute
 import com.weather.vibe.navigation.onboarding.OnboardingEntry
@@ -64,6 +67,10 @@ fun WeatherVibeNavHost(
       currentTopRoute?.isTopLevel() == true &&
         (currentTopRoute !is HomeRoute || isHomeContentReady)
     }
+  }
+
+  LaunchedEffect(currentTopRoute) {
+    scrollBehavior.show()
   }
 
   BottomBarScaffold(
@@ -154,7 +161,12 @@ private fun rootEntry(
     is WeatherDetailsRoute -> NavEntry(key) { WeatherDetailsScreen(key, backStack) }
     is ActivityPlannerRoute -> NavEntry(key) { ActivityPlannerEntry(key, backStack) }
     is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
-    is LocationsRoute -> NavEntry(key) { LocationsScreen() }
+    is LocationsRoute -> NavEntry(key) {
+      LocationsScreen(
+        onNavigateToSearch = { backStack.add(AddFavoriteRoute) }
+      )
+    }
+    is AddFavoriteRoute -> NavEntry(key) { AddFavoriteEntry(backStack) }
     else -> NavEntry(key) {}
   }
 
@@ -173,10 +185,14 @@ private fun profileEntry(
       )
     }
     is ProfilePersonalizationRoute -> NavEntry(key) {
-      PersonalizationScreen(onNavigateBack = { backStack.removeLastOrNull() })
+      PersonalizationScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
     }
     is ProfileNotificationsRoute -> NavEntry(key) {
-      NotificationsScreen(onNavigateBack = { backStack.removeLastOrNull() })
+      NotificationsScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
+      )
     }
     is ProfilePrivacyRoute -> NavEntry(key) {
       ProfilePrivacyScreen(

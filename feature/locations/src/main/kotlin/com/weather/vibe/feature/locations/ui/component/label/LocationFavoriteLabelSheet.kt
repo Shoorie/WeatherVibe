@@ -1,10 +1,8 @@
 package com.weather.vibe.feature.locations.ui.component.label
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,9 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -28,17 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.button.VibePrimaryButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
-import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke.Border
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -93,7 +88,7 @@ fun LocationFavoriteLabelSheet(
       SheetButtons(
         labelText = labelText,
         onSkip = { onSubmit(null) },
-        onSave = { onSubmit(labelText.trimmedOrNull()) }
+        onSave = { onSubmit(labelText) }
       )
     }
   }
@@ -123,51 +118,36 @@ private fun SheetHeader(
   }
 }
 
-private fun String.trimmedOrNull(): String? =
-  trim().takeIf(String::isNotEmpty)
-
 @Composable
 private fun LabelInput(
   value: String,
   onValueChange: (String) -> Unit
 ) {
-  val focusRequester = remember { FocusRequester() }
-  Box(
-    modifier = Modifier
-      .fillMaxWidth()
-      .clip(shapes.card)
-      .background(colors.glassSurface)
-      .border(
-        width = Border,
-        color = colors.outlineVariant,
-        shape = shapes.card
-      )
-      .clickable(
-        indication = null,
-        interactionSource = remember { MutableInteractionSource() },
-        onClick = { focusRequester.requestFocus() }
-      )
-      .padding(horizontal = Medium, vertical = Small),
-    contentAlignment = Alignment.CenterStart
-  ) {
-    if (value.isEmpty()) {
+  OutlinedTextField(
+    modifier = Modifier.fillMaxWidth(),
+    value = value,
+    onValueChange = onValueChange,
+    placeholder = {
       Text(
         text = labelSheetPlaceholder(),
-        style = typography.bodyMedium,
-        color = colors.textTertiary
+        style = typography.bodyMedium
       )
-    }
-    BasicTextField(
-      modifier = Modifier
-        .fillMaxWidth()
-        .focusRequester(focusRequester),
-      value = value,
-      onValueChange = onValueChange,
-      textStyle = typography.bodyMedium.copy(color = colors.onBackground),
-      cursorBrush = SolidColor(colors.accent),
-      singleLine = true
+    },
+    textStyle = typography.bodyMedium,
+    singleLine = true,
+    shape = shapes.card,
+    colors = OutlinedTextFieldDefaults.colors(
+      focusedContainerColor = colors.glassSurface,
+      unfocusedContainerColor = colors.glassSurface,
+      focusedBorderColor = colors.accent,
+      unfocusedBorderColor = colors.outlineVariant,
+      focusedTextColor = colors.onBackground,
+      unfocusedTextColor = colors.onBackground,
+      focusedPlaceholderColor = colors.textTertiary,
+      unfocusedPlaceholderColor = colors.textTertiary,
+      cursorColor = colors.accent
     )
-  }
+  )
 }
 
 @Composable
@@ -262,7 +242,7 @@ private fun Preview() {
   WeatherVibeTheme {
     LocationFavoriteLabelSheet(
       title = "Label this place",
-      locationName = "Warszawa",
+      locationName = "London",
       initialLabel = null,
       onDismiss = {},
       onSubmit = {}

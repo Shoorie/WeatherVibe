@@ -33,7 +33,9 @@ fun LocationsScreen(
   val viewModel = koinViewModel<LocationsViewModel>()
   val resources = koinInject<LocationsResources>()
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val dispatch = remember(viewModel) { viewModel::dispatch }
+  val dispatch: (LocationsAction) -> Unit = remember(viewModel) {
+    { action -> viewModel.dispatch(action) }
+  }
   val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(viewModel) {

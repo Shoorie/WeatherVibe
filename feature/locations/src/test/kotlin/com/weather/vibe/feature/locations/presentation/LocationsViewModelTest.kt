@@ -10,29 +10,30 @@ import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
-import com.weather.vibe.feature.locations.presentation.factory.TemperatureAxisFactory
-import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
 import com.weather.vibe.feature.locations.presentation.LocationsAction.Initialize
+import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateToSearch
 import com.weather.vibe.feature.locations.presentation.factory.LocationCardFactory
-import com.weather.vibe.feature.locations.presentation.factory.LocationComparePairBuilder
 import com.weather.vibe.feature.locations.presentation.factory.LocationCompareFactory
+import com.weather.vibe.feature.locations.presentation.factory.LocationComparePairBuilder
 import com.weather.vibe.feature.locations.presentation.factory.LocationWeatherFactory
 import com.weather.vibe.feature.locations.presentation.factory.LocationsFactories
 import com.weather.vibe.feature.locations.presentation.factory.LocationsLoadedFactory
 import com.weather.vibe.feature.locations.presentation.factory.LocationsStateFactory
+import com.weather.vibe.feature.locations.presentation.factory.TemperatureAxisFactory
 import com.weather.vibe.feature.locations.presentation.fake.fakeLocationsResources
-import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.KRAKOW_FAVORITE_ID
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.KRAKOW_WITH_WEATHER
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_FAVORITE
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_FAVORITE_ID
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_WITH_WEATHER
+import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.testing.coroutines.MainDispatcherRule
 import io.mockk.coJustRun
@@ -54,6 +55,7 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isNotNull
 import strikt.assertions.isNull
 import strikt.assertions.isTrue
+import kotlin.Result.Companion.failure
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocationsViewModelTest {
@@ -88,7 +90,7 @@ class LocationsViewModelTest {
       compareFactory = compareFactory,
       compareLocationWeather = compareLocationWeather,
       temperatureAxisFactory = TemperatureAxisFactory(
-        temperatureFormatter = temperatureFormatter
+        temperature = temperatureFormatter
       )
     )
   )
@@ -127,34 +129,41 @@ class LocationsViewModelTest {
   @Test
   fun `given initialize, when favorites observation fails, then state is error`() = runTest {
 
-    every { observeFavoritesWithWeather() } returns flowOf(Result.failure(IllegalStateException()))
+    every { observeFavoritesWithWeather() } returns flowOf(failure(IllegalStateException()))
     every { observeTemperatureUnit() } returns flowOf(CELSIUS)
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
-    expectThat(viewModel.state.value).isA<com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error>()
+    expectThat(viewModel.state.value).isA<Error>()
   }
 
   @Test
-  fun `given loaded with two favorites, when toggle compare mode, then compare mode becomes true`() = runTest {
+  fun `given loaded with two favorites, when toggle compare mode, then compare mode becomes true`() =
+    runTest {
 
-    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
+      val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
-    viewModel.dispatch(ToggleCompareMode)
+      viewModel.dispatch(ToggleCompareMode)
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { compareMode }.isTrue()
-  }
+      expectThat(viewModel.state.value)
+        .isA<Loaded>().get { compareMode }
+        .isTrue()
+    }
 
   @Test
-  fun `given loaded with single favorite, when toggle compare mode, then compare mode stays false`() = runTest {
+  fun `given loaded with single favorite, when toggle compare mode, then compare mode stays false`() =
+    runTest {
 
-    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
+      val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
-    viewModel.dispatch(ToggleCompareMode)
+      viewModel.dispatch(ToggleCompareMode)
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { compareMode }.isA<Boolean>().isEqualTo(false)
-  }
+      expectThat(viewModel.state.value)
+        .isA<Loaded>().get { compareMode }
+        .isA<Boolean>()
+        .isEqualTo(false)
+    }
 
   @Test
   fun `given compare mode, when card clicked, then selection updated`() = runTest {
@@ -167,7 +176,10 @@ class LocationsViewModelTest {
 
     viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { selectedIds }.hasSize(1)
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { selectedIds }
+      .hasSize(1)
   }
 
   @Test
@@ -182,24 +194,31 @@ class LocationsViewModelTest {
     viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
     viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { comparePair }.isNotNull()
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { comparePair }
+      .isNotNull()
   }
 
   @Test
-  fun `given two cards selected but one missing snapshot, then compare pair stays null`() = runTest {
+  fun `given two cards selected but one missing snapshot, then compare pair stays null`() =
+    runTest {
 
-    val warsawNoSnapshot = LocationFavoriteWithWeather(favorite = LocationFavoriteFixtures.WARSAW_FAVORITE, snapshot = null)
-    mockFavorites(sources = listOf(warsawNoSnapshot, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also {
-      it.dispatch(Initialize)
-      it.dispatch(ToggleCompareMode)
+      val noSnapshot = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
+      mockFavorites(sources = listOf(noSnapshot, KRAKOW_WITH_WEATHER))
+      val viewModel = createViewModel().also {
+        it.dispatch(Initialize)
+        it.dispatch(ToggleCompareMode)
+      }
+
+      viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
+      viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
+
+      expectThat(viewModel.state.value)
+        .isA<Loaded>()
+        .get { comparePair }
+        .isNull()
     }
-
-    viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
-    viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
-
-    expectThat(viewModel.state.value).isA<Loaded>().get { comparePair }.isNull()
-  }
 
   @Test
   fun `given add city click, then navigate to search event emitted`() = runTest {
@@ -225,7 +244,10 @@ class LocationsViewModelTest {
 
     viewModel.dispatch(ExitCompareMode)
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { selectedIds }.isEmpty()
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { selectedIds }
+      .isEmpty()
   }
 
   @Test
@@ -247,7 +269,12 @@ class LocationsViewModelTest {
     coJustRun { renameFavorite(any(), any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
-    viewModel.dispatch(RenameLocationFavoriteClick(favoriteId = WARSAW_FAVORITE_ID, label = "Praca"))
+    viewModel.dispatch(
+      RenameLocationFavoriteClick(
+        favoriteId = WARSAW_FAVORITE_ID,
+        label = "Praca"
+      )
+    )
 
     coVerify { renameFavorite(id = WARSAW_FAVORITE_ID, label = "Praca") }
   }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
-data class LocationCompareUiState(
+internal data class LocationCompareUiState(
   val card: LocationCardUiState,
   val feelsLike: String,
   val high: String,

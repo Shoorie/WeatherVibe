@@ -92,12 +92,12 @@ internal class SearchViewModel(
 
   private fun onLocationSelect(id: Long) {
     when (mode) {
-      SearchMode.Picker -> pickLocation(id = id)
+      SearchMode.Picker -> onPickLocation(id = id)
       SearchMode.Favorites -> onHeartClick(id = id)
     }
   }
 
-  private fun pickLocation(id: Long) {
+  private fun onPickLocation(id: Long) {
     val location = findLocation(id) ?: return
     viewModelScope.launch(errorHandler) {
       useCases.saveRecentLocation(location)
@@ -117,10 +117,9 @@ internal class SearchViewModel(
     favorites.firstOrNull { it.location.id == locationId }
 
   private suspend fun toggleFavorite(location: Location, existing: LocationFavorite?) {
-    if (existing != null) {
-      useCases.removeFavorite(id = existing.id)
-    } else {
-      useCases.addFavorite(location = location, label = null)
+    when (existing) {
+      null -> useCases.addFavorite(location = location, label = null)
+      else -> useCases.removeFavorite(id = existing.id)
     }
   }
 

@@ -57,6 +57,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.PopupEnterFadeMs
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.PopupExitMs
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowMenuButtonSize
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowMenuIconSize
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionMore
@@ -142,11 +144,11 @@ private fun AnimatedPopupCard(content: @Composable () -> Unit) {
         dampingRatio = Spring.DampingRatioLowBouncy
       ),
       transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 0f)
-    ) + fadeIn(animationSpec = tween(durationMillis = ENTER_FADE_MS)),
+    ) + fadeIn(animationSpec = tween(durationMillis = PopupEnterFadeMs)),
     exit = scaleOut(
-      animationSpec = tween(durationMillis = EXIT_MS),
+      animationSpec = tween(durationMillis = PopupExitMs),
       transformOrigin = TransformOrigin(pivotFractionX = 1f, pivotFractionY = 0f)
-    ) + fadeOut(animationSpec = tween(durationMillis = EXIT_MS))
+    ) + fadeOut(animationSpec = tween(durationMillis = PopupExitMs))
   ) {
     Column(
       modifier = Modifier
@@ -199,9 +201,6 @@ private fun PopupAction(
     )
   }
 }
-
-private const val ENTER_FADE_MS: Int = 120
-private const val EXIT_MS: Int = 100
 
 @PreviewLightDark
 @Composable

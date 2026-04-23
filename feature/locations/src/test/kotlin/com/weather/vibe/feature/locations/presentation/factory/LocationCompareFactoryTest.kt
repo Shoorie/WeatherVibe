@@ -53,7 +53,10 @@ class LocationCompareFactoryTest {
       temperatureUnit = CELSIUS
     )
 
-    expectThat(result).isNotNull().get { temperature }.isEqualTo("22°")
+    expectThat(result)
+      .isNotNull()
+      .get { temperature }
+      .isEqualTo("22°")
   }
 
   @Test
@@ -77,6 +80,9 @@ class LocationCompareFactoryTest {
       temperatureUnit = CELSIUS
     )
 
-    expectThat(result).isNotNull().get { hourlyTemperatures }.hasSize(WARSAW_SNAPSHOT.hourlyTemperaturesC.size)
+    expectThat(result)
+      .isNotNull()
+      .get { hourlyTemperatures }
+      .hasSize(WARSAW_SNAPSHOT.hourlyTemperaturesC.size)
   }
 }

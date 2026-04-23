@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toPersistentSet
 
-sealed interface LocationsUiState {
+internal sealed interface LocationsUiState {
 
   @Immutable
   data object Loading : LocationsUiState
@@ -30,6 +30,14 @@ sealed interface LocationsUiState {
     @Stable
     val canAddMoreFavorites: Boolean
       get() = cards.size < MAX_FAVORITES
+
+    @Stable
+    fun isCardSelected(favoriteId: Long): Boolean =
+      favoriteId in selectedIds
+
+    @Stable
+    fun isCardLocked(favoriteId: Long): Boolean =
+      compareMode && selectedIds.size >= SelectionLimit && favoriteId !in selectedIds
 
     @Stable
     fun withRefreshing(isRefreshing: Boolean): Loaded =

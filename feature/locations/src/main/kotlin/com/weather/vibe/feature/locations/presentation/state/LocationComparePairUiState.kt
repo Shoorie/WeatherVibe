@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.weather.vibe.domain.location.model.LocationWeatherComparison
 
 @Immutable
-data class LocationComparePairUiState(
+internal data class LocationComparePairUiState(
   val first: LocationCompareUiState,
   val second: LocationCompareUiState,
   val winners: LocationWeatherComparison,

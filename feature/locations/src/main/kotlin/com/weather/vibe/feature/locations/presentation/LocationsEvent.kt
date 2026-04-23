@@ -2,7 +2,7 @@ package com.weather.vibe.feature.locations.presentation
 
 import com.weather.vibe.domain.location.model.Location
 
-sealed interface LocationsEvent {
+internal sealed interface LocationsEvent {
 
   data class ShowRemovedSnackbar(
     val locationName: String,

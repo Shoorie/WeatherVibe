@@ -30,12 +30,14 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.LockedAlpha
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionIndicatorSize
 import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowInfoFeels
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowTemperature
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.temperature
 
 @Composable
 internal fun LocationRow(
@@ -82,16 +84,15 @@ private fun Modifier.rowContainer(
   isLocked: Boolean,
   onClick: () -> Unit
 ): Modifier {
-  val background = if (compareMode && isSelected) colors.primaryContainer else colors.glassSurface
-  val borderColor = if (compareMode && isSelected) colors.accent else colors.outlineVariant
+  val isHighlighted = compareMode && isSelected
   return this
     .fillMaxWidth()
-    .alpha(if (isLocked) LocationsDefaults.LockedAlpha else 1f)
+    .alpha(if (isLocked) LockedAlpha else 1f)
     .clip(shapes.card)
-    .background(background)
+    .background(rowBackgroundColor(isHighlighted = isHighlighted))
     .border(
       width = Border,
-      color = borderColor,
+      color = rowBorderColor(isHighlighted = isHighlighted),
       shape = shapes.card
     )
     .let { if (isLocked) it else it.clickable(role = Role.Button, onClick = onClick) }
@@ -170,9 +171,9 @@ private fun TemperatureBlock(card: LocationCardUiState) {
   val temperature = card.temperature
   Column(horizontalAlignment = Alignment.End) {
     Text(
-      text = temperature?.let { rowTemperature(value = it) } ?: LocationsDefaults.TemperaturePlaceholder,
+      text = temperature(value = temperature),
       style = typography.titleLarge,
-      color = if (temperature == null) colors.textTertiary else colors.onBackground,
+      color = temperatureTextColor(hasValue = temperature != null),
       textAlign = TextAlign.End
     )
     card.feelsLike?.let { feels ->
@@ -207,9 +208,9 @@ private fun TrailingAffordance(
 private fun SelectionDot(isSelected: Boolean) {
   Box(
     modifier = Modifier
-      .size(LocationsDefaults.SelectionIndicatorSize)
+      .size(SelectionIndicatorSize)
       .clip(CircleShape)
-      .background(if (isSelected) colors.accent else colors.outlineVariant)
+      .background(selectionDotColor(isSelected = isSelected))
   )
 }
 
@@ -219,7 +220,7 @@ private fun Preview() {
   WeatherVibeTheme {
     Box(modifier = Modifier.padding(Small)) {
       LocationRow(
-        card = LocationsPreviewData.warsaw,
+        card = LocationsPreviewData.london,
         positionIndex = 0,
         compareMode = false,
         isSelected = false,

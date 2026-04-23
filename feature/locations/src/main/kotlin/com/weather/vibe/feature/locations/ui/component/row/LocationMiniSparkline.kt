@@ -3,6 +3,7 @@ package com.weather.vibe.feature.locations.ui.component.row
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,8 @@ import com.weather.vibe.feature.locations.ui.util.buildSmoothPath
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+private data class SparklineBounds(val min: Float, val range: Float)
+
 @Composable
 internal fun LocationMiniSparkline(
   modifier: Modifier = Modifier,
@@ -26,9 +29,12 @@ internal fun LocationMiniSparkline(
   color: Color = colors.accent
 ) {
   if (points.size < 2) return
-  val minValue = points.min()
-  val maxValue = points.max()
-  val range = (maxValue - minValue).takeIf { it > 0f } ?: 1f
+  val bounds = remember(points) {
+    val minValue = points.min()
+    val maxValue = points.max()
+    val range = (maxValue - minValue).takeIf { it > 0f } ?: 1f
+    SparklineBounds(min = minValue, range = range)
+  }
   Canvas(
     modifier = modifier.size(
       width = MiniSparklineWidth,
@@ -37,7 +43,7 @@ internal fun LocationMiniSparkline(
   ) {
     val offsets = points.mapIndexed { index, value ->
       val x = index / (points.size - 1f) * size.width
-      val normalized = (value - minValue) / range
+      val normalized = (value - bounds.min) / bounds.range
       val y = size.height - normalized * size.height
       Offset(x = x, y = y)
     }

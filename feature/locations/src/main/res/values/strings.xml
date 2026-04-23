@@ -57,5 +57,7 @@
   <string name="locations_compare_value_humidity">%1$d%%</string>
   <string name="locations_compare_value_rain">%1$d%%</string>
   <string name="locations_compare_timeline_title">Temperature over 24 hours</string>
+  <string name="locations_compare_timeline_now">Now</string>
+  <string name="locations_compare_timeline_hours">+%1$dh</string>
   <string name="locations_compare_feels_like">Feels %1$s</string>
 </resources>

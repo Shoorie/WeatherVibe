@@ -11,7 +11,7 @@ class RenameLocationFavorite(
   suspend operator fun invoke(id: Long, label: String?) {
     repository.renameFavorite(
       id = id,
-      label = label?.takeIf { it.isNotBlank() }
+      label = label?.trim()?.takeIf(String::isNotEmpty)
     )
   }
 }

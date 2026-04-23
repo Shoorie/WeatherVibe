@@ -11,16 +11,16 @@ internal class LocationItemPreview :
   private val searchResult: LocationItemPreviewParams =
     LocationItemPreviewParams(
       emoji = locationPin(),
-      name = "Warszawa",
-      subtitle = "Mazowieckie, Polska",
+      name = "London",
+      subtitle = "England, United Kingdom",
       isFavorite = false
     )
 
   private val recentLocation: LocationItemPreviewParams =
     LocationItemPreviewParams(
       emoji = clock(),
-      name = "Kraków",
-      subtitle = "Małopolskie, Polska",
+      name = "Madrid",
+      subtitle = "Community of Madrid, Spain",
       isFavorite = true
     )
 

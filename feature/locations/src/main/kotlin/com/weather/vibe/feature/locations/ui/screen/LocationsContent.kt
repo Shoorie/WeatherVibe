@@ -44,7 +44,6 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
-import com.weather.vibe.feature.locations.presentation.state.canAddMoreFavorites
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionLimit
 import com.weather.vibe.feature.locations.ui.LocationsKeys
@@ -86,7 +85,7 @@ internal fun LocationsContent(
           end = Medium,
           bottom = LocationsDefaults.FabBottomOffset
         ),
-      enabled = state.canAddMoreFavorites(),
+      enabled = state !is Loaded || state.canAddMoreFavorites,
       onClick = { dispatch(AddLocationClick) }
     )
     SnackbarHost(
@@ -183,7 +182,7 @@ private fun LocationsLoaded(
     LocationsList(
       cards = state.cards,
       compareMode = state.compareMode,
-      selectedFavoriteIds = state.selectedFavoriteIds,
+      selectedIds = state.selectedIds,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
     )
@@ -200,7 +199,7 @@ private fun LocationsLoaded(
 private fun LocationsList(
   cards: ImmutableList<LocationCardUiState>,
   compareMode: Boolean,
-  selectedFavoriteIds: ImmutableSet<Long>,
+  selectedIds: ImmutableSet<Long>,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
@@ -221,7 +220,7 @@ private fun LocationsList(
         modifier = Modifier.padding(bottom = Small),
         count = cards.size,
         compareMode = compareMode,
-        selectedCount = selectedFavoriteIds.size,
+        selectedCount = selectedIds.size,
         onToggleCompareMode = { dispatch(ToggleCompareMode) }
       )
     }
@@ -234,9 +233,9 @@ private fun LocationsList(
       key = { _, card -> card(card.favoriteId) }
     ) { index, card ->
 
-      val isSelected = card.isSelected(selectedFavoriteIds)
+      val isSelected = card.isSelected(selectedIds)
       val isLocked = compareMode &&
-        selectedFavoriteIds.size >= SelectionLimit &&
+        selectedIds.size >= SelectionLimit &&
         !isSelected
 
       LocationRow(

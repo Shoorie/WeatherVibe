@@ -21,14 +21,14 @@ internal class LocationComparePairBuilder(
 
   fun createFor(
     cards: ImmutableList<LocationCardUiState>,
-    selectedFavoriteIds: ImmutableSet<Long>,
+    selectedIds: ImmutableSet<Long>,
     sources: List<LocationFavoriteWithWeather>,
     temperatureUnit: TemperatureUnit
   ): LocationComparePairUiState? {
 
     val selected = pickSelectedPair(
       cards = cards,
-      selectedIds = selectedFavoriteIds
+      selectedIds = selectedIds
     ) ?: return null
 
     val firstSide = compareSideFor(

@@ -1,8 +1,8 @@
 package com.weather.vibe.domain.location.repository
 
-import com.weather.vibe.domain.location.model.AddLocationFavoriteOutcome
-import com.weather.vibe.domain.location.model.LocationFavorite
+import com.weather.vibe.domain.location.error.LocationFavoritesLimitReached
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.LocationFavorite
 import kotlinx.coroutines.flow.Flow
 
 interface LocationFavoriteRepository {
@@ -10,11 +10,18 @@ interface LocationFavoriteRepository {
   suspend fun findById(id: Long): LocationFavorite?
   suspend fun findByLocationId(locationId: Long): LocationFavorite?
   suspend fun count(): Int
-  suspend fun tryAddFavorite(
+
+  /**
+   * Adds [location] to favorites when under [maxAllowed] and not already present.
+   * No-op when the location is already a favorite.
+   * @throws LocationFavoritesLimitReached when adding would exceed [maxAllowed].
+   */
+  suspend fun addFavoriteWithinLimit(
     location: Location,
     label: String?,
     maxAllowed: Int
-  ): AddLocationFavoriteOutcome
+  )
+
   suspend fun removeFavorite(id: Long)
   suspend fun renameFavorite(id: Long, label: String?)
 }

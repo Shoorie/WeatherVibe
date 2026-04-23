@@ -49,22 +49,4 @@ interface LocationFavoriteDao {
     deleteById(id = id)
     promoteFirstAsDefault()
   }
-
-  @Transaction
-  suspend fun insertIfAbsentWithinLimit(
-    entity: LocationFavoriteEntity,
-    maxAllowed: Int
-  ): LocationFavoriteInsertOutcome {
-    if (findByLocationId(locationId = entity.locationId) != null) {
-      return LocationFavoriteInsertOutcome.AlreadyExists
-    }
-    val existingCount = count()
-    if (existingCount >= maxAllowed) return LocationFavoriteInsertOutcome.LimitReached
-    val prepared = entity.copy(
-      isDefault = existingCount == 0,
-      position = maxPosition() + 1
-    )
-    insert(entity = prepared)
-    return LocationFavoriteInsertOutcome.Inserted
-  }
 }

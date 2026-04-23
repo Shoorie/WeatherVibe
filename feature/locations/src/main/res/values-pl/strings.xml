@@ -18,10 +18,10 @@
   <string name="locations_action_add_city_disabled">Osiągnięto limit ulubionych</string>
   <string name="locations_action_refresh">Odśwież</string>
   <string name="locations_action_more">Więcej akcji</string>
-  <string name="locations_row_temperature">%1$d°</string>
-  <string name="locations_row_high_low">↑ %1$d° · ↓ %2$d°</string>
+  <string name="locations_row_temperature">%1$s</string>
+  <string name="locations_row_high_low">↑ %1$s · ↓ %2$s</string>
   <string name="locations_row_selected">Wybrane</string>
-  <string name="locations_row_info_feels">Odczuwalna %1$d°</string>
+  <string name="locations_row_info_feels">Odczuwalna %1$s</string>
   <string name="locations_row_info_rain">☔ %1$d%%</string>
   <string name="locations_row_info_wind">💨 %1$d km/h</string>
 
@@ -53,10 +53,10 @@
   <string name="locations_compare_metric_wind">Wiatr</string>
   <string name="locations_compare_metric_humidity">Wilgotność</string>
   <string name="locations_compare_metric_rain">Szansa opadów</string>
-  <string name="locations_compare_value_temperature">%1$d°</string>
+  <string name="locations_compare_value_temperature">%1$s</string>
   <string name="locations_compare_value_wind">%1$d km/h</string>
   <string name="locations_compare_value_humidity">%1$d%%</string>
   <string name="locations_compare_value_rain">%1$d%%</string>
   <string name="locations_compare_timeline_title">Temperatura przez 24 godziny</string>
-  <string name="locations_compare_feels_like">Odczuwalna %1$d°</string>
+  <string name="locations_compare_feels_like">Odczuwalna %1$s</string>
 </resources>

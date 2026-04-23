@@ -2,11 +2,16 @@ package com.weather.vibe.feature.search.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -47,32 +52,42 @@ internal fun SearchContent(
   state: SearchUiState,
   mode: SearchMode,
   favoritesCount: Int,
+  snackbarHostState: SnackbarHostState,
   dispatch: (SearchAction) -> Unit
 ) {
 
-  Column(
+  Box(
     modifier = modifier
       .fillMaxSize()
       .background(brush = rememberAppBackgroundBrush())
-      .statusBarsPadding()
-      .padding(horizontal = Padding.Medium),
-    verticalArrangement = Arrangement.spacedBy(Padding.Medium)
   ) {
-    SearchTopBar(
-      modifier = Modifier.padding(top = Padding.Small),
-      query = state.query,
-      onQueryChange = { dispatch(QueryChange(it)) },
-      onBack = { dispatch(BackClick) }
-    )
-    if (mode == SearchMode.Favorites) {
-      CapacityBanner(used = favoritesCount)
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .statusBarsPadding()
+        .padding(horizontal = Padding.Medium),
+      verticalArrangement = Arrangement.spacedBy(Padding.Medium)
+    ) {
+      SearchTopBar(
+        modifier = Modifier.padding(top = Padding.Small),
+        query = state.query,
+        onQueryChange = { dispatch(QueryChange(it)) },
+        onBack = { dispatch(BackClick) }
+      )
+      if (mode == SearchMode.Favorites) {
+        CapacityBanner(used = favoritesCount)
+      }
+      SearchStateContent(
+        state = state,
+        showHeart = mode == SearchMode.Favorites,
+        onLocationClick = { dispatch(LocationSelect(it)) },
+        onHeartClick = { dispatch(HeartClick(it)) },
+        onRetryClick = { dispatch(Retry) }
+      )
     }
-    SearchStateContent(
-      state = state,
-      showHeart = mode == SearchMode.Favorites,
-      onLocationClick = { dispatch(LocationSelect(it)) },
-      onHeartClick = { dispatch(HeartClick(it)) },
-      onRetryClick = { dispatch(Retry) }
+    SnackbarHost(
+      modifier = Modifier.align(Alignment.BottomCenter),
+      hostState = snackbarHostState
     )
   }
 }
@@ -144,6 +159,7 @@ private fun Preview(
       state = state,
       mode = SearchMode.Favorites,
       favoritesCount = 3,
+      snackbarHostState = remember { SnackbarHostState() },
       dispatch = {}
     )
   }

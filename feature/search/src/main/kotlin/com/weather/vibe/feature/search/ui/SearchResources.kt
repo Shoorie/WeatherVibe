@@ -12,6 +12,9 @@ internal class SearchResources(private val context: Context) {
   fun defaultError(): String =
     context.getString(R.string.search_error_default)
 
+  fun favoritesLimitReached(limit: Int): String =
+    context.getString(R.string.search_favorites_limit_reached, limit)
+
   object Emojis {
     fun clock(): String = "\uD83D\uDD58"
     fun error(): String = "\u26A1"

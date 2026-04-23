@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.locations.presentation
 
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.LocationWeatherSnapshot
 
 internal sealed interface LocationsAction {
 
@@ -19,7 +20,8 @@ internal sealed interface LocationsAction {
 
   data class UndoRemoveLocationFavoriteClick(
     val location: Location,
-    val label: String?
+    val label: String?,
+    val snapshot: LocationWeatherSnapshot?
   ) : LocationsAction
 
   data object AddLocationClick : LocationsAction

@@ -70,10 +70,6 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_action_add_city_disabled)
 
     @Composable
-    fun actionRefresh(): String =
-      stringResource(R.string.locations_action_refresh)
-
-    @Composable
     fun actionMore(): String =
       stringResource(R.string.locations_action_more)
 

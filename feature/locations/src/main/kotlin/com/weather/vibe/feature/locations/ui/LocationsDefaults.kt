@@ -26,7 +26,6 @@ internal object LocationsDefaults {
   const val LockedAlpha = 0.35f
   const val MetricLabelWeight: Float = 1.1f
   const val PathSmoothing: Float = 0.16f
-  const val RefreshRotationDurationMs: Int = 900
   const val SelectionLimit = 2
   const val TimelineAxisPadding: Float = 1f
   const val TimelineGridLineCount: Int = 4

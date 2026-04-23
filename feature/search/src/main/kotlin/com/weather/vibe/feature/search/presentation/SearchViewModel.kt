@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.error.LocationFavoritesLimitReached
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.LocationFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
@@ -21,6 +22,7 @@ import com.weather.vibe.feature.search.presentation.state.withQuery
 import com.weather.vibe.feature.search.ui.SearchResources
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,7 +53,10 @@ internal class SearchViewModel(
   private val _favoritesCount = MutableStateFlow(0)
   val favoritesCount: StateFlow<Int> = _favoritesCount.asStateFlow()
 
-  private val _event = Channel<SearchEvent>()
+  private val _event = Channel<SearchEvent>(
+    capacity = Channel.RENDEZVOUS,
+    onBufferOverflow = BufferOverflow.DROP_LATEST
+  )
   val event: Flow<SearchEvent> = _event.receiveAsFlow()
 
   private var mode: SearchMode = SearchMode.Picker
@@ -108,6 +113,10 @@ internal class SearchViewModel(
   private fun onHeartClick(id: Long) {
     val location = findLocation(id = id) ?: return
     val existing = findFavoriteByLocationId(locationId = id)
+    if (existing == null && _favoritesCount.value >= MAX_FAVORITES) {
+      send(LimitReached)
+      return
+    }
     viewModelScope.launch(errorHandler) {
       toggleFavorite(location = location, existing = existing)
     }
@@ -258,7 +267,7 @@ internal class SearchViewModel(
     length >= MIN_QUERY_LENGTH
 
   private fun send(event: SearchEvent) {
-    viewModelScope.launch(errorHandler) { _event.send(event) }
+    _event.trySend(event)
   }
 
   private companion object {

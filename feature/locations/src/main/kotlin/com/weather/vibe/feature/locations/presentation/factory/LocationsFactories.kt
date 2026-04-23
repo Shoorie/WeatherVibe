@@ -6,5 +6,6 @@ import org.koin.core.annotation.Factory
 internal data class LocationsFactories(
   val card: LocationCardFactory,
   val compare: LocationCompareFactory,
+  val loaded: LocationsLoadedFactory,
   val state: LocationsStateFactory
 )

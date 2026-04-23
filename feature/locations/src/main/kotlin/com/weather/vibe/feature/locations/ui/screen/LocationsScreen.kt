@@ -1,8 +1,8 @@
 package com.weather.vibe.feature.locations.ui.screen
 
-import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarDuration.Short
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarResult.ActionPerformed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,7 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
+import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.LocationsAction.Initialize
 import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveLocationFavoriteClick
@@ -44,7 +45,7 @@ fun LocationsScreen(
       onEvent(
         event = event,
         resources = resources,
-        snackbarHostState = snackbarHostState,
+        host = snackbarHostState,
         dispatch = dispatch,
         onNavigateToSearch = onNavigateToSearch
       )
@@ -62,8 +63,8 @@ fun LocationsScreen(
 private suspend fun onEvent(
   event: LocationsEvent,
   resources: LocationsResources,
-  snackbarHostState: SnackbarHostState,
-  dispatch: (com.weather.vibe.feature.locations.presentation.LocationsAction) -> Unit,
+  host: SnackbarHostState,
+  dispatch: (LocationsAction) -> Unit,
   onNavigateToSearch: () -> Unit
 ) {
   when (event) {
@@ -71,12 +72,12 @@ private suspend fun onEvent(
     is ShowRemovedSnackbar -> onRemovedSnackbar(
       event = event,
       resources = resources,
-      snackbarHostState = snackbarHostState,
+      snackbarHostState = host,
       dispatch = dispatch
     )
-    is ShowLimitReachedSnackbar -> snackbarHostState.showSnackbar(
-      message = resources.limitReached(limit = LocationFavoritesPolicy.MAX_FAVORITES),
-      duration = SnackbarDuration.Short
+    is ShowLimitReachedSnackbar -> host.showSnackbar(
+      message = resources.limitReached(MAX_FAVORITES),
+      duration = Short
     )
   }
 }
@@ -85,15 +86,22 @@ private suspend fun onRemovedSnackbar(
   event: ShowRemovedSnackbar,
   resources: LocationsResources,
   snackbarHostState: SnackbarHostState,
-  dispatch: (com.weather.vibe.feature.locations.presentation.LocationsAction) -> Unit
+  dispatch: (LocationsAction) -> Unit
 ) {
+
   val result = snackbarHostState.showSnackbar(
     message = resources.removedSnackbar(name = event.locationName),
     actionLabel = resources.undoAction(),
-    duration = SnackbarDuration.Short
+    duration = Short
   )
-  if (result == SnackbarResult.ActionPerformed) {
-    dispatch(UndoRemoveLocationFavoriteClick(location = event.location, label = event.label))
+
+  if (result == ActionPerformed) {
+    dispatch(
+      UndoRemoveLocationFavoriteClick(
+        location = event.location,
+        label = event.label
+      )
+    )
   }
 }
 

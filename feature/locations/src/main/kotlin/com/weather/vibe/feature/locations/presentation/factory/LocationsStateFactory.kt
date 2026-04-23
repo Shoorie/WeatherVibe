@@ -21,7 +21,7 @@ internal class LocationsStateFactory(
     temperatureUnit: TemperatureUnit
   ): ImmutableList<LocationCardUiState> =
     sources
-      .map { source -> cardFactory.create(source = source, temperatureUnit = temperatureUnit) }
+      .map { cardFactory.create(source = it, temperatureUnit = temperatureUnit) }
       .toImmutableList()
 
   fun error(throwable: Throwable): Error =

@@ -135,7 +135,7 @@ internal object LocationsPreviewData {
     comparePair = null,
     compareMode = false,
     isRefreshing = false,
-    selectedFavoriteIds = persistentSetOf()
+    selectedIds = persistentSetOf()
   )
 
   val comparingLoaded = Loaded(
@@ -143,7 +143,7 @@ internal object LocationsPreviewData {
     comparePair = comparePair,
     compareMode = true,
     isRefreshing = false,
-    selectedFavoriteIds = persistentSetOf(1L, 4L)
+    selectedIds = persistentSetOf(1L, 4L)
   )
 
   private fun sampleHourlyCurve(

@@ -25,6 +25,7 @@ import com.weather.vibe.feature.locations.presentation.factory.LocationComparePa
 import com.weather.vibe.feature.locations.presentation.factory.LocationCompareFactory
 import com.weather.vibe.feature.locations.presentation.factory.LocationWeatherFactory
 import com.weather.vibe.feature.locations.presentation.factory.LocationsFactories
+import com.weather.vibe.feature.locations.presentation.factory.LocationsLoadedFactory
 import com.weather.vibe.feature.locations.presentation.factory.LocationsStateFactory
 import com.weather.vibe.feature.locations.presentation.fake.fakeLocationsResources
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
@@ -69,22 +70,33 @@ class LocationsViewModelTest {
   private val renameFavorite = mockk<RenameLocationFavorite>()
   private val resources = fakeLocationsResources()
   private val temperatureFormatter = fakeTemperatureFormatter()
-  private val factories = LocationsFactories(
-    card = LocationCardFactory(
-      temperatureFormatter = temperatureFormatter,
-      weatherFactory = LocationWeatherFactory()
-    ),
-    compare = LocationCompareFactory(
-      temperatureFormatter = temperatureFormatter,
-      weatherFactory = LocationWeatherFactory()
-    ),
-    state = LocationsStateFactory(
-      cardFactory = LocationCardFactory(
-        temperatureFormatter = temperatureFormatter,
-        weatherFactory = LocationWeatherFactory()
-      ),
-      resources = resources
+  private val cardFactory = LocationCardFactory(
+    temperatureFormatter = temperatureFormatter,
+    weatherFactory = LocationWeatherFactory()
+  )
+  private val compareFactory = LocationCompareFactory(
+    temperatureFormatter = temperatureFormatter,
+    weatherFactory = LocationWeatherFactory()
+  )
+  private val stateFactory = LocationsStateFactory(
+    cardFactory = cardFactory,
+    resources = resources
+  )
+  private val loadedFactory = LocationsLoadedFactory(
+    stateFactory = stateFactory,
+    comparePairBuilder = LocationComparePairBuilder(
+      compareFactory = compareFactory,
+      compareLocationWeather = compareLocationWeather,
+      temperatureAxisFactory = TemperatureAxisFactory(
+        temperatureFormatter = temperatureFormatter
+      )
     )
+  )
+  private val factories = LocationsFactories(
+    card = cardFactory,
+    compare = compareFactory,
+    loaded = loadedFactory,
+    state = stateFactory
   )
   private val useCases = LocationsUseCases(
     addFavorite = addFavorite,
@@ -155,7 +167,7 @@ class LocationsViewModelTest {
 
     viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { selectedFavoriteIds }.hasSize(1)
+    expectThat(viewModel.state.value).isA<Loaded>().get { selectedIds }.hasSize(1)
   }
 
   @Test
@@ -213,7 +225,7 @@ class LocationsViewModelTest {
 
     viewModel.dispatch(ExitCompareMode)
 
-    expectThat(viewModel.state.value).isA<Loaded>().get { selectedFavoriteIds }.isEmpty()
+    expectThat(viewModel.state.value).isA<Loaded>().get { selectedIds }.isEmpty()
   }
 
   @Test
@@ -248,13 +260,6 @@ class LocationsViewModelTest {
   private fun createViewModel(): LocationsViewModel =
     LocationsViewModel(
       factories = factories,
-      useCases = useCases,
-      comparePairBuilder = LocationComparePairBuilder(
-        compareFactory = factories.compare,
-        compareLocationWeather = compareLocationWeather,
-        temperatureAxisFactory = TemperatureAxisFactory(
-          temperatureFormatter = temperatureFormatter
-        )
-      )
+      useCases = useCases
     )
 }

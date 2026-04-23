@@ -49,10 +49,13 @@ fun SearchScreen(
           keyboardController?.hide()
           onLocationSelected(event.location)
         }
-        is LimitReached -> snackbarHostState.showSnackbar(
-          message = resources.favoritesLimitReached(limit = MAX_FAVORITES),
-          duration = Short
-        )
+        is LimitReached -> {
+          snackbarHostState.currentSnackbarData?.dismiss()
+          snackbarHostState.showSnackbar(
+            message = resources.favoritesLimitReached(limit = MAX_FAVORITES),
+            duration = Short
+          )
+        }
       }
     }
   }

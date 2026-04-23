@@ -4,7 +4,7 @@ import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.location.mapper.WeatherDataToSnapshotMapper
 import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.toCoordinates
-import com.weather.vibe.domain.location.policy.SnapshotFreshnessPolicy
+import com.weather.vibe.domain.location.policy.LocationWeatherFreshnessPolicy
 import com.weather.vibe.domain.location.repository.LocationFavoriteRepository
 import com.weather.vibe.domain.location.repository.LocationWeatherSnapshotRepository
 import com.weather.vibe.domain.weather.usecase.GetWeather
@@ -41,7 +41,7 @@ class RefreshLocationFavoritesWeather(
     val snapshotsByLocation = snapshotRepository.observeSnapshots().first().associateBy { it.locationId }
     return favorites.filter { favorite ->
       val snapshot = snapshotsByLocation[favorite.location.id]
-      snapshot == null || SnapshotFreshnessPolicy.isStale(updatedAt = snapshot.updatedAt, now = now)
+      snapshot == null || LocationWeatherFreshnessPolicy.isStale(updatedAt = snapshot.updatedAt, now = now)
     }
   }
 

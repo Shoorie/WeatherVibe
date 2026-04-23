@@ -6,10 +6,13 @@ import com.weather.vibe.domain.location.model.LocationFavorite
 import kotlinx.coroutines.flow.Flow
 
 interface LocationFavoriteRepository {
+
   fun observeFavorites(): Flow<List<LocationFavorite>>
   suspend fun findById(id: Long): LocationFavorite?
   suspend fun findByLocationId(locationId: Long): LocationFavorite?
   suspend fun count(): Int
+  suspend fun removeFavorite(id: Long)
+  suspend fun renameFavorite(id: Long, label: String?)
 
   /**
    * Adds [location] to favorites when under [maxAllowed] and not already present.
@@ -21,7 +24,4 @@ interface LocationFavoriteRepository {
     label: String?,
     maxAllowed: Int
   )
-
-  suspend fun removeFavorite(id: Long)
-  suspend fun renameFavorite(id: Long, label: String?)
 }

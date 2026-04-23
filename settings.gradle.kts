@@ -26,7 +26,6 @@ rootProject.name = "WeatherVibe"
 include(":app")
 include(":benchmark")
 include(":core:ai")
-include(":core:androidext")
 include(":core:coroutines")
 include(":core:network")
 include(":core:designsystem")

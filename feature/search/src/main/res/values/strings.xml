@@ -20,6 +20,7 @@
 
   <string name="search_favorites_capacity">%1$d of %2$d favorite places</string>
   <string name="search_favorites_capacity_full">You\'ve hit the favorites cap (%1$d)</string>
+  <string name="search_favorites_limit_reached">Favorites limit reached (%1$d)</string>
 
   <string name="search_heart_add_content_description">Add to favorites</string>
   <string name="search_heart_remove_content_description">Remove from favorites</string>

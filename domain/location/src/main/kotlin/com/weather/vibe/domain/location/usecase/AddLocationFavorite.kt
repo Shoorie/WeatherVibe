@@ -13,7 +13,7 @@ class AddLocationFavorite(
   suspend operator fun invoke(location: Location, label: String? = null) {
     repository.addFavoriteWithinLimit(
       location = location,
-      label = label?.takeIf(String::isNotBlank),
+      label = label?.trim()?.takeIf(String::isNotEmpty),
       maxAllowed = MAX_FAVORITES
     )
   }

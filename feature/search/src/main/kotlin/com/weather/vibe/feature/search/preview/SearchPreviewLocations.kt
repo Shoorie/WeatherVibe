@@ -9,22 +9,22 @@ internal object SearchPreviewLocations {
   val sampleLocations: ImmutableList<LocationItemUiState> = persistentListOf(
     LocationItemUiState(
       id = 1L,
-      name = "Warszawa",
-      subtitle = "Mazowieckie, Polska",
+      name = "London",
+      subtitle = "England, United Kingdom",
       isFavorite = true,
       canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 2L,
-      name = "Wrocław",
-      subtitle = "Dolnośląskie, Polska",
+      name = "Paris",
+      subtitle = "Île-de-France, France",
       isFavorite = false,
       canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 3L,
-      name = "Toruń",
-      subtitle = "Kujawsko-Pomorskie, Polska",
+      name = "Tokyo",
+      subtitle = "Kanto, Japan",
       isFavorite = false,
       canToggleFavorite = false
     )
@@ -33,15 +33,15 @@ internal object SearchPreviewLocations {
   val searchResults: ImmutableList<LocationItemUiState> = persistentListOf(
     LocationItemUiState(
       id = 4L,
-      name = "Kraków",
-      subtitle = "Małopolskie, Polska",
+      name = "Madrid",
+      subtitle = "Community of Madrid, Spain",
       isFavorite = false,
       canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 5L,
-      name = "Krakowiec",
-      subtitle = "Czechy",
+      name = "Madison",
+      subtitle = "Wisconsin, United States",
       isFavorite = true,
       canToggleFavorite = true
     )

@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
@@ -28,7 +27,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
 import com.weather.vibe.feature.locations.presentation.LocationsAction
@@ -45,7 +44,6 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Er
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
-import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionLimit
 import com.weather.vibe.feature.locations.ui.LocationsKeys
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
@@ -56,8 +54,6 @@ import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState
 import com.weather.vibe.feature.locations.ui.component.header.LocationsHeader
 import com.weather.vibe.feature.locations.ui.component.label.LocationFavoriteLabelSheet
 import com.weather.vibe.feature.locations.ui.component.row.LocationRow
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableSet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,7 +67,7 @@ internal fun LocationsContent(
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(brush = screenBackground())
+      .background(brush = rememberAppBackgroundBrush())
   ) {
     LocationsBody(
       state = state,
@@ -109,15 +105,6 @@ internal fun LocationsContent(
         renameTarget = null
       }
     )
-  }
-}
-
-@Composable
-private fun screenBackground(): Brush {
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  return remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
   }
 }
 
@@ -180,9 +167,7 @@ private fun LocationsLoaded(
     onRefresh = { dispatch(PullToRefresh) }
   ) {
     LocationsList(
-      cards = state.cards,
-      compareMode = state.compareMode,
-      selectedIds = state.selectedIds,
+      state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
     )
@@ -197,9 +182,7 @@ private fun LocationsLoaded(
 
 @Composable
 private fun LocationsList(
-  cards: ImmutableList<LocationCardUiState>,
-  compareMode: Boolean,
-  selectedIds: ImmutableSet<Long>,
+  state: Loaded,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
@@ -218,32 +201,26 @@ private fun LocationsList(
     item(key = HEADER) {
       LocationsHeader(
         modifier = Modifier.padding(bottom = Small),
-        count = cards.size,
-        compareMode = compareMode,
-        selectedCount = selectedIds.size,
+        count = state.cards.size,
+        compareMode = state.compareMode,
+        selectedCount = state.selectedIds.size,
         onToggleCompareMode = { dispatch(ToggleCompareMode) }
       )
     }
-    if (cards.isEmpty()) {
+    if (state.cards.isEmpty()) {
       item(key = EMPTY) { LocationsEmptyState() }
       return@LazyColumn
     }
     itemsIndexed(
-      items = cards,
+      items = state.cards,
       key = { _, card -> card(card.favoriteId) }
     ) { index, card ->
-
-      val isSelected = card.isSelected(selectedIds)
-      val isLocked = compareMode &&
-        selectedIds.size >= SelectionLimit &&
-        !isSelected
-
       LocationRow(
         card = card,
         positionIndex = index,
-        compareMode = compareMode,
-        isSelected = isSelected,
-        isLocked = isLocked,
+        compareMode = state.compareMode,
+        isSelected = state.isCardSelected(card.favoriteId),
+        isLocked = state.isCardLocked(card.favoriteId),
         onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
         onRename = { onRenameRequest(card) },
         onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }

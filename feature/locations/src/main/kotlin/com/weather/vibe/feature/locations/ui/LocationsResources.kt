@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.feature.locations.R
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.TemperaturePlaceholder
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -23,14 +24,6 @@ internal class LocationsResources(private val context: Context) {
 
   fun undoAction(): String =
     context.getString(R.string.locations_snackbar_undo)
-
-  object Emojis {
-    fun versus(): String = "VS"
-    fun metricTemperature(): String = "🌡️"
-    fun metricWind(): String = "💨"
-    fun metricHumidity(): String = "💧"
-    fun metricRain(): String = "☂️"
-  }
 
   object Texts {
 
@@ -74,16 +67,14 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_action_more)
 
     @Composable
-    fun rowTemperature(value: String): String =
-      stringResource(R.string.locations_row_temperature, value)
+    fun temperature(value: String?): String =
+      value
+        ?.let { stringResource(R.string.locations_row_temperature, it) }
+        ?: TemperaturePlaceholder
 
     @Composable
     fun rowInfoFeels(value: String): String =
       stringResource(R.string.locations_row_info_feels, value)
-
-    @Composable
-    fun rowHighLow(high: String, low: String): String =
-      stringResource(R.string.locations_row_high_low, high, low)
 
     @Composable
     fun menuRename(): String =
@@ -148,6 +139,14 @@ internal class LocationsResources(private val context: Context) {
     @Composable
     fun timelineTitle(): String =
       stringResource(R.string.locations_compare_timeline_title)
+
+    @Composable
+    fun timelineNow(): String =
+      stringResource(R.string.locations_compare_timeline_now)
+
+    @Composable
+    fun timelineHours(offset: Int): String =
+      stringResource(R.string.locations_compare_timeline_hours, offset)
 
     @Composable
     fun compareFeelsLike(value: String): String =

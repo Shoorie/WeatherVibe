@@ -18,7 +18,7 @@ import kotlin.math.sin
 
 internal object LocationsPreviewData {
 
-  val warsaw = LocationCardUiState(
+  val london = LocationCardUiState(
     favoriteId = 1L,
     feelsLike = "8°",
     high = "14°",
@@ -27,15 +27,15 @@ internal object LocationsPreviewData {
     label = "Home",
     locationId = 101L,
     low = "3°",
-    name = "Warsaw",
+    name = "London",
     precipitationChancePercent = 45,
-    region = "Mazowieckie",
+    region = "England",
     temperature = "10°",
     weather = LocationWeatherUi.Cloudy,
     windKph = 9
   )
 
-  val wroclaw = LocationCardUiState(
+  val paris = LocationCardUiState(
     favoriteId = 2L,
     feelsLike = "10°",
     high = "15°",
@@ -44,15 +44,15 @@ internal object LocationsPreviewData {
     label = "Work",
     locationId = 102L,
     low = "4°",
-    name = "Wroclaw",
+    name = "Paris",
     precipitationChancePercent = 30,
-    region = "Dolnośląskie",
+    region = "Île-de-France",
     temperature = "12°",
     weather = LocationWeatherUi.PartlyCloudy,
     windKph = 8
   )
 
-  val zakopane = LocationCardUiState(
+  val reykjavik = LocationCardUiState(
     favoriteId = 3L,
     feelsLike = "-4°",
     high = "2°",
@@ -61,9 +61,9 @@ internal object LocationsPreviewData {
     label = "Vacation",
     locationId = 103L,
     low = "-6°",
-    name = "Zakopane",
+    name = "Reykjavík",
     precipitationChancePercent = 65,
-    region = "Małopolskie",
+    region = "Iceland",
     temperature = "-1°",
     weather = LocationWeatherUi.Snow,
     windKph = 18
@@ -80,25 +80,25 @@ internal object LocationsPreviewData {
     low = "16°",
     name = "Madrid",
     precipitationChancePercent = 10,
-    region = "Spain",
+    region = "Community of Madrid",
     temperature = "23°",
     weather = LocationWeatherUi.Sunny,
     windKph = 11
   )
 
-  val defaultCards = persistentListOf(warsaw, wroclaw, zakopane, madrid)
+  val defaultCards = persistentListOf(london, paris, reykjavik, madrid)
 
-  val warsawCompare = LocationCompareUiState(
-    card = warsaw,
-    feelsLike = warsaw.feelsLike.orEmpty(),
-    high = warsaw.high.orEmpty(),
-    hourlyTemperatures = warsaw.hourlyTemperatures,
-    humidityPercent = warsaw.humidityPercent ?: 0,
-    low = warsaw.low.orEmpty(),
-    precipitationChancePercent = warsaw.precipitationChancePercent ?: 0,
-    temperature = warsaw.temperature.orEmpty(),
-    weather = warsaw.weather ?: LocationWeatherUi.Cloudy,
-    windKph = warsaw.windKph ?: 0
+  val londonCompare = LocationCompareUiState(
+    card = london,
+    feelsLike = london.feelsLike.orEmpty(),
+    high = london.high.orEmpty(),
+    hourlyTemperatures = london.hourlyTemperatures,
+    humidityPercent = london.humidityPercent ?: 0,
+    low = london.low.orEmpty(),
+    precipitationChancePercent = london.precipitationChancePercent ?: 0,
+    temperature = london.temperature.orEmpty(),
+    weather = london.weather ?: LocationWeatherUi.Cloudy,
+    windKph = london.windKph ?: 0
   )
 
   val madridCompare = LocationCompareUiState(
@@ -115,7 +115,7 @@ internal object LocationsPreviewData {
   )
 
   val comparePair = LocationComparePairUiState(
-    first = warsawCompare,
+    first = londonCompare,
     second = madridCompare,
     winners = LocationWeatherComparison(
       temperature = LocationWeatherAdvantage.SecondLocation,

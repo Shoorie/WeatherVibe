@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.search.presentation
 
 import com.weather.vibe.domain.location.model.Location
-import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
@@ -30,7 +30,10 @@ internal class SearchStateFactory(
     true -> Idle(query = query)
     false -> Recents(
       query = query,
-      locations = createItems(locations = locations, favoriteLocationIds = favoriteLocationIds)
+      locations = createItems(
+        locations = locations,
+        favoriteLocationIds = favoriteLocationIds
+      )
     )
   }
 
@@ -42,7 +45,10 @@ internal class SearchStateFactory(
     true -> Empty(query = query)
     false -> Results(
       query = query,
-      locations = createItems(locations = locations, favoriteLocationIds = favoriteLocationIds)
+      locations = createItems(
+        locations = locations,
+        favoriteLocationIds = favoriteLocationIds
+      )
     )
   }
 
@@ -52,30 +58,36 @@ internal class SearchStateFactory(
     lastResults: List<Location>,
     favoriteLocationIds: Set<Long>
   ): SearchUiState = when (current) {
+
     is Recents -> current.copy(
-      locations = createItems(locations = recents, favoriteLocationIds = favoriteLocationIds)
+      locations = createItems(
+        locations = recents,
+        favoriteLocationIds = favoriteLocationIds
+      )
     )
+
     is Results -> current.copy(
-      locations = createItems(locations = lastResults, favoriteLocationIds = favoriteLocationIds)
+      locations = createItems(
+        locations = lastResults,
+        favoriteLocationIds = favoriteLocationIds
+      )
     )
+
     is Idle, is Searching, is Empty, is Error -> current
   }
 
   private fun createItems(
     locations: List<Location>,
     favoriteLocationIds: Set<Long>
-  ): ImmutableList<LocationItemUiState> {
-    val hasCapacity = favoriteLocationIds.size < LocationFavoritesPolicy.MAX_FAVORITES
-    return locations
+  ): ImmutableList<LocationItemUiState> =
+    locations
       .map { location ->
         createItem(
           location = location,
           isFavorite = location.id in favoriteLocationIds,
-          hasCapacity = hasCapacity
+          hasCapacity = favoriteLocationIds.size < MAX_FAVORITES
         )
-      }
-      .toImmutableList()
-  }
+      }.toImmutableList()
 
   private fun createItem(
     location: Location,

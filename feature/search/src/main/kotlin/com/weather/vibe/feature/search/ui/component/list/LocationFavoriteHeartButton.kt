@@ -30,28 +30,34 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.search.ui.SearchDefaults
+import com.weather.vibe.feature.search.ui.SearchDefaults.DisabledAlpha
+import com.weather.vibe.feature.search.ui.SearchDefaults.HeartButtonSize
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartAddContentDescription
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartRemoveContentDescription
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartStateAdded
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartStateNotAdded
 
 @Composable
 internal fun LocationFavoriteHeartButton(
   modifier: Modifier = Modifier,
   isFavorite: Boolean,
   enabled: Boolean,
-  contentDescription: String,
-  stateDescription: String,
   onClick: () -> Unit
 ) {
   val bounce = rememberHeartBounce(trigger = isFavorite)
+  val description = if (isFavorite) heartRemoveContentDescription() else heartAddContentDescription()
+  val stateLabel = if (isFavorite) heartStateAdded() else heartStateNotAdded()
   Box(
     modifier = modifier
       .minimumInteractiveComponentSize()
-      .size(SearchDefaults.HeartButtonSize)
+      .size(HeartButtonSize)
       .clip(CircleShape)
-      .alpha(if (enabled) 1f else SearchDefaults.DisabledAlpha)
+      .alpha(if (enabled) 1f else DisabledAlpha)
       .clickable(enabled = enabled, onClick = onClick)
       .semantics {
         role = Role.Switch
-        this.contentDescription = contentDescription
-        this.stateDescription = stateDescription
+        contentDescription = description
+        stateDescription = stateLabel
       },
     contentAlignment = Alignment.Center
   ) {
@@ -99,13 +105,11 @@ private fun rememberHeartBounce(trigger: Boolean): Animatable<Float, AnimationVe
 
 @PreviewLightDark
 @Composable
-private fun PreviewFavorited() {
+private fun PreviewFavorite() {
   WeatherVibeTheme {
     LocationFavoriteHeartButton(
       isFavorite = true,
       enabled = true,
-      contentDescription = "Remove from favorites",
-      stateDescription = "Added",
       onClick = {}
     )
   }
@@ -113,13 +117,11 @@ private fun PreviewFavorited() {
 
 @PreviewLightDark
 @Composable
-private fun PreviewNotFavorited() {
+private fun PreviewNotFavorite() {
   WeatherVibeTheme {
     LocationFavoriteHeartButton(
       isFavorite = false,
       enabled = true,
-      contentDescription = "Add to favorites",
-      stateDescription = "Not added",
       onClick = {}
     )
   }

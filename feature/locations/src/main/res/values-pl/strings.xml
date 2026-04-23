@@ -57,5 +57,7 @@
   <string name="locations_compare_value_humidity">%1$d%%</string>
   <string name="locations_compare_value_rain">%1$d%%</string>
   <string name="locations_compare_timeline_title">Temperatura przez 24 godziny</string>
+  <string name="locations_compare_timeline_now">Teraz</string>
+  <string name="locations_compare_timeline_hours">+%1$dh</string>
   <string name="locations_compare_feels_like">Odczuwalna %1$s</string>
 </resources>

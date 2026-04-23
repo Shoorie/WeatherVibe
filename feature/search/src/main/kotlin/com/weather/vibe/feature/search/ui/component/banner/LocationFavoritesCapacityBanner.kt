@@ -68,7 +68,7 @@ internal fun LocationFavoritesCapacityBanner(
 private fun PreviewSome() {
   WeatherVibeTheme {
     LocationFavoritesCapacityBanner(
-      label = "3 z 6 ulubionych miejsc",
+      label = "3 of 6 favorite places",
       accentColor = colors.accent,
       labelColor = colors.onSurfaceVariant
     )
@@ -80,7 +80,7 @@ private fun PreviewSome() {
 private fun PreviewFull() {
   WeatherVibeTheme {
     LocationFavoritesCapacityBanner(
-      label = "Masz już komplet ulubionych (6)",
+      label = "Favorites limit reached (6)",
       accentColor = colors.error,
       labelColor = colors.error
     )

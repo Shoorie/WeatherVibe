@@ -24,10 +24,6 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.search.preview.LocationItemPreview
 import com.weather.vibe.feature.search.preview.params.LocationItemPreviewParams
 import com.weather.vibe.feature.search.ui.SearchDefaults.LocationRowMinHeight
-import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartAddContentDescription
-import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartRemoveContentDescription
-import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartStateAdded
-import com.weather.vibe.feature.search.ui.SearchResources.Texts.heartStateNotAdded
 import com.weather.vibe.feature.search.ui.SearchTextStyles.locationNameStyle
 
 @Composable
@@ -75,19 +71,9 @@ internal fun LocationRow(
       }
     }
     if (showHeart) {
-      val description = when {
-        isFavorite -> heartRemoveContentDescription()
-        else -> heartAddContentDescription()
-      }
-      val stateLabel = when {
-        isFavorite -> heartStateAdded()
-        else -> heartStateNotAdded()
-      }
       LocationFavoriteHeartButton(
         isFavorite = isFavorite,
         enabled = canToggleFavorite,
-        contentDescription = description,
-        stateDescription = stateLabel,
         onClick = onHeartClick
       )
     }

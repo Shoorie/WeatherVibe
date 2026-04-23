@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,8 +38,13 @@ import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.state.LocationCompareUiState
 import com.weather.vibe.feature.locations.presentation.state.TemperatureAxisUiState
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineAxisLabelColumnWidth
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineAxisPadding
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineDotRadius
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineGridLineCount
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineStrokeWidth
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.timelineHours
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.timelineNow
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.timelineTitle
 import com.weather.vibe.feature.locations.ui.util.buildSmoothPath
 import kotlinx.collections.immutable.ImmutableList
@@ -77,6 +83,7 @@ internal fun LocationCompareTemperatureChart(
       secondColor = secondColor,
       axis = axis
     )
+    TemperatureChartXAxis()
     TemperatureChartLegend(
       firstName = first.card.name,
       firstColor = firstColor,
@@ -115,13 +122,35 @@ private fun TemperatureChartBody(
 @Composable
 private fun TemperatureChartYAxis(axis: TemperatureAxisUiState) {
   Column(
-    modifier = Modifier.fillMaxHeight(),
+    modifier = Modifier
+      .fillMaxHeight()
+      .width(TimelineAxisLabelColumnWidth),
     verticalArrangement = Arrangement.SpaceBetween,
     horizontalAlignment = Alignment.End
   ) {
     AxisLabel(value = axis.max)
     AxisLabel(value = axis.mid)
     AxisLabel(value = axis.min)
+  }
+}
+
+@Composable
+private fun TemperatureChartXAxis() {
+  Row(
+    modifier = Modifier.fillMaxWidth(),
+    horizontalArrangement = Arrangement.spacedBy(Small)
+  ) {
+    Box(modifier = Modifier.width(TimelineAxisLabelColumnWidth))
+    Row(
+      modifier = Modifier.weight(1f),
+      horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+      AxisLabel(value = timelineNow())
+      AxisLabel(value = timelineHours(offset = 6))
+      AxisLabel(value = timelineHours(offset = 12))
+      AxisLabel(value = timelineHours(offset = 18))
+      AxisLabel(value = timelineHours(offset = 24))
+    }
   }
 }
 
@@ -144,8 +173,8 @@ private fun TemperatureChartCanvas(
 ) {
   val gridlineColor = colors.outlineVariant
   Canvas(modifier = modifier.fillMaxHeight()) {
-    val combinedMin = minOf(firstPoints.min(), secondPoints.min()) - LocationsDefaults.TimelineAxisPadding
-    val combinedMax = maxOf(firstPoints.max(), secondPoints.max()) + LocationsDefaults.TimelineAxisPadding
+    val combinedMin = minOf(firstPoints.min(), secondPoints.min()) - TimelineAxisPadding
+    val combinedMax = maxOf(firstPoints.max(), secondPoints.max()) + TimelineAxisPadding
     val range = (combinedMax - combinedMin).takeIf { it > 0f } ?: 1f
     drawHorizontalGrid(color = gridlineColor)
     drawCurve(
@@ -168,7 +197,7 @@ private fun TemperatureChartCanvas(
 }
 
 private fun DrawScope.drawHorizontalGrid(color: Color) {
-  val gridLineCount = LocationsDefaults.TimelineGridLineCount
+  val gridLineCount = TimelineGridLineCount
   for (index in 0..gridLineCount) {
     val y = size.height * index / gridLineCount
     drawLine(
@@ -254,7 +283,7 @@ private fun LegendDot(
 private fun Preview() {
   WeatherVibeTheme {
     LocationCompareTemperatureChart(
-      first = LocationsPreviewData.warsawCompare,
+      first = LocationsPreviewData.londonCompare,
       second = LocationsPreviewData.madridCompare,
       axis = LocationsPreviewData.comparePair.temperatureAxis
     )

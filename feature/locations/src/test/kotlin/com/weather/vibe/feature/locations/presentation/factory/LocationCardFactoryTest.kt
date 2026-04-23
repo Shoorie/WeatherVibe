@@ -1,14 +1,18 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
-import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
 import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
-import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.DEFAULT_LABEL
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.KRAKOW_FAVORITE
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_FAVORITE
 import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_SNAPSHOT
-import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi
-import com.weather.vibe.testing.location.fixture.LocationFixtures
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.favorite
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.snapshot
+import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi.Sunny
+import com.weather.vibe.testing.location.fixture.LocationFixtures.ADMIN1
+import com.weather.vibe.testing.location.fixture.LocationFixtures.COUNTRY
+import com.weather.vibe.testing.location.fixture.LocationFixtures.location
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
@@ -27,7 +31,7 @@ class LocationCardFactoryTest {
 
     val source = LocationFavoriteWithWeather(
       favorite = WARSAW_FAVORITE,
-      snapshot = LocationFavoriteFixtures.snapshot(temperatureC = 22.6)
+      snapshot = snapshot(temperatureC = 22.6)
     )
 
     val result = factory.create(source = source, temperatureUnit = CELSIUS)
@@ -54,7 +58,7 @@ class LocationCardFactoryTest {
       temperatureUnit = CELSIUS
     )
 
-    expectThat(result.label).isEqualTo(LocationFavoriteFixtures.DEFAULT_LABEL)
+    expectThat(result.label).isEqualTo(DEFAULT_LABEL)
   }
 
   @Test
@@ -76,31 +80,32 @@ class LocationCardFactoryTest {
       temperatureUnit = CELSIUS
     )
 
-    expectThat(result.region).isEqualTo(LocationFixtures.ADMIN1)
+    expectThat(result.region).isEqualTo(ADMIN1)
   }
 
   @Test
   fun `favorite without admin1 falls back to country`() {
 
-    val favorite = LocationFavoriteFixtures.favorite(
-      location = LocationFixtures.location(admin1 = null)
-    )
+    val favorite = favorite(location = location(admin1 = null))
 
     val result = factory.create(
       source = LocationFavoriteWithWeather(favorite = favorite, snapshot = null),
       temperatureUnit = CELSIUS
     )
 
-    expectThat(result.region).isEqualTo(LocationFixtures.COUNTRY)
+    expectThat(result.region).isEqualTo(COUNTRY)
   }
 
   @Test
   fun `sunny day snapshot yields sunny weather`() {
 
-    val source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT)
+    val source = LocationFavoriteWithWeather(
+      favorite = WARSAW_FAVORITE,
+      snapshot = WARSAW_SNAPSHOT
+    )
 
     val result = factory.create(source = source, temperatureUnit = CELSIUS)
 
-    expectThat(result.weather).isEqualTo(LocationWeatherUi.Sunny)
+    expectThat(result.weather).isEqualTo(Sunny)
   }
 }

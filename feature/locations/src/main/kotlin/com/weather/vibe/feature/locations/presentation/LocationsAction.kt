@@ -2,7 +2,7 @@ package com.weather.vibe.feature.locations.presentation
 
 import com.weather.vibe.domain.location.model.Location
 
-sealed interface LocationsAction {
+internal sealed interface LocationsAction {
 
   data class OpenLocationDetails(
     val favoriteId: Long

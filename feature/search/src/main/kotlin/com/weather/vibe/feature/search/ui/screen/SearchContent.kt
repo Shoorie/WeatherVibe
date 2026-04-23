@@ -7,14 +7,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
@@ -51,16 +50,10 @@ internal fun SearchContent(
   dispatch: (SearchAction) -> Unit
 ) {
 
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  val backgroundBrush = remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
-  }
-
   Column(
     modifier = modifier
       .fillMaxSize()
-      .background(brush = backgroundBrush)
+      .background(brush = rememberAppBackgroundBrush())
       .statusBarsPadding()
       .padding(horizontal = Padding.Medium),
     verticalArrangement = Arrangement.spacedBy(Padding.Medium)
@@ -89,10 +82,7 @@ private fun CapacityBanner(used: Int) {
   val limit = LocationFavoritesPolicy.MAX_FAVORITES
   val isFull = used >= limit
   LocationFavoritesCapacityBanner(
-    label = when {
-      isFull -> favoritesCapacityFull(limit = limit)
-      else -> favoritesCapacity(used = used, limit = limit)
-    },
+    label = if (isFull) favoritesCapacityFull(limit = limit) else favoritesCapacity(used = used, limit = limit),
     accentColor = if (isFull) colors.error else colors.accent,
     labelColor = if (isFull) colors.error else colors.onSurfaceVariant
   )

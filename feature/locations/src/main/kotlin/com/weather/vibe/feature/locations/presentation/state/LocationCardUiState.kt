@@ -1,12 +1,10 @@
 package com.weather.vibe.feature.locations.presentation.state
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.Stable
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.ImmutableSet
 
 @Immutable
-data class LocationCardUiState(
+internal data class LocationCardUiState(
   val favoriteId: Long,
   val feelsLike: String?,
   val high: String?,
@@ -21,9 +19,5 @@ data class LocationCardUiState(
   val temperature: String?,
   val weather: LocationWeatherUi?,
   val windKph: Int?
-) {
+)
 
-  @Stable
-  fun isSelected(ids: ImmutableSet<Long>): Boolean =
-    favoriteId in ids
-}

@@ -79,7 +79,7 @@ internal fun SearchContent(
 
 @Composable
 private fun CapacityBanner(used: Int) {
-  
+
   val limit = MAX_FAVORITES
   val isFull = used >= limit
   val label = if (isFull) favoritesCapacityFull(limit = limit)

@@ -17,7 +17,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.LockedAlpha
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionAddCity
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionAddCityDisabled
 
@@ -27,12 +27,11 @@ internal fun AddLocationFab(
   enabled: Boolean = true,
   onClick: () -> Unit
 ) {
-  val label = actionAddCity()
   val disabledHint = actionAddCityDisabled()
   ExtendedFloatingActionButton(
     modifier = modifier
       .clip(shapes.pill)
-      .alpha(if (enabled) 1f else LocationsDefaults.LockedAlpha)
+      .alpha(if (enabled) 1f else LockedAlpha)
       .semantics {
         if (!enabled) {
           disabled()
@@ -43,18 +42,24 @@ internal fun AddLocationFab(
     shape = shapes.pill,
     containerColor = colors.accent,
     contentColor = colors.onAccent,
-    icon = {
-      Icon(
-        imageVector = Icons.Filled.Add,
-        contentDescription = null
-      )
-    },
-    text = {
-      Text(
-        text = label,
-        style = typography.titleSmall
-      )
-    }
+    icon = { AddLocationIcon() },
+    text = { AddLocationText() }
+  )
+}
+
+@Composable
+private fun AddLocationIcon() {
+  Icon(
+    imageVector = Icons.Filled.Add,
+    contentDescription = null
+  )
+}
+
+@Composable
+private fun AddLocationText() {
+  Text(
+    text = actionAddCity(),
+    style = typography.titleSmall
   )
 }
 

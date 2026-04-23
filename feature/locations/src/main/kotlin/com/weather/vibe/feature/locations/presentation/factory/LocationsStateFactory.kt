@@ -1,7 +1,8 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
-import com.weather.vibe.domain.location.model.FavoriteWithWeather
-import com.weather.vibe.feature.locations.presentation.state.LocationCardUi
+import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
+import com.weather.vibe.domain.settings.model.TemperatureUnit
+import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.ui.LocationsResources
@@ -15,13 +16,17 @@ internal class LocationsStateFactory(
   private val resources: LocationsResources
 ) {
 
-  fun mapCards(sources: List<FavoriteWithWeather>): ImmutableList<LocationCardUi> =
+  fun mapCards(
+    sources: List<LocationFavoriteWithWeather>,
+    temperatureUnit: TemperatureUnit
+  ): ImmutableList<LocationCardUiState> =
     sources
-      .map { source -> cardFactory.create(source = source) }
+      .map { source -> cardFactory.create(source = source, temperatureUnit = temperatureUnit) }
       .toImmutableList()
 
   fun error(throwable: Throwable): Error =
     Error(message = throwable.message ?: resources.defaultError())
 
-  fun loadedWith(cards: ImmutableList<LocationCardUi>): Loaded = Loaded.emptyFor(cards = cards)
+  fun loadedWith(cards: ImmutableList<LocationCardUiState>): Loaded =
+    Loaded.emptyFor(cards = cards)
 }

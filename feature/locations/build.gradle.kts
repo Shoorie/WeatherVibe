@@ -10,6 +10,7 @@ android {
 
 dependencies {
   implementation(projects.domain.location)
+  implementation(projects.domain.settings)
   implementation(projects.domain.weather)
 
   implementation(libs.kotlinx.collections.immutable)

@@ -32,25 +32,30 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
 import com.weather.vibe.feature.locations.presentation.LocationsAction
-import com.weather.vibe.feature.locations.presentation.LocationsAction.AddCityClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.CardClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.CloseCompare
-import com.weather.vibe.feature.locations.presentation.LocationsAction.RefreshClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
+import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
+import com.weather.vibe.feature.locations.presentation.LocationsAction.RefreshFavoritesClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
-import com.weather.vibe.domain.location.usecase.AddFavorite
-import com.weather.vibe.feature.locations.presentation.state.LocationCardUi
+import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
+import com.weather.vibe.feature.locations.presentation.state.canAddMoreFavorites
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionLimit
+import com.weather.vibe.feature.locations.ui.LocationsKeys
+import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
+import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
+import com.weather.vibe.feature.locations.ui.LocationsKeys.card
 import com.weather.vibe.feature.locations.ui.component.add.AddLocationFab
 import com.weather.vibe.feature.locations.ui.component.compare.LocationCompareSheet
 import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState
 import com.weather.vibe.feature.locations.ui.component.header.LocationsHeader
-import com.weather.vibe.feature.locations.ui.component.label.FavoriteLabelSheet
+import com.weather.vibe.feature.locations.ui.component.label.LocationFavoriteLabelSheet
 import com.weather.vibe.feature.locations.ui.component.row.LocationRow
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
@@ -63,7 +68,7 @@ internal fun LocationsContent(
   snackbarHostState: SnackbarHostState,
   dispatch: (LocationsAction) -> Unit
 ) {
-  var renameTarget by remember { mutableStateOf<LocationCardUi?>(null) }
+  var renameTarget by remember { mutableStateOf<LocationCardUiState?>(null) }
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -81,8 +86,8 @@ internal fun LocationsContent(
           end = Medium,
           bottom = LocationsDefaults.FabBottomOffset
         ),
-      enabled = canAddMoreFavorites(state = state),
-      onClick = { dispatch(AddCityClick) }
+      enabled = state.canAddMoreFavorites(),
+      onClick = { dispatch(AddLocationClick) }
     )
     SnackbarHost(
       modifier = Modifier.align(Alignment.BottomCenter),
@@ -90,21 +95,23 @@ internal fun LocationsContent(
     )
   }
   renameTarget?.let { card ->
-    FavoriteLabelSheet(
+    LocationFavoriteLabelSheet(
       title = labelSheetTitleRename(),
       locationName = card.name,
       initialLabel = card.label,
       onDismiss = { renameTarget = null },
       onSubmit = { newLabel ->
-        dispatch(RenameClick(cardId = card.favoriteId.toString(), label = newLabel))
+        dispatch(
+          RenameLocationFavoriteClick(
+            favoriteId = card.favoriteId,
+            label = newLabel
+          )
+        )
         renameTarget = null
       }
     )
   }
 }
-
-private fun canAddMoreFavorites(state: LocationsUiState): Boolean =
-  state !is Loaded || state.cards.size < AddFavorite.FAVORITES_LIMIT
 
 @Composable
 private fun screenBackground(): Brush {
@@ -120,7 +127,7 @@ private fun screenBackground(): Brush {
 private fun LocationsBody(
   modifier: Modifier = Modifier,
   state: LocationsUiState,
-  onRenameRequest: (LocationCardUi) -> Unit,
+  onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
   when (state) {
@@ -165,18 +172,18 @@ private fun LocationsError(modifier: Modifier, message: String) {
 private fun LocationsLoaded(
   modifier: Modifier = Modifier,
   state: Loaded,
-  onRenameRequest: (LocationCardUi) -> Unit,
+  onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
   PullToRefreshBox(
     modifier = modifier.fillMaxSize(),
     isRefreshing = state.isRefreshing,
-    onRefresh = { dispatch(RefreshClick) }
+    onRefresh = { dispatch(RefreshFavoritesClick) }
   ) {
     LocationsList(
       cards = state.cards,
       compareMode = state.compareMode,
-      selectedIds = state.selectedIds,
+      selectedFavoriteIds = state.selectedFavoriteIds,
       isRefreshing = state.isRefreshing,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -185,18 +192,18 @@ private fun LocationsLoaded(
   state.comparePair?.let { pair ->
     LocationCompareSheet(
       pair = pair,
-      onDismiss = { dispatch(CloseCompare) }
+      onDismiss = { dispatch(ExitCompareMode) }
     )
   }
 }
 
 @Composable
 private fun LocationsList(
-  cards: ImmutableList<LocationCardUi>,
+  cards: ImmutableList<LocationCardUiState>,
   compareMode: Boolean,
-  selectedIds: ImmutableSet<String>,
+  selectedFavoriteIds: ImmutableSet<Long>,
   isRefreshing: Boolean,
-  onRenameRequest: (LocationCardUi) -> Unit,
+  onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
   LazyColumn(
@@ -211,35 +218,40 @@ private fun LocationsList(
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
-    item {
+    item(key = HEADER) {
       LocationsHeader(
         modifier = Modifier.padding(bottom = Small),
         count = cards.size,
         compareMode = compareMode,
-        selectedCount = selectedIds.size,
+        selectedCount = selectedFavoriteIds.size,
         isRefreshing = isRefreshing,
         onToggleCompareMode = { dispatch(ToggleCompareMode) },
-        onRefreshClick = { dispatch(RefreshClick) }
+        onRefreshClick = { dispatch(RefreshFavoritesClick) }
       )
     }
     if (cards.isEmpty()) {
-      item { LocationsEmptyState() }
+      item(key = EMPTY) { LocationsEmptyState() }
       return@LazyColumn
     }
-    itemsIndexed(items = cards, key = { _, card -> card.favoriteId }) { index, card ->
-      val isSelected = selectedIds.contains(card.favoriteId.toString())
+    itemsIndexed(
+      items = cards,
+      key = { _, card -> card(card.favoriteId) }
+    ) { index, card ->
+
+      val isSelected = card.isSelected(selectedFavoriteIds)
       val isLocked = compareMode &&
-        selectedIds.size >= LocationsDefaults.SelectionLimit &&
+        selectedFavoriteIds.size >= SelectionLimit &&
         !isSelected
+
       LocationRow(
         card = card,
         positionIndex = index,
         compareMode = compareMode,
         isSelected = isSelected,
         isLocked = isLocked,
-        onClick = { dispatch(CardClick(cardId = card.favoriteId.toString())) },
+        onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
         onRename = { onRenameRequest(card) },
-        onDelete = { dispatch(RemoveClick(cardId = card.favoriteId.toString())) }
+        onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }
       )
     }
   }

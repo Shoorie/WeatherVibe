@@ -1,12 +1,13 @@
 package com.weather.vibe.feature.locations.preview
 
-import com.weather.vibe.feature.locations.presentation.state.LocationCardUi
-import com.weather.vibe.domain.location.model.WeatherAdvantage
-import com.weather.vibe.domain.location.model.WeatherComparison
-import com.weather.vibe.feature.locations.presentation.state.LocationComparePair
-import com.weather.vibe.feature.locations.presentation.state.LocationCompareUi
+import com.weather.vibe.domain.location.model.LocationWeatherAdvantage
+import com.weather.vibe.domain.location.model.LocationWeatherComparison
+import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
+import com.weather.vibe.feature.locations.presentation.state.LocationComparePairUiState
+import com.weather.vibe.feature.locations.presentation.state.LocationCompareUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
+import com.weather.vibe.feature.locations.presentation.state.TemperatureAxisUiState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
@@ -17,83 +18,115 @@ import kotlin.math.sin
 
 internal object LocationsPreviewData {
 
-  val warsaw = card(
+  val warsaw = LocationCardUiState(
     favoriteId = 1L,
-    locationId = 101L,
-    name = "Warszawa",
-    region = "mazowieckie",
-    weather = LocationWeatherUi.Cloudy,
-    temperatureC = 10,
-    feelsLikeC = 8,
-    highC = 14,
-    lowC = 3,
+    feelsLike = "8°",
+    high = "14°",
+    hourlyTemperatures = sampleHourlyCurve(seed = 1, lowC = 3, highC = 14),
     humidityPercent = 74,
+    label = "Home",
+    locationId = 101L,
+    low = "3°",
+    name = "Warsaw",
     precipitationChancePercent = 45,
-    windKph = 9,
-    label = "Dom"
+    region = "Mazowieckie",
+    temperature = "10°",
+    weather = LocationWeatherUi.Cloudy,
+    windKph = 9
   )
 
-  val wroclaw = card(
+  val wroclaw = LocationCardUiState(
     favoriteId = 2L,
-    locationId = 102L,
-    name = "Wrocław",
-    region = "dolnośląskie",
-    weather = LocationWeatherUi.PartlyCloudy,
-    temperatureC = 12,
-    feelsLikeC = 10,
-    highC = 15,
-    lowC = 4,
+    feelsLike = "10°",
+    high = "15°",
+    hourlyTemperatures = sampleHourlyCurve(seed = 2, lowC = 4, highC = 15),
     humidityPercent = 71,
+    label = "Work",
+    locationId = 102L,
+    low = "4°",
+    name = "Wroclaw",
     precipitationChancePercent = 30,
-    windKph = 8,
-    label = "Praca"
+    region = "Dolnośląskie",
+    temperature = "12°",
+    weather = LocationWeatherUi.PartlyCloudy,
+    windKph = 8
   )
 
-  val zakopane = card(
+  val zakopane = LocationCardUiState(
     favoriteId = 3L,
-    locationId = 103L,
-    name = "Zakopane",
-    region = "małopolskie",
-    weather = LocationWeatherUi.Snow,
-    temperatureC = -1,
-    feelsLikeC = -4,
-    highC = 2,
-    lowC = -6,
+    feelsLike = "-4°",
+    high = "2°",
+    hourlyTemperatures = sampleHourlyCurve(seed = 3, lowC = -6, highC = 2),
     humidityPercent = 82,
+    label = "Vacation",
+    locationId = 103L,
+    low = "-6°",
+    name = "Zakopane",
     precipitationChancePercent = 65,
-    windKph = 18,
-    label = "Wakacje"
+    region = "Małopolskie",
+    temperature = "-1°",
+    weather = LocationWeatherUi.Snow,
+    windKph = 18
   )
 
-  val madrid = card(
+  val madrid = LocationCardUiState(
     favoriteId = 4L,
-    locationId = 104L,
-    name = "Madryt",
-    region = "Hiszpania",
-    weather = LocationWeatherUi.Sunny,
-    temperatureC = 23,
-    feelsLikeC = 22,
-    highC = 26,
-    lowC = 16,
+    feelsLike = "22°",
+    high = "26°",
+    hourlyTemperatures = sampleHourlyCurve(seed = 4, lowC = 16, highC = 26),
     humidityPercent = 48,
+    label = "Family",
+    locationId = 104L,
+    low = "16°",
+    name = "Madrid",
     precipitationChancePercent = 10,
-    windKph = 11,
-    label = "Rodzina"
+    region = "Spain",
+    temperature = "23°",
+    weather = LocationWeatherUi.Sunny,
+    windKph = 11
   )
 
   val defaultCards = persistentListOf(warsaw, wroclaw, zakopane, madrid)
 
-  val warsawCompare = compareFor(card = warsaw)
-  val madridCompare = compareFor(card = madrid)
+  val warsawCompare = LocationCompareUiState(
+    card = warsaw,
+    feelsLike = warsaw.feelsLike.orEmpty(),
+    high = warsaw.high.orEmpty(),
+    hourlyTemperatures = warsaw.hourlyTemperatures,
+    humidityPercent = warsaw.humidityPercent ?: 0,
+    low = warsaw.low.orEmpty(),
+    precipitationChancePercent = warsaw.precipitationChancePercent ?: 0,
+    temperature = warsaw.temperature.orEmpty(),
+    weather = warsaw.weather ?: LocationWeatherUi.Cloudy,
+    windKph = warsaw.windKph ?: 0
+  )
 
-  val comparePair = LocationComparePair(
+  val madridCompare = LocationCompareUiState(
+    card = madrid,
+    feelsLike = madrid.feelsLike.orEmpty(),
+    high = madrid.high.orEmpty(),
+    hourlyTemperatures = madrid.hourlyTemperatures,
+    humidityPercent = madrid.humidityPercent ?: 0,
+    low = madrid.low.orEmpty(),
+    precipitationChancePercent = madrid.precipitationChancePercent ?: 0,
+    temperature = madrid.temperature.orEmpty(),
+    weather = madrid.weather ?: LocationWeatherUi.Sunny,
+    windKph = madrid.windKph ?: 0
+  )
+
+  val comparePair = LocationComparePairUiState(
     first = warsawCompare,
     second = madridCompare,
-    winners = WeatherComparison(
-      temperature = WeatherAdvantage.SecondLocation,
-      wind = WeatherAdvantage.FirstLocation,
-      humidity = WeatherAdvantage.SecondLocation,
-      rain = WeatherAdvantage.SecondLocation
+    winners = LocationWeatherComparison(
+      temperature = LocationWeatherAdvantage.SecondLocation,
+      wind = LocationWeatherAdvantage.FirstLocation,
+      humidity = LocationWeatherAdvantage.SecondLocation,
+      rain = LocationWeatherAdvantage.SecondLocation
+    ),
+    temperatureAxis = TemperatureAxisUiState(
+      min = "0°",
+      mid = "13°",
+      max = "26°"
     )
   )
 
@@ -102,7 +135,7 @@ internal object LocationsPreviewData {
     comparePair = null,
     compareMode = false,
     isRefreshing = false,
-    selectedIds = persistentSetOf()
+    selectedFavoriteIds = persistentSetOf()
   )
 
   val comparingLoaded = Loaded(
@@ -110,52 +143,7 @@ internal object LocationsPreviewData {
     comparePair = comparePair,
     compareMode = true,
     isRefreshing = false,
-    selectedIds = persistentSetOf("1", "4")
-  )
-
-  @Suppress("LongParameterList")
-  private fun card(
-    favoriteId: Long,
-    locationId: Long,
-    name: String,
-    region: String,
-    weather: LocationWeatherUi,
-    temperatureC: Int,
-    feelsLikeC: Int,
-    highC: Int,
-    lowC: Int,
-    humidityPercent: Int,
-    precipitationChancePercent: Int,
-    windKph: Int,
-    label: String?
-  ): LocationCardUi = LocationCardUi(
-    favoriteId = favoriteId,
-    feelsLikeC = feelsLikeC,
-    highC = highC,
-    hourlyTemperatures = sampleHourlyCurve(seed = favoriteId.toInt(), lowC = lowC, highC = highC),
-    humidityPercent = humidityPercent,
-    label = label,
-    locationId = locationId,
-    lowC = lowC,
-    name = name,
-    precipitationChancePercent = precipitationChancePercent,
-    region = region,
-    temperatureC = temperatureC,
-    weather = weather,
-    windKph = windKph
-  )
-
-  private fun compareFor(card: LocationCardUi): LocationCompareUi = LocationCompareUi(
-    card = card,
-    feelsLikeC = card.feelsLikeC ?: 0,
-    highC = card.highC ?: 0,
-    hourlyTemperatures = card.hourlyTemperatures,
-    humidityPercent = card.humidityPercent ?: 0,
-    lowC = card.lowC ?: 0,
-    precipitationChancePercent = card.precipitationChancePercent ?: 0,
-    temperatureC = card.temperatureC ?: 0,
-    weather = card.weather ?: LocationWeatherUi.Cloudy,
-    windKph = card.windKph ?: 0
+    selectedFavoriteIds = persistentSetOf(1L, 4L)
   )
 
   private fun sampleHourlyCurve(

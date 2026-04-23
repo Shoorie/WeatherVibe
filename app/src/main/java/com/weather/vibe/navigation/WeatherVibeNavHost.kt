@@ -32,8 +32,8 @@ import com.weather.vibe.feature.settings.personalization.ui.screen.Personalizati
 import com.weather.vibe.navigation.bottombar.WeatherVibeBottomBar
 import com.weather.vibe.navigation.home.HomeEntry
 import com.weather.vibe.navigation.home.HomeRoute
-import com.weather.vibe.navigation.locations.AddFavoriteEntry
-import com.weather.vibe.navigation.locations.AddFavoriteRoute
+import com.weather.vibe.navigation.locations.AddLocationFavoriteEntry
+import com.weather.vibe.navigation.locations.AddLocationFavoriteRoute
 import com.weather.vibe.navigation.locations.LocationsRoute
 import com.weather.vibe.navigation.onboarding.LocationOnboardingRoute
 import com.weather.vibe.navigation.onboarding.OnboardingEntry
@@ -163,10 +163,10 @@ private fun rootEntry(
     is SearchRoute -> NavEntry(key) { SearchEntry(backStack) }
     is LocationsRoute -> NavEntry(key) {
       LocationsScreen(
-        onNavigateToSearch = { backStack.add(AddFavoriteRoute) }
+        onNavigateToSearch = { backStack.add(AddLocationFavoriteRoute) }
       )
     }
-    is AddFavoriteRoute -> NavEntry(key) { AddFavoriteEntry(backStack) }
+    is AddLocationFavoriteRoute -> NavEntry(key) { AddLocationFavoriteEntry(backStack) }
     else -> NavEntry(key) {}
   }
 

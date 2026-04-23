@@ -51,13 +51,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke.Border
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowMenuButtonSize
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowMenuIconSize
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionMore
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.menuDelete
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.menuRename
@@ -73,14 +74,14 @@ internal fun LocationRowMenu(
   Box(
     modifier = modifier
       .minimumInteractiveComponentSize()
-      .size(LocationsDefaults.RowMenuButtonSize)
+      .size(RowMenuButtonSize)
       .clip(CircleShape)
       .clickable(role = Role.Button, onClick = { expanded = true })
       .semantics { contentDescription = description },
     contentAlignment = Alignment.Center
   ) {
     Icon(
-      modifier = Modifier.size(LocationsDefaults.RowMenuIconSize),
+      modifier = Modifier.size(RowMenuIconSize),
       imageVector = Icons.Filled.MoreVert,
       contentDescription = null,
       tint = colors.onSurfaceVariant
@@ -110,7 +111,7 @@ private fun RowActionsPopup(
   if (!expanded) return
   Popup(
     alignment = Alignment.TopEnd,
-    offset = IntOffset(x = 0, y = LocationsDefaults.RowMenuButtonSize.value.toInt()),
+    offset = IntOffset(x = 0, y = RowMenuButtonSize.value.toInt()),
     onDismissRequest = onDismissRequest,
     properties = PopupProperties(focusable = true)
   ) {

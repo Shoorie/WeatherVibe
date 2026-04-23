@@ -2,8 +2,8 @@ package com.weather.vibe.feature.search.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.location.error.FavoritesLimitReached
-import com.weather.vibe.domain.location.model.Favorite
+import com.weather.vibe.domain.location.error.LocationFavoritesLimitReached
+import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
@@ -57,7 +57,7 @@ internal class SearchViewModel(
   private var mode: SearchMode = SearchMode.Picker
   private var lastLocations: List<Location> = emptyList()
   private var lastRecents: List<Location> = emptyList()
-  private var favorites: List<Favorite> = emptyList()
+  private var favorites: List<LocationFavorite> = emptyList()
   private val favoriteLocationIds: Set<Long>
     get() = favorites.mapTo(mutableSetOf()) { it.location.id }
 
@@ -113,10 +113,10 @@ internal class SearchViewModel(
     }
   }
 
-  private fun findFavoriteByLocationId(locationId: Long): Favorite? =
+  private fun findFavoriteByLocationId(locationId: Long): LocationFavorite? =
     favorites.firstOrNull { it.location.id == locationId }
 
-  private suspend fun toggleFavorite(location: Location, existing: Favorite?) {
+  private suspend fun toggleFavorite(location: Location, existing: LocationFavorite?) {
     if (existing != null) {
       useCases.removeFavorite(id = existing.id)
     } else {
@@ -143,14 +143,14 @@ internal class SearchViewModel(
       .launchIn(viewModelScope)
   }
 
-  private fun onFavoritesResult(result: Result<List<Favorite>>) {
+  private fun onFavoritesResult(result: Result<List<LocationFavorite>>) {
     result.fold(
       onSuccess = ::onFavoritesChanged,
       onFailure = { showError() }
     )
   }
 
-  private fun onFavoritesChanged(next: List<Favorite>) {
+  private fun onFavoritesChanged(next: List<LocationFavorite>) {
     favorites = next
     _favoritesCount.update { next.size }
     rebuildListsWithLatestFavorites()
@@ -238,7 +238,7 @@ internal class SearchViewModel(
 
   private fun onBackgroundError(throwable: Throwable) {
     when (throwable) {
-      is FavoritesLimitReached -> send(LimitReached)
+      is LocationFavoritesLimitReached -> send(LimitReached)
       else -> showError()
     }
   }

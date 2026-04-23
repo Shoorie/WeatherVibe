@@ -13,22 +13,22 @@ sealed interface LocationsUiState {
 
   @Immutable
   data class Loaded(
-    val cards: ImmutableList<LocationCardUi>,
-    val comparePair: LocationComparePair?,
+    val cards: ImmutableList<LocationCardUiState>,
+    val comparePair: LocationComparePairUiState?,
     val compareMode: Boolean,
     val isRefreshing: Boolean,
-    val selectedIds: ImmutableSet<String>
+    val selectedFavoriteIds: ImmutableSet<Long>
   ) : LocationsUiState {
 
     companion object {
 
-      fun emptyFor(cards: ImmutableList<LocationCardUi>): Loaded =
+      fun emptyFor(cards: ImmutableList<LocationCardUiState>): Loaded =
         Loaded(
           cards = cards,
           comparePair = null,
           compareMode = false,
           isRefreshing = false,
-          selectedIds = persistentSetOf()
+          selectedFavoriteIds = persistentSetOf()
         )
 
       val EMPTY: Loaded = emptyFor(cards = persistentListOf())

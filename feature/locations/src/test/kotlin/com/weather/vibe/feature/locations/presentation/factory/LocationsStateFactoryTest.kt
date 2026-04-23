@@ -1,8 +1,10 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.feature.locations.presentation.fake.DEFAULT_ERROR
 import com.weather.vibe.feature.locations.presentation.fake.fakeLocationsResources
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
 import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Test
@@ -13,8 +15,12 @@ import strikt.assertions.isEqualTo
 
 class LocationsStateFactoryTest {
 
+  private val temperatureFormatter = fakeTemperatureFormatter()
   private val factory = LocationsStateFactory(
-    cardFactory = LocationCardFactory(weatherFactory = LocationWeatherFactory()),
+    cardFactory = LocationCardFactory(
+      temperatureFormatter = temperatureFormatter,
+      weatherFactory = LocationWeatherFactory()
+    ),
     resources = fakeLocationsResources()
   )
 
@@ -24,25 +30,25 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `when map cards built from sources, then produces one card per source in order`() {
+  fun `map cards produces one card per source in order`() {
 
-    val sources = listOf(FavoriteFixtures.WARSAW_WITH_WEATHER, FavoriteFixtures.KRAKOW_WITH_WEATHER)
+    val sources = listOf(LocationFavoriteFixtures.WARSAW_WITH_WEATHER, LocationFavoriteFixtures.KRAKOW_WITH_WEATHER)
 
-    val result = factory.mapCards(sources = sources)
+    val result = factory.mapCards(sources = sources, temperatureUnit = CELSIUS)
 
     expectThat(result).hasSize(2)
   }
 
   @Test
-  fun `given empty sources, when map cards called, then returns empty list`() {
+  fun `empty sources produce empty card list`() {
 
-    val result = factory.mapCards(sources = emptyList())
+    val result = factory.mapCards(sources = emptyList(), temperatureUnit = CELSIUS)
 
     expectThat(result).isEmpty()
   }
 
   @Test
-  fun `given throwable with message, when error built, then state uses throwable message`() {
+  fun `throwable with message surfaces as error state message`() {
 
     val result = factory.error(throwable = IllegalStateException("boom"))
 
@@ -50,7 +56,7 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `given throwable without message, when error built, then state uses default error`() {
+  fun `throwable without message falls back to default error`() {
 
     val result = factory.error(throwable = RuntimeException())
 

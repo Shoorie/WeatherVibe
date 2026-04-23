@@ -45,7 +45,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.domain.location.usecase.AddFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
+import com.weather.vibe.feature.locations.ui.LocationsDefaults
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionRefresh
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickOne
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickZero
@@ -81,7 +82,7 @@ internal fun LocationsHeader(
         onClick = onRefreshClick
       )
     }
-    if (count >= COMPARE_MIN) {
+    if (count >= LocationsDefaults.CompareMinCards) {
       CompareTogglePill(
         compareMode = compareMode,
         onClick = onToggleCompareMode
@@ -128,7 +129,7 @@ private fun subtitleText(
 ): String = when {
   compareMode && selectedCount == 0 -> compareHintPickZero()
   compareMode && selectedCount == 1 -> compareHintPickOne()
-  else -> headerSubtitle(count = count, limit = AddFavorite.FAVORITES_LIMIT)
+  else -> headerSubtitle(count = count, limit = MAX_FAVORITES)
 }
 
 @Composable
@@ -155,7 +156,7 @@ private fun refreshRotation(isRefreshing: Boolean): Float {
     initialValue = 0f,
     targetValue = 360f,
     animationSpec = infiniteRepeatable(
-      animation = tween(durationMillis = ROTATION_DURATION_MS),
+      animation = tween(durationMillis = LocationsDefaults.RefreshRotationDurationMs),
       repeatMode = RepeatMode.Restart
     ),
     label = "rotation"
@@ -225,12 +226,14 @@ private fun CompareTogglePillBase(
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
   ) {
     leading?.invoke()
-    Text(text = label, style = typography.labelMedium, color = contentColor)
+    Text(
+      text = label,
+      style = typography.labelMedium,
+      color = contentColor
+    )
   }
 }
 
-private const val COMPARE_MIN: Int = 2
-private const val ROTATION_DURATION_MS: Int = 900
 
 @PreviewLightDark
 @Composable

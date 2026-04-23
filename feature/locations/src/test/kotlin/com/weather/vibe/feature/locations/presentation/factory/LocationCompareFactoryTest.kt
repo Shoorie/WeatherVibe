@@ -1,10 +1,12 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
-import com.weather.vibe.domain.location.model.FavoriteWithWeather
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures.WARSAW_FAVORITE
-import com.weather.vibe.feature.locations.presentation.fixture.FavoriteFixtures.WARSAW_SNAPSHOT
-import com.weather.vibe.feature.locations.presentation.state.LocationCardUi
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
+import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
+import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_FAVORITE
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_SNAPSHOT
+import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationWeatherUi
 import kotlinx.collections.immutable.persistentListOf
 import org.junit.Test
@@ -16,53 +18,63 @@ import strikt.assertions.isNull
 
 class LocationCompareFactoryTest {
 
-  private val factory = LocationCompareFactory(weatherFactory = LocationWeatherFactory())
+  private val temperatureFormatter = fakeTemperatureFormatter()
+  private val factory = LocationCompareFactory(
+    temperatureFormatter = temperatureFormatter,
+    weatherFactory = LocationWeatherFactory()
+  )
 
-  private val card = LocationCardUi(
+  private val card = LocationCardUiState(
     favoriteId = WARSAW_FAVORITE.id,
-    feelsLikeC = 20,
-    highC = 26,
+    feelsLike = "20°",
+    high = "26°",
     hourlyTemperatures = persistentListOf(),
     humidityPercent = 55,
     label = "Dom",
     locationId = WARSAW_FAVORITE.location.id,
-    lowC = 16,
+    low = "16°",
     name = WARSAW_FAVORITE.location.name,
     precipitationChancePercent = 10,
     region = "Mazowieckie",
-    temperatureC = 22,
+    temperature = "22°",
     weather = LocationWeatherUi.Sunny,
     windKph = 12
   )
 
   @Test
-  fun `given source with snapshot, when compare created, then temperature rounded`() {
+  fun `source with snapshot produces compare with formatted temperature`() {
 
     val result = factory.create(
       card = card,
-      source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = FavoriteFixtures.snapshot(temperatureC = 22.4))
+      source = LocationFavoriteWithWeather(
+        favorite = WARSAW_FAVORITE,
+        snapshot = LocationFavoriteFixtures.snapshot(temperatureC = 22.4)
+      ),
+      temperatureUnit = CELSIUS
     )
 
-    expectThat(result).isNotNull().get { temperatureC }.isEqualTo(22)
+    expectThat(result).isNotNull().get { temperature }.isEqualTo("22°")
   }
 
   @Test
-  fun `given source without snapshot, when compare created, then returns null`() {
+  fun `source without snapshot produces null compare`() {
 
     val result = factory.create(
       card = card,
-      source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
+      source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null),
+      temperatureUnit = CELSIUS
     )
 
     expectThat(result).isNull()
   }
 
   @Test
-  fun `given source with hourly data, when compare created, then hourly mirrored`() {
+  fun `source with hourly data mirrors size on compare`() {
 
     val result = factory.create(
       card = card,
-      source = FavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT)
+      source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT),
+      temperatureUnit = CELSIUS
     )
 
     expectThat(result).isNotNull().get { hourlyTemperatures }.hasSize(WARSAW_SNAPSHOT.hourlyTemperaturesC.size)

@@ -11,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.domain.location.usecase.AddFavorite
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.LocationsAction.Initialize
-import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsEvent
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateToSearch
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowLimitReachedSnackbar
@@ -75,7 +75,7 @@ private suspend fun onEvent(
       dispatch = dispatch
     )
     is ShowLimitReachedSnackbar -> snackbarHostState.showSnackbar(
-      message = resources.limitReached(limit = AddFavorite.FAVORITES_LIMIT),
+      message = resources.limitReached(limit = LocationFavoritesPolicy.MAX_FAVORITES),
       duration = SnackbarDuration.Short
     )
   }
@@ -93,7 +93,7 @@ private suspend fun onRemovedSnackbar(
     duration = SnackbarDuration.Short
   )
   if (result == SnackbarResult.ActionPerformed) {
-    dispatch(UndoRemoveClick(location = event.location, label = event.label))
+    dispatch(UndoRemoveLocationFavoriteClick(location = event.location, label = event.label))
   }
 }
 

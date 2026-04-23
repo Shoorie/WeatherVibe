@@ -4,7 +4,7 @@ import app.cash.turbine.test
 import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
-import com.weather.vibe.domain.location.usecase.AddLocationFavorite
+import com.weather.vibe.domain.location.usecase.AddLocationFavoriteWithWeather
 import com.weather.vibe.domain.location.usecase.GetRecentLocations
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavorites
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
@@ -60,7 +60,7 @@ class SearchViewModelTest {
   @get:Rule
   val rule = MainDispatcherRule()
 
-  private val addFavorite = mockk<AddLocationFavorite>()
+  private val addFavorite = mockk<AddLocationFavoriteWithWeather>()
   private val getRecentLocations = mockk<GetRecentLocations>()
   private val observeFavorites = mockk<ObserveLocationFavorites>()
   private val removeFavorite = mockk<RemoveLocationFavorite>()

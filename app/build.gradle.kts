@@ -83,6 +83,7 @@ ksp {
 
 dependencies {
   implementation(projects.core.ai)
+  implementation(projects.core.androidext)
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
   implementation(projects.core.navigation)

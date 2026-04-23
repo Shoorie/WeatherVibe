@@ -13,7 +13,7 @@ internal class LocationItemPreview :
       emoji = locationPin(),
       name = "Warszawa",
       subtitle = "Mazowieckie, Polska",
-      temperature = "15°"
+      isFavorite = false
     )
 
   private val recentLocation: LocationItemPreviewParams =
@@ -21,17 +21,9 @@ internal class LocationItemPreview :
       emoji = clock(),
       name = "Kraków",
       subtitle = "Małopolskie, Polska",
-      temperature = "12°"
-    )
-
-  private val loadingTemperature: LocationItemPreviewParams =
-    LocationItemPreviewParams(
-      emoji = locationPin(),
-      name = "Berlin",
-      subtitle = "Niemcy",
-      temperature = null
+      isFavorite = true
     )
 
   override val values: Sequence<LocationItemPreviewParams> =
-    sequenceOf(searchResult, recentLocation, loadingTemperature)
+    sequenceOf(searchResult, recentLocation)
 }

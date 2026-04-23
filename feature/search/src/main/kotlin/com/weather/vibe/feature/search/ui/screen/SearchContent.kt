@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -14,11 +15,14 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.domain.location.usecase.AddFavorite
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
+import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
 import com.weather.vibe.feature.search.presentation.SearchAction.Retry
+import com.weather.vibe.feature.search.presentation.SearchMode
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Error
@@ -27,6 +31,9 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
 import com.weather.vibe.feature.search.preview.SearchPreview
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacity
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacityFull
+import com.weather.vibe.feature.search.ui.component.banner.FavoritesCapacityBanner
 import com.weather.vibe.feature.search.ui.component.bar.SearchTopBar
 import com.weather.vibe.feature.search.ui.component.list.RecentsSection
 import com.weather.vibe.feature.search.ui.component.list.ResultsSection
@@ -39,12 +46,16 @@ import com.weather.vibe.feature.search.ui.component.state.SearchLoadingState
 internal fun SearchContent(
   modifier: Modifier = Modifier,
   state: SearchUiState,
+  mode: SearchMode,
+  favoritesCount: Int,
   dispatch: (SearchAction) -> Unit
 ) {
 
-  val backgroundBrush = Brush.verticalGradient(
-    listOf(colors.backgroundGradientStart, colors.backgroundGradientEnd)
-  )
+  val gradientStart = colors.backgroundGradientStart
+  val gradientEnd = colors.backgroundGradientEnd
+  val backgroundBrush = remember(gradientStart, gradientEnd) {
+    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
+  }
 
   Column(
     modifier = modifier
@@ -60,19 +71,40 @@ internal fun SearchContent(
       onQueryChange = { dispatch(QueryChange(it)) },
       onBack = { dispatch(BackClick) }
     )
+    if (mode == SearchMode.Favorites) {
+      CapacityBanner(used = favoritesCount)
+    }
     SearchStateContent(
       state = state,
+      showHeart = mode == SearchMode.Favorites,
       onLocationClick = { dispatch(LocationSelect(it)) },
+      onHeartClick = { dispatch(HeartClick(it)) },
       onRetryClick = { dispatch(Retry) }
     )
   }
 }
 
 @Composable
+private fun CapacityBanner(used: Int) {
+  val limit = AddFavorite.FAVORITES_LIMIT
+  val isFull = used >= limit
+  FavoritesCapacityBanner(
+    label = when {
+      isFull -> favoritesCapacityFull(limit = limit)
+      else -> favoritesCapacity(used = used, limit = limit)
+    },
+    accentColor = if (isFull) colors.error else colors.accent,
+    labelColor = if (isFull) colors.error else colors.onSurfaceVariant
+  )
+}
+
+@Composable
 private fun SearchStateContent(
   modifier: Modifier = Modifier,
   state: SearchUiState,
+  showHeart: Boolean,
   onLocationClick: (Long) -> Unit,
+  onHeartClick: (Long) -> Unit,
   onRetryClick: () -> Unit
 ) {
   when (state) {
@@ -81,12 +113,16 @@ private fun SearchStateContent(
     is Recents -> RecentsSection(
       modifier = modifier,
       locations = state.locations,
-      onLocationClick = onLocationClick
+      showHeart = showHeart,
+      onLocationClick = onLocationClick,
+      onHeartClick = onHeartClick
     )
     is Results -> ResultsSection(
       modifier = modifier,
       locations = state.locations,
-      onLocationClick = onLocationClick
+      showHeart = showHeart,
+      onLocationClick = onLocationClick,
+      onHeartClick = onHeartClick
     )
     is Empty -> SearchEmptyState(
       modifier = modifier,
@@ -109,6 +145,8 @@ private fun Preview(
   WeatherVibeTheme {
     SearchContent(
       state = state,
+      mode = SearchMode.Favorites,
+      favoritesCount = 3,
       dispatch = {}
     )
   }

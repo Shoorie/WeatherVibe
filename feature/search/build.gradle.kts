@@ -12,6 +12,7 @@ dependencies {
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)
+  implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.locationFixtures)

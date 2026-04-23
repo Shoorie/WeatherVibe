@@ -35,4 +35,18 @@ internal object ColorTokens {
   val LightSurfaceContainer = Color(0xFFF1F5F9)
   val LightTextTertiary = Color(0xFF64748B)
   val LightWarm = Color(0xFFD97706)
+
+  val DarkPillCoral = Color(0xFFEF6F6C)
+  val DarkPillBlue = Color(0xFF4FC3F7)
+  val DarkPillAmber = Color(0xFFFBBF24)
+  val DarkPillViolet = Color(0xFFA78BFA)
+  val DarkPillTeal = Color(0xFF2DD4BF)
+  val DarkPillRose = Color(0xFFF472B6)
+
+  val LightPillCoral = Color(0xFFE11D48)
+  val LightPillBlue = Color(0xFF0284C7)
+  val LightPillAmber = Color(0xFFD97706)
+  val LightPillViolet = Color(0xFF7C3AED)
+  val LightPillTeal = Color(0xFF0D9488)
+  val LightPillRose = Color(0xFFDB2777)
 }

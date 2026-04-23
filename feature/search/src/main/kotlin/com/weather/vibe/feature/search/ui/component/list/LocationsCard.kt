@@ -18,27 +18,33 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.preview.SearchPreviewLocations.sampleLocations
 import com.weather.vibe.feature.search.ui.SearchResources.Emojis
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun LocationsCard(
   modifier: Modifier = Modifier,
   emoji: String,
-  locations: List<LocationItemUiState>,
-  onLocationClick: (Long) -> Unit
+  locations: ImmutableList<LocationItemUiState>,
+  showHeart: Boolean,
+  onLocationClick: (Long) -> Unit,
+  onHeartClick: (Long) -> Unit
 ) {
   Column(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.card)
       .background(colors.glassSurface)
-      .border(Stroke.Border, colors.outlineVariant, shapes.card)
+      .border(width = Stroke.Border, color = colors.outlineVariant, shape = shapes.card)
   ) {
     locations.forEachIndexed { index, location ->
       LocationRow(
         emoji = emoji,
         name = location.name,
         subtitle = location.subtitle,
-        temperature = location.temperature,
+        showHeart = showHeart,
+        isFavorite = location.isFavorite,
+        canToggleFavorite = location.canToggleFavorite,
+        onHeartClick = { onHeartClick(location.id) },
         onClick = { onLocationClick(location.id) }
       )
       if (index < locations.lastIndex) {
@@ -59,7 +65,9 @@ private fun Preview() {
       modifier = Modifier.padding(Medium),
       emoji = Emojis.locationPin(),
       locations = sampleLocations,
-      onLocationClick = {}
+      showHeart = true,
+      onLocationClick = {},
+      onHeartClick = {}
     )
   }
 }

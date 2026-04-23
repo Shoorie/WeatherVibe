@@ -16,7 +16,6 @@
 
   <string name="locations_action_add_city">Add favorite</string>
   <string name="locations_action_add_city_disabled">Favorites limit reached</string>
-  <string name="locations_action_refresh">Refresh</string>
   <string name="locations_action_more">More actions</string>
   <string name="locations_row_temperature">%1$s</string>
   <string name="locations_row_high_low">H %1$s · L %2$s</string>

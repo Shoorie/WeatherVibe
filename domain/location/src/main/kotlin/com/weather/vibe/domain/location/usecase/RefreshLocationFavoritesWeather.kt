@@ -4,17 +4,17 @@ import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.location.mapper.WeatherDataToSnapshotMapper
 import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.toCoordinates
-import com.weather.vibe.domain.location.policy.LocationWeatherFreshnessPolicy
 import com.weather.vibe.domain.location.repository.LocationFavoriteRepository
 import com.weather.vibe.domain.location.repository.LocationWeatherSnapshotRepository
 import com.weather.vibe.domain.weather.usecase.GetWeather
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Factory
 import java.time.Instant
+import java.time.Instant.ofEpochMilli
 
 @Factory
 class RefreshLocationFavoritesWeather(
@@ -25,24 +25,15 @@ class RefreshLocationFavoritesWeather(
   private val timeProvider: TimeProvider
 ) {
 
-  suspend operator fun invoke(forceAll: Boolean = false) {
-    val now = Instant.ofEpochMilli(timeProvider.nowEpochMillis())
-    val candidates = selectFavoritesToRefresh(forceAll = forceAll, now = now)
-    if (candidates.isEmpty()) return
-    refreshInParallel(favorites = candidates, capturedAt = now)
-  }
+  suspend operator fun invoke() {
 
-  private suspend fun selectFavoritesToRefresh(
-    forceAll: Boolean,
-    now: Instant
-  ): List<LocationFavorite> {
-    val favorites = favoriteRepository.observeFavorites().first()
-    if (forceAll) return favorites
-    val snapshotsByLocation = snapshotRepository.observeSnapshots().first().associateBy { it.locationId }
-    return favorites.filter { favorite ->
-      val snapshot = snapshotsByLocation[favorite.location.id]
-      snapshot == null || LocationWeatherFreshnessPolicy.isStale(updatedAt = snapshot.updatedAt, now = now)
-    }
+    val favorites = favoriteRepository
+      .observeFavorites().first()
+
+    if (favorites.isEmpty()) return
+
+    val capturedAt = ofEpochMilli(timeProvider.nowEpochMillis())
+    refreshInParallel(favorites, capturedAt)
   }
 
   private suspend fun refreshInParallel(
@@ -51,7 +42,12 @@ class RefreshLocationFavoritesWeather(
   ) = coroutineScope {
     favorites
       .map { favorite ->
-        async(Dispatchers.IO) { fetchAndPersistWeatherFor(favorite = favorite, capturedAt = capturedAt) }
+        async(IO) {
+          fetchAndPersistWeatherFor(
+            favorite = favorite,
+            capturedAt = capturedAt
+          )
+        }
       }
       .awaitAll()
   }
@@ -60,7 +56,8 @@ class RefreshLocationFavoritesWeather(
     favorite: LocationFavorite,
     capturedAt: Instant
   ) {
-    val weather = getWeather(favorite.location.toCoordinates()).first().getOrNull() ?: return
+    val coordinates = favorite.location.toCoordinates()
+    val weather = getWeather(coordinates).first().getOrNull() ?: return
     val snapshot = snapshotMapper.toSnapshot(
       locationId = favorite.location.id,
       data = weather,

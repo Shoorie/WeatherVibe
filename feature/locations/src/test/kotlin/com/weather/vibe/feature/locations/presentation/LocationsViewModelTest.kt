@@ -105,7 +105,6 @@ class LocationsViewModelTest {
   fun `given initialize, when favorites load, then state is loaded with cards`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
     val loaded = viewModel.state.value as Loaded
@@ -127,7 +126,6 @@ class LocationsViewModelTest {
   fun `given loaded with two favorites, when toggle compare mode, then compare mode becomes true`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
     viewModel.dispatch(ToggleCompareMode)
@@ -139,7 +137,6 @@ class LocationsViewModelTest {
   fun `given loaded with single favorite, when toggle compare mode, then compare mode stays false`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
     viewModel.dispatch(ToggleCompareMode)
@@ -151,7 +148,6 @@ class LocationsViewModelTest {
   fun `given compare mode, when card clicked, then selection updated`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also {
       it.dispatch(Initialize)
       it.dispatch(ToggleCompareMode)
@@ -166,7 +162,6 @@ class LocationsViewModelTest {
   fun `given two cards selected with snapshots, then compare pair is built`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also {
       it.dispatch(Initialize)
       it.dispatch(ToggleCompareMode)
@@ -183,7 +178,6 @@ class LocationsViewModelTest {
 
     val warsawNoSnapshot = LocationFavoriteWithWeather(favorite = LocationFavoriteFixtures.WARSAW_FAVORITE, snapshot = null)
     mockFavorites(sources = listOf(warsawNoSnapshot, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also {
       it.dispatch(Initialize)
       it.dispatch(ToggleCompareMode)
@@ -199,7 +193,6 @@ class LocationsViewModelTest {
   fun `given add city click, then navigate to search event emitted`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
     viewModel.event.test {
@@ -212,7 +205,6 @@ class LocationsViewModelTest {
   fun `given close compare, when dispatched, then selection cleared`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     val viewModel = createViewModel().also {
       it.dispatch(Initialize)
       it.dispatch(ToggleCompareMode)
@@ -228,7 +220,6 @@ class LocationsViewModelTest {
   fun `when remove click dispatched, then favorite removed by id`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     coJustRun { removeFavorite(any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
@@ -241,7 +232,6 @@ class LocationsViewModelTest {
   fun `when rename click dispatched, then favorite renamed`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    coJustRun { refreshFavoritesWeather(any()) }
     coJustRun { renameFavorite(any(), any()) }
     val viewModel = createViewModel().also { it.dispatch(Initialize) }
 

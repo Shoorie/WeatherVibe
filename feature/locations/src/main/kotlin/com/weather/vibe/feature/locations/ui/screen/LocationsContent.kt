@@ -35,7 +35,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
-import com.weather.vibe.feature.locations.presentation.LocationsAction.RefreshFavoritesClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
@@ -178,13 +178,12 @@ private fun LocationsLoaded(
   PullToRefreshBox(
     modifier = modifier.fillMaxSize(),
     isRefreshing = state.isRefreshing,
-    onRefresh = { dispatch(RefreshFavoritesClick) }
+    onRefresh = { dispatch(PullToRefresh) }
   ) {
     LocationsList(
       cards = state.cards,
       compareMode = state.compareMode,
       selectedFavoriteIds = state.selectedFavoriteIds,
-      isRefreshing = state.isRefreshing,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
     )
@@ -202,7 +201,6 @@ private fun LocationsList(
   cards: ImmutableList<LocationCardUiState>,
   compareMode: Boolean,
   selectedFavoriteIds: ImmutableSet<Long>,
-  isRefreshing: Boolean,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
@@ -224,9 +222,7 @@ private fun LocationsList(
         count = cards.size,
         compareMode = compareMode,
         selectedCount = selectedFavoriteIds.size,
-        isRefreshing = isRefreshing,
-        onToggleCompareMode = { dispatch(ToggleCompareMode) },
-        onRefreshClick = { dispatch(RefreshFavoritesClick) }
+        onToggleCompareMode = { dispatch(ToggleCompareMode) }
       )
     }
     if (cards.isEmpty()) {

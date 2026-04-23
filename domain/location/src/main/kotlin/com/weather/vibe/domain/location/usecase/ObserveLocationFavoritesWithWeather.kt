@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Factory
+import kotlin.Result.Companion.failure
+import kotlin.Result.Companion.success
 
 @Factory
 class ObserveLocationFavoritesWithWeather(
@@ -21,9 +23,9 @@ class ObserveLocationFavoritesWithWeather(
     combine(
       favoriteRepository.observeFavorites(),
       snapshotRepository.observeSnapshots()
-    ) { favorites, snapshots -> joinByLocation(favorites = favorites, snapshots = snapshots) }
-      .map { Result.success(it) }
-      .catch { emit(Result.failure(it)) }
+    ) { favorites, snapshots -> joinByLocation(favorites, snapshots) }
+      .map { success(it) }
+      .catch { emit(failure(it)) }
 
   private fun joinByLocation(
     favorites: List<LocationFavorite>,

@@ -9,7 +9,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocati
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
 import com.weather.vibe.feature.locations.presentation.LocationsAction.Initialize
 import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
-import com.weather.vibe.feature.locations.presentation.LocationsAction.RefreshFavoritesClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
@@ -30,7 +30,6 @@ import com.weather.vibe.feature.locations.presentation.state.withRefreshing
 import com.weather.vibe.feature.locations.presentation.state.withSelectionCleared
 import com.weather.vibe.feature.locations.presentation.state.withToggledCompareMode
 import com.weather.vibe.feature.locations.presentation.state.withToggledSelection
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -59,15 +58,9 @@ internal class LocationsViewModel(
   private val _event = Channel<LocationsEvent>(capacity = BUFFERED)
   val event: Flow<LocationsEvent> = _event.receiveAsFlow()
 
-  private val errorHandler =
-    CoroutineExceptionHandler { _, throwable ->
-      onBackgroundError(throwable)
-    }
-
   private var latestFavorites: List<LocationFavoriteWithWeather> = emptyList()
   private var latestTemperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
   private var observeJob: Job? = null
-  private var refreshJob: Job? = null
 
   fun dispatch(action: LocationsAction) {
     when (action) {
@@ -75,7 +68,7 @@ internal class LocationsViewModel(
       is OpenLocationDetails -> onOpenLocationDetails(action.favoriteId)
       is ExitCompareMode -> onExitCompareMode()
       is Initialize -> onInitialize()
-      is RefreshFavoritesClick -> onRefreshFavoritesClick()
+      is PullToRefresh -> onPullToRefresh()
       is RemoveLocationFavoriteClick -> onRemoveFavoriteClick(action.favoriteId)
       is RenameLocationFavoriteClick -> onRenameFavoriteClick(
         action.favoriteId,
@@ -100,7 +93,6 @@ internal class LocationsViewModel(
         )
       }
       .launchIn(viewModelScope)
-    refreshInBackground(forceAll = false)
   }
 
   private fun onFavoritesLoaded(
@@ -117,23 +109,17 @@ internal class LocationsViewModel(
       }
       next.withComparePair(pair = rebuildComparePair(loaded = next))
     }
-    if (sources.any { it.snapshot == null }) refreshInBackground(forceAll = false)
   }
 
   private fun onFavoritesLoadFailed(throwable: Throwable) {
     _state.update { factories.state.error(throwable = throwable) }
   }
 
-  private fun onRefreshFavoritesClick() {
-    refreshInBackground(forceAll = true)
-  }
-
-  private fun refreshInBackground(forceAll: Boolean) {
-    refreshJob?.cancel()
+  private fun onPullToRefresh() {
     markRefreshing(isRefreshing = true)
-    refreshJob = viewModelScope.launch(errorHandler) {
+    viewModelScope.launch {
       try {
-        useCases.refreshFavoritesWeather(forceAll = forceAll)
+        useCases.refreshFavoritesWeather()
       } finally {
         markRefreshing(isRefreshing = false)
       }
@@ -174,7 +160,7 @@ internal class LocationsViewModel(
 
   private fun onRemoveFavoriteClick(favoriteId: Long) {
     val source = latestFavorites.firstOrNull { it.favorite.id == favoriteId } ?: return
-    viewModelScope.launch(errorHandler) {
+    viewModelScope.launch {
       useCases.removeFavorite(id = favoriteId)
       send(
         ShowRemovedSnackbar(
@@ -187,13 +173,17 @@ internal class LocationsViewModel(
   }
 
   private fun onUndoRemoveFavoriteClick(action: UndoRemoveLocationFavoriteClick) {
-    viewModelScope.launch(errorHandler) {
-      useCases.addFavorite(location = action.location, label = action.label)
+    viewModelScope.launch {
+      try {
+        useCases.addFavorite(location = action.location, label = action.label)
+      } catch (limitReached: LocationFavoritesLimitReached) {
+        send(ShowLimitReachedSnackbar)
+      }
     }
   }
 
   private fun onRenameFavoriteClick(favoriteId: Long, label: String?) {
-    viewModelScope.launch(errorHandler) {
+    viewModelScope.launch {
       useCases.renameFavorite(id = favoriteId, label = label)
     }
   }
@@ -206,15 +196,7 @@ internal class LocationsViewModel(
       temperatureUnit = latestTemperatureUnit
     )
 
-  private fun onBackgroundError(throwable: Throwable) {
-    if (throwable is LocationFavoritesLimitReached) {
-      send(ShowLimitReachedSnackbar)
-      return
-    }
-    markRefreshing(isRefreshing = false)
-  }
-
   private fun send(event: LocationsEvent) {
-    viewModelScope.launch(errorHandler) { _event.send(event) }
+    viewModelScope.launch { _event.send(event) }
   }
 }

@@ -8,6 +8,7 @@ import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeat
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
+import com.weather.vibe.domain.location.usecase.RestoreLocationWeatherSnapshot
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
@@ -70,6 +71,7 @@ class LocationsViewModelTest {
   private val refreshFavoritesWeather = mockk<RefreshLocationFavoritesWeather>()
   private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val renameFavorite = mockk<RenameLocationFavorite>()
+  private val restoreSnapshot = mockk<RestoreLocationWeatherSnapshot>()
   private val resources = fakeLocationsResources()
   private val temperatureFormatter = fakeTemperatureFormatter()
   private val cardFactory = LocationCardFactory(
@@ -107,7 +109,8 @@ class LocationsViewModelTest {
     observeTemperatureUnit = observeTemperatureUnit,
     refreshFavoritesWeather = refreshFavoritesWeather,
     removeFavorite = removeFavorite,
-    renameFavorite = renameFavorite
+    renameFavorite = renameFavorite,
+    restoreSnapshot = restoreSnapshot
   )
 
   @After

@@ -6,6 +6,7 @@ import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeat
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
+import com.weather.vibe.domain.location.usecase.RestoreLocationWeatherSnapshot
 import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
 import org.koin.core.annotation.Factory
 
@@ -17,5 +18,6 @@ internal data class LocationsUseCases(
   val observeTemperatureUnit: ObserveTemperatureUnit,
   val refreshFavoritesWeather: RefreshLocationFavoritesWeather,
   val removeFavorite: RemoveLocationFavorite,
-  val renameFavorite: RenameLocationFavorite
+  val renameFavorite: RenameLocationFavorite,
+  val restoreSnapshot: RestoreLocationWeatherSnapshot
 )

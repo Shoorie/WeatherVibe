@@ -161,6 +161,7 @@ internal class LocationsViewModel(
     viewModelScope.launch(errorHandler) {
       try {
         useCases.addFavorite(action.location, action.label)
+        action.snapshot?.let { useCases.restoreSnapshot(snapshot = it) }
       } catch (_: LocationFavoritesLimitReached) {
         send(event = ShowLimitReachedSnackbar)
       }
@@ -177,7 +178,8 @@ internal class LocationsViewModel(
     ShowRemovedSnackbar(
       locationName = source.favorite.location.name,
       location = source.favorite.location,
-      label = source.favorite.label
+      label = source.favorite.label,
+      snapshot = source.snapshot
     )
 
   private fun markRefreshing(isRefreshing: Boolean) =

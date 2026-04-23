@@ -99,7 +99,8 @@ private suspend fun onRemovedSnackbar(
     dispatch(
       UndoRemoveLocationFavoriteClick(
         location = event.location,
-        label = event.label
+        label = event.label,
+        snapshot = event.snapshot
       )
     )
   }

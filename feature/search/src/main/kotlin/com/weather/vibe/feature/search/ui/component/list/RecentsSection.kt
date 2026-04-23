@@ -14,12 +14,15 @@ import com.weather.vibe.feature.search.preview.SearchPreviewLocations.sampleLoca
 import com.weather.vibe.feature.search.ui.SearchResources.Emojis
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.recentsSubtitle
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.recentsTitle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun RecentsSection(
   modifier: Modifier = Modifier,
-  locations: List<LocationItemUiState>,
-  onLocationClick: (Long) -> Unit
+  locations: ImmutableList<LocationItemUiState>,
+  showHeart: Boolean,
+  onLocationClick: (Long) -> Unit,
+  onHeartClick: (Long) -> Unit
 ) {
   Column(
     modifier = modifier,
@@ -33,7 +36,9 @@ internal fun RecentsSection(
     LocationsCard(
       emoji = Emojis.clock(),
       locations = locations,
-      onLocationClick = onLocationClick
+      showHeart = showHeart,
+      onLocationClick = onLocationClick,
+      onHeartClick = onHeartClick
     )
   }
 }
@@ -45,7 +50,9 @@ private fun Preview() {
     RecentsSection(
       modifier = Modifier.padding(Medium),
       locations = sampleLocations,
-      onLocationClick = {}
+      showHeart = true,
+      onLocationClick = {},
+      onHeartClick = {}
     )
   }
 }

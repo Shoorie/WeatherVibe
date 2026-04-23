@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.search.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Error
@@ -16,46 +15,14 @@ internal class SearchPreview : PreviewParameterProvider<SearchUiState> {
 
   private val recents: SearchUiState = Recents(
     query = "",
-    locations = listOf(
-      LocationItemUiState(
-        id = 1L,
-        name = "Warszawa",
-        subtitle = "Mazowieckie, Polska",
-        temperature = "15°"
-      ),
-      LocationItemUiState(
-        id = 2L,
-        name = "Wrocław",
-        subtitle = "Dolnośląskie, Polska",
-        temperature = "13°"
-      ),
-      LocationItemUiState(
-        id = 3L,
-        name = "Toruń",
-        subtitle = "Kujawsko-Pomorskie, Polska",
-        temperature = "11°"
-      )
-    )
+    locations = SearchPreviewLocations.sampleLocations
   )
 
   private val searching: SearchUiState = Searching(query = "Krak")
 
   private val results: SearchUiState = Results(
     query = "Krak",
-    locations = listOf(
-      LocationItemUiState(
-        id = 4L,
-        name = "Kraków",
-        subtitle = "Małopolskie, Polska",
-        temperature = null
-      ),
-      LocationItemUiState(
-        id = 5L,
-        name = "Krakowiec",
-        subtitle = "Czechy",
-        temperature = null
-      )
-    )
+    locations = SearchPreviewLocations.searchResults
   )
 
   private val empty: SearchUiState = Empty(query = "xyzabc")

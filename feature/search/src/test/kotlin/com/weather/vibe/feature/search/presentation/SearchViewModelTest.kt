@@ -1,19 +1,21 @@
 package com.weather.vibe.feature.search.presentation
 
 import app.cash.turbine.test
-import com.weather.vibe.domain.location.model.LocationWithTemperature
-import com.weather.vibe.domain.location.usecase.GetRecentLocationsWithTemperature
+import com.weather.vibe.domain.location.model.LocationFavorite
+import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
+import com.weather.vibe.domain.location.usecase.AddLocationFavoriteWithWeather
+import com.weather.vibe.domain.location.usecase.GetRecentLocations
+import com.weather.vibe.domain.location.usecase.ObserveLocationFavorites
+import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.SaveRecentLocation
 import com.weather.vibe.domain.location.usecase.SearchLocation
-import com.weather.vibe.domain.settings.model.TemperatureUnit
-import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
-import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
-import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
-import com.weather.vibe.domain.weather.format.TemperatureFormatter
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
+import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
 import com.weather.vibe.feature.search.presentation.SearchAction.Retry
+import com.weather.vibe.feature.search.presentation.SearchAction.SetMode
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
@@ -23,18 +25,16 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Recents
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Results
 import com.weather.vibe.feature.search.ui.SearchResources
 import com.weather.vibe.testing.coroutines.MainDispatcherRule
+import com.weather.vibe.testing.location.fixture.LocationFavoriteFixtures
 import com.weather.vibe.testing.location.fixture.LocationFixtures.KRAKOW
 import com.weather.vibe.testing.location.fixture.LocationFixtures.WARSAW
-import com.weather.vibe.testing.location.fixture.LocationFixtures.locationWithTemperature
 import io.mockk.coEvery
 import io.mockk.coJustRun
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
@@ -44,9 +44,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import strikt.api.expectThat
+import strikt.assertions.first
 import strikt.assertions.hasSize
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
+import strikt.assertions.isFalse
+import strikt.assertions.isTrue
 import java.io.IOException
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
@@ -57,24 +60,23 @@ class SearchViewModelTest {
   @get:Rule
   val rule = MainDispatcherRule()
 
-  private val getRecentLocationsWithTemperature = mockk<GetRecentLocationsWithTemperature>()
-  private val observeTemperatureUnit = mockk<ObserveTemperatureUnit>()
+  private val addFavorite = mockk<AddLocationFavoriteWithWeather>()
+  private val getRecentLocations = mockk<GetRecentLocations>()
+  private val observeFavorites = mockk<ObserveLocationFavorites>()
+  private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val saveRecentLocation = mockk<SaveRecentLocation>()
   private val searchLocation = mockk<SearchLocation>()
   private val resources = mockk<SearchResources>()
-  private val temperature = mockk<TemperatureFormatter>()
-  private val stateFactory = SearchStateFactory(
-    subtitle = LocationSubtitleFormatter(),
-    temperature = temperature
-  )
+  private val stateFactory = SearchStateFactory(subtitle = LocationSubtitleFormatter())
 
   @Before
   fun setUp() {
     every { resources.defaultError() } returns DEFAULT_ERROR_MESSAGE
-    every { temperature.format(celsius = any(), unit = any()) } returns FORMATTED_TEMPERATURE
-    mockUnit(unit = CELSIUS)
-    mockRecentsReturn(entries = emptyList())
+    mockRecentsReturn(locations = emptyList())
+    mockFavoritesReturn(favorites = emptyList())
     coJustRun { saveRecentLocation(any()) }
+    coJustRun { addFavorite(any(), any()) }
+    coJustRun { removeFavorite(any()) }
   }
 
   @After
@@ -83,14 +85,19 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `when recent locations loaded, then state is recents with entries`() = runTest {
+  fun `when recent locations loaded, then state is recents`() = runTest {
 
-    mockRecentsReturn(
-      entries = listOf(
-        locationWithTemperature(location = WARSAW, currentTemperature = 15.0),
-        locationWithTemperature(location = KRAKOW, currentTemperature = 12.0)
-      )
-    )
+    mockRecentsReturn(locations = listOf(WARSAW, KRAKOW))
+
+    val viewModel = createViewModel()
+
+    expectThat(viewModel.state.value).isA<Recents>()
+  }
+
+  @Test
+  fun `when recent locations loaded, then one item per location`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW, KRAKOW))
 
     val viewModel = createViewModel()
 
@@ -99,9 +106,21 @@ class SearchViewModelTest {
   }
 
   @Test
+  fun `given favorite location exists, when recents loaded, then matching item is favorite`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW))
+    mockFavoritesReturn(favorites = listOf(LocationFavoriteFixtures.WARSAW_FAVORITE))
+
+    val viewModel = createViewModel()
+
+    expectThat(viewModel.state.value).isA<Recents>()
+      .get { locations }.first().get { isFavorite }.isTrue()
+  }
+
+  @Test
   fun `given no recent locations, when loaded, then state is idle`() = runTest {
 
-    mockRecentsReturn(entries = emptyList())
+    mockRecentsReturn(locations = emptyList())
 
     val viewModel = createViewModel()
 
@@ -116,11 +135,21 @@ class SearchViewModelTest {
     val viewModel = createViewModel()
 
     expectThat(viewModel.state.value).isA<Error>()
+  }
+
+  @Test
+  fun `given recent locations fetch fails, when loaded, then error message is default`() = runTest {
+
+    mockRecentsFail(IOException("boom"))
+
+    val viewModel = createViewModel()
+
+    expectThat(viewModel.state.value).isA<Error>()
       .get { message }.isEqualTo(DEFAULT_ERROR_MESSAGE)
   }
 
   @Test
-  fun `given non-empty query, when debounce elapses, then search results shown`() = runTest {
+  fun `given query entered, when debounce elapses, then state is results`() = runTest {
 
     coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
@@ -131,13 +160,12 @@ class SearchViewModelTest {
     runCurrent()
 
     expectThat(viewModel.state.value).isA<Results>()
-      .get { locations }.hasSize(1)
   }
 
   @Test
-  fun `given query cleared to empty, when dispatched, then recent locations reloaded`() = runTest {
+  fun `given query cleared to empty, when dispatched, then recents reloaded`() = runTest {
 
-    mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
+    mockRecentsReturn(locations = listOf(WARSAW))
     coEvery { searchLocation("krak") } returns flowOf(success(listOf(KRAKOW)))
 
     val viewModel = createViewModel()
@@ -152,7 +180,7 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `given search returns empty, when debounce elapses, then state is empty with query`() = runTest {
+  fun `given search returns empty, when debounce elapses, then state is empty`() = runTest {
 
     coEvery { searchLocation("xyz") } returns flowOf(success(emptyList()))
 
@@ -181,11 +209,12 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `when location selected, then save recent location called with matching location`() = runTest {
+  fun `given picker mode, when location selected, then recent location saved`() = runTest {
 
-    mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
+    mockRecentsReturn(locations = listOf(WARSAW))
 
     val viewModel = createViewModel()
+    viewModel.dispatch(SetMode(SearchMode.Picker))
 
     viewModel.dispatch(LocationSelect(id = WARSAW.id))
 
@@ -193,11 +222,12 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `when location selected, then navigate back with result event emitted`() = runTest {
+  fun `given picker mode, when location selected, then navigate back with result emitted`() = runTest {
 
-    mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
+    mockRecentsReturn(locations = listOf(WARSAW))
 
     val viewModel = createViewModel()
+    viewModel.dispatch(SetMode(SearchMode.Picker))
 
     viewModel.event.test {
       viewModel.dispatch(LocationSelect(id = WARSAW.id))
@@ -209,20 +239,70 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `given save throws, when location selected, then state transitions to error`() = runTest {
+  fun `given favorites mode, when location selected, then recent location not saved`() = runTest {
 
-    mockRecentsReturn(entries = listOf(locationWithTemperature(location = WARSAW)))
-    coEvery { saveRecentLocation(WARSAW) } throws IllegalStateException("db down")
+    mockRecentsReturn(locations = listOf(WARSAW))
 
     val viewModel = createViewModel()
+    viewModel.dispatch(SetMode(SearchMode.Favorites))
 
     viewModel.dispatch(LocationSelect(id = WARSAW.id))
 
-    expectThat(viewModel.state.value).isA<Error>()
+    coVerify(exactly = 0) { saveRecentLocation(any()) }
   }
 
   @Test
-  fun `when back clicked, then navigate back event emitted`() = runTest {
+  fun `given favorites mode and not favorite, when location selected, then favorite added`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW))
+
+    val viewModel = createViewModel()
+    viewModel.dispatch(SetMode(SearchMode.Favorites))
+
+    viewModel.dispatch(LocationSelect(id = WARSAW.id))
+
+    coVerify { addFavorite(location = WARSAW, label = null) }
+  }
+
+  @Test
+  fun `given not favorite, when heart clicked, then favorite added`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW))
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(HeartClick(id = WARSAW.id))
+
+    coVerify { addFavorite(location = WARSAW, label = null) }
+  }
+
+  @Test
+  fun `given already favorite, when heart clicked, then favorite removed`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW))
+    mockFavoritesReturn(favorites = listOf(LocationFavoriteFixtures.WARSAW_FAVORITE))
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(HeartClick(id = WARSAW.id))
+
+    coVerify { removeFavorite(id = LocationFavoriteFixtures.WARSAW_FAVORITE.id) }
+  }
+
+  @Test
+  fun `given favorites at cap and item not favorite, when recents loaded, then cannot toggle`() = runTest {
+
+    mockRecentsReturn(locations = listOf(WARSAW))
+    mockFavoritesReturn(favorites = capacityFullFavorites())
+
+    val viewModel = createViewModel()
+
+    expectThat(viewModel.state.value).isA<Recents>()
+      .get { locations }.first().get { canToggleFavorite }.isFalse()
+  }
+
+  @Test
+  fun `when back clicked, then navigate back emitted`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -234,7 +314,7 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `given error with non-empty query, when retry clicked, then search retried successfully`() = runTest {
+  fun `given error with query, when retry clicked, then search retried`() = runTest {
 
     coEvery { searchLocation("kra") } returnsMany listOf(
       flowOf(failure(IOException("first"))),
@@ -253,11 +333,11 @@ class SearchViewModelTest {
   }
 
   @Test
-  fun `given error with empty query, when retry clicked, then recent locations reloaded`() = runTest {
+  fun `given error with no query, when retry clicked, then recents reloaded`() = runTest {
 
-    every { getRecentLocationsWithTemperature() } returnsMany listOf(
+    every { getRecentLocations() } returnsMany listOf(
       flowOf(failure(IOException("boom"))),
-      flowOf(success(listOf(locationWithTemperature(location = WARSAW))))
+      flowOf(success(listOf(WARSAW)))
     )
 
     val viewModel = createViewModel()
@@ -267,74 +347,43 @@ class SearchViewModelTest {
     expectThat(viewModel.state.value).isA<Recents>()
   }
 
-  @Test
-  fun `given fahrenheit setting, when recents loaded, then factory called with fahrenheit`() = runTest {
-
-    mockUnit(unit = FAHRENHEIT)
-    mockRecentsReturn(
-      entries = listOf(
-        locationWithTemperature(
-          location = WARSAW,
-          currentTemperature = 20.0
-        )
+  private fun capacityFullFavorites(): List<LocationFavorite> =
+    (1..LocationFavoritesPolicy.MAX_FAVORITES).map { offset ->
+      LocationFavoriteFixtures.favorite(
+        id = offset.toLong(),
+        location = WARSAW.copy(id = FAVORITES_LOCATION_OFFSET + offset)
       )
-    )
-
-    createViewModel()
-
-    verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
-  }
-
-  @Test
-  fun `given unit changes after recents loaded, when unit emits, then recents rebuilt with new unit`() = runTest {
-
-    val unitFlow = MutableStateFlow(CELSIUS)
-    every { observeTemperatureUnit() } returns unitFlow
-    mockRecentsReturn(
-      entries = listOf(
-        locationWithTemperature(
-          location = WARSAW,
-          currentTemperature = 20.0
-        )
-      )
-    )
-
-    createViewModel()
-
-    unitFlow.value = FAHRENHEIT
-
-    verify { temperature.format(celsius = 20.0, unit = FAHRENHEIT) }
-  }
+    }
 
   private fun createViewModel(): SearchViewModel =
     SearchViewModel(
       resources = resources,
       stateFactory = stateFactory,
       useCases = SearchUseCases(
-        getRecentLocationsWithTemperature = getRecentLocationsWithTemperature,
-        observeTemperatureUnit = observeTemperatureUnit,
+        addFavorite = addFavorite,
+        getRecentLocations = getRecentLocations,
+        observeFavorites = observeFavorites,
+        removeFavorite = removeFavorite,
         saveRecentLocation = saveRecentLocation,
         searchLocation = searchLocation
       )
     )
 
-  private fun mockUnit(unit: TemperatureUnit) {
-    every { observeTemperatureUnit() } returns flowOf(unit)
-  }
-
-  private fun mockRecentsReturn(entries: List<LocationWithTemperature>) {
-    every { getRecentLocationsWithTemperature() } returns
-      flowOf(success(entries))
+  private fun mockRecentsReturn(locations: List<Location>) {
+    every { getRecentLocations() } returns flowOf(success(locations))
   }
 
   private fun mockRecentsFail(error: Throwable) {
-    every { getRecentLocationsWithTemperature() } returns
-      flowOf(failure(error))
+    every { getRecentLocations() } returns flowOf(failure(error))
+  }
+
+  private fun mockFavoritesReturn(favorites: List<LocationFavorite>) {
+    every { observeFavorites() } returns flowOf(success(favorites))
   }
 
   private companion object {
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
     const val DEBOUNCE_PLUS_SLACK = 500L
-    const val FORMATTED_TEMPERATURE = "15°"
+    const val FAVORITES_LOCATION_OFFSET = 100L
   }
 }

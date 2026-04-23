@@ -1,6 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="locations_screen_title">Locations</string>
-  <string name="locations_coming_soon_title">Locations</string>
-  <string name="locations_coming_soon_body">Saved places and quick switching are on the way.</string>
+  <string name="locations_screen_title">Favorites</string>
+
+  <string name="locations_header_title">Favorites</string>
+  <string name="locations_header_subtitle">%1$d of %2$d favorites</string>
+  <string name="locations_header_subtitle_one">1 of %1$d favorites</string>
+  <string name="locations_header_subtitle_empty">Add your first place</string>
+
+  <string name="locations_mode_browse">Browse</string>
+  <string name="locations_mode_compare">Compare</string>
+  <string name="locations_mode_compare_disabled_hint">Add one more city</string>
+
+  <string name="locations_compare_hint_pick_zero">Pick 2 cities</string>
+  <string name="locations_compare_hint_pick_one">Pick one more city</string>
+
+  <string name="locations_action_add_city">Add favorite</string>
+  <string name="locations_action_add_city_disabled">Favorites limit reached</string>
+  <string name="locations_action_more">More actions</string>
+  <string name="locations_row_temperature">%1$s</string>
+  <string name="locations_row_high_low">H %1$s · L %2$s</string>
+  <string name="locations_row_selected">Selected</string>
+  <string name="locations_row_info_feels">Feels %1$s</string>
+  <string name="locations_row_info_rain">☔ %1$d%%</string>
+  <string name="locations_row_info_wind">💨 %1$d km/h</string>
+
+  <string name="locations_menu_rename">Edit label</string>
+  <string name="locations_menu_delete">Delete</string>
+
+  <string name="locations_label_sheet_title_rename">Rename label</string>
+  <string name="locations_label_sheet_subtitle">Optional — help yourself recognize it later.</string>
+  <string name="locations_label_sheet_placeholder">Label (optional)</string>
+  <string name="locations_label_sheet_preset_home">Home</string>
+  <string name="locations_label_sheet_preset_work">Work</string>
+  <string name="locations_label_sheet_preset_vacation">Vacation</string>
+  <string name="locations_label_sheet_preset_family">Family</string>
+  <string name="locations_label_sheet_skip">Skip</string>
+  <string name="locations_label_sheet_save">Save</string>
+
+  <string name="locations_snackbar_removed">%1$s removed</string>
+  <string name="locations_snackbar_undo">Undo</string>
+  <string name="locations_snackbar_limit_reached">Favorites limit reached (%1$d)</string>
+
+  <string name="locations_empty_title">No favorites yet</string>
+  <string name="locations_empty_body">Add your first favorite place ♥️</string>
+  <string name="locations_error_default">Couldn\'t load your favorites right now.</string>
+  <string name="locations_error_compare">Couldn\'t load the comparison. Try again.</string>
+
+  <string name="locations_compare_title">%1$s vs %2$s</string>
+  <string name="locations_compare_subtitle">Weather side by side</string>
+  <string name="locations_compare_metric_temperature">Temperature</string>
+  <string name="locations_compare_metric_wind">Wind</string>
+  <string name="locations_compare_metric_humidity">Humidity</string>
+  <string name="locations_compare_metric_rain">Rain chance</string>
+  <string name="locations_compare_value_temperature">%1$s</string>
+  <string name="locations_compare_value_wind">%1$d km/h</string>
+  <string name="locations_compare_value_humidity">%1$d%%</string>
+  <string name="locations_compare_value_rain">%1$d%%</string>
+  <string name="locations_compare_timeline_title">Temperature over 24 hours</string>
+  <string name="locations_compare_timeline_now">Now</string>
+  <string name="locations_compare_timeline_hours">+%1$dh</string>
+  <string name="locations_compare_feels_like">Feels %1$s</string>
 </resources>

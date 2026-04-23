@@ -1,42 +1,49 @@
 package com.weather.vibe.feature.search.preview
 
 import com.weather.vibe.feature.search.presentation.state.LocationItemUiState
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 internal object SearchPreviewLocations {
 
-  val sampleLocations: List<LocationItemUiState> = listOf(
+  val sampleLocations: ImmutableList<LocationItemUiState> = persistentListOf(
     LocationItemUiState(
       id = 1L,
-      name = "Warszawa",
-      subtitle = "Mazowieckie, Polska",
-      temperature = "15°"
+      name = "London",
+      subtitle = "England, United Kingdom",
+      isFavorite = true,
+      canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 2L,
-      name = "Wrocław",
-      subtitle = "Dolnośląskie, Polska",
-      temperature = "13°"
+      name = "Paris",
+      subtitle = "Île-de-France, France",
+      isFavorite = false,
+      canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 3L,
-      name = "Toruń",
-      subtitle = "Kujawsko-Pomorskie, Polska",
-      temperature = "11°"
+      name = "Tokyo",
+      subtitle = "Kanto, Japan",
+      isFavorite = false,
+      canToggleFavorite = false
     )
   )
 
-  val searchResults: List<LocationItemUiState> = listOf(
+  val searchResults: ImmutableList<LocationItemUiState> = persistentListOf(
     LocationItemUiState(
       id = 4L,
-      name = "Kraków",
-      subtitle = "Małopolskie, Polska",
-      temperature = null
+      name = "Madrid",
+      subtitle = "Community of Madrid, Spain",
+      isFavorite = false,
+      canToggleFavorite = true
     ),
     LocationItemUiState(
       id = 5L,
-      name = "Krakowiec",
-      subtitle = "Czechy",
-      temperature = null
+      name = "Madison",
+      subtitle = "Wisconsin, United States",
+      isFavorite = true,
+      canToggleFavorite = true
     )
   )
 }

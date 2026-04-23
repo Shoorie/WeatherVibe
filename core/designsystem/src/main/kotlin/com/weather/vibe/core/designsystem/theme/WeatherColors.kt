@@ -2,6 +2,8 @@ package com.weather.vibe.core.designsystem.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Immutable
 data class WeatherColors(
@@ -26,7 +28,8 @@ data class WeatherColors(
   val surfaceVariant: Color,
   val colorCool: Color,
   val colorWarm: Color,
-  val textTertiary: Color
+  val textTertiary: Color,
+  val pillPalette: ImmutableList<Color>
 )
 
 fun weatherDarkColors(): WeatherColors =
@@ -52,7 +55,15 @@ fun weatherDarkColors(): WeatherColors =
     onPrimaryContainer = ColorTokens.TextPrimary,
     sheetSurface = ColorTokens.SheetSurface,
     surfaceVariant = ColorTokens.GlassSurface,
-    textTertiary = ColorTokens.TextTertiary
+    textTertiary = ColorTokens.TextTertiary,
+    pillPalette = persistentListOf(
+      ColorTokens.DarkPillCoral,
+      ColorTokens.DarkPillBlue,
+      ColorTokens.DarkPillAmber,
+      ColorTokens.DarkPillViolet,
+      ColorTokens.DarkPillTeal,
+      ColorTokens.DarkPillRose
+    )
   )
 
 fun weatherLightColors(): WeatherColors =
@@ -78,5 +89,13 @@ fun weatherLightColors(): WeatherColors =
     colorWarm = ColorTokens.LightWarm,
     sheetSurface = ColorTokens.LightSurface,
     surfaceVariant = ColorTokens.LightSurfaceContainer,
-    textTertiary = ColorTokens.LightTextTertiary
+    textTertiary = ColorTokens.LightTextTertiary,
+    pillPalette = persistentListOf(
+      ColorTokens.LightPillCoral,
+      ColorTokens.LightPillBlue,
+      ColorTokens.LightPillAmber,
+      ColorTokens.LightPillViolet,
+      ColorTokens.LightPillTeal,
+      ColorTokens.LightPillRose
+    )
   )

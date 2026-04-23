@@ -12,6 +12,9 @@ internal class SearchResources(private val context: Context) {
   fun defaultError(): String =
     context.getString(R.string.search_error_default)
 
+  fun favoritesLimitReached(limit: Int): String =
+    context.getString(R.string.search_favorites_limit_reached, limit)
+
   object Emojis {
     fun clock(): String = "\uD83D\uDD58"
     fun error(): String = "\u26A1"
@@ -69,5 +72,29 @@ internal class SearchResources(private val context: Context) {
     @Composable
     fun searchHint(): String =
       stringResource(R.string.search_hint)
+
+    @Composable
+    fun favoritesCapacity(used: Int, limit: Int): String =
+      stringResource(R.string.search_favorites_capacity, used, limit)
+
+    @Composable
+    fun favoritesCapacityFull(limit: Int): String =
+      stringResource(R.string.search_favorites_capacity_full, limit)
+
+    @Composable
+    fun heartAddContentDescription(): String =
+      stringResource(R.string.search_heart_add_content_description)
+
+    @Composable
+    fun heartRemoveContentDescription(): String =
+      stringResource(R.string.search_heart_remove_content_description)
+
+    @Composable
+    fun heartStateAdded(): String =
+      stringResource(R.string.search_heart_state_added)
+
+    @Composable
+    fun heartStateNotAdded(): String =
+      stringResource(R.string.search_heart_state_not_added)
   }
 }

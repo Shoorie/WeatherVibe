@@ -17,4 +17,13 @@
   <string name="search_error_title">Something\'s off</string>
   <string name="search_error_default">Something went wrong</string>
   <string name="search_retry">Try again</string>
+
+  <string name="search_favorites_capacity">%1$d of %2$d favorite places</string>
+  <string name="search_favorites_capacity_full">You\'ve hit the favorites cap (%1$d)</string>
+  <string name="search_favorites_limit_reached">Favorites limit reached (%1$d)</string>
+
+  <string name="search_heart_add_content_description">Add to favorites</string>
+  <string name="search_heart_remove_content_description">Remove from favorites</string>
+  <string name="search_heart_state_added">Added</string>
+  <string name="search_heart_state_not_added">Not added</string>
 </resources>

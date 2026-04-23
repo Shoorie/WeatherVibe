@@ -14,12 +14,15 @@ import com.weather.vibe.feature.search.preview.SearchPreviewLocations.searchResu
 import com.weather.vibe.feature.search.ui.SearchResources.Emojis
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.resultsSubtitle
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.resultsTitle
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun ResultsSection(
   modifier: Modifier = Modifier,
-  locations: List<LocationItemUiState>,
-  onLocationClick: (Long) -> Unit
+  locations: ImmutableList<LocationItemUiState>,
+  showHeart: Boolean,
+  onLocationClick: (Long) -> Unit,
+  onHeartClick: (Long) -> Unit
 ) {
   Column(
     modifier = modifier,
@@ -33,7 +36,9 @@ internal fun ResultsSection(
     LocationsCard(
       emoji = Emojis.locationPin(),
       locations = locations,
-      onLocationClick = onLocationClick
+      showHeart = showHeart,
+      onLocationClick = onLocationClick,
+      onHeartClick = onHeartClick
     )
   }
 }
@@ -45,7 +50,9 @@ private fun Preview() {
     ResultsSection(
       modifier = Modifier.padding(Medium),
       locations = searchResults,
-      onLocationClick = {}
+      showHeart = true,
+      onLocationClick = {},
+      onHeartClick = {}
     )
   }
 }

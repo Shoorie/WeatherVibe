@@ -156,7 +156,7 @@ private fun LabelCharCounter(length: Int) {
     modifier = Modifier
       .fillMaxWidth()
       .wrapContentWidth(align = Alignment.End),
-    text = "$length/${LabelMaxLength}",
+    text = "$length/$LabelMaxLength",
     style = typography.labelSmall,
     color = colors.textTertiary
   )

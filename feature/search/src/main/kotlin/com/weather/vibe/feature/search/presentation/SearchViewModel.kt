@@ -3,8 +3,8 @@ package com.weather.vibe.feature.search.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.error.LocationFavoritesLimitReached
-import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
@@ -118,7 +118,7 @@ internal class SearchViewModel(
 
   private suspend fun toggleFavorite(location: Location, existing: LocationFavorite?) {
     when (existing) {
-      null -> useCases.addFavorite(location = location, label = null)
+      null -> useCases.addFavorite(location = location)
       else -> useCases.removeFavorite(id = existing.id)
     }
   }

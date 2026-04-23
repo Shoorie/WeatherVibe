@@ -36,7 +36,6 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
-import com.weather.vibe.feature.locations.ui.LocationsDefaults
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.CompareMinCards
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickOne
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickZero
@@ -183,7 +182,6 @@ private fun CompareTogglePillBase(
     )
   }
 }
-
 
 @PreviewLightDark
 @Composable

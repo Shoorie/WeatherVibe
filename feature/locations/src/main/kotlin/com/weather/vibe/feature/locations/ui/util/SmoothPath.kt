@@ -28,9 +28,12 @@ internal fun buildSmoothPath(offsets: List<Offset>): Path = Path().apply {
     )
 
     cubicTo(
-      controlStart.x, controlStart.y,
-      controlEnd.x, controlEnd.y,
-      next.x, next.y
+      x1 = controlStart.x,
+      y1 = controlStart.y,
+      x2 = controlEnd.x,
+      y2 = controlEnd.y,
+      x3 = next.x,
+      y3 = next.y
     )
   }
 }

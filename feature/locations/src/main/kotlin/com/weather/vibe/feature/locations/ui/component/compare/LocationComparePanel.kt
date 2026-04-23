@@ -25,12 +25,12 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.domain.location.model.LocationWeatherAdvantage
 import com.weather.vibe.domain.location.model.LocationWeatherAdvantage.FirstLocation
 import com.weather.vibe.domain.location.model.LocationWeatherAdvantage.SecondLocation
 import com.weather.vibe.feature.locations.presentation.state.LocationComparePairUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationCompareUiState
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
 import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareFeelsLike

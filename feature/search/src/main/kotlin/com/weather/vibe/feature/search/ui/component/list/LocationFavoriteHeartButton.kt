@@ -45,7 +45,9 @@ internal fun LocationFavoriteHeartButton(
   onClick: () -> Unit
 ) {
   val bounce = rememberHeartBounce(trigger = isFavorite)
-  val description = if (isFavorite) heartRemoveContentDescription() else heartAddContentDescription()
+  val description =
+    if (isFavorite) heartRemoveContentDescription()
+    else heartAddContentDescription()
   val stateLabel = if (isFavorite) heartStateAdded() else heartStateNotAdded()
   Box(
     modifier = modifier

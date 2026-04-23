@@ -14,7 +14,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
-import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
@@ -79,10 +79,14 @@ internal fun SearchContent(
 
 @Composable
 private fun CapacityBanner(used: Int) {
-  val limit = LocationFavoritesPolicy.MAX_FAVORITES
+  
+  val limit = MAX_FAVORITES
   val isFull = used >= limit
+  val label = if (isFull) favoritesCapacityFull(limit = limit)
+  else favoritesCapacity(used = used, limit = limit)
+
   LocationFavoritesCapacityBanner(
-    label = if (isFull) favoritesCapacityFull(limit = limit) else favoritesCapacity(used = used, limit = limit),
+    label = label,
     accentColor = if (isFull) colors.error else colors.accent,
     labelColor = if (isFull) colors.error else colors.onSurfaceVariant
   )
@@ -107,6 +111,7 @@ private fun SearchStateContent(
       onLocationClick = onLocationClick,
       onHeartClick = onHeartClick
     )
+
     is Results -> ResultsSection(
       modifier = modifier,
       locations = state.locations,
@@ -114,10 +119,12 @@ private fun SearchStateContent(
       onLocationClick = onLocationClick,
       onHeartClick = onHeartClick
     )
+
     is Empty -> SearchEmptyState(
       modifier = modifier,
       query = state.query
     )
+
     is Error -> SearchErrorState(
       modifier = modifier,
       message = state.message,

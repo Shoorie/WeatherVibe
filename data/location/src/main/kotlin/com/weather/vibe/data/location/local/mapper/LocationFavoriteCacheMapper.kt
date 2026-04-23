@@ -1,8 +1,8 @@
 package com.weather.vibe.data.location.local.mapper
 
 import com.weather.vibe.data.location.local.entity.LocationFavoriteEntity
-import com.weather.vibe.domain.location.model.LocationFavorite
 import com.weather.vibe.domain.location.model.Location
+import com.weather.vibe.domain.location.model.LocationFavorite
 import org.koin.core.annotation.Factory
 
 @Factory

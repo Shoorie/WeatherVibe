@@ -13,7 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.locations.presentation.LocationsAction
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.LocationsAction.Initialize
 import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsEvent
@@ -21,6 +20,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateTo
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowLimitReachedSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowRemovedSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsViewModel
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsResources
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -33,9 +33,7 @@ fun LocationsScreen(
   val viewModel = koinViewModel<LocationsViewModel>()
   val resources = koinInject<LocationsResources>()
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val dispatch: (LocationsAction) -> Unit = remember(viewModel) {
-    { action -> viewModel.dispatch(action) }
-  }
+  val dispatch: (LocationsAction) -> Unit = viewModel::dispatch
   val snackbarHostState = remember { SnackbarHostState() }
 
   LaunchedEffect(viewModel) {

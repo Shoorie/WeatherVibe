@@ -15,8 +15,10 @@ class WeatherDataToSnapshotMapper {
     data: WeatherData,
     capturedAt: Instant
   ): LocationWeatherSnapshot {
+
     val today = data.dailyForecast.firstOrNull()
     val upcomingHours = data.hourlyForecast.take(HOURLY_POINTS)
+
     return LocationWeatherSnapshot(
       condition = SimplifiedCondition.from(condition = data.condition),
       feelsLikeC = data.apparentTemperature,
@@ -26,7 +28,8 @@ class WeatherDataToSnapshotMapper {
       isDay = data.isDay,
       locationId = locationId,
       lowC = today?.minTemperature ?: data.currentTemperature,
-      precipitationChancePercent = upcomingHours.maxOfOrNull { it.precipitationProbability } ?: 0,
+      precipitationChancePercent = upcomingHours
+        .maxOfOrNull { it.precipitationProbability } ?: 0,
       temperatureC = data.currentTemperature,
       updatedAt = capturedAt,
       windKph = data.windSpeed

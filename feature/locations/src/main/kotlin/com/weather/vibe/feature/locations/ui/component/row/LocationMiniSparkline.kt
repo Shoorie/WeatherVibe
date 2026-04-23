@@ -59,12 +59,12 @@ internal fun LocationMiniSparkline(
   }
 }
 
+private val PREVIEW_POINTS = persistentListOf(3f, 5f, 8f, 11f, 12f, 10f, 7f, 4f, 2f)
+
 @PreviewLightDark
 @Composable
 private fun Preview() {
   WeatherVibeTheme {
-    LocationMiniSparkline(
-      points = persistentListOf(3f, 5f, 8f, 11f, 12f, 10f, 7f, 4f, 2f)
-    )
+    LocationMiniSparkline(points = PREVIEW_POINTS)
   }
 }

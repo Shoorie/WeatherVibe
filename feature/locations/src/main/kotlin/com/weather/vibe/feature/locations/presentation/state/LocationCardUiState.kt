@@ -20,4 +20,3 @@ internal data class LocationCardUiState(
   val weather: LocationWeatherUi?,
   val windKph: Int?
 )
-

@@ -46,7 +46,7 @@ style:
   UnusedPrivateMember:
     ignoreAnnotated: ['Preview', 'PreviewLightDark']
   MagicNumber:
-    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**']
+    excludes: ['**/test/**', '**/androidTest/**', '**/testing/**', '**/preview/**']
     ignorePropertyDeclaration: true
     ignoreAnnotation: true
     ignoreEnums: true

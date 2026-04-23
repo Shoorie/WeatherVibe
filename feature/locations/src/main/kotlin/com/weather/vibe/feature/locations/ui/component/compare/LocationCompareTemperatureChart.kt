@@ -34,9 +34,9 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.presentation.state.LocationCompareUiState
 import com.weather.vibe.feature.locations.presentation.state.TemperatureAxisUiState
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineAxisLabelColumnWidth
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.TimelineAxisPadding

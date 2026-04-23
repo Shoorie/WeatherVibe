@@ -28,12 +28,10 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
-import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
+import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
@@ -43,11 +41,12 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
-import com.weather.vibe.feature.locations.ui.LocationsKeys
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
 import com.weather.vibe.feature.locations.ui.component.add.AddLocationFab
 import com.weather.vibe.feature.locations.ui.component.compare.LocationCompareSheet
 import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState

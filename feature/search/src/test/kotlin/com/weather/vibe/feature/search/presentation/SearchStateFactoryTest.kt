@@ -60,12 +60,12 @@ class SearchStateFactoryTest {
 
     val result = factory.recentsStateOrIdle(
       query = QUERY,
-      locations = listOf(location(admin1 = null, country = "Poland")),
+      locations = listOf(location(admin1 = null, country = "France")),
       favoriteLocationIds = emptySet()
     )
 
     expectThat(result).isA<Recents>()
-      .get { locations.single().subtitle }.isEqualTo("Poland")
+      .get { locations.single().subtitle }.isEqualTo("France")
   }
 
   @Test
@@ -73,12 +73,12 @@ class SearchStateFactoryTest {
 
     val result = factory.recentsStateOrIdle(
       query = QUERY,
-      locations = listOf(location(admin1 = "Mazowieckie", country = "Poland")),
+      locations = listOf(location(admin1 = "Île-de-France", country = "France")),
       favoriteLocationIds = emptySet()
     )
 
     expectThat(result).isA<Recents>()
-      .get { locations.single().subtitle }.isEqualTo("Mazowieckie, Poland")
+      .get { locations.single().subtitle }.isEqualTo("Île-de-France, France")
   }
 
   @Test
@@ -86,12 +86,12 @@ class SearchStateFactoryTest {
 
     val result = factory.recentsStateOrIdle(
       query = QUERY,
-      locations = listOf(location(admin1 = "Mazowieckie", country = "")),
+      locations = listOf(location(admin1 = "Île-de-France", country = "")),
       favoriteLocationIds = emptySet()
     )
 
     expectThat(result).isA<Recents>()
-      .get { locations.single().subtitle }.isEqualTo("Mazowieckie")
+      .get { locations.single().subtitle }.isEqualTo("Île-de-France")
   }
 
   @Test
@@ -119,6 +119,6 @@ class SearchStateFactoryTest {
   }
 
   private companion object {
-    const val QUERY = "warsaw"
+    const val QUERY = "london"
   }
 }

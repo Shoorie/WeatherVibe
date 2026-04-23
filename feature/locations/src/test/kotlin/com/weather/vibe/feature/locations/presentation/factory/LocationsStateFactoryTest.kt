@@ -1,10 +1,11 @@
 package com.weather.vibe.feature.locations.presentation.factory
 
-import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.feature.locations.presentation.fake.DEFAULT_ERROR
 import com.weather.vibe.feature.locations.presentation.fake.fakeLocationsResources
-import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures
+import com.weather.vibe.feature.locations.presentation.fake.fakeTemperatureFormatter
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.KRAKOW_WITH_WEATHER
+import com.weather.vibe.feature.locations.presentation.fixture.LocationFavoriteFixtures.WARSAW_WITH_WEATHER
 import io.mockk.unmockkAll
 import org.junit.After
 import org.junit.Test
@@ -30,9 +31,9 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `map cards produces one card per source in order`() {
+  fun `given two sources, when cards mapped, then result has two cards`() {
 
-    val sources = listOf(LocationFavoriteFixtures.WARSAW_WITH_WEATHER, LocationFavoriteFixtures.KRAKOW_WITH_WEATHER)
+    val sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER)
 
     val result = factory.mapCards(sources = sources, temperatureUnit = CELSIUS)
 
@@ -40,7 +41,7 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `empty sources produce empty card list`() {
+  fun `given empty sources, when cards mapped, then result is empty`() {
 
     val result = factory.mapCards(sources = emptyList(), temperatureUnit = CELSIUS)
 
@@ -48,7 +49,7 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `throwable with message surfaces as error state message`() {
+  fun `given throwable with message, when error state built, then message is preserved`() {
 
     val result = factory.error(throwable = IllegalStateException("boom"))
 
@@ -56,7 +57,7 @@ class LocationsStateFactoryTest {
   }
 
   @Test
-  fun `throwable without message falls back to default error`() {
+  fun `given throwable without message, when error state built, then message falls back to default`() {
 
     val result = factory.error(throwable = RuntimeException())
 

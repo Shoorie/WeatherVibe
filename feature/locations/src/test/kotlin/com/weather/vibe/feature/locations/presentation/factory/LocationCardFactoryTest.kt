@@ -27,7 +27,7 @@ class LocationCardFactoryTest {
   )
 
   @Test
-  fun `snapshot with temperature rounds and formats value`() {
+  fun `given snapshot temperature 22_6, when card created, then temperature rounds to 23`() {
 
     val source = LocationFavoriteWithWeather(
       favorite = WARSAW_FAVORITE,
@@ -40,18 +40,27 @@ class LocationCardFactoryTest {
   }
 
   @Test
-  fun `missing snapshot leaves temperature and weather null`() {
+  fun `given missing snapshot, when card created, then temperature is null`() {
 
     val source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
 
     val result = factory.create(source = source, temperatureUnit = CELSIUS)
 
     expectThat(result.temperature).isNull()
+  }
+
+  @Test
+  fun `given missing snapshot, when card created, then weather is null`() {
+
+    val source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
+
+    val result = factory.create(source = source, temperatureUnit = CELSIUS)
+
     expectThat(result.weather).isNull()
   }
 
   @Test
-  fun `favorite with custom label keeps the label on the card`() {
+  fun `given favorite with custom label, when card created, then label is preserved`() {
 
     val result = factory.create(
       source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = WARSAW_SNAPSHOT),
@@ -62,7 +71,7 @@ class LocationCardFactoryTest {
   }
 
   @Test
-  fun `favorite without label leaves card label null`() {
+  fun `given favorite without label, when card created, then label is null`() {
 
     val result = factory.create(
       source = LocationFavoriteWithWeather(favorite = KRAKOW_FAVORITE, snapshot = null),
@@ -73,7 +82,7 @@ class LocationCardFactoryTest {
   }
 
   @Test
-  fun `favorite with admin1 fills region from admin1`() {
+  fun `given favorite with admin1, when card created, then region comes from admin1`() {
 
     val result = factory.create(
       source = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null),
@@ -84,7 +93,7 @@ class LocationCardFactoryTest {
   }
 
   @Test
-  fun `favorite without admin1 falls back to country`() {
+  fun `given favorite without admin1, when card created, then region falls back to country`() {
 
     val favorite = favorite(location = location(admin1 = null))
 
@@ -97,7 +106,7 @@ class LocationCardFactoryTest {
   }
 
   @Test
-  fun `sunny day snapshot yields sunny weather`() {
+  fun `given sunny day snapshot, when card created, then weather is sunny`() {
 
     val source = LocationFavoriteWithWeather(
       favorite = WARSAW_FAVORITE,

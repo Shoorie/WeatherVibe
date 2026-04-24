@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +29,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -43,6 +46,8 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import kotlinx.collections.immutable.ImmutableList
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 internal fun MonthCalendar(
@@ -57,7 +62,7 @@ internal fun MonthCalendar(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .clip(RoundedCornerShape(CARD_RADIUS))
+      .clip(CardShape)
       .background(WeatherVibeTheme.colors.surfaceVariant)
       .padding(Padding.Medium)
   ) {
@@ -86,36 +91,61 @@ private fun CalendarHeader(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
-    IconButton(
+    CalendarNavButton(
+      icon = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+      contentDescription = stringResource(R.string.vibe_history_previous_month),
       onClick = onPreviousMonthClicked,
-      modifier = Modifier
-        .size(NAV_BUTTON_SIZE)
-        .clip(CircleShape)
-        .background(WeatherVibeTheme.colors.surfaceVariant)
-    ) {
-      Icon(
-        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-        contentDescription = stringResource(R.string.vibe_history_previous_month),
-        tint = WeatherVibeTheme.colors.onSurface
-      )
-    }
+      enabled = true
+    )
     Text(
       text = VibeRatingResources.monthLabel(viewMonth),
       style = WeatherVibeTheme.typography.titleMedium,
       color = WeatherVibeTheme.colors.onSurface,
       fontWeight = FontWeight.SemiBold
     )
-    IconButton(
+    val nextDisabledHint = stringResource(R.string.vibe_history_next_month_disabled)
+    CalendarNavButton(
+      icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+      contentDescription = stringResource(R.string.vibe_history_next_month),
       onClick = onNextMonthClicked,
       enabled = canNavigateNext,
+      stateDescriptionWhenDisabled = nextDisabledHint
+    )
+  }
+}
+
+@Composable
+private fun CalendarNavButton(
+  icon: androidx.compose.ui.graphics.vector.ImageVector,
+  contentDescription: String,
+  onClick: () -> Unit,
+  enabled: Boolean,
+  stateDescriptionWhenDisabled: String? = null
+) {
+  IconButton(
+    onClick = onClick,
+    enabled = enabled,
+    modifier = Modifier
+      .size(NAV_BUTTON_TOUCH)
+      .then(
+        if (!enabled && stateDescriptionWhenDisabled != null) {
+          Modifier.semantics { stateDescription = stateDescriptionWhenDisabled }
+        } else {
+          Modifier
+        }
+      )
+  ) {
+    Box(
       modifier = Modifier
-        .size(NAV_BUTTON_SIZE)
+        .size(NAV_BUTTON_VISUAL)
         .clip(CircleShape)
+        .background(WeatherVibeTheme.colors.surfaceVariant),
+      contentAlignment = Alignment.Center
     ) {
       Icon(
-        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-        contentDescription = stringResource(R.string.vibe_history_next_month),
-        tint = if (canNavigateNext) WeatherVibeTheme.colors.onSurface else WeatherVibeTheme.colors.outline
+        imageVector = icon,
+        contentDescription = contentDescription,
+        tint = if (enabled) WeatherVibeTheme.colors.onSurface else WeatherVibeTheme.colors.outline
       )
     }
   }
@@ -124,7 +154,9 @@ private fun CalendarHeader(
 @Composable
 private fun WeekdayRow() {
   Row(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+      .fillMaxWidth()
+      .clearAndSetSemantics {},
     horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall)
   ) {
     VibeRatingResources.weekdayLabels().forEach { label ->
@@ -189,27 +221,31 @@ private fun DayCell(
   val cellTextColor = dayCellTextColor(day)
   val borderColor = dayCellBorder(day)
   val clickable = !day.isFuture
+  val cellDescription = dayCellDescription(day)
+  val openLabel = stringResource(R.string.vibe_history_day_open_details)
 
   Box(
     modifier = modifier
-      .clip(RoundedCornerShape(CELL_RADIUS))
+      .defaultMinSize(minWidth = TouchTarget, minHeight = TouchTarget)
+      .clip(CellShape)
       .background(cellBackground)
       .then(
         if (borderColor != null) {
-          Modifier.border(
-            width = 2.dp,
-            color = borderColor,
-            shape = RoundedCornerShape(CELL_RADIUS)
-          )
+          Modifier.border(width = 2.dp, color = borderColor, shape = CellShape)
         } else {
           Modifier
         }
       )
       .then(
         if (clickable) {
-          Modifier.clickable(role = Role.Button) { onDayClicked(day.date) }
+          Modifier
+            .semantics { contentDescription = cellDescription }
+            .clickable(
+              role = Role.Button,
+              onClickLabel = openLabel
+            ) { onDayClicked(day.date) }
         } else {
-          Modifier.semantics { contentDescription = "${day.dayOfMonth}" }
+          Modifier.semantics { contentDescription = cellDescription }
         }
       ),
     contentAlignment = Alignment.Center
@@ -224,11 +260,22 @@ private fun DayCell(
 }
 
 @Composable
+private fun dayCellDescription(day: Day): String {
+  val dateLabel = day.date.format(CellDateFormatter)
+  val base = day.rating?.let {
+    stringResource(R.string.vibe_history_day_rated_description, dateLabel, it)
+  } ?: stringResource(R.string.vibe_history_day_unrated_description, dateLabel)
+  val todayPart = if (day.isToday) stringResource(R.string.vibe_history_day_today_suffix) else ""
+  val selectedPart = if (day.isSelected) stringResource(R.string.vibe_history_day_selected_suffix) else ""
+  return base + todayPart + selectedPart
+}
+
+@Composable
 private fun dayCellBackground(day: Day): Color =
   when {
     day.isFuture -> WeatherVibeTheme.colors.surfaceVariant
     day.rating != null -> ratingColor(day.rating)
-    else -> WeatherVibeTheme.colors.outline.copy(alpha = 0.3f)
+    else -> WeatherVibeTheme.colors.outlineVariant
   }
 
 @Composable
@@ -248,6 +295,10 @@ private fun dayCellBorder(day: Day): Color? =
   }
 
 private const val DAYS_IN_WEEK: Int = 7
-private val CARD_RADIUS = 18.dp
-private val CELL_RADIUS = 10.dp
-private val NAV_BUTTON_SIZE = 32.dp
+private val CardShape = RoundedCornerShape(18.dp)
+private val CellShape = RoundedCornerShape(10.dp)
+private val NAV_BUTTON_TOUCH = 48.dp
+private val NAV_BUTTON_VISUAL = 32.dp
+private val TouchTarget = 48.dp
+private val CellDateFormatter: DateTimeFormatter =
+  DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))

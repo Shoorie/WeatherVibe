@@ -26,6 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
@@ -79,6 +83,9 @@ private fun DayDetailContent(
       .clip(RoundedCornerShape(CARD_RADIUS))
       .background(backgroundColor)
       .padding(Padding.Medium)
+      .semantics(mergeDescendants = true) {
+        liveRegion = LiveRegionMode.Polite
+      }
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -95,7 +102,8 @@ private fun DayDetailContent(
           text = detailTitle(detail),
           style = WeatherVibeTheme.typography.titleMedium,
           color = WeatherVibeTheme.colors.onSurface,
-          fontWeight = FontWeight.SemiBold
+          fontWeight = FontWeight.SemiBold,
+          modifier = Modifier.semantics { heading() }
         )
       }
       IconButton(onClick = onDismissClicked) {

@@ -102,6 +102,8 @@ dependencies {
   implementation(projects.domain.alerts)
   implementation(projects.domain.airquality)
   implementation(projects.domain.vibe)
+  implementation(projects.domain.viberating)
+  implementation(projects.data.viberating)
   implementation(projects.data.airquality)
   implementation(projects.domain.widget)
   implementation(projects.data.widget)
@@ -116,6 +118,7 @@ dependencies {
   implementation(projects.feature.search)
   implementation(projects.feature.settings)
   implementation(projects.feature.splash)
+  implementation(projects.feature.viberating)
   implementation(projects.feature.widget)
 
   implementation(libs.androidx.core.ktx)

@@ -37,6 +37,13 @@
   <string name="vibe_history_no_rating">Brak oceny</string>
   <string name="vibe_history_day_detail_close">Zamknij szczegóły dnia</string>
   <string name="vibe_history_day_detail_rating">Ocena %1$d z 5</string>
+  <string name="vibe_history_day_rated_description">%1$s, ocena %2$d z 5</string>
+  <string name="vibe_history_day_unrated_description">%1$s, brak oceny</string>
+  <string name="vibe_history_day_today_suffix">, dziś</string>
+  <string name="vibe_history_day_selected_suffix">, wybrany</string>
+  <string name="vibe_history_day_open_details">otwórz szczegóły dnia</string>
+  <string name="vibe_history_next_month_disabled">Nie można przejść na przyszły miesiąc</string>
+  <string name="vibe_history_progress_description">Średnia ocena dla tej pogody</string>
   <string name="vibe_history_ranking_title">Średnia ocena wg pogody</string>
   <string name="vibe_history_ranking_entries">%1$d %2$s</string>
   <string name="vibe_history_entries_one">dzień</string>

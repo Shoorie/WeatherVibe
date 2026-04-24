@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -36,7 +39,7 @@ internal fun ConditionRankingCard(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .clip(RoundedCornerShape(CARD_RADIUS))
+      .clip(CardShape)
       .background(WeatherVibeTheme.colors.surfaceVariant)
       .padding(Padding.Medium)
   ) {
@@ -44,7 +47,8 @@ internal fun ConditionRankingCard(
       text = stringResource(R.string.vibe_history_ranking_title),
       style = WeatherVibeTheme.typography.labelMedium,
       color = WeatherVibeTheme.colors.onSurfaceVariant,
-      fontWeight = FontWeight.Medium
+      fontWeight = FontWeight.Medium,
+      modifier = Modifier.semantics { heading() }
     )
     Spacer(Modifier.height(Padding.Medium))
     ranking.forEach { item ->
@@ -57,7 +61,25 @@ internal fun ConditionRankingCard(
 @Composable
 private fun RankingRow(item: ConditionRankingUiState) {
   val itemColor = ratingColor(item.averageRating.toInt().coerceAtLeast(1))
-  Column(modifier = Modifier.fillMaxWidth()) {
+  val conditionLabel = VibeRatingResources.conditionLabel(item.condition)
+  val average = "%.1f".format(item.averageRating)
+  val entryCountText = stringResource(
+    R.string.vibe_history_ranking_entries,
+    item.entryCount,
+    entriesPlural(item.entryCount)
+  )
+  val rowDescription = "$conditionLabel, $average, $entryCountText"
+
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .semantics(mergeDescendants = true) {
+        progressBarRangeInfo = ProgressBarRangeInfo(
+          current = item.progressFraction,
+          range = 0f..1f
+        )
+      }
+  ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
       horizontalArrangement = Arrangement.SpaceBetween,
@@ -65,23 +87,19 @@ private fun RankingRow(item: ConditionRankingUiState) {
     ) {
       Column(modifier = Modifier.weight(1f)) {
         Text(
-          text = VibeRatingResources.conditionLabel(item.condition),
+          text = conditionLabel,
           style = WeatherVibeTheme.typography.bodyMedium,
           color = WeatherVibeTheme.colors.onSurface,
           fontWeight = FontWeight.SemiBold
         )
         Text(
-          text = stringResource(
-            R.string.vibe_history_ranking_entries,
-            item.entryCount,
-            entriesPlural(item.entryCount)
-          ),
+          text = entryCountText,
           style = WeatherVibeTheme.typography.labelSmall,
           color = WeatherVibeTheme.colors.onSurfaceVariant
         )
       }
       Text(
-        text = "%.1f".format(item.averageRating),
+        text = average,
         style = WeatherVibeTheme.typography.titleMedium,
         color = itemColor,
         fontWeight = FontWeight.SemiBold
@@ -92,14 +110,14 @@ private fun RankingRow(item: ConditionRankingUiState) {
       modifier = Modifier
         .fillMaxWidth()
         .height(PROGRESS_HEIGHT)
-        .clip(RoundedCornerShape(PROGRESS_HEIGHT))
-        .background(WeatherVibeTheme.colors.outline.copy(alpha = 0.3f))
+        .clip(ProgressShape)
+        .background(WeatherVibeTheme.colors.outlineVariant)
     ) {
       Box(
         modifier = Modifier
           .fillMaxWidth(item.progressFraction)
           .height(PROGRESS_HEIGHT)
-          .clip(RoundedCornerShape(PROGRESS_HEIGHT))
+          .clip(ProgressShape)
           .background(itemColor)
       )
     }
@@ -116,5 +134,6 @@ private fun entriesPlural(count: Int): String {
   return stringResource(resId)
 }
 
-private val CARD_RADIUS = 18.dp
+private val CardShape = RoundedCornerShape(18.dp)
+private val ProgressShape = RoundedCornerShape(6.dp)
 private val PROGRESS_HEIGHT = 6.dp

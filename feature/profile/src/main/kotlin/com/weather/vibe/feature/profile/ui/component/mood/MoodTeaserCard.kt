@@ -37,7 +37,7 @@ internal fun MoodTeaserCard(
     Column(
       modifier = Modifier
         .fillMaxWidth()
-        .semantics(mergeDescendants = true) { heading() },
+        .semantics(mergeDescendants = true) {},
       verticalArrangement = Arrangement.spacedBy(Small)
     ) {
       MoodTeaserTitleRow()
@@ -57,7 +57,9 @@ private fun MoodTeaserTitleRow() {
     horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     Text(
-      modifier = Modifier.weight(1f),
+      modifier = Modifier
+        .weight(1f)
+        .semantics { heading() },
       text = moodTitle(),
       style = ProfileTextStyles.sectionTitle(),
       color = colors.onPrimaryContainer

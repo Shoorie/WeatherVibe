@@ -2,6 +2,7 @@ package com.weather.vibe.feature.profile.presentation
 
 import android.util.Log
 import app.cash.turbine.test
+import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesCount
 import com.weather.vibe.domain.profile.usecase.ObserveProfile
 import com.weather.vibe.domain.profile.usecase.SaveUsername
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
@@ -62,9 +63,11 @@ class ProfileViewModelTest {
 
   private val observeUserSettings = mockk<ObserveUserSettings>()
   private val observeProfile = mockk<ObserveProfile>()
+  private val observeFavoritesCount = mockk<ObserveLocationFavoritesCount>()
   private val saveUsername = mockk<SaveUsername>()
   private val stateFactory = ProfileStateFactory(resources = fakeProfileResources())
   private val useCases = ProfileUseCases(
+    observeFavoritesCount = observeFavoritesCount,
     observeProfile = observeProfile,
     observeUserSettings = observeUserSettings,
     saveUsername = saveUsername
@@ -76,6 +79,7 @@ class ProfileViewModelTest {
     every { Log.e(any(), any(), any()) } returns 0
     every { observeUserSettings() } returns emptyFlow()
     every { observeProfile() } returns emptyFlow()
+    every { observeFavoritesCount() } returns emptyFlow()
     coJustRun { saveUsername(any()) }
   }
 

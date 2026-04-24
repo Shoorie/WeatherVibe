@@ -55,13 +55,8 @@ internal class ProfileViewModel(
   }
 
   init {
-    combine(
-      useCases.observeProfile(),
-      useCases.observeUserSettings(),
-      ::ProfileSnapshot
-    )
-      .onEach(::onProfileSnapshot)
-      .launchIn(viewModelScope)
+    observeProfileSnapshot()
+    observeFavoritesCount()
   }
 
   fun dispatch(action: ProfileAction) {
@@ -76,6 +71,22 @@ internal class ProfileViewModel(
       is PrivacyClick -> onPrivacyClick()
       is StatClick -> onStatClick(action.type)
     }
+  }
+
+  private fun observeProfileSnapshot() {
+    combine(
+      useCases.observeProfile(),
+      useCases.observeUserSettings(),
+      ::ProfileSnapshot
+    )
+      .onEach(::onProfileSnapshot)
+      .launchIn(viewModelScope)
+  }
+
+  private fun observeFavoritesCount() {
+    useCases.observeFavoritesCount()
+      .onEach(::onFavoritesCountResult)
+      .launchIn(viewModelScope)
   }
 
   private fun onAboutClick() {
@@ -141,6 +152,18 @@ internal class ProfileViewModel(
         state = current,
         profile = profile
       )
+    }
+  }
+
+  private fun onFavoritesCountResult(result: Result<Int>) {
+    result
+      .onSuccess(::applyLocationsCount)
+      .onFailure { Log.e(TAG, "Failed to observe favorites", it) }
+  }
+
+  private fun applyLocationsCount(count: Int) {
+    _state.update { current ->
+      stateFactory.withLocationsCount(state = current, count = count)
     }
   }
 

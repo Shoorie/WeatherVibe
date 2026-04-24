@@ -97,12 +97,21 @@ internal class ProfileStateFactoryTest {
   }
 
   @Test
-  fun `when initial state built, then locations stat shows initial count`() {
+  fun `when initial state built, then locations stat shows zero`() {
 
     val result = factory.initial()
     val locations = result.quickStats.first { it.type == LOCATIONS }
 
-    expectThat(locations.value).isEqualTo("1")
+    expectThat(locations.value).isEqualTo("0")
+  }
+
+  @Test
+  fun `when locations count applied, then locations stat shows new value`() {
+
+    val updated = factory.withLocationsCount(state = factory.initial(), count = 5)
+    val locations = updated.quickStats.first { it.type == LOCATIONS }
+
+    expectThat(locations.value).isEqualTo("5")
   }
 
   @Test

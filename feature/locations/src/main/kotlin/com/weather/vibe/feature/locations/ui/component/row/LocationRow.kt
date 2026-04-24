@@ -99,7 +99,29 @@ internal fun LocationRow(
       modifier = Modifier.weight(1f),
       card = card
     )
-    TemperatureBlock(card = card)
+    TemperatureWithActions(
+      temperature = card.temperature,
+      compareMode = compareMode,
+      isSelected = isSelected,
+      onRename = onRename,
+      onDelete = onDelete
+    )
+  }
+}
+
+@Composable
+private fun TemperatureWithActions(
+  temperature: String?,
+  compareMode: Boolean,
+  isSelected: Boolean,
+  onRename: () -> Unit,
+  onDelete: () -> Unit
+) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
+  ) {
+    TemperatureValue(temperature = temperature)
     TrailingAffordance(
       compareMode = compareMode,
       isSelected = isSelected,
@@ -159,6 +181,16 @@ private fun LocationLabels(
       maxLines = 1,
       overflow = TextOverflow.Ellipsis
     )
+    card.feelsLike?.let { feels ->
+      Text(
+        modifier = Modifier.padding(top = ExtraSmall),
+        text = rowInfoFeels(value = feels),
+        style = typography.labelSmall,
+        color = colors.textTertiary,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+      )
+    }
   }
 }
 
@@ -192,24 +224,13 @@ private fun LabelPill(card: LocationCardUiState) {
 }
 
 @Composable
-private fun TemperatureBlock(card: LocationCardUiState) {
-  val temperature = card.temperature
-  Column(horizontalAlignment = Alignment.End) {
-    Text(
-      text = temperature(value = temperature),
-      style = typography.titleLarge,
-      color = temperatureTextColor(hasValue = temperature != null),
-      textAlign = TextAlign.End
-    )
-    card.feelsLike?.let { feels ->
-      Text(
-        text = rowInfoFeels(value = feels),
-        style = typography.labelSmall,
-        color = colors.textTertiary,
-        maxLines = 1
-      )
-    }
-  }
+private fun TemperatureValue(temperature: String?) {
+  Text(
+    text = temperature(value = temperature),
+    style = typography.titleLarge,
+    color = temperatureTextColor(hasValue = temperature != null),
+    textAlign = TextAlign.End
+  )
 }
 
 @Composable

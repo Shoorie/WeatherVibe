@@ -23,10 +23,16 @@ import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodTitle
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
-internal fun MoodTeaserCard(modifier: Modifier = Modifier) {
+internal fun MoodTeaserCard(
+  modifier: Modifier = Modifier,
+  onClick: (() -> Unit)? = null,
+  onClickLabel: String? = null
+) {
   VibeCard(
     modifier = modifier,
-    contentPadding = Medium
+    contentPadding = Medium,
+    onClick = onClick,
+    onClickLabel = onClickLabel
   ) {
     Column(
       modifier = Modifier

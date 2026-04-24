@@ -6,6 +6,7 @@ import com.weather.vibe.domain.location.usecase.AddLocationFavorite
 import com.weather.vibe.domain.location.usecase.CompareLocationWeather
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeather
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
+import com.weather.vibe.domain.location.usecase.RefreshStaleLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
 import com.weather.vibe.domain.location.usecase.RestoreLocationWeatherSnapshot
@@ -69,6 +70,7 @@ class LocationsViewModelTest {
   private val observeFavoritesWithWeather = mockk<ObserveLocationFavoritesWithWeather>()
   private val observeTemperatureUnit = mockk<ObserveTemperatureUnit>()
   private val refreshFavoritesWeather = mockk<RefreshLocationFavoritesWeather>()
+  private val refreshStaleFavoritesWeather = mockk<RefreshStaleLocationFavoritesWeather>(relaxed = true)
   private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val renameFavorite = mockk<RenameLocationFavorite>()
   private val restoreSnapshot = mockk<RestoreLocationWeatherSnapshot>()
@@ -108,6 +110,7 @@ class LocationsViewModelTest {
     observeFavoritesWithWeather = observeFavoritesWithWeather,
     observeTemperatureUnit = observeTemperatureUnit,
     refreshFavoritesWeather = refreshFavoritesWeather,
+    refreshStaleFavoritesWeather = refreshStaleFavoritesWeather,
     removeFavorite = removeFavorite,
     renameFavorite = renameFavorite,
     restoreSnapshot = restoreSnapshot
@@ -127,6 +130,15 @@ class LocationsViewModelTest {
     val loaded = viewModel.state.value as Loaded
 
     expectThat(loaded.cards).hasSize(2)
+  }
+
+  @Test
+  fun `when initialized, then stale favorites weather refreshed`() = runTest {
+
+    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
+    createViewModel().also { it.dispatch(Initialize) }
+
+    coVerify { refreshStaleFavoritesWeather() }
   }
 
   @Test

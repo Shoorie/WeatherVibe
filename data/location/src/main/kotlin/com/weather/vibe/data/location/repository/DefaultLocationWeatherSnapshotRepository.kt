@@ -20,7 +20,7 @@ internal class DefaultLocationWeatherSnapshotRepository(
   private val mapper: LocationWeatherSnapshotCacheMapper
 ) : LocationWeatherSnapshotRepository {
 
-  override fun observeSnapshots(): Flow<List<LocationWeatherSnapshot>> =
+  override fun observeWeatherSnapshots(): Flow<List<LocationWeatherSnapshot>> =
     dao.observeAll()
       .map { it.map(mapper::toDomain) }
       .flowOn(IO)

@@ -9,6 +9,7 @@ import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.feature.home.mapper.toVibeWeatherSnapshot
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
@@ -201,10 +202,12 @@ internal class HomeViewModel(
   }
 
   private fun onReformatOnly(weather: WeatherData, settings: UserSettings) {
+    val metrics = useCases.getCurrentWeatherMetrics(weather)
     _state.update {
       stateFactory.reformatTemperatures(
         current = it,
         data = weather,
+        metrics = metrics,
         unit = settings.temperatureUnit
       )
     }
@@ -216,7 +219,12 @@ internal class HomeViewModel(
   }
 
   private fun rebuildLoadedState(weather: WeatherData, settings: UserSettings): Loaded {
-    val base = stateFactory.create(data = weather, unit = settings.temperatureUnit)
+    val base = stateFactory.create(
+      data = weather,
+      metrics = useCases.getCurrentWeatherMetrics(weather),
+      vibeSnapshot = weather.toVibeWeatherSnapshot(),
+      unit = settings.temperatureUnit
+    )
     return base.copy(
       dailyVibe = preservedDailyVibeCard(),
       isRefreshing = false

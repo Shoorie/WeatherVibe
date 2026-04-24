@@ -17,8 +17,8 @@ internal data class VibeHistoryUiState(
 ) {
 
   companion object {
-    val EMPTY: VibeHistoryUiState = VibeHistoryUiState(
-      viewMonth = YearMonth.now(),
+    fun emptyFor(month: YearMonth): VibeHistoryUiState = VibeHistoryUiState(
+      viewMonth = month,
       canNavigateNext = false,
       averageRating = 0.0,
       totalEntries = 0,

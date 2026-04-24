@@ -5,6 +5,11 @@
   <string name="vibe_rating_card_title">Jak oceniasz ten dzień?</string>
   <string name="vibe_rating_card_subtitle">Pomóż nam uczyć się Twoich preferencji.</string>
   <string name="vibe_rating_save">Zapisz</string>
+  <string name="vibe_rating_saving">Zapisywanie…</string>
+  <string name="vibe_rating_save_error_title">Nie udało się zapisać oceny</string>
+  <string name="vibe_rating_save_error_body">Sprawdź połączenie i spróbuj ponownie.</string>
+  <string name="vibe_rating_retry">Ponów</string>
+  <string name="vibe_rating_dismiss_error">Anuluj</string>
   <string name="vibe_rating_change">Zmień ocenę</string>
   <string name="vibe_rating_view_history">Zobacz Twój vibe</string>
   <string name="vibe_rating_share_poster">Udostępnij poster</string>
@@ -17,6 +22,7 @@
   <string name="vibe_rating_scale_5">Super</string>
 
   <string name="vibe_rating_mood_face_description">Ocena %1$d z 5</string>
+  <string name="vibe_rating_slider_description">Suwak oceny dnia, pięciostopniowa skala</string>
 
   <string name="vibe_history_title">Twój vibe</string>
   <string name="vibe_history_subtitle">Jak oceniałeś ostatnie dni</string>

@@ -12,6 +12,14 @@ internal sealed interface RatingCardUiState {
     val sliderTouched: Boolean
   ) : RatingCardUiState
 
+  data class Saving(
+    val sliderDraft: Int
+  ) : RatingCardUiState
+
+  data class SaveError(
+    val sliderDraft: Int
+  ) : RatingCardUiState
+
   data class Rated(
     val rating: Int
   ) : RatingCardUiState

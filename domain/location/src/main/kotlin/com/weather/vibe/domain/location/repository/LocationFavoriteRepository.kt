@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface LocationFavoriteRepository {
 
   fun observeFavorites(): Flow<List<LocationFavorite>>
+  fun observeCount(): Flow<Int>
   suspend fun findById(id: Long): LocationFavorite?
   suspend fun removeFavorite(id: Long)
   suspend fun renameFavorite(id: Long, label: String?)

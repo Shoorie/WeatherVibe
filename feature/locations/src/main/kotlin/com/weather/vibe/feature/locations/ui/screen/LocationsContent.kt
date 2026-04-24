@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.locations.ui.screen
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,9 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -46,6 +47,7 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Lo
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
@@ -67,7 +69,18 @@ internal fun LocationsContent(
   snackbarHostState: SnackbarHostState,
   dispatch: (LocationsAction) -> Unit
 ) {
+
   var renameTarget by remember { mutableStateOf<LocationCardUiState?>(null) }
+
+  val snackbarVisible by remember(snackbarHostState) {
+    derivedStateOf { snackbarHostState.currentSnackbarData != null }
+  }
+
+  val fabLift by animateDpAsState(
+    targetValue = if (snackbarVisible) SnackbarPushOffset else 0.dp,
+    label = "fab_snackbar_lift"
+  )
+
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -83,7 +96,7 @@ internal fun LocationsContent(
         .align(Alignment.BottomEnd)
         .padding(
           end = Medium,
-          bottom = LocationsDefaults.FabBottomOffset
+          bottom = LocationsDefaults.FabBottomOffset + fabLift
         ),
       enabled = state !is Loaded || state.canAddMoreFavorites,
       onClick = { dispatch(AddLocationClick) }
@@ -216,7 +229,7 @@ private fun LocationsList(
       start = Medium,
       end = Medium,
       top = Medium,
-      bottom = ExtraLarge
+      bottom = LocationsDefaults.ListBottomPadding
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {

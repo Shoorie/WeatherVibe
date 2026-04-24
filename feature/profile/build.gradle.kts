@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.domain.location)
   implementation(projects.domain.profile)
   implementation(projects.domain.settings)
   implementation(libs.kotlinx.collections.immutable)

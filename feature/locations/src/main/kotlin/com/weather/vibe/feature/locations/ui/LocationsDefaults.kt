@@ -20,6 +20,8 @@ internal object LocationsDefaults {
   val TimelineStrokeWidth = 2.5.dp
   val TimelineDotRadius = 4.dp
   val FabBottomOffset = 24.dp
+  val ListBottomPadding = 96.dp
+  val SnackbarPushOffset = 64.dp
 
   val ReorderEdgeZone = 64.dp
   val ReorderAutoScrollSpeed = 480.dp

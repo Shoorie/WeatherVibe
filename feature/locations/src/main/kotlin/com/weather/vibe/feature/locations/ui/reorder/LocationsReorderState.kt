@@ -88,7 +88,8 @@ internal class LocationsReorderState(
     resetDragState()
   }
 
-  fun isDragging(favoriteId: Long): Boolean = favoriteId == draggingFavoriteId
+  fun isDragging(favoriteId: Long): Boolean =
+    favoriteId == draggingFavoriteId
 
   fun translationYFor(favoriteId: Long): Float {
 

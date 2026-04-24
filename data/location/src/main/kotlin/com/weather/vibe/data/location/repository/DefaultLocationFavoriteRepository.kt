@@ -27,6 +27,10 @@ internal class DefaultLocationFavoriteRepository(
       .map { it.map(mapper::toDomain) }
       .flowOn(IO)
 
+  override fun observeCount(): Flow<Int> =
+    dao.observeCount()
+      .flowOn(IO)
+
   override suspend fun findById(id: Long): LocationFavorite? =
     withContext(IO) {
       dao.findById(id)

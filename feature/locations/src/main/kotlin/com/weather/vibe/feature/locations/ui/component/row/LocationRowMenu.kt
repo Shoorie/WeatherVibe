@@ -36,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,7 +46,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -153,10 +151,9 @@ private fun AnimatedPopupCard(content: @Composable () -> Unit) {
     Column(
       modifier = Modifier
         .width(LocationsDefaults.RowMenuPopupWidth)
-        .shadow(elevation = Elevation.Card, shape = shapes.cardSmall)
-        .clip(shapes.cardSmall)
-        .background(colors.sheetSurface)
-        .border(width = Border, color = colors.outlineVariant, shape = shapes.cardSmall)
+        .clip(shapes.card)
+        .background(colors.glassSurface)
+        .border(width = Border, color = colors.outlineVariant, shape = shapes.card)
         .padding(vertical = ExtraSmall)
     ) {
       content()

@@ -4,6 +4,8 @@ import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -26,6 +28,10 @@ internal class RatingCardStateFactory {
       is NotRated -> current.copy(sliderDraft = value, sliderTouched = true)
       else -> current
     }
+
+  fun saving(draft: Int): RatingCardUiState = Saving(sliderDraft = draft)
+
+  fun saveError(draft: Int): RatingCardUiState = SaveError(sliderDraft = draft)
 
   companion object {
     const val DEFAULT_SLIDER_DRAFT: Int = 3

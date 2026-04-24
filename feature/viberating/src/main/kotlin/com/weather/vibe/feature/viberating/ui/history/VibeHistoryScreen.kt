@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -12,13 +11,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.BackClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DayDetailDismissed
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DaySelected
@@ -28,6 +30,8 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryEvent
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewModel
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
 import org.koin.androidx.compose.koinViewModel
+import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun VibeHistoryScreen(
@@ -35,18 +39,30 @@ fun VibeHistoryScreen(
 ) {
   val viewModel: VibeHistoryViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
+  val callbacks = remember(viewModel) {
+    VibeHistoryCallbacks(
+      onBackClicked = { viewModel.dispatch(BackClick) },
+      onPreviousMonthClicked = { viewModel.dispatch(PreviousMonthClick) },
+      onNextMonthClicked = { viewModel.dispatch(NextMonthClick) },
+      onDayClicked = { viewModel.dispatch(DaySelected(it)) },
+      onDayDetailDismissed = { viewModel.dispatch(DayDetailDismissed) }
+    )
+  }
 
-  LaunchedEffect(Unit) {
-    viewModel.event.collect { event ->
-      when (event) {
-        NavigateBack -> onNavigateBack()
+  val lifecycleOwner = LocalLifecycleOwner.current
+  LaunchedEffect(viewModel, lifecycleOwner) {
+    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+      viewModel.event.collect { event ->
+        when (event) {
+          NavigateBack -> onNavigateBack()
+        }
       }
     }
   }
 
   VibeHistoryContent(
     state = state,
-    dispatch = viewModel::dispatch
+    callbacks = callbacks
   )
 }
 
@@ -54,7 +70,7 @@ fun VibeHistoryScreen(
 internal fun VibeHistoryContent(
   modifier: Modifier = Modifier,
   state: VibeHistoryUiState,
-  dispatch: (VibeHistoryAction) -> Unit
+  callbacks: VibeHistoryCallbacks
 ) {
   Column(
     modifier = modifier
@@ -67,24 +83,42 @@ internal fun VibeHistoryContent(
     VibeHistoryHeader(
       averageRating = state.averageRating,
       totalEntries = state.totalEntries,
-      onBackClicked = { dispatch(BackClick) }
+      onBackClicked = callbacks.onBackClicked
     )
     Spacer(Modifier.height(Padding.Medium))
     MonthCalendar(
       viewMonth = state.viewMonth,
       canNavigateNext = state.canNavigateNext,
       cells = state.cells,
-      onPreviousMonthClicked = { dispatch(PreviousMonthClick) },
-      onNextMonthClicked = { dispatch(NextMonthClick) },
-      onDayClicked = { dispatch(DaySelected(it)) }
+      onPreviousMonthClicked = callbacks.onPreviousMonthClicked,
+      onNextMonthClicked = callbacks.onNextMonthClicked,
+      onDayClicked = callbacks.onDayClicked
     )
     Spacer(Modifier.height(Padding.Small))
     DayDetailCard(
       detail = state.selectedDayDetail,
-      onDismissClicked = { dispatch(DayDetailDismissed) }
+      onDismissClicked = callbacks.onDayDetailDismissed
     )
     Spacer(Modifier.height(Padding.Medium))
     ConditionRankingCard(ranking = state.conditionRanking)
+  }
+}
+
+internal class VibeHistoryCallbacks(
+  val onBackClicked: () -> Unit,
+  val onPreviousMonthClicked: () -> Unit,
+  val onNextMonthClicked: () -> Unit,
+  val onDayClicked: (LocalDate) -> Unit,
+  val onDayDetailDismissed: () -> Unit
+) {
+  companion object {
+    val Noop: VibeHistoryCallbacks = VibeHistoryCallbacks(
+      onBackClicked = {},
+      onPreviousMonthClicked = {},
+      onNextMonthClicked = {},
+      onDayClicked = {},
+      onDayDetailDismissed = {}
+    )
   }
 }
 
@@ -95,8 +129,8 @@ private val BOTTOM_PADDING = 110.dp
 private fun VibeHistoryContentPreview() {
   WeatherVibeTheme {
     VibeHistoryContent(
-      state = VibeHistoryUiState.EMPTY,
-      dispatch = {}
+      state = VibeHistoryUiState.emptyFor(YearMonth.of(2026, 4)),
+      callbacks = VibeHistoryCallbacks.Noop
     )
   }
 }

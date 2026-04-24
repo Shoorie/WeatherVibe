@@ -11,7 +11,7 @@ class RefreshOutdatedLocationFavoritesWeather(
   private val favoriteRepository: LocationFavoriteRepository,
   private val snapshotRepository: LocationWeatherSnapshotRepository,
   private val refreshLocationsWeather: RefreshLocationsWeather,
-  private val freshnessPolicy: LocationWeatherFreshnessPolicy
+  private val policy: LocationWeatherFreshnessPolicy
 ) {
 
   suspend operator fun invoke() {
@@ -22,7 +22,10 @@ class RefreshOutdatedLocationFavoritesWeather(
 
     val outdatedFavorites = favoriteRepository
       .observeFavorites().first()
-      .filter { freshnessPolicy.needsRefresh(snapshotByLocationId[it.location.id]) }
+      .filter {
+        val weather = snapshotByLocationId[it.location.id]
+        policy.needsRefresh(weather)
+      }
 
     refreshLocationsWeather(favorites = outdatedFavorites)
   }

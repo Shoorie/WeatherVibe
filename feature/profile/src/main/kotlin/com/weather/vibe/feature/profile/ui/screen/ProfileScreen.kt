@@ -49,7 +49,8 @@ fun ProfileScreen(
   onOpenNotifications: () -> Unit,
   onOpenPrivacy: () -> Unit,
   onOpenAbout: () -> Unit,
-  onOpenLocations: () -> Unit
+  onOpenLocations: () -> Unit,
+  onOpenVibeHistory: () -> Unit
 ) {
 
   val viewModel: ProfileViewModel = koinViewModel()
@@ -70,7 +71,8 @@ fun ProfileScreen(
 
   ProfileContent(
     state = state,
-    callbacks = callbacks
+    callbacks = callbacks,
+    onOpenVibeHistory = onOpenVibeHistory
   )
 }
 
@@ -79,7 +81,8 @@ fun ProfileScreen(
 internal fun ProfileContent(
   modifier: Modifier = Modifier,
   state: ProfileUiState,
-  callbacks: ProfileCallbacks
+  callbacks: ProfileCallbacks,
+  onOpenVibeHistory: () -> Unit = {}
 ) {
 
   val contentPadding = remember {
@@ -112,7 +115,9 @@ internal fun ProfileContent(
         onStatClick = callbacks.onStatClick
       )
     }
-    item(key = KEY_MOOD) { MoodTeaserCard() }
+    item(key = KEY_MOOD) {
+      MoodTeaserCard(onClick = onOpenVibeHistory)
+    }
     navigationItems(callbacks = callbacks)
   }
 

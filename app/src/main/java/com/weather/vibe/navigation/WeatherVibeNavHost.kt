@@ -29,6 +29,7 @@ import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfileAboutScreen
 import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfilePrivacyScreen
 import com.weather.vibe.feature.settings.notifications.ui.screen.NotificationsScreen
 import com.weather.vibe.feature.settings.personalization.ui.screen.PersonalizationScreen
+import com.weather.vibe.feature.viberating.ui.history.VibeHistoryScreen
 import com.weather.vibe.navigation.bottombar.WeatherVibeBottomBar
 import com.weather.vibe.navigation.home.HomeEntry
 import com.weather.vibe.navigation.home.HomeRoute
@@ -48,6 +49,7 @@ import com.weather.vibe.navigation.search.SearchEntry
 import com.weather.vibe.navigation.search.SearchRoute
 import com.weather.vibe.navigation.splash.SplashEntry
 import com.weather.vibe.navigation.splash.SplashRoute
+import com.weather.vibe.navigation.viberating.VibeHistoryRoute
 import com.weather.vibe.navigation.weather.WeatherDetailsRoute
 import com.weather.vibe.navigation.weather.WeatherDetailsScreen
 
@@ -181,7 +183,13 @@ private fun profileEntry(
         onOpenNotifications = { backStack.add(ProfileNotificationsRoute) },
         onOpenPrivacy = { backStack.add(ProfilePrivacyRoute) },
         onOpenAbout = { backStack.add(ProfileAboutRoute) },
-        onOpenLocations = { backStack.selectTab(LocationsRoute) }
+        onOpenLocations = { backStack.selectTab(LocationsRoute) },
+        onOpenVibeHistory = { backStack.add(VibeHistoryRoute) }
+      )
+    }
+    is VibeHistoryRoute -> NavEntry(key) {
+      VibeHistoryScreen(
+        onNavigateBack = { backStack.removeLastOrNull() }
       )
     }
     is ProfilePersonalizationRoute -> NavEntry(key) {

@@ -8,9 +8,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,24 +37,25 @@ internal fun ConditionRankingCard(
   ranking: ImmutableList<ConditionRankingUiState>
 ) {
   if (ranking.isEmpty()) return
-  Column(
-    modifier = modifier
-      .fillMaxWidth()
-      .clip(CardShape)
-      .background(WeatherVibeTheme.colors.surfaceVariant)
-      .padding(Padding.Medium)
+  VibeCard(
+    modifier = modifier,
+    shape = shapes.cardMedium,
+    containerColor = WeatherVibeTheme.colors.surfaceVariant,
+    contentPadding = Padding.Medium
   ) {
-    Text(
-      text = stringResource(R.string.vibe_history_ranking_title),
-      style = WeatherVibeTheme.typography.labelMedium,
-      color = WeatherVibeTheme.colors.onSurfaceVariant,
-      fontWeight = FontWeight.Medium,
-      modifier = Modifier.semantics { heading() }
-    )
-    Spacer(Modifier.height(Padding.Medium))
-    ranking.forEach { item ->
-      RankingRow(item = item)
-      Spacer(Modifier.height(Padding.Small))
+    Column(modifier = Modifier.fillMaxWidth()) {
+      Text(
+        text = stringResource(R.string.vibe_history_ranking_title),
+        style = WeatherVibeTheme.typography.labelMedium,
+        color = WeatherVibeTheme.colors.onSurfaceVariant,
+        fontWeight = FontWeight.Medium,
+        modifier = Modifier.semantics { heading() }
+      )
+      Spacer(Modifier.height(Padding.Medium))
+      ranking.forEach { item ->
+        RankingRow(item = item)
+        Spacer(Modifier.height(Padding.Small))
+      }
     }
   }
 }
@@ -134,6 +136,5 @@ private fun entriesPlural(count: Int): String {
   return stringResource(resId)
 }
 
-private val CardShape = RoundedCornerShape(18.dp)
 private val ProgressShape = RoundedCornerShape(6.dp)
 private val PROGRESS_HEIGHT = 6.dp

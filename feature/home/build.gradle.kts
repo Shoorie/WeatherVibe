@@ -16,7 +16,9 @@ dependencies {
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.vibe)
+  implementation(projects.domain.viberating)
   implementation(projects.domain.weather)
+  implementation(projects.feature.viberating)
 
   implementation(libs.kotlinx.collections.immutable)
 

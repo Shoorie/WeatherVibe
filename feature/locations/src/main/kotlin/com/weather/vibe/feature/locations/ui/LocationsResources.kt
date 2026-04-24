@@ -67,6 +67,14 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_action_more)
 
     @Composable
+    fun actionMoveUp(): String =
+      stringResource(R.string.locations_action_move_up)
+
+    @Composable
+    fun actionMoveDown(): String =
+      stringResource(R.string.locations_action_move_down)
+
+    @Composable
     fun temperature(value: String?): String =
       value
         ?.let { stringResource(R.string.locations_row_temperature, it) }

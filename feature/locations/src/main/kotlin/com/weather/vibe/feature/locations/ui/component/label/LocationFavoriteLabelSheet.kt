@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.button.VibePrimaryButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
@@ -180,7 +181,7 @@ private fun PresetChips(onPresetSelected: (String) -> Unit) {
     presets.forEachIndexed { index, preset ->
       PresetChip(
         label = preset,
-        containerColor = labelPillContainerColor(index = index),
+        containerColor = labelPillContainerColor(seed = index.toLong()),
         onClick = { onPresetSelected(preset) }
       )
     }
@@ -197,7 +198,7 @@ private fun PresetChip(
     modifier = Modifier
       .clip(shapes.pill)
       .background(containerColor)
-      .clickable(onClick = onClick)
+      .clickable(role = Role.Button, onClick = onClick)
       .padding(horizontal = Medium, vertical = Small),
     contentAlignment = Alignment.Center
   ) {

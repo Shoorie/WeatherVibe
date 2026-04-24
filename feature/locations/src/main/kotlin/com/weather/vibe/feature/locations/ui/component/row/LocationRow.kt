@@ -11,17 +11,23 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.Role.Companion.Button
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.zIndex
 import com.weather.vibe.core.designsystem.components.pill.VibePill
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
@@ -32,42 +38,90 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.DraggedAlpha
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.DraggedZIndex
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.LockedAlpha
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowEmojiSize
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.RowMinHeight
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionIndicatorSize
 import com.weather.vibe.feature.locations.ui.LocationsEmojis
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowInfoFeels
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.temperature
+import com.weather.vibe.feature.locations.ui.reorder.LocationsReorderState
+import com.weather.vibe.feature.locations.ui.reorder.dragToReorder
+import com.weather.vibe.feature.locations.ui.reorder.rememberLocationsReorderState
+import com.weather.vibe.feature.locations.ui.reorder.reorderA11yActions
 
 @Composable
 internal fun LocationRow(
   modifier: Modifier = Modifier,
   card: LocationCardUiState,
-  positionIndex: Int,
   compareMode: Boolean,
   isSelected: Boolean,
   isLocked: Boolean,
+  reorder: LocationsReorderState,
   onClick: () -> Unit,
   onRename: () -> Unit,
   onDelete: () -> Unit
 ) {
+  val isDragged by remember(card.favoriteId, reorder) {
+    derivedStateOf { reorder.isDragging(favoriteId = card.favoriteId) }
+  }
+  val reorderable = !compareMode && !isLocked
   Row(
-    modifier = modifier.rowContainer(
-      compareMode = compareMode,
-      isSelected = isSelected,
-      isLocked = isLocked,
-      onClick = onClick
-    ),
+    modifier = modifier
+      .zIndex(if (isDragged) DraggedZIndex else 0f)
+      .graphicsLayer {
+        translationY = reorder.translationYFor(favoriteId = card.favoriteId)
+        if (reorder.isDragging(favoriteId = card.favoriteId)) alpha = DraggedAlpha
+      }
+      .dragToReorder(
+        favoriteId = card.favoriteId,
+        reorder = reorder,
+        enabled = reorderable
+      )
+      .reorderA11yActions(
+        favoriteId = card.favoriteId,
+        reorder = reorder,
+        enabled = reorderable
+      )
+      .rowContainer(
+        compareMode = compareMode,
+        isSelected = isSelected,
+        isLocked = isLocked,
+        onClick = onClick
+      ),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     WeatherEmoji(emoji = card.weather?.emoji ?: LocationsEmojis.fallback())
     LocationLabels(
       modifier = Modifier.weight(1f),
-      card = card,
-      positionIndex = positionIndex
+      card = card
     )
-    TemperatureBlock(card = card)
+    TemperatureWithActions(
+      temperature = card.temperature,
+      compareMode = compareMode,
+      isSelected = isSelected,
+      onRename = onRename,
+      onDelete = onDelete
+    )
+  }
+}
+
+@Composable
+private fun TemperatureWithActions(
+  temperature: String?,
+  compareMode: Boolean,
+  isSelected: Boolean,
+  onRename: () -> Unit,
+  onDelete: () -> Unit
+) {
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
+  ) {
+    TemperatureValue(temperature = temperature)
     TrailingAffordance(
       compareMode = compareMode,
       isSelected = isSelected,
@@ -95,15 +149,15 @@ private fun Modifier.rowContainer(
       color = rowBorderColor(isHighlighted = isHighlighted),
       shape = shapes.card
     )
-    .let { if (isLocked) it else it.clickable(role = Role.Button, onClick = onClick) }
+    .let { if (isLocked) it else it.clickable(role = Button, onClick = onClick) }
     .padding(horizontal = Small, vertical = ExtraSmall)
-    .defaultMinSize(minHeight = LocationsDefaults.RowMinHeight)
+    .defaultMinSize(minHeight = RowMinHeight)
 }
 
 @Composable
 private fun WeatherEmoji(emoji: String) {
   Box(
-    modifier = Modifier.size(LocationsDefaults.RowEmojiSize),
+    modifier = Modifier.size(RowEmojiSize),
     contentAlignment = Alignment.Center
   ) {
     Text(
@@ -116,11 +170,10 @@ private fun WeatherEmoji(emoji: String) {
 @Composable
 private fun LocationLabels(
   modifier: Modifier = Modifier,
-  card: LocationCardUiState,
-  positionIndex: Int
+  card: LocationCardUiState
 ) {
   Column(modifier = modifier) {
-    NameRow(card = card, positionIndex = positionIndex)
+    NameRow(card = card)
     Text(
       text = card.region,
       style = typography.bodySmall,
@@ -128,14 +181,21 @@ private fun LocationLabels(
       maxLines = 1,
       overflow = TextOverflow.Ellipsis
     )
+    card.feelsLike?.let { feels ->
+      Text(
+        modifier = Modifier.padding(top = ExtraSmall),
+        text = rowInfoFeels(value = feels),
+        style = typography.labelSmall,
+        color = colors.textTertiary,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+      )
+    }
   }
 }
 
 @Composable
-private fun NameRow(
-  card: LocationCardUiState,
-  positionIndex: Int
-) {
+private fun NameRow(card: LocationCardUiState) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
@@ -148,43 +208,29 @@ private fun NameRow(
       maxLines = 1,
       overflow = TextOverflow.Ellipsis
     )
-    LabelPill(card = card, positionIndex = positionIndex)
+    LabelPill(card = card)
   }
 }
 
 @Composable
-private fun LabelPill(
-  card: LocationCardUiState,
-  positionIndex: Int
-) {
+private fun LabelPill(card: LocationCardUiState) {
   val label = card.label ?: return
   VibePill(
     text = label,
-    containerColor = labelPillContainerColor(index = positionIndex),
+    containerColor = labelPillContainerColor(seed = card.favoriteId),
     contentColor = colors.onAccent,
     style = typography.labelSmall
   )
 }
 
 @Composable
-private fun TemperatureBlock(card: LocationCardUiState) {
-  val temperature = card.temperature
-  Column(horizontalAlignment = Alignment.End) {
-    Text(
-      text = temperature(value = temperature),
-      style = typography.titleLarge,
-      color = temperatureTextColor(hasValue = temperature != null),
-      textAlign = TextAlign.End
-    )
-    card.feelsLike?.let { feels ->
-      Text(
-        text = rowInfoFeels(value = feels),
-        style = typography.labelSmall,
-        color = colors.textTertiary,
-        maxLines = 1
-      )
-    }
-  }
+private fun TemperatureValue(temperature: String?) {
+  Text(
+    text = temperature(value = temperature),
+    style = typography.titleLarge,
+    color = temperatureTextColor(hasValue = temperature != null),
+    textAlign = TextAlign.End
+  )
 }
 
 @Composable
@@ -221,10 +267,14 @@ private fun Preview() {
     Box(modifier = Modifier.padding(Small)) {
       LocationRow(
         card = LocationsPreviewData.london,
-        positionIndex = 0,
         compareMode = false,
         isSelected = false,
         isLocked = false,
+        reorder = rememberLocationsReorderState(
+          listState = rememberLazyListState(),
+          cards = emptyList(),
+          onCommit = {}
+        ),
         onClick = {},
         onRename = {},
         onDelete = {}

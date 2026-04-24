@@ -6,6 +6,7 @@ import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.feature.home.mapper.toVibeWeatherSnapshot
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -47,7 +48,12 @@ internal class DetailsViewModel(
   }
 
   private fun onSettingsSuccess(weather: WeatherData, settings: UserSettings): HomeUiState =
-    stateFactory.create(data = weather, unit = settings.temperatureUnit)
+    stateFactory.create(
+      data = weather,
+      metrics = useCases.getCurrentWeatherMetrics(weather),
+      vibeSnapshot = weather.toVibeWeatherSnapshot(),
+      unit = settings.temperatureUnit
+    )
 
   private fun onSettingsError(error: Throwable): HomeUiState =
     Error(error.message ?: resources.defaultError())

@@ -24,6 +24,16 @@ internal object VibeRatingResources {
       }
     )
 
+  fun conditionEmoji(condition: Condition): String =
+    when (condition) {
+      Condition.SUNNY -> "☀️"
+      Condition.PARTLY_CLOUDY -> "⛅"
+      Condition.CLOUDY -> "☁️"
+      Condition.RAIN -> "🌧️"
+      Condition.SNOW -> "❄️"
+      Condition.NIGHT -> "🌙"
+    }
+
   @Composable
   @ReadOnlyComposable
   fun conditionLabel(condition: Condition): String =

@@ -34,14 +34,16 @@ internal fun BriefAirChipRow(
       BriefAirChip(
         indicator = chip.indicator,
         label = chip.label,
-        contentDescription = chip.contentDescription
+        contentDescription = chip.contentDescription,
+        tint = chip.tint
       )
     }
     pollenChip?.let { chip ->
       BriefAirChip(
         indicator = chip.indicator,
         label = chip.label,
-        contentDescription = chip.contentDescription
+        contentDescription = chip.contentDescription,
+        tint = chip.tint
       )
     }
   }

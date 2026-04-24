@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
@@ -23,6 +24,7 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.ratingColor
@@ -87,6 +89,11 @@ private fun RankingRow(item: ConditionRankingUiState) {
       horizontalArrangement = Arrangement.SpaceBetween,
       modifier = Modifier.fillMaxWidth()
     ) {
+      Text(
+        text = VibeRatingResources.conditionEmoji(item.condition),
+        fontSize = RankingEmojiSize
+      )
+      Spacer(Modifier.size(Padding.Small))
       Column(modifier = Modifier.weight(1f)) {
         Text(
           text = conditionLabel,
@@ -138,3 +145,4 @@ private fun entriesPlural(count: Int): String {
 
 private val ProgressShape = RoundedCornerShape(6.dp)
 private val PROGRESS_HEIGHT = 6.dp
+private val RankingEmojiSize = 24.sp

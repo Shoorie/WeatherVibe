@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -72,13 +74,20 @@ internal fun VibeHistoryContent(
   state: VibeHistoryUiState,
   callbacks: VibeHistoryCallbacks
 ) {
+  val backgroundBrush = Brush.verticalGradient(
+    colors = listOf(
+      WeatherVibeTheme.colors.primaryContainer,
+      WeatherVibeTheme.colors.backgroundGradientEnd
+    )
+  )
   Column(
     modifier = modifier
       .fillMaxSize()
-      .background(WeatherVibeTheme.colors.backgroundGradientEnd)
+      .background(backgroundBrush)
+      .statusBarsPadding()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)
-      .padding(top = Padding.Large, bottom = BOTTOM_PADDING)
+      .padding(top = Padding.Medium, bottom = BOTTOM_PADDING)
   ) {
     VibeHistoryHeader(
       averageRating = state.averageRating,

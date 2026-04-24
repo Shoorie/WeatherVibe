@@ -12,7 +12,7 @@
   <string name="vibe_rating_dismiss_error">Anuluj</string>
   <string name="vibe_rating_change">Zmień ocenę</string>
   <string name="vibe_rating_view_history">Zobacz Twój vibe</string>
-  <string name="vibe_rating_share_poster">Udostępnij poster</string>
+  <string name="vibe_rating_view_history_link">Zobacz ostatnie oceny →</string>
   <string name="vibe_rating_rated_label">Ocenione · %1$s · %2$d/5</string>
 
   <string name="vibe_rating_scale_1">Słaby</string>
@@ -31,8 +31,9 @@
   <string name="vibe_history_total_label">Ocenione dni</string>
   <string name="vibe_history_previous_month">Poprzedni miesiąc</string>
   <string name="vibe_history_next_month">Następny miesiąc</string>
-  <string name="vibe_history_legend_low">słaby</string>
+  <string name="vibe_history_legend_low">słabo</string>
   <string name="vibe_history_legend_high">super</string>
+  <string name="vibe_history_legend_description">Legenda skali ocen od słabo do super</string>
   <string name="vibe_history_no_data">Brak ocen w tym miesiącu</string>
   <string name="vibe_history_no_rating">Brak oceny</string>
   <string name="vibe_history_day_detail_close">Zamknij szczegóły dnia</string>

@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.viberating.ui.rating
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,19 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
@@ -38,9 +43,11 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.RatingColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.ratingColor
 import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
@@ -61,8 +68,7 @@ internal fun RatingCard(
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit,
   onEditClicked: () -> Unit,
-  onViewHistoryClicked: () -> Unit,
-  onSharePosterClicked: () -> Unit
+  onViewHistoryClicked: () -> Unit
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Text(
@@ -73,42 +79,52 @@ internal fun RatingCard(
         .padding(bottom = Padding.Small)
         .semantics { heading() }
     )
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .clip(CardShape)
-        .background(WeatherVibeTheme.colors.surfaceVariant)
-        .border(width = 1.dp, color = WeatherVibeTheme.colors.outline, shape = CardShape)
-        .padding(Padding.Medium)
+    VibeCard(
+      shape = shapes.card,
+      containerColor = WeatherVibeTheme.colors.glassSurface,
+      contentPadding = Padding.Medium
     ) {
-      when (state) {
-        Loading -> RatingCardLoadingContent()
-        is NotRated -> DraftContent(
-          draft = state.sliderDraft,
-          touched = state.sliderTouched,
-          saving = false,
-          onSliderValueChanged = onSliderValueChanged,
-          onSaveClicked = onSaveClicked,
-          onViewHistoryClicked = onViewHistoryClicked
-        )
-        is Saving -> DraftContent(
-          draft = state.sliderDraft,
-          touched = true,
-          saving = true,
-          onSliderValueChanged = {},
-          onSaveClicked = {},
-          onViewHistoryClicked = onViewHistoryClicked
-        )
-        is SaveError -> SaveErrorContent(
-          draft = state.sliderDraft,
-          onRetryClicked = onRetryClicked,
-          onDismissErrorClicked = onDismissErrorClicked
-        )
-        is Rated -> RatedContent(
-          rating = state.rating,
-          onEditClicked = onEditClicked,
-          onViewHistoryClicked = onViewHistoryClicked,
-          onSharePosterClicked = onSharePosterClicked
+      Column(modifier = Modifier.fillMaxWidth()) {
+        when (state) {
+          Loading -> RatingCardLoadingContent()
+          is NotRated -> DraftContent(
+            draft = state.sliderDraft,
+            touched = state.sliderTouched,
+            saving = false,
+            onSliderValueChanged = onSliderValueChanged,
+            onSaveClicked = onSaveClicked
+          )
+          is Saving -> DraftContent(
+            draft = state.sliderDraft,
+            touched = true,
+            saving = true,
+            onSliderValueChanged = {},
+            onSaveClicked = {}
+          )
+          is SaveError -> SaveErrorContent(
+            draft = state.sliderDraft,
+            onRetryClicked = onRetryClicked,
+            onDismissErrorClicked = onDismissErrorClicked
+          )
+          is Rated -> RatedContent(
+            rating = state.rating,
+            onEditClicked = onEditClicked,
+            onViewHistoryClicked = onViewHistoryClicked
+          )
+        }
+      }
+    }
+    if (state is NotRated || state is Saving) {
+      TextButton(
+        onClick = onViewHistoryClicked,
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = Padding.ExtraSmall)
+      ) {
+        Text(
+          text = stringResource(R.string.vibe_rating_view_history_link),
+          style = WeatherVibeTheme.typography.bodySmall,
+          color = WeatherVibeTheme.colors.accent
         )
       }
     }
@@ -130,8 +146,7 @@ private fun DraftContent(
   touched: Boolean,
   saving: Boolean,
   onSliderValueChanged: (Int) -> Unit,
-  onSaveClicked: () -> Unit,
-  onViewHistoryClicked: () -> Unit
+  onSaveClicked: () -> Unit
 ) {
   val activeColor = ratingColor(draft)
   Text(
@@ -163,23 +178,11 @@ private fun DraftContent(
     )
   }
   Spacer(Modifier.height(Padding.Small))
-  val sliderStateDescription = VibeRatingResources.scaleLabel(draft)
-  val sliderContentDescription = stringResource(R.string.vibe_rating_slider_description)
-  Slider(
-    value = draft.toFloat(),
-    onValueChange = { onSliderValueChanged(it.roundToInt()) },
-    valueRange = RATING_MIN_F..RATING_MAX_F,
-    steps = SLIDER_STEPS,
+  HapticSlider(
+    draft = draft,
     enabled = !saving,
-    colors = SliderDefaults.colors(
-      thumbColor = activeColor,
-      activeTrackColor = activeColor,
-      inactiveTrackColor = WeatherVibeTheme.colors.outline
-    ),
-    modifier = Modifier.semantics {
-      contentDescription = sliderContentDescription
-      stateDescription = sliderStateDescription
-    }
+    activeColor = activeColor,
+    onValueChanged = onSliderValueChanged
   )
   Spacer(Modifier.height(Padding.ExtraSmall))
   ScaleLabelsRow(selected = draft, activeColor = activeColor)
@@ -188,7 +191,7 @@ private fun DraftContent(
     onClick = onSaveClicked,
     enabled = touched && !saving,
     modifier = Modifier.fillMaxWidth(),
-    shape = ButtonShape,
+    shape = shapes.cardSmall,
     colors = ButtonDefaults.buttonColors(
       containerColor = WeatherVibeTheme.colors.accent,
       contentColor = WeatherVibeTheme.colors.onAccent
@@ -206,16 +209,39 @@ private fun DraftContent(
       Text(stringResource(R.string.vibe_rating_save))
     }
   }
-  TextButton(
-    onClick = onViewHistoryClicked,
-    modifier = Modifier.fillMaxWidth()
-  ) {
-    Text(
-      text = stringResource(R.string.vibe_rating_view_history),
-      style = WeatherVibeTheme.typography.bodySmall,
-      color = WeatherVibeTheme.colors.accent
-    )
+}
+
+@Composable
+private fun HapticSlider(
+  draft: Int,
+  enabled: Boolean,
+  activeColor: Color,
+  onValueChanged: (Int) -> Unit
+) {
+  val haptics = LocalHapticFeedback.current
+  val sliderStateDescription = VibeRatingResources.scaleLabel(draft)
+  val sliderContentDescription = stringResource(R.string.vibe_rating_slider_description)
+  LaunchedEffect(draft) {
+    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
   }
+  Slider(
+    value = draft.toFloat(),
+    onValueChange = { newValue ->
+      val rounded = newValue.roundToInt().coerceIn(RatingColors.MIN_RATING, RatingColors.MAX_RATING)
+      if (rounded != draft) onValueChanged(rounded)
+    },
+    valueRange = RatingColors.MIN_RATING.toFloat()..RatingColors.MAX_RATING.toFloat(),
+    enabled = enabled,
+    colors = SliderDefaults.colors(
+      thumbColor = activeColor,
+      activeTrackColor = activeColor,
+      inactiveTrackColor = WeatherVibeTheme.colors.outline
+    ),
+    modifier = Modifier.semantics {
+      contentDescription = sliderContentDescription
+      stateDescription = sliderStateDescription
+    }
+  )
 }
 
 @Composable
@@ -274,7 +300,7 @@ private fun SaveErrorContent(
       Button(
         onClick = onRetryClicked,
         modifier = Modifier.weight(1f),
-        shape = ButtonShape,
+        shape = shapes.cardSmall,
         colors = ButtonDefaults.buttonColors(
           containerColor = WeatherVibeTheme.colors.accent,
           contentColor = WeatherVibeTheme.colors.onAccent
@@ -285,7 +311,7 @@ private fun SaveErrorContent(
       OutlinedButton(
         onClick = onDismissErrorClicked,
         modifier = Modifier.weight(1f),
-        shape = ButtonShape
+        shape = shapes.cardSmall
       ) {
         Text(stringResource(R.string.vibe_rating_dismiss_error))
       }
@@ -297,8 +323,7 @@ private fun SaveErrorContent(
 private fun RatedContent(
   rating: Int,
   onEditClicked: () -> Unit,
-  onViewHistoryClicked: () -> Unit,
-  onSharePosterClicked: () -> Unit
+  onViewHistoryClicked: () -> Unit
 ) {
   val ratingLabel = VibeRatingResources.scaleLabel(rating)
   Row(
@@ -332,38 +357,28 @@ private fun RatedContent(
     }
   }
   Spacer(Modifier.height(Padding.Medium))
-  Row(
+  Button(
+    onClick = onViewHistoryClicked,
     modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(Padding.Small)
+    shape = shapes.cardSmall,
+    colors = ButtonDefaults.buttonColors(
+      containerColor = WeatherVibeTheme.colors.accent,
+      contentColor = WeatherVibeTheme.colors.onAccent
+    )
   ) {
-    Button(
-      onClick = onViewHistoryClicked,
-      modifier = Modifier.weight(1f),
-      shape = ButtonShape,
-      colors = ButtonDefaults.buttonColors(
-        containerColor = WeatherVibeTheme.colors.accent,
-        contentColor = WeatherVibeTheme.colors.onAccent
-      )
-    ) {
-      Text(stringResource(R.string.vibe_rating_view_history))
-    }
-    OutlinedButton(
-      onClick = onSharePosterClicked,
-      modifier = Modifier.weight(1f),
-      shape = ButtonShape
-    ) {
-      Text(stringResource(R.string.vibe_rating_share_poster))
-    }
+    Icon(
+      imageVector = Icons.Filled.DateRange,
+      contentDescription = null,
+      modifier = Modifier.size(ButtonIconSize)
+    )
+    Spacer(Modifier.width(Padding.Small))
+    Text(stringResource(R.string.vibe_rating_view_history))
   }
 }
 
-private val CardShape = RoundedCornerShape(20.dp)
-private val ButtonShape = RoundedCornerShape(12.dp)
 private val SpinnerSize = 16.dp
 private val TouchTarget = 48.dp
-private const val RATING_MIN_F: Float = 1f
-private const val RATING_MAX_F: Float = 5f
-private const val SLIDER_STEPS: Int = 3
+private val ButtonIconSize = 18.dp
 
 @PreviewLightDark
 @Composable
@@ -379,8 +394,7 @@ private fun RatingCardNotRatedPreview() {
       onRetryClicked = {},
       onDismissErrorClicked = {},
       onEditClicked = {},
-      onViewHistoryClicked = {},
-      onSharePosterClicked = {}
+      onViewHistoryClicked = {}
     )
   }
 }
@@ -399,8 +413,7 @@ private fun RatingCardSavingPreview() {
       onRetryClicked = {},
       onDismissErrorClicked = {},
       onEditClicked = {},
-      onViewHistoryClicked = {},
-      onSharePosterClicked = {}
+      onViewHistoryClicked = {}
     )
   }
 }
@@ -419,8 +432,7 @@ private fun RatingCardErrorPreview() {
       onRetryClicked = {},
       onDismissErrorClicked = {},
       onEditClicked = {},
-      onViewHistoryClicked = {},
-      onSharePosterClicked = {}
+      onViewHistoryClicked = {}
     )
   }
 }
@@ -439,8 +451,7 @@ private fun RatingCardRatedPreview() {
       onRetryClicked = {},
       onDismissErrorClicked = {},
       onEditClicked = {},
-      onViewHistoryClicked = {},
-      onSharePosterClicked = {}
+      onViewHistoryClicked = {}
     )
   }
 }

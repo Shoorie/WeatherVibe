@@ -6,11 +6,11 @@ import androidx.compose.ui.graphics.Color
 
 object RatingColors {
 
-  val Rating1: Color = ColorTokens.LightOutline
-  val Rating2: Color = ColorTokens.LightSlateMuted
-  val Rating3: Color = ColorTokens.LightIndigoSoft
-  val Rating4: Color = ColorTokens.LightIndigoMuted
-  val Rating5: Color = ColorTokens.LightPrimary
+  val Rating1: Color = Color(0xFFF87171)
+  val Rating2: Color = Color(0xFFFB923C)
+  val Rating3: Color = Color(0xFFFBBF24)
+  val Rating4: Color = Color(0xFFA3E635)
+  val Rating5: Color = Color(0xFF34D399)
 
   const val MIN_RATING: Int = 1
   const val MAX_RATING: Int = 5

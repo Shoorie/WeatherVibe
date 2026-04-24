@@ -22,6 +22,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,13 +61,13 @@ internal fun MonthCalendar(
   onNextMonthClicked: () -> Unit,
   onDayClicked: (LocalDate) -> Unit
 ) {
-  Column(
-    modifier = modifier
-      .fillMaxWidth()
-      .clip(CardShape)
-      .background(WeatherVibeTheme.colors.surfaceVariant)
-      .padding(Padding.Medium)
+  VibeCard(
+    modifier = modifier,
+    shape = shapes.cardMedium,
+    containerColor = WeatherVibeTheme.colors.surfaceVariant,
+    contentPadding = Padding.Medium
   ) {
+   Column(modifier = Modifier.fillMaxWidth()) {
     CalendarHeader(
       viewMonth = viewMonth,
       canNavigateNext = canNavigateNext,
@@ -76,6 +78,7 @@ internal fun MonthCalendar(
     WeekdayRow()
     Spacer(Modifier.height(Padding.ExtraSmall))
     CalendarGrid(cells = cells, onDayClicked = onDayClicked)
+   }
   }
 }
 
@@ -295,7 +298,6 @@ private fun dayCellBorder(day: Day): Color? =
   }
 
 private const val DAYS_IN_WEEK: Int = 7
-private val CardShape = RoundedCornerShape(18.dp)
 private val CellShape = RoundedCornerShape(10.dp)
 private val NAV_BUTTON_TOUCH = 48.dp
 private val NAV_BUTTON_VISUAL = 32.dp

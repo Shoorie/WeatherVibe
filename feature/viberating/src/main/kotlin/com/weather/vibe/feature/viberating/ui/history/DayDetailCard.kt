@@ -5,17 +5,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -24,14 +22,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -77,16 +73,14 @@ private fun DayDetailContent(
     WeatherVibeTheme.colors.surfaceVariant
   }
 
-  Column(
+  VibeCard(
     modifier = modifier
-      .fillMaxWidth()
-      .clip(RoundedCornerShape(CARD_RADIUS))
-      .background(backgroundColor)
-      .padding(Padding.Medium)
-      .semantics(mergeDescendants = true) {
-        liveRegion = LiveRegionMode.Polite
-      }
+      .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+    shape = shapes.cardMedium,
+    containerColor = backgroundColor,
+    contentPadding = Padding.Medium
   ) {
+   Column(modifier = Modifier.fillMaxWidth()) {
     Row(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically
@@ -132,6 +126,7 @@ private fun DayDetailContent(
         )
       }
     }
+   }
   }
 }
 
@@ -145,4 +140,3 @@ private fun detailTitle(detail: DayDetailUiState): String {
 
 private val DATE_FORMATTER: DateTimeFormatter =
   DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))
-private val CARD_RADIUS = 18.dp

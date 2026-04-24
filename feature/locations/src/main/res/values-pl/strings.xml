@@ -17,6 +17,8 @@
   <string name="locations_action_add_city">Dodaj ulubione</string>
   <string name="locations_action_add_city_disabled">Osiągnięto limit ulubionych</string>
   <string name="locations_action_more">Więcej akcji</string>
+  <string name="locations_action_move_up">Przenieś w górę</string>
+  <string name="locations_action_move_down">Przenieś w dół</string>
   <string name="locations_row_temperature">%1$s</string>
   <string name="locations_row_high_low">↑ %1$s · ↓ %2$s</string>
   <string name="locations_row_selected">Wybrane</string>

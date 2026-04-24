@@ -11,17 +11,26 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.zIndex
 import com.weather.vibe.core.designsystem.components.pill.VibePill
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
@@ -33,39 +42,65 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.DraggedAlpha
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.DraggedZIndex
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.LockedAlpha
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionIndicatorSize
 import com.weather.vibe.feature.locations.ui.LocationsEmojis
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionMoveDown
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.actionMoveUp
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.rowInfoFeels
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.temperature
+import com.weather.vibe.feature.locations.ui.reorder.LocationsReorderState
+import com.weather.vibe.feature.locations.ui.reorder.dragToReorder
+import com.weather.vibe.feature.locations.ui.reorder.rememberLocationsReorderState
 
 @Composable
 internal fun LocationRow(
   modifier: Modifier = Modifier,
   card: LocationCardUiState,
-  positionIndex: Int,
   compareMode: Boolean,
   isSelected: Boolean,
   isLocked: Boolean,
+  reorderState: LocationsReorderState,
   onClick: () -> Unit,
   onRename: () -> Unit,
   onDelete: () -> Unit
 ) {
+  val isDragged by remember(card.favoriteId, reorderState) {
+    derivedStateOf { reorderState.isDragging(favoriteId = card.favoriteId) }
+  }
+  val reorderable = !compareMode && !isLocked
   Row(
-    modifier = modifier.rowContainer(
-      compareMode = compareMode,
-      isSelected = isSelected,
-      isLocked = isLocked,
-      onClick = onClick
-    ),
+    modifier = modifier
+      .zIndex(if (isDragged) DraggedZIndex else 0f)
+      .graphicsLayer {
+        translationY = reorderState.translationYFor(favoriteId = card.favoriteId)
+        if (reorderState.isDragging(favoriteId = card.favoriteId)) alpha = DraggedAlpha
+      }
+      .dragToReorder(
+        favoriteId = card.favoriteId,
+        reorderState = reorderState,
+        enabled = reorderable
+      )
+      .reorderA11yActions(
+        favoriteId = card.favoriteId,
+        reorderState = reorderState,
+        enabled = reorderable
+      )
+      .rowContainer(
+        compareMode = compareMode,
+        isSelected = isSelected,
+        isLocked = isLocked,
+        onClick = onClick
+      ),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     WeatherEmoji(emoji = card.weather?.emoji ?: LocationsEmojis.fallback())
     LocationLabels(
       modifier = Modifier.weight(1f),
-      card = card,
-      positionIndex = positionIndex
+      card = card
     )
     TemperatureBlock(card = card)
     TrailingAffordance(
@@ -75,6 +110,37 @@ internal fun LocationRow(
       onDelete = onDelete
     )
   }
+}
+
+@Composable
+private fun Modifier.reorderA11yActions(
+  favoriteId: Long,
+  reorderState: LocationsReorderState,
+  enabled: Boolean
+): Modifier {
+  if (!enabled) return this
+  val moveUpLabel = actionMoveUp()
+  val moveDownLabel = actionMoveDown()
+  val actions = buildList {
+    if (reorderState.canMoveUp(favoriteId = favoriteId)) {
+      add(
+        CustomAccessibilityAction(label = moveUpLabel) {
+          reorderState.moveUp(favoriteId = favoriteId)
+          true
+        }
+      )
+    }
+    if (reorderState.canMoveDown(favoriteId = favoriteId)) {
+      add(
+        CustomAccessibilityAction(label = moveDownLabel) {
+          reorderState.moveDown(favoriteId = favoriteId)
+          true
+        }
+      )
+    }
+  }
+  if (actions.isEmpty()) return this
+  return this.semantics { customActions = actions }
 }
 
 @Composable
@@ -116,11 +182,10 @@ private fun WeatherEmoji(emoji: String) {
 @Composable
 private fun LocationLabels(
   modifier: Modifier = Modifier,
-  card: LocationCardUiState,
-  positionIndex: Int
+  card: LocationCardUiState
 ) {
   Column(modifier = modifier) {
-    NameRow(card = card, positionIndex = positionIndex)
+    NameRow(card = card)
     Text(
       text = card.region,
       style = typography.bodySmall,
@@ -132,10 +197,7 @@ private fun LocationLabels(
 }
 
 @Composable
-private fun NameRow(
-  card: LocationCardUiState,
-  positionIndex: Int
-) {
+private fun NameRow(card: LocationCardUiState) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
@@ -148,19 +210,16 @@ private fun NameRow(
       maxLines = 1,
       overflow = TextOverflow.Ellipsis
     )
-    LabelPill(card = card, positionIndex = positionIndex)
+    LabelPill(card = card)
   }
 }
 
 @Composable
-private fun LabelPill(
-  card: LocationCardUiState,
-  positionIndex: Int
-) {
+private fun LabelPill(card: LocationCardUiState) {
   val label = card.label ?: return
   VibePill(
     text = label,
-    containerColor = labelPillContainerColor(index = positionIndex),
+    containerColor = labelPillContainerColor(seed = card.favoriteId),
     contentColor = colors.onAccent,
     style = typography.labelSmall
   )
@@ -221,10 +280,14 @@ private fun Preview() {
     Box(modifier = Modifier.padding(Small)) {
       LocationRow(
         card = LocationsPreviewData.london,
-        positionIndex = 0,
         compareMode = false,
         isSelected = false,
         isLocked = false,
+        reorderState = rememberLocationsReorderState(
+          listState = rememberLazyListState(),
+          cards = emptyList(),
+          onCommit = {}
+        ),
         onClick = {},
         onRename = {},
         onDelete = {}

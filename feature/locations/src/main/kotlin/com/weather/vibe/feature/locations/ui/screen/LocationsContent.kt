@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +37,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocat
 import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.ReorderLocationFavorites
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
@@ -53,6 +56,8 @@ import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState
 import com.weather.vibe.feature.locations.ui.component.header.LocationsHeader
 import com.weather.vibe.feature.locations.ui.component.label.LocationFavoriteLabelSheet
 import com.weather.vibe.feature.locations.ui.component.row.LocationRow
+import com.weather.vibe.feature.locations.ui.reorder.LocationsReorderAutoScroller
+import com.weather.vibe.feature.locations.ui.reorder.rememberLocationsReorderState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -185,7 +190,25 @@ private fun LocationsList(
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
+  val listState = rememberLazyListState()
+  val reorderState = rememberLocationsReorderState(
+    listState = listState,
+    cards = state.cards,
+    onCommit = { orderedIds -> dispatch(ReorderLocationFavorites(orderedIds = orderedIds)) }
+  )
+  val isEmpty by remember(reorderState) {
+    derivedStateOf { reorderState.orderedCards.isEmpty() }
+  }
+
+  LocationsReorderAutoScroller(
+    listState = listState,
+    reorderState = reorderState,
+    edgeZone = LocationsDefaults.ReorderEdgeZone,
+    pixelsPerSecond = LocationsDefaults.ReorderAutoScrollSpeed
+  )
+
   LazyColumn(
+    state = listState,
     modifier = Modifier
       .fillMaxSize()
       .statusBarsPadding(),
@@ -206,20 +229,26 @@ private fun LocationsList(
         onToggleCompareMode = { dispatch(ToggleCompareMode) }
       )
     }
-    if (state.cards.isEmpty()) {
+    if (isEmpty) {
       item(key = EMPTY) { LocationsEmptyState() }
       return@LazyColumn
     }
-    itemsIndexed(
-      items = state.cards,
-      key = { _, card -> card(card.favoriteId) }
-    ) { index, card ->
+    items(
+      items = reorderState.orderedCards,
+      key = { card -> card(card.favoriteId) }
+    ) { card ->
+      val rowModifier = if (reorderState.isDragging(favoriteId = card.favoriteId)) {
+        Modifier
+      } else {
+        Modifier.animateItem()
+      }
       LocationRow(
+        modifier = rowModifier,
         card = card,
-        positionIndex = index,
         compareMode = state.compareMode,
         isSelected = state.isCardSelected(card.favoriteId),
         isLocked = state.isCardLocked(card.favoriteId),
+        reorderState = reorderState,
         onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
         onRename = { onRenameRequest(card) },
         onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }

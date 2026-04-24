@@ -2,14 +2,14 @@ package com.weather.vibe.feature.locations.presentation
 
 import app.cash.turbine.test
 import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
-import com.weather.vibe.domain.location.usecase.AddLocationFavorite
 import com.weather.vibe.domain.location.usecase.CompareLocationWeather
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeather
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RefreshStaleLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
-import com.weather.vibe.domain.location.usecase.RestoreLocationWeatherSnapshot
+import com.weather.vibe.domain.location.usecase.ReorderLocationFavorites as ReorderLocationFavoritesUseCase
+import com.weather.vibe.domain.location.usecase.RestoreLocationFavoriteAtOriginalPosition
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.usecase.ObserveTemperatureUnit
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
@@ -18,6 +18,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.Initializ
 import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocationDetails
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.ReorderLocationFavorites
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateToSearch
 import com.weather.vibe.feature.locations.presentation.factory.LocationCardFactory
@@ -65,7 +66,6 @@ class LocationsViewModelTest {
   @get:Rule
   val rule = MainDispatcherRule()
 
-  private val addFavorite = mockk<AddLocationFavorite>()
   private val compareLocationWeather = CompareLocationWeather()
   private val observeFavoritesWithWeather = mockk<ObserveLocationFavoritesWithWeather>()
   private val observeTemperatureUnit = mockk<ObserveTemperatureUnit>()
@@ -73,7 +73,9 @@ class LocationsViewModelTest {
   private val refreshStaleFavoritesWeather = mockk<RefreshStaleLocationFavoritesWeather>(relaxed = true)
   private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val renameFavorite = mockk<RenameLocationFavorite>()
-  private val restoreSnapshot = mockk<RestoreLocationWeatherSnapshot>()
+  private val reorderFavorites = mockk<ReorderLocationFavoritesUseCase>()
+  private val restoreFavoriteAtOriginalPosition =
+    mockk<RestoreLocationFavoriteAtOriginalPosition>()
   private val resources = fakeLocationsResources()
   private val temperatureFormatter = fakeTemperatureFormatter()
   private val cardFactory = LocationCardFactory(
@@ -105,7 +107,6 @@ class LocationsViewModelTest {
     state = stateFactory
   )
   private val useCases = LocationsUseCases(
-    addFavorite = addFavorite,
     compareLocationWeather = compareLocationWeather,
     observeFavoritesWithWeather = observeFavoritesWithWeather,
     observeTemperatureUnit = observeTemperatureUnit,
@@ -113,7 +114,8 @@ class LocationsViewModelTest {
     refreshStaleFavoritesWeather = refreshStaleFavoritesWeather,
     removeFavorite = removeFavorite,
     renameFavorite = renameFavorite,
-    restoreSnapshot = restoreSnapshot
+    reorderFavorites = reorderFavorites,
+    restoreFavoriteAtOriginalPosition = restoreFavoriteAtOriginalPosition
   )
 
   @After
@@ -276,6 +278,20 @@ class LocationsViewModelTest {
 
     coVerify { removeFavorite(id = WARSAW_FAVORITE_ID) }
   }
+
+  @Test
+  fun `when location favorites reordered, then reorder use case called with ordered ids`() =
+    runTest {
+
+      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
+      coJustRun { reorderFavorites(any()) }
+      val viewModel = createViewModel().also { it.dispatch(Initialize) }
+      val orderedIds = listOf(KRAKOW_FAVORITE_ID, WARSAW_FAVORITE_ID)
+
+      viewModel.dispatch(ReorderLocationFavorites(orderedIds = orderedIds))
+
+      coVerify { reorderFavorites(orderedIds = orderedIds) }
+    }
 
   @Test
   fun `when rename click dispatched, then favorite renamed`() = runTest {

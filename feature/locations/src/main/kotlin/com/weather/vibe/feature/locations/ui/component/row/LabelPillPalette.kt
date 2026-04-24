@@ -7,7 +7,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 
 @Composable
 @ReadOnlyComposable
-internal fun labelPillContainerColor(index: Int): Color {
+internal fun labelPillContainerColor(seed: Long): Color {
   val palette = colors.pillPalette
-  return palette[(index % palette.size + palette.size) % palette.size]
+  val bucket = (seed % palette.size + palette.size) % palette.size
+  return palette[bucket.toInt()]
 }

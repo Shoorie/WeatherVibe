@@ -19,6 +19,7 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -74,7 +75,7 @@ internal class RatingCardViewModel(
   private fun mergeToday(entry: RatingEntry?) {
     _state.update { current ->
       when (current) {
-        Loading, is Rated -> stateFactory.fromTodayEntry(entry)
+        Loading, is Rated, is Saving -> stateFactory.fromTodayEntry(entry)
         else -> current
       }
     }

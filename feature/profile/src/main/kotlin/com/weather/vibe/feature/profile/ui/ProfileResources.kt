@@ -124,10 +124,6 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_mood_title)
 
     @Composable
-    fun moodBody(): String =
-      stringResource(R.string.profile_mood_body)
-
-    @Composable
     fun moodBadge(): String =
       stringResource(R.string.profile_mood_badge)
 

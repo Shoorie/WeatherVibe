@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.designsystem.components.pill.VibePill
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.RatingColors
@@ -41,7 +40,6 @@ import com.weather.vibe.domain.viberating.model.Condition
 import com.weather.vibe.feature.profile.R
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState
 import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodBadge
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodCta
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodTitle
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
@@ -99,18 +97,14 @@ private fun MoodTeaserCardContent(
             .semantics(mergeDescendants = true) {},
           verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-          TitleRow()
+          Text(
+            text = moodTitle(),
+            style = ProfileTextStyles.sectionTitle(),
+            color = colors.onPrimaryContainer,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.semantics { heading() }
+          )
           SummaryLine(state = state)
-          if (state.favoriteCondition != null) {
-            Text(
-              text = stringResource(
-                R.string.profile_mood_favorite_format,
-                conditionLabel(state.favoriteCondition)
-              ),
-              style = ProfileTextStyles.rowBody(),
-              color = colors.onPrimaryContainer.copy(alpha = 0.82f)
-            )
-          }
         }
         Icon(
           imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
@@ -119,27 +113,6 @@ private fun MoodTeaserCardContent(
         )
       }
     }
-  }
-}
-
-@Composable
-private fun TitleRow() {
-  Row(
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(Padding.Small)
-  ) {
-    Text(
-      text = moodTitle(),
-      style = ProfileTextStyles.sectionTitle(),
-      color = colors.onPrimaryContainer,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.semantics { heading() }
-    )
-    VibePill(
-      text = moodBadge(),
-      containerColor = colors.accent,
-      contentColor = colors.onAccent
-    )
   }
 }
 
@@ -210,19 +183,6 @@ private fun heroGradient(): Brush = Brush.linearGradient(
     colors.accent.copy(alpha = 0.4f)
   )
 )
-
-@Composable
-private fun conditionLabel(condition: Condition): String =
-  stringResource(
-    when (condition) {
-      Condition.SUNNY -> R.string.profile_condition_sunny
-      Condition.PARTLY_CLOUDY -> R.string.profile_condition_partly_cloudy
-      Condition.CLOUDY -> R.string.profile_condition_cloudy
-      Condition.RAIN -> R.string.profile_condition_rain
-      Condition.SNOW -> R.string.profile_condition_snow
-      Condition.NIGHT -> R.string.profile_condition_night
-    }
-  )
 
 @Composable
 private fun daysPlural(count: Int): String {

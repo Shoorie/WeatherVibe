@@ -7,6 +7,7 @@ import com.weather.vibe.feature.home.ui.screen.HomeScreen
 import com.weather.vibe.navigation.planner.ActivityPlannerRoute
 import com.weather.vibe.navigation.profile.ProfilePersonalizationRoute
 import com.weather.vibe.navigation.search.SearchRoute
+import com.weather.vibe.navigation.viberating.VibeHistoryRoute
 import com.weather.vibe.navigation.weather.WeatherDetailsRoute
 
 @Composable
@@ -20,6 +21,7 @@ internal fun HomeEntry(
     onNavigateToDetails = { backStack.add(WeatherDetailsRoute(route.selectedLocation)) },
     onNavigateToSearch = { backStack.add(SearchRoute) },
     onNavigateToSettings = { backStack.add(ProfilePersonalizationRoute) },
+    onNavigateToVibeHistory = { backStack.add(VibeHistoryRoute) },
     onContentReady = onContentReady,
     selectedLocation = route.selectedLocation
   )

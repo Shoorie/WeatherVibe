@@ -4,6 +4,7 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
+import com.weather.vibe.feature.home.mapper.toVibeWeatherSnapshot
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import org.koin.core.annotation.Factory
@@ -17,7 +18,8 @@ internal class HomeStateFactory(
   fun create(data: WeatherData, unit: TemperatureUnit = CELSIUS): Loaded =
     Loaded(
       details = factories.metrics.create(getCurrentWeatherMetrics(data), unit),
-      forecast = factories.forecast.create(data = data, unit = unit)
+      forecast = factories.forecast.create(data = data, unit = unit),
+      weatherSnapshot = data.toVibeWeatherSnapshot()
     )
 
   fun reformatTemperatures(

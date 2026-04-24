@@ -22,6 +22,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
@@ -97,7 +98,7 @@ internal fun ProfileContent(
   LazyColumn(
     modifier = modifier
       .fillMaxSize()
-      .background(colors.backgroundGradientEnd)
+      .background(rememberAppBackgroundBrush())
       .statusBarsPadding(),
     contentPadding = contentPadding,
     verticalArrangement = Arrangement.spacedBy(Medium)

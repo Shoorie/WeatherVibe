@@ -3,7 +3,6 @@ package com.weather.vibe.domain.viberating.model
 import java.time.LocalDate
 
 data class RatingEntry(
-  val id: Long = 0,
   val date: LocalDate,
   val rating: Int,
   val note: String,

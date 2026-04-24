@@ -11,14 +11,12 @@ object RatingEntryFixtures {
   val DEFAULT_DATE: LocalDate = LocalDate.of(2026, 4, 24)
 
   fun ratingEntry(
-    id: Long = 0,
     date: LocalDate = DEFAULT_DATE,
     rating: Int = 4,
     note: String = "",
     weather: WeatherSnapshot = WeatherSnapshotFixtures.PARTLY_CLOUDY_18C,
     createdAtEpochMs: Long = DEFAULT_CREATED_AT_EPOCH_MS
   ): RatingEntry = RatingEntry(
-    id = id,
     date = date,
     rating = rating,
     note = note,

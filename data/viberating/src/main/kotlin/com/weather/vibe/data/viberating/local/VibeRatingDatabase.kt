@@ -9,7 +9,7 @@ import com.weather.vibe.data.viberating.local.entity.RatingEntryEntity
 
 @Database(
   entities = [RatingEntryEntity::class],
-  version = 1,
+  version = 2,
   exportSchema = true
 )
 @TypeConverters(RatingEntryConverters::class)

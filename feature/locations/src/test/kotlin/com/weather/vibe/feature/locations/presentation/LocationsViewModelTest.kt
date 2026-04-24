@@ -124,72 +124,73 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `given initialize, when favorites load, then state is loaded with cards`() = runTest {
+  fun `given initialize, when favorites load, then cards shown`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
 
-    val loaded = viewModel.state.value as Loaded
+    val viewModel = initializedViewModel()
 
-    expectThat(loaded.cards).hasSize(2)
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { cards }
+      .hasSize(2)
   }
 
   @Test
   fun `when initialized, then outdated favorites weather refreshed`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    createViewModel().also { it.dispatch(Initialize) }
+
+    initializedViewModel()
 
     coVerify { refreshOutdatedFavoritesWeather() }
   }
 
   @Test
-  fun `given initialize, when favorites observation fails, then state is error`() = runTest {
+  fun `given favorites observation fails, when initialize, then error shown`() = runTest {
 
     every { observeFavoritesWithWeather() } returns flowOf(failure(IllegalStateException()))
     every { observeTemperatureUnit() } returns flowOf(CELSIUS)
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+
+    val viewModel = initializedViewModel()
 
     expectThat(viewModel.state.value).isA<Error>()
   }
 
   @Test
-  fun `given loaded with two favorites, when toggle compare mode, then compare mode becomes true`() =
-    runTest {
-
-      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-      val viewModel = createViewModel().also { it.dispatch(Initialize) }
-
-      viewModel.dispatch(ToggleCompareMode)
-
-      expectThat(viewModel.state.value)
-        .isA<Loaded>().get { compareMode }
-        .isTrue()
-    }
-
-  @Test
-  fun `given loaded with single favorite, when toggle compare mode, then compare mode stays false`() =
-    runTest {
-
-      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-      val viewModel = createViewModel().also { it.dispatch(Initialize) }
-
-      viewModel.dispatch(ToggleCompareMode)
-
-      expectThat(viewModel.state.value)
-        .isA<Loaded>().get { compareMode }
-        .isA<Boolean>()
-        .isEqualTo(false)
-    }
-
-  @Test
-  fun `given compare mode, when card clicked, then selection updated`() = runTest {
+  fun `given two favorites, when compare toggled, then compare mode enabled`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also {
-      it.dispatch(Initialize)
-      it.dispatch(ToggleCompareMode)
-    }
+    val viewModel = initializedViewModel()
+
+    viewModel.dispatch(ToggleCompareMode)
+
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { compareMode }
+      .isTrue()
+  }
+
+  @Test
+  fun `given single favorite, when compare toggled, then compare mode stays disabled`() = runTest {
+
+    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
+    val viewModel = initializedViewModel()
+
+    viewModel.dispatch(ToggleCompareMode)
+
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { compareMode }
+      .isEqualTo(false)
+  }
+
+  @Test
+  fun `given compare mode, when card tapped, then card marked selected`() = runTest {
+
+    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
+    val viewModel = initializedViewModel()
+    viewModel.dispatch(ToggleCompareMode)
 
     viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
 
@@ -200,13 +201,11 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `given two cards selected with snapshots, then compare pair is built`() = runTest {
+  fun `given two cards selected with snapshots, then compare pair shown`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also {
-      it.dispatch(Initialize)
-      it.dispatch(ToggleCompareMode)
-    }
+    val viewModel = initializedViewModel()
+    viewModel.dispatch(ToggleCompareMode)
 
     viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
     viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
@@ -218,30 +217,27 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `given two cards selected but one missing snapshot, then compare pair stays null`() =
-    runTest {
+  fun `given one selected card missing snapshot, then compare pair unavailable`() = runTest {
 
-      val noSnapshot = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
-      mockFavorites(sources = listOf(noSnapshot, KRAKOW_WITH_WEATHER))
-      val viewModel = createViewModel().also {
-        it.dispatch(Initialize)
-        it.dispatch(ToggleCompareMode)
-      }
+    val noSnapshot = LocationFavoriteWithWeather(favorite = WARSAW_FAVORITE, snapshot = null)
+    mockFavorites(sources = listOf(noSnapshot, KRAKOW_WITH_WEATHER))
+    val viewModel = initializedViewModel()
+    viewModel.dispatch(ToggleCompareMode)
 
-      viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
-      viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
+    viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
+    viewModel.dispatch(OpenLocationDetails(favoriteId = KRAKOW_FAVORITE_ID))
 
-      expectThat(viewModel.state.value)
-        .isA<Loaded>()
-        .get { comparePair }
-        .isNull()
-    }
+    expectThat(viewModel.state.value)
+      .isA<Loaded>()
+      .get { comparePair }
+      .isNull()
+  }
 
   @Test
-  fun `given add city click, then navigate to search event emitted`() = runTest {
+  fun `when add city tapped, then search opened`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+    val viewModel = initializedViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(AddLocationClick)
@@ -250,14 +246,12 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `given close compare, when dispatched, then selection cleared`() = runTest {
+  fun `given compare mode, when closed, then selection cleared`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-    val viewModel = createViewModel().also {
-      it.dispatch(Initialize)
-      it.dispatch(ToggleCompareMode)
-      it.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
-    }
+    val viewModel = initializedViewModel()
+    viewModel.dispatch(ToggleCompareMode)
+    viewModel.dispatch(OpenLocationDetails(favoriteId = WARSAW_FAVORITE_ID))
 
     viewModel.dispatch(ExitCompareMode)
 
@@ -268,11 +262,11 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `when remove click dispatched, then favorite removed by id`() = runTest {
+  fun `when favorite remove tapped, then favorite removed`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
     coJustRun { removeFavorite(any()) }
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+    val viewModel = initializedViewModel()
 
     viewModel.dispatch(RemoveLocationFavoriteClick(favoriteId = WARSAW_FAVORITE_ID))
 
@@ -280,25 +274,24 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `when location favorites reordered, then reorder use case called with ordered ids`() =
-    runTest {
+  fun `when favorites reordered, then new order committed`() = runTest {
 
-      mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
-      coJustRun { reorderFavorites(any()) }
-      val viewModel = createViewModel().also { it.dispatch(Initialize) }
-      val orderedIds = listOf(KRAKOW_FAVORITE_ID, WARSAW_FAVORITE_ID)
+    mockFavorites(sources = listOf(WARSAW_WITH_WEATHER, KRAKOW_WITH_WEATHER))
+    coJustRun { reorderFavorites(any()) }
+    val viewModel = initializedViewModel()
+    val orderedIds = listOf(KRAKOW_FAVORITE_ID, WARSAW_FAVORITE_ID)
 
-      viewModel.dispatch(ReorderLocationFavorites(orderedIds = orderedIds))
+    viewModel.dispatch(ReorderLocationFavorites(orderedIds = orderedIds))
 
-      coVerify { reorderFavorites(orderedIds = orderedIds) }
-    }
+    coVerify { reorderFavorites(orderedIds = orderedIds) }
+  }
 
   @Test
-  fun `when rename click dispatched, then favorite renamed`() = runTest {
+  fun `when favorite renamed, then new label persisted`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
     coJustRun { renameFavorite(any(), any()) }
-    val viewModel = createViewModel().also { it.dispatch(Initialize) }
+    val viewModel = initializedViewModel()
 
     viewModel.dispatch(
       RenameLocationFavoriteClick(
@@ -315,9 +308,12 @@ class LocationsViewModelTest {
     every { observeTemperatureUnit() } returns flowOf(CELSIUS)
   }
 
-  private fun createViewModel(): LocationsViewModel =
-    LocationsViewModel(
+  private fun initializedViewModel(): LocationsViewModel {
+    val viewModel = LocationsViewModel(
       factories = factories,
       useCases = useCases
     )
+    viewModel.dispatch(Initialize)
+    return viewModel
+  }
 }

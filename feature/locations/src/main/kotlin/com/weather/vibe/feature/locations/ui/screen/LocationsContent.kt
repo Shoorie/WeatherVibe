@@ -202,7 +202,7 @@ private fun LocationsList(
 
   LocationsReorderAutoScroller(
     listState = listState,
-    reorderState = reorderState,
+    reorder = reorderState,
     edgeZone = LocationsDefaults.ReorderEdgeZone,
     pixelsPerSecond = LocationsDefaults.ReorderAutoScrollSpeed
   )
@@ -237,10 +237,9 @@ private fun LocationsList(
       items = reorderState.orderedCards,
       key = { card -> card(card.favoriteId) }
     ) { card ->
-      val rowModifier = if (reorderState.isDragging(favoriteId = card.favoriteId)) {
-        Modifier
-      } else {
-        Modifier.animateItem()
+      val rowModifier = when {
+        reorderState.isDragging(favoriteId = card.favoriteId) -> Modifier
+        else -> Modifier.animateItem()
       }
       LocationRow(
         modifier = rowModifier,
@@ -248,7 +247,7 @@ private fun LocationsList(
         compareMode = state.compareMode,
         isSelected = state.isCardSelected(card.favoriteId),
         isLocked = state.isCardLocked(card.favoriteId),
-        reorderState = reorderState,
+        reorder = reorderState,
         onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
         onRename = { onRenameRequest(card) },
         onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }

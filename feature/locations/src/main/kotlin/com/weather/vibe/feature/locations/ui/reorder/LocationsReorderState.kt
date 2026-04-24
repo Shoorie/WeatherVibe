@@ -3,6 +3,7 @@ package com.weather.vibe.feature.locations.ui.reorder
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.ui.LocationsKeys
+import com.weather.vibe.feature.locations.ui.LocationsKeys.favoriteIdFromCardKey
+import com.weather.vibe.feature.locations.ui.LocationsKeys.isCard
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -33,6 +36,7 @@ import kotlinx.collections.immutable.toImmutableList
  * For users who cannot perform the long-press drag gesture (notably TalkBack), [moveUp] and
  * [moveDown] shift a card by one slot and commit immediately, independent of pointer state.
  */
+@Stable
 internal class LocationsReorderState(
   private val listState: LazyListState,
   private val onCommit: (orderedIds: List<Long>) -> Unit
@@ -49,63 +53,67 @@ internal class LocationsReorderState(
   private var pendingCommitIds: List<Long>? = null
 
   fun syncWithCards(cards: List<LocationCardUiState>) {
+
     if (draggingFavoriteId != null) return
+
     val pending = pendingCommitIds
     if (pending == null) {
-      if (!orderedCards.matches(cards)) orderedCards = cards.toImmutableList()
+      adoptCards(cards = cards)
       return
     }
-    val cardsById = cards.associateBy { it.favoriteId }
-    orderedCards = pending.mapNotNull { cardsById[it] }.toImmutableList()
-    if (cards.matchesOrder(pending)) pendingCommitIds = null
+
+    projectPendingOrderOnto(cards = cards, pending = pending)
   }
 
   fun onDragStart(favoriteId: Long) {
+
     val item = visibleCardItem(favoriteId = favoriteId) ?: return
+
     initialDraggedOffset = item.offset
     draggedDistance = 0f
     draggingFavoriteId = favoriteId
   }
 
   fun onDrag(deltaY: Float) {
+
     draggedDistance += deltaY
     trySwapWithHoveredCard()
   }
 
   fun onDragEnd() {
+
     if (draggingFavoriteId == null) return
-    val finalIds = orderedCards.map { it.favoriteId }
-    pendingCommitIds = finalIds
-    draggingFavoriteId = null
-    draggedDistance = 0f
-    initialDraggedOffset = 0
-    onCommit(finalIds)
+
+    commitCurrentOrder()
+    resetDragState()
   }
 
   fun isDragging(favoriteId: Long): Boolean = favoriteId == draggingFavoriteId
 
   fun translationYFor(favoriteId: Long): Float {
+
     if (favoriteId != draggingFavoriteId) return 0f
     val current = visibleCardItem(favoriteId = favoriteId) ?: return 0f
+
     return (initialDraggedOffset - current.offset).toFloat() + draggedDistance
   }
 
   fun autoScrollDirection(edgeZonePx: Float): Int {
-    val dragged = draggingFavoriteId ?: return 0
-    val item = visibleCardItem(favoriteId = dragged) ?: return 0
-    val visualCenter = initialDraggedOffset + item.size / 2f + draggedDistance
-    val topZone = listState.layoutInfo.viewportStartOffset + edgeZonePx
-    val bottomZone = listState.layoutInfo.viewportEndOffset - edgeZonePx
+
+    val center = visualCenterOfDragged() ?: return 0
+    val info = listState.layoutInfo
+    val topZone = info.viewportStartOffset + edgeZonePx
+    val bottomZone = info.viewportEndOffset - edgeZonePx
+
     return when {
-      visualCenter < topZone -> -1
-      visualCenter > bottomZone -> 1
+      center < topZone -> -1
+      center > bottomZone -> 1
       else -> 0
     }
   }
 
-  fun onAutoScrolled() {
+  fun onAutoScrolled() =
     trySwapWithHoveredCard()
-  }
 
   fun canMoveUp(favoriteId: Long): Boolean =
     orderedCards.indexOfFirst { it.favoriteId == favoriteId } > 0
@@ -115,49 +123,91 @@ internal class LocationsReorderState(
     return index in 0 until orderedCards.lastIndex
   }
 
-  fun moveUp(favoriteId: Long) {
+  fun moveUp(favoriteId: Long) =
     shiftAndCommit(favoriteId = favoriteId, delta = -1)
+
+  fun moveDown(favoriteId: Long) =
+    shiftAndCommit(favoriteId = favoriteId, delta = 1)
+
+  private fun adoptCards(cards: List<LocationCardUiState>) {
+    if (orderedCards.matches(cards)) return
+    orderedCards = cards.toImmutableList()
   }
 
-  fun moveDown(favoriteId: Long) {
-    shiftAndCommit(favoriteId = favoriteId, delta = 1)
+  private fun projectPendingOrderOnto(cards: List<LocationCardUiState>, pending: List<Long>) {
+
+    val cardsById = cards.associateBy { it.favoriteId }
+    orderedCards = pending.mapNotNull { cardsById[it] }.toImmutableList()
+
+    if (cards.matchesOrder(pending)) pendingCommitIds = null
   }
 
   private fun shiftAndCommit(favoriteId: Long, delta: Int) {
+
     val fromIndex = orderedCards.indexOfFirst { it.favoriteId == favoriteId }
     val toIndex = fromIndex + delta
     if (fromIndex == -1 || toIndex !in orderedCards.indices) return
-    val next = orderedCards.toMutableList().apply {
-      add(toIndex, removeAt(fromIndex))
-    }.toImmutableList()
-    orderedCards = next
-    val finalIds = next.map { it.favoriteId }
-    pendingCommitIds = finalIds
-    onCommit(finalIds)
+
+    moveInOrder(fromIndex = fromIndex, toIndex = toIndex)
+    commitCurrentOrder()
   }
 
   private fun trySwapWithHoveredCard() {
+
     val dragged = draggingFavoriteId ?: return
-    val draggedItem = visibleCardItem(favoriteId = dragged) ?: return
-    val visualCenter = initialDraggedOffset + draggedItem.size / 2f + draggedDistance
-    val target = listState.layoutInfo.visibleItemsInfo
-      .firstOrNull { other ->
-        other.key != draggedItem.key &&
-          LocationsKeys.isCard(key = other.key) &&
-          visualCenter in other.offset.toFloat()..(other.offset + other.size).toFloat()
-      } ?: return
-    val targetFavoriteId = LocationsKeys.favoriteIdFromCardKey(key = target.key) ?: return
+    val center = visualCenterOfDragged() ?: return
+
+    val targetItem = findHoveredCard(center = center, excluding = dragged) ?: return
+    val targetFavoriteId = favoriteIdFromCardKey(key = targetItem.key) ?: return
+
     swapDraggedBefore(targetFavoriteId = targetFavoriteId)
   }
 
   private fun swapDraggedBefore(targetFavoriteId: Long) {
+
     val dragged = draggingFavoriteId ?: return
     val fromIndex = orderedCards.indexOfFirst { it.favoriteId == dragged }
     val toIndex = orderedCards.indexOfFirst { it.favoriteId == targetFavoriteId }
     if (fromIndex == -1 || toIndex == -1 || fromIndex == toIndex) return
+
+    moveInOrder(fromIndex = fromIndex, toIndex = toIndex)
+  }
+
+  private fun moveInOrder(fromIndex: Int, toIndex: Int) {
     orderedCards = orderedCards.toMutableList().apply {
       add(toIndex, removeAt(fromIndex))
     }.toImmutableList()
+  }
+
+  private fun commitCurrentOrder() {
+    val finalIds = orderedCards.map { it.favoriteId }
+    pendingCommitIds = finalIds
+    onCommit(finalIds)
+  }
+
+  private fun resetDragState() {
+    draggingFavoriteId = null
+    draggedDistance = 0f
+    initialDraggedOffset = 0
+  }
+
+  private fun visualCenterOfDragged(): Float? {
+
+    val dragged = draggingFavoriteId ?: return null
+    val item = visibleCardItem(favoriteId = dragged) ?: return null
+
+    return initialDraggedOffset + item.size / 2f + draggedDistance
+  }
+
+  private fun findHoveredCard(center: Float, excluding: Long): LazyListItemInfo? {
+
+    val excludedKey = LocationsKeys.card(favoriteId = excluding)
+
+    return listState.layoutInfo.visibleItemsInfo.firstOrNull { info ->
+      info.key != excludedKey &&
+        isCard(key = info.key) &&
+        center in info.offset.toFloat()..(info.offset + info.size).toFloat()
+    }
   }
 
   private fun visibleCardItem(favoriteId: Long): LazyListItemInfo? =
@@ -183,9 +233,11 @@ internal fun rememberLocationsReorderState(
   cards: List<LocationCardUiState>,
   onCommit: (orderedIds: List<Long>) -> Unit
 ): LocationsReorderState {
+
   val state = remember(listState) {
     LocationsReorderState(listState = listState, onCommit = onCommit)
   }
   state.syncWithCards(cards = cards)
+
   return state
 }

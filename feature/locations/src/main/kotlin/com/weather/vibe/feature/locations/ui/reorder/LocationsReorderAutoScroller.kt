@@ -10,36 +10,47 @@ import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.isActive
 
 /**
- * While a card is being dragged, nudges the list whenever the card enters the edge
- * zone at the top or bottom of the viewport — so slots outside the current viewport
- * stay reachable without lifting the finger.
+ * Drives edge-zone auto-scroll while a card is being dragged.
+ *
+ * LazyColumn does not auto-scroll on its own when a pointer sits near the viewport edge —
+ * the pointer gesture and the list's scroll state live in separate systems. Without this
+ * driver the user cannot drag a card past the visible viewport, which makes slots off the
+ * first/last screen unreachable without lifting the finger.
+ *
+ * The composable is a no-op while no card is being dragged (the `LaunchedEffect` key flips
+ * to `null` and cancels the frame loop), so it only consumes the choreographer clock during
+ * an active drag.
  */
 @Composable
 internal fun LocationsReorderAutoScroller(
   listState: LazyListState,
-  reorderState: LocationsReorderState,
+  reorder: LocationsReorderState,
   edgeZone: Dp,
   pixelsPerSecond: Dp
 ) {
   val density = LocalDensity.current
   val edgeZonePx = remember(density, edgeZone) { with(density) { edgeZone.toPx() } }
-  val pixelsPerSecondValue = remember(density, pixelsPerSecond) {
+  val speedPxPerSecond = remember(density, pixelsPerSecond) {
     with(density) { pixelsPerSecond.toPx() }
   }
-  val draggingFavoriteId = reorderState.draggingFavoriteId
 
-  LaunchedEffect(draggingFavoriteId) {
-    if (draggingFavoriteId == null) return@LaunchedEffect
+  LaunchedEffect(reorder.draggingFavoriteId) {
+
+    if (reorder.draggingFavoriteId == null) return@LaunchedEffect
+
     var lastFrameNanos = withFrameNanos { it }
     while (isActive) {
+
       val now = withFrameNanos { it }
       val elapsedSeconds = (now - lastFrameNanos) / NANOS_PER_SECOND
       lastFrameNanos = now
-      val direction = reorderState.autoScrollDirection(edgeZonePx = edgeZonePx)
+
+      val direction = reorder.autoScrollDirection(edgeZonePx = edgeZonePx)
       if (direction == 0) continue
-      val delta = direction * pixelsPerSecondValue * elapsedSeconds
+
+      val delta = direction * speedPxPerSecond * elapsedSeconds
       listState.scroll { scrollBy(delta) }
-      reorderState.onAutoScrolled()
+      reorder.onAutoScrolled()
     }
   }
 }

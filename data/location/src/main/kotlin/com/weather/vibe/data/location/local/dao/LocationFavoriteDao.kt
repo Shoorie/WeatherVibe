@@ -4,10 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.RawQuery
 import androidx.room.Transaction
-import androidx.sqlite.db.SimpleSQLiteQuery
-import androidx.sqlite.db.SupportSQLiteQuery
 import com.weather.vibe.data.location.local.entity.LocationFavoriteEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -38,6 +35,9 @@ interface LocationFavoriteDao {
   @Query("UPDATE favorite_locations SET label = :label WHERE id = :id")
   suspend fun updateLabel(id: Long, label: String?)
 
+  @Query("UPDATE favorite_locations SET position = :position WHERE id = :id")
+  suspend fun updatePosition(id: Long, position: Int)
+
   @Query(
     """
     UPDATE favorite_locations
@@ -51,18 +51,5 @@ interface LocationFavoriteDao {
   suspend fun deleteByIdAndPromoteDefault(id: Long) {
     deleteById(id = id)
     promoteFirstAsDefault()
-  }
-
-  @RawQuery
-  suspend fun runRawUpdate(query: SupportSQLiteQuery): Int
-
-  suspend fun replacePositions(orderedIds: List<Long>) {
-    if (orderedIds.isEmpty()) return
-    val cases = orderedIds
-      .mapIndexed { index, id -> "WHEN $id THEN $index" }
-      .joinToString(separator = " ")
-    val idsList = orderedIds.joinToString(separator = ",")
-    val sql = "UPDATE favorite_locations SET position = CASE id $cases END WHERE id IN ($idsList)"
-    runRawUpdate(SimpleSQLiteQuery(sql))
   }
 }

@@ -61,8 +61,8 @@ internal class DefaultLocationFavoriteRepository(
     dao.updateLabel(id = id, label = label)
   }
 
-  override suspend fun reorderFavorites(orderedIds: List<Long>) {
-    dao.replacePositions(orderedIds = orderedIds)
+  override suspend fun reorderFavorites(orderedIds: List<Long>) = database.withTransaction {
+    writeOrder(orderedIds = orderedIds)
   }
 
   override suspend fun restoreFavoriteAtOriginalPosition(
@@ -87,6 +87,12 @@ internal class DefaultLocationFavoriteRepository(
     val restoredOrder = originalOrder.map { id ->
       if (id == removedFavoriteId) insertedId else id
     }
-    dao.replacePositions(orderedIds = restoredOrder)
+    writeOrder(orderedIds = restoredOrder)
+  }
+
+  private suspend fun writeOrder(orderedIds: List<Long>) {
+    orderedIds.forEachIndexed { index, id ->
+      dao.updatePosition(id = id, position = index)
+    }
   }
 }

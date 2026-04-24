@@ -25,12 +25,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenSubtitle
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenTitle
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
@@ -81,30 +84,36 @@ internal fun LocationsContent(
     label = "fab_snackbar_lift"
   )
 
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(brush = rememberAppBackgroundBrush())
+  VibeScreenScaffold(
+    modifier = modifier,
+    header = {
+      VibeScreenHeader(
+        title = screenTitle(),
+        subtitle = screenSubtitle()
+      )
+    }
   ) {
-    LocationsBody(
-      state = state,
-      onRenameRequest = { renameTarget = it },
-      dispatch = dispatch
-    )
-    AddLocationFab(
-      modifier = Modifier
-        .align(Alignment.BottomEnd)
-        .padding(
-          end = Medium,
-          bottom = LocationsDefaults.FabBottomOffset + fabLift
-        ),
-      enabled = state !is Loaded || state.canAddMoreFavorites,
-      onClick = { dispatch(AddLocationClick) }
-    )
-    SnackbarHost(
-      modifier = Modifier.align(Alignment.BottomCenter),
-      hostState = snackbarHostState
-    )
+    Box(modifier = Modifier.fillMaxSize()) {
+      LocationsBody(
+        state = state,
+        onRenameRequest = { renameTarget = it },
+        dispatch = dispatch
+      )
+      AddLocationFab(
+        modifier = Modifier
+          .align(Alignment.BottomEnd)
+          .padding(
+            end = Medium,
+            bottom = LocationsDefaults.FabBottomOffset + fabLift
+          ),
+        enabled = state !is Loaded || state.canAddMoreFavorites,
+        onClick = { dispatch(AddLocationClick) }
+      )
+      SnackbarHost(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        hostState = snackbarHostState
+      )
+    }
   }
   renameTarget?.let { card ->
     LocationFavoriteLabelSheet(

@@ -88,6 +88,10 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_header_brief_tone_click_label)
 
     @Composable
+    fun screenTitle(): String =
+      stringResource(R.string.profile_screen_title)
+
+    @Composable
     fun personalizationTitle(): String =
       stringResource(R.string.profile_row_personalization_title)
 
@@ -168,11 +172,23 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_placeholder_privacy_body)
 
     @Composable
+    fun placeholderPrivacySubtitle(): String =
+      stringResource(R.string.profile_placeholder_privacy_subtitle)
+
+    @Composable
     fun placeholderAboutTitle(): String =
       stringResource(R.string.profile_placeholder_about_title)
 
     @Composable
     fun placeholderAboutBody(): String =
       stringResource(R.string.profile_placeholder_about_body)
+
+    @Composable
+    fun placeholderAboutSubtitle(): String =
+      stringResource(R.string.profile_placeholder_about_subtitle)
+
+    @Composable
+    fun screenSubtitle(): String =
+      stringResource(R.string.profile_screen_subtitle)
   }
 }

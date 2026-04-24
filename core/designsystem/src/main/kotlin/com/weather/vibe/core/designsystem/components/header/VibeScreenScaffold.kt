@@ -41,10 +41,10 @@ private fun Preview() {
     VibeScreenScaffold(
       header = {
         VibeScreenHeader(
-          title = "Twój vibe",
-          subtitle = "Jak oceniałeś ostatnie dni",
+          title = "Your vibe",
+          subtitle = "How you rated the last few days",
           onBackClicked = {},
-          backContentDescription = "Wstecz"
+          backContentDescription = "Back"
         )
       },
       content = {}

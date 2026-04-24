@@ -1,21 +1,16 @@
 package com.weather.vibe.feature.settings.personalization.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationEvent.NavigateBack
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationViewModel
 import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState
@@ -24,6 +19,7 @@ import com.weather.vibe.feature.settings.personalization.presentation.state.Pers
 import com.weather.vibe.feature.settings.personalization.preview.PersonalizationPreview
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Emojis
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.errorTitle
+import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.screenSubtitle
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.screenTitle
 import com.weather.vibe.feature.settings.shared.ui.component.ErrorContent
 import org.koin.androidx.compose.koinViewModel
@@ -55,34 +51,28 @@ internal fun PersonalizationContent(
   state: PersonalizationUiState,
   callbacks: PersonalizationCallbacks
 ) {
-  Scaffold(
+  VibeScreenScaffold(
     modifier = modifier,
-    containerColor = colors.backgroundGradientEnd,
-    contentColor = Color.Unspecified,
-    topBar = {
-      VibeTopBar(
+    header = {
+      VibeScreenHeader(
         title = screenTitle(),
-        onNavigateBack = callbacks.onBackClick
+        subtitle = screenSubtitle(),
+        onBackClicked = callbacks.onBackClick
       )
     }
-  ) { innerPadding ->
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding)
-        .background(colors.backgroundGradientEnd)
-    ) {
-      when (state) {
-        is Loaded -> PersonalizationLoadedContent(
-          state = state,
-          callbacks = callbacks
-        )
-        is Error -> ErrorContent(
-          emoji = Emojis.error(),
-          title = errorTitle(),
-          message = state.message
-        )
-      }
+  ) {
+    when (state) {
+      is Loaded -> PersonalizationLoadedContent(
+        modifier = Modifier.fillMaxSize(),
+        state = state,
+        callbacks = callbacks
+      )
+      is Error -> ErrorContent(
+        modifier = Modifier.fillMaxSize(),
+        emoji = Emojis.error(),
+        title = errorTitle(),
+        message = state.message
+      )
     }
   }
 }

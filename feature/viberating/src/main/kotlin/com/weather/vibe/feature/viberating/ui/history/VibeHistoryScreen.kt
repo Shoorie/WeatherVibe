@@ -1,28 +1,29 @@
 package com.weather.vibe.feature.viberating.ui.history
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.BackClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DayDetailDismissed
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DaySelected
@@ -74,19 +75,36 @@ internal fun VibeHistoryContent(
   state: VibeHistoryUiState,
   callbacks: VibeHistoryCallbacks
 ) {
+  VibeScreenScaffold(
+    modifier = modifier,
+    header = {
+      VibeScreenHeader(
+        title = stringResource(R.string.vibe_history_title),
+        subtitle = stringResource(R.string.vibe_history_subtitle),
+        onBackClicked = callbacks.onBackClicked,
+        backContentDescription = stringResource(R.string.vibe_history_back)
+      )
+    }
+  ) {
+    VibeHistoryScrollContent(state = state, callbacks = callbacks)
+  }
+}
+
+@Composable
+private fun VibeHistoryScrollContent(
+  state: VibeHistoryUiState,
+  callbacks: VibeHistoryCallbacks
+) {
   Column(
-    modifier = modifier
+    modifier = Modifier
       .fillMaxSize()
-      .background(rememberAppBackgroundBrush())
-      .statusBarsPadding()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)
-      .padding(top = Padding.Medium, bottom = BOTTOM_PADDING)
+      .padding(bottom = BOTTOM_PADDING)
   ) {
-    VibeHistoryHeader(
+    VibeHistoryStats(
       averageRating = state.averageRating,
-      totalEntries = state.totalEntries,
-      onBackClicked = callbacks.onBackClicked
+      totalEntries = state.totalEntries
     )
     Spacer(Modifier.height(Padding.Medium))
     MonthCalendar(

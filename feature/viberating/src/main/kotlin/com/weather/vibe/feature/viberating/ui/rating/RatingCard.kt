@@ -213,13 +213,26 @@ private fun ViewHistoryPillRow(onClick: () -> Unit) {
         onClickLabel = label,
         onClick = onClick
       )
-      .padding(vertical = Padding.Small),
+      .padding(vertical = Padding.Small)
+      .semantics(mergeDescendants = true) {},
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
+      text = PillEmoji,
+      style = WeatherVibeTheme.typography.titleSmall
+    )
+    Spacer(Modifier.width(Padding.Small))
+    Text(
       text = label,
-      style = WeatherVibeTheme.typography.labelMedium,
+      style = WeatherVibeTheme.typography.titleSmall,
+      color = WeatherVibeTheme.colors.accent,
+      fontWeight = FontWeight.SemiBold
+    )
+    Spacer(Modifier.width(Padding.ExtraSmall))
+    Text(
+      text = PillArrow,
+      style = WeatherVibeTheme.typography.titleSmall,
       color = WeatherVibeTheme.colors.accent,
       fontWeight = FontWeight.SemiBold
     )
@@ -394,6 +407,8 @@ private fun RatedContent(
 private val SpinnerSize = 16.dp
 private val TouchTarget = 48.dp
 private val ButtonIconSize = 18.dp
+private const val PillEmoji = "📊"
+private const val PillArrow = "→"
 
 @PreviewLightDark
 @Composable

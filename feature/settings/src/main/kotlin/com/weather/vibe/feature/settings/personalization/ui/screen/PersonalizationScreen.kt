@@ -16,7 +16,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationEvent.NavigateBack
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationViewModel
 import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState
@@ -71,7 +70,7 @@ internal fun PersonalizationContent(
       modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding)
-        .background(rememberAppBackgroundBrush())
+        .background(colors.backgroundGradientEnd)
     ) {
       when (state) {
         is Loaded -> PersonalizationLoadedContent(

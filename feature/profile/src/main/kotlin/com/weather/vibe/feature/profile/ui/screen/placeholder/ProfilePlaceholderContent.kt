@@ -16,7 +16,6 @@ import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 
 @Composable
 internal fun ProfilePlaceholderContent(
@@ -41,7 +40,7 @@ internal fun ProfilePlaceholderContent(
       modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding)
-        .background(rememberAppBackgroundBrush()),
+        .background(colors.backgroundGradientEnd),
       contentAlignment = Alignment.Center
     ) {
       Column(

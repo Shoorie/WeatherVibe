@@ -76,6 +76,13 @@ internal class LocationsViewModel(
       useCases.observeTemperatureUnit(),
       ::onFavoritesUpdate
     ).launchIn(viewModelScope)
+    refreshStaleInBackground()
+  }
+
+  private fun refreshStaleInBackground() {
+    viewModelScope.launch(errorHandler) {
+      useCases.refreshStaleFavoritesWeather()
+    }
   }
 
   private fun onFavoritesUpdate(

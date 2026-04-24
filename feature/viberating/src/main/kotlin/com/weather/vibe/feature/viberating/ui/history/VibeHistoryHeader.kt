@@ -133,7 +133,10 @@ private fun SummaryStatCard(
     containerColor = WeatherVibeTheme.colors.glassSurface,
     contentPadding = Padding.Medium
   ) {
-    Column {
+    Column(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
       Row(verticalAlignment = Alignment.Bottom) {
         Text(
           text = value,

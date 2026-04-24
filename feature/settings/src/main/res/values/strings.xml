@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="personalization_screen_title">Personalization</string>
+  <string name="personalization_screen_subtitle">Brief tone, units, and favorite genres</string>
   <string name="personalization_section_brief_tone">AI Briefing Tone</string>
   <string name="personalization_section_brief_tone_subtitle">How Vibe should talk to you</string>
   <string name="personalization_section_temperature">Temperature Unit</string>
@@ -21,6 +22,7 @@
   <string name="personalization_error_default">Failed to load personalization</string>
 
   <string name="notifications_screen_title">Notifications</string>
+  <string name="notifications_screen_subtitle">Morning brief and weather alerts</string>
   <string name="notifications_section_alerts">Weather alerts</string>
   <string name="notifications_section_alerts_subtitle">Proactive heads-up when the weather is about to turn</string>
   <string name="notifications_section_morning_brief">Morning brief</string>

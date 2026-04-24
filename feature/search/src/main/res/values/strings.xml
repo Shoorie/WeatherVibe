@@ -1,4 +1,6 @@
 <resources>
+  <string name="search_screen_title">Add location</string>
+  <string name="search_screen_subtitle">Search for a city or address</string>
   <string name="search_hint">Search for a city&#8230;</string>
   <string name="search_clear_content_description">Clear search</string>
 

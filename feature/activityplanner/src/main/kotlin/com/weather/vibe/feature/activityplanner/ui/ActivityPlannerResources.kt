@@ -147,6 +147,10 @@ internal class ActivityPlannerResources(private val context: Context) {
       stringResource(R.string.activityplanner_screen_title)
 
     @Composable
+    fun screenSubtitle(): String =
+      stringResource(R.string.activityplanner_screen_subtitle)
+
+    @Composable
     fun topWindows(): String =
       stringResource(R.string.activityplanner_top_windows)
 

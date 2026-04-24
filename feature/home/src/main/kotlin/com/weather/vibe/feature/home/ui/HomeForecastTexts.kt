@@ -91,6 +91,10 @@ internal object HomeForecastTexts {
     stringResource(R.string.weather_details_title)
 
   @Composable
+  fun weatherDetailsSubtitle(): String =
+    stringResource(R.string.weather_details_subtitle)
+
+  @Composable
   fun weatherDetailsViewAll(): String =
     stringResource(R.string.weather_details_view_all)
 

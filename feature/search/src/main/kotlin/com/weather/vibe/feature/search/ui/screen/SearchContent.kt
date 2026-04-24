@@ -1,12 +1,10 @@
 package com.weather.vibe.feature.search.ui.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -15,10 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
@@ -37,8 +36,10 @@ import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searchin
 import com.weather.vibe.feature.search.preview.SearchPreview
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacity
 import com.weather.vibe.feature.search.ui.SearchResources.Texts.favoritesCapacityFull
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.screenSubtitle
+import com.weather.vibe.feature.search.ui.SearchResources.Texts.screenTitle
 import com.weather.vibe.feature.search.ui.component.banner.LocationFavoritesCapacityBanner
-import com.weather.vibe.feature.search.ui.component.bar.SearchTopBar
+import com.weather.vibe.feature.search.ui.component.bar.SearchField
 import com.weather.vibe.feature.search.ui.component.list.RecentsSection
 import com.weather.vibe.feature.search.ui.component.list.ResultsSection
 import com.weather.vibe.feature.search.ui.component.state.SearchEmptyState
@@ -55,40 +56,43 @@ internal fun SearchContent(
   snackbarHostState: SnackbarHostState,
   dispatch: (SearchAction) -> Unit
 ) {
-
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(brush = rememberAppBackgroundBrush())
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxSize()
-        .statusBarsPadding()
-        .padding(horizontal = Padding.Medium),
-      verticalArrangement = Arrangement.spacedBy(Padding.Medium)
-    ) {
-      SearchTopBar(
-        modifier = Modifier.padding(top = Padding.Small),
-        query = state.query,
-        onQueryChange = { dispatch(QueryChange(it)) },
-        onBack = { dispatch(BackClick) }
-      )
-      if (mode == SearchMode.Favorites) {
-        CapacityBanner(used = favoritesCount)
-      }
-      SearchStateContent(
-        state = state,
-        showHeart = mode == SearchMode.Favorites,
-        onLocationClick = { dispatch(LocationSelect(it)) },
-        onHeartClick = { dispatch(HeartClick(it)) },
-        onRetryClick = { dispatch(Retry) }
+  VibeScreenScaffold(
+    modifier = modifier,
+    header = {
+      VibeScreenHeader(
+        title = screenTitle(),
+        subtitle = screenSubtitle(),
+        onBackClicked = { dispatch(BackClick) }
       )
     }
-    SnackbarHost(
-      modifier = Modifier.align(Alignment.BottomCenter),
-      hostState = snackbarHostState
-    )
+  ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(horizontal = Padding.Medium),
+        verticalArrangement = Arrangement.spacedBy(Padding.Medium)
+      ) {
+        SearchField(
+          query = state.query,
+          onQueryChange = { dispatch(QueryChange(it)) }
+        )
+        if (mode == SearchMode.Favorites) {
+          CapacityBanner(used = favoritesCount)
+        }
+        SearchStateContent(
+          state = state,
+          showHeart = mode == SearchMode.Favorites,
+          onLocationClick = { dispatch(LocationSelect(it)) },
+          onHeartClick = { dispatch(HeartClick(it)) },
+          onRetryClick = { dispatch(Retry) }
+        )
+      }
+      SnackbarHost(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        hostState = snackbarHostState
+      )
+    }
   }
 }
 

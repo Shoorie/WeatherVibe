@@ -115,7 +115,7 @@ private val BACK_BUTTON_VISUAL = 40.dp
 @Composable
 private fun TitleOnlyPreview() {
   WeatherVibeTheme {
-    VibeScreenHeader(title = "Profil")
+    VibeScreenHeader(title = "Profile")
   }
 }
 
@@ -124,8 +124,8 @@ private fun TitleOnlyPreview() {
 private fun TitleWithSubtitlePreview() {
   WeatherVibeTheme {
     VibeScreenHeader(
-      title = "Twój vibe",
-      subtitle = "Jak oceniałeś ostatnie dni"
+      title = "Your vibe",
+      subtitle = "How you rated the last few days"
     )
   }
 }
@@ -135,10 +135,10 @@ private fun TitleWithSubtitlePreview() {
 private fun WithBackAndSubtitlePreview() {
   WeatherVibeTheme {
     VibeScreenHeader(
-      title = "Personalizacja",
-      subtitle = "Ton briefu, jednostki i ulubione gatunki",
+      title = "Personalization",
+      subtitle = "Brief tone, units, and favorite genres",
       onBackClicked = {},
-      backContentDescription = "Wstecz"
+      backContentDescription = "Back"
     )
   }
 }

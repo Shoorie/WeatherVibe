@@ -49,6 +49,7 @@
   <string name="uv_index_label">UV Index</string>
   <string name="visibility_label">Visibility</string>
   <string name="weather_details_title">Weather Details</string>
+  <string name="weather_details_subtitle">Metrics, wind and conditions</string>
   <string name="weather_details_view_all">View all details</string>
   <string name="wind_gusts_label">Wind Gusts</string>
   <string name="wind_section_subtitle">Speed, direction and gusts</string>

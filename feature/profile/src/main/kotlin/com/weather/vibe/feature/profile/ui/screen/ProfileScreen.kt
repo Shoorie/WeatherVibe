@@ -1,12 +1,10 @@
 package com.weather.vibe.feature.profile.ui.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -17,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
@@ -35,6 +34,8 @@ import com.weather.vibe.feature.profile.preview.ProfilePreview
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_HERO
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_MOOD
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_QUICK_STATS
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.screenSubtitle
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.screenTitle
 import com.weather.vibe.feature.profile.ui.component.editsheet.EditProfileSheet
 import com.weather.vibe.feature.profile.ui.component.header.ProfileHero
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserCard
@@ -89,36 +90,42 @@ internal fun ProfileContent(
     PaddingValues(
       start = Medium,
       end = Medium,
-      top = Medium,
       bottom = ExtraLarge
     )
   }
 
-  LazyColumn(
-    modifier = modifier
-      .fillMaxSize()
-      .background(colors.backgroundGradientEnd)
-      .statusBarsPadding(),
-    contentPadding = contentPadding,
-    verticalArrangement = Arrangement.spacedBy(Medium)
+  VibeScreenScaffold(
+    modifier = modifier,
+    header = {
+      VibeScreenHeader(
+        title = screenTitle(),
+        subtitle = screenSubtitle()
+      )
+    }
   ) {
-    item(key = KEY_HERO) {
-      ProfileHero(
-        header = state.header,
-        onEditClick = callbacks.onEditUsernameClick,
-        onBriefToneClick = callbacks.onPersonalizationClick
-      )
+    LazyColumn(
+      modifier = Modifier.fillMaxSize(),
+      contentPadding = contentPadding,
+      verticalArrangement = Arrangement.spacedBy(Medium)
+    ) {
+      item(key = KEY_HERO) {
+        ProfileHero(
+          header = state.header,
+          onEditClick = callbacks.onEditUsernameClick,
+          onBriefToneClick = callbacks.onPersonalizationClick
+        )
+      }
+      item(key = KEY_QUICK_STATS) {
+        QuickStatsRow(
+          stats = state.quickStats,
+          onStatClick = callbacks.onStatClick
+        )
+      }
+      item(key = KEY_MOOD) {
+        MoodTeaserCard(onClick = onOpenVibeHistory)
+      }
+      navigationItems(callbacks = callbacks)
     }
-    item(key = KEY_QUICK_STATS) {
-      QuickStatsRow(
-        stats = state.quickStats,
-        onStatClick = callbacks.onStatClick
-      )
-    }
-    item(key = KEY_MOOD) {
-      MoodTeaserCard(onClick = onOpenVibeHistory)
-    }
-    navigationItems(callbacks = callbacks)
   }
 
   if (state.editSheet.isVisible) {

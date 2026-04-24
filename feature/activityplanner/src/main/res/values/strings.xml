@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="activityplanner_screen_title">Activity Planner</string>
+  <string name="activityplanner_screen_title">Activity plan</string>
+  <string name="activityplanner_screen_subtitle">Best hours for outdoor activities</string>
   <string name="activityplanner_top_windows">Today\'s best window</string>
   <string name="activityplanner_timeline">24h timeline</string>
   <string name="activityplanner_activity_running">🏃 Running</string>

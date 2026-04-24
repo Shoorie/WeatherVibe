@@ -26,6 +26,14 @@ internal class SearchResources(private val context: Context) {
   object Texts {
 
     @Composable
+    fun screenTitle(): String =
+      stringResource(R.string.search_screen_title)
+
+    @Composable
+    fun screenSubtitle(): String =
+      stringResource(R.string.search_screen_subtitle)
+
+    @Composable
     fun clearContentDescription(): String =
       stringResource(R.string.search_clear_content_description)
 

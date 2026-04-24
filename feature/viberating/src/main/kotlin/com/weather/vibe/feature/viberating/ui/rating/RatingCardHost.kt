@@ -3,6 +3,7 @@ package com.weather.vibe.feature.viberating.ui.rating
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -25,21 +26,22 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun RatingCardHost(
   modifier: Modifier = Modifier,
-  weatherSnapshotProvider: () -> WeatherSnapshot?,
+  weatherSnapshot: WeatherSnapshot?,
   onNavigateToHistory: () -> Unit,
   onSharePoster: () -> Unit
 ) {
   val viewModel: RatingCardViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
-  val callbacks = remember(viewModel, weatherSnapshotProvider) {
+  val snapshotRef = rememberUpdatedState(weatherSnapshot)
+  val callbacks = remember(viewModel) {
     RatingCardCallbacks(
       onSliderValueChanged = { viewModel.dispatch(SliderValueChanged(it)) },
       onSaveClicked = {
-        val snapshot = weatherSnapshotProvider() ?: return@RatingCardCallbacks
+        val snapshot = snapshotRef.value ?: return@RatingCardCallbacks
         viewModel.dispatch(SaveClick(snapshot))
       },
       onRetryClicked = {
-        val snapshot = weatherSnapshotProvider() ?: return@RatingCardCallbacks
+        val snapshot = snapshotRef.value ?: return@RatingCardCallbacks
         viewModel.dispatch(SaveRetryClick(snapshot))
       },
       onDismissErrorClicked = { viewModel.dispatch(DismissErrorClick) },

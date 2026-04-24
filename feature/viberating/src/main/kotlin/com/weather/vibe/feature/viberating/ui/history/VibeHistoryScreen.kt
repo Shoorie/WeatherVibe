@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.graphics.Brush
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,16 +74,10 @@ internal fun VibeHistoryContent(
   state: VibeHistoryUiState,
   callbacks: VibeHistoryCallbacks
 ) {
-  val backgroundBrush = Brush.verticalGradient(
-    colors = listOf(
-      WeatherVibeTheme.colors.primaryContainer,
-      WeatherVibeTheme.colors.backgroundGradientEnd
-    )
-  )
   Column(
     modifier = modifier
       .fillMaxSize()
-      .background(backgroundBrush)
+      .background(rememberAppBackgroundBrush())
       .statusBarsPadding()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)

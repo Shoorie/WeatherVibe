@@ -7,9 +7,9 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 
 @Composable
 fun rememberAppBackgroundBrush(): Brush {
-  val gradientStart = colors.backgroundGradientStart
-  val gradientEnd = colors.backgroundGradientEnd
-  return remember(gradientStart, gradientEnd) {
-    Brush.verticalGradient(listOf(gradientStart, gradientEnd))
+  val start = colors.appBackgroundStart
+  val end = colors.backgroundGradientEnd
+  return remember(start, end) {
+    Brush.verticalGradient(listOf(start, end))
   }
 }

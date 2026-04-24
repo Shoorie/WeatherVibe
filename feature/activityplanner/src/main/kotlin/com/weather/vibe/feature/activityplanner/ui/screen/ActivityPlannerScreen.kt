@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.activityplanner.model.ActivityType
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerEvent.NavigateBack
@@ -66,7 +67,7 @@ internal fun ActivityPlannerContent(
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(colors.backgroundGradientEnd)
+      .background(rememberAppBackgroundBrush())
   ) {
     Column(modifier = Modifier.fillMaxSize()) {
       VibeTopBar(

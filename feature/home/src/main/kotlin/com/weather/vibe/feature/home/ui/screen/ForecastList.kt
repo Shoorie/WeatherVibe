@@ -142,10 +142,11 @@ private fun LazyListScope.forecastItems(
       )
     }
   }
+  val weatherSnapshot = state.weatherSnapshot
   item(key = RATING_CARD) {
     RatingCardHost(
       modifier = horizontalPadding,
-      weatherSnapshotProvider = { state.weatherSnapshot },
+      weatherSnapshot = weatherSnapshot,
       onNavigateToHistory = onNavigateToVibeHistory,
       onSharePoster = onShareClick
     )

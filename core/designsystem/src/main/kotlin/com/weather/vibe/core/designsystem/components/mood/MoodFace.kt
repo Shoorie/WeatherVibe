@@ -12,7 +12,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -53,11 +52,9 @@ fun MoodFace(
   ) {
     Text(
       text = emoji,
-      style = TextStyle(
-        fontSize = emojiSize,
-        fontWeight = FontWeight.Normal,
-        textAlign = TextAlign.Center
-      )
+      fontSize = emojiSize,
+      fontWeight = FontWeight.Normal,
+      textAlign = TextAlign.Center
     )
   }
 }

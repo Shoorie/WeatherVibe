@@ -5,6 +5,8 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.viberating.model.Condition
 import com.weather.vibe.feature.viberating.R
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import java.time.YearMonth
 
 internal object VibeRatingResources {
@@ -45,7 +47,7 @@ internal object VibeRatingResources {
 
   @Composable
   @ReadOnlyComposable
-  fun weekdayLabels(): List<String> = listOf(
+  fun weekdayLabels(): ImmutableList<String> = persistentListOf(
     stringResource(R.string.vibe_weekday_monday),
     stringResource(R.string.vibe_weekday_tuesday),
     stringResource(R.string.vibe_weekday_wednesday),

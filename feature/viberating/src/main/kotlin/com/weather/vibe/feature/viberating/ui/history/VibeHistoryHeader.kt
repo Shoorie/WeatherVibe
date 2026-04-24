@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -28,8 +27,10 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.ratingColor
 import com.weather.vibe.feature.viberating.R
 
@@ -41,23 +42,27 @@ internal fun VibeHistoryHeader(
   onBackClicked: () -> Unit
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier.fillMaxWidth()
+    ) {
       BackButton(onClick = onBackClicked)
-      Spacer(Modifier.size(Padding.Medium))
-      Text(
-        text = stringResource(R.string.vibe_history_subtitle).uppercase(),
-        style = WeatherVibeTheme.typography.labelMedium,
-        color = WeatherVibeTheme.colors.onSurfaceVariant
-      )
+      Spacer(Modifier.size(Padding.Small))
+      Column(modifier = Modifier.weight(1f)) {
+        Text(
+          text = stringResource(R.string.vibe_history_title),
+          style = WeatherVibeTheme.typography.headlineMedium,
+          color = WeatherVibeTheme.colors.onSurface,
+          fontWeight = FontWeight.Bold,
+          modifier = Modifier.semantics { heading() }
+        )
+        Text(
+          text = stringResource(R.string.vibe_history_subtitle),
+          style = WeatherVibeTheme.typography.bodySmall,
+          color = WeatherVibeTheme.colors.onSurfaceVariant
+        )
+      }
     }
-    Spacer(Modifier.height(Padding.Small))
-    Text(
-      text = stringResource(R.string.vibe_history_title),
-      style = WeatherVibeTheme.typography.headlineMedium,
-      color = WeatherVibeTheme.colors.onSurface,
-      fontWeight = FontWeight.Bold,
-      modifier = Modifier.semantics { heading() }
-    )
     Spacer(Modifier.height(Padding.Medium))
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -102,7 +107,7 @@ private fun BackButton(onClick: () -> Unit) {
       modifier = Modifier
         .size(BACK_BUTTON_VISUAL)
         .clip(CircleShape)
-        .background(WeatherVibeTheme.colors.surfaceVariant),
+        .background(WeatherVibeTheme.colors.glassSurface),
       contentAlignment = Alignment.Center
     ) {
       Icon(
@@ -122,34 +127,36 @@ private fun SummaryStatCard(
   suffix: String?,
   label: String
 ) {
-  Column(
-    modifier = modifier
-      .clip(StatCardShape)
-      .background(WeatherVibeTheme.colors.surfaceVariant)
-      .padding(Padding.Medium)
+  VibeCard(
+    modifier = modifier,
+    shape = shapes.cardSmall,
+    containerColor = WeatherVibeTheme.colors.glassSurface,
+    contentPadding = Padding.Medium
   ) {
-    Row(verticalAlignment = Alignment.Bottom) {
-      Text(
-        text = value,
-        style = WeatherVibeTheme.typography.displaySmall,
-        color = valueColor,
-        fontWeight = FontWeight.Light
-      )
-      if (suffix != null) {
-        Spacer(Modifier.size(Padding.ExtraSmall))
+    Column {
+      Row(verticalAlignment = Alignment.Bottom) {
         Text(
-          text = suffix,
-          style = WeatherVibeTheme.typography.bodySmall,
-          color = WeatherVibeTheme.colors.onSurfaceVariant,
-          modifier = Modifier.padding(bottom = 4.dp)
+          text = value,
+          style = WeatherVibeTheme.typography.displaySmall,
+          color = valueColor,
+          fontWeight = FontWeight.Light
         )
+        if (suffix != null) {
+          Spacer(Modifier.size(Padding.ExtraSmall))
+          Text(
+            text = suffix,
+            style = WeatherVibeTheme.typography.bodySmall,
+            color = WeatherVibeTheme.colors.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 4.dp)
+          )
+        }
       }
+      Text(
+        text = label,
+        style = WeatherVibeTheme.typography.labelSmall,
+        color = WeatherVibeTheme.colors.onSurfaceVariant
+      )
     }
-    Text(
-      text = label,
-      style = WeatherVibeTheme.typography.labelSmall,
-      color = WeatherVibeTheme.colors.onSurfaceVariant
-    )
   }
 }
 
@@ -157,6 +164,5 @@ private fun formatAverage(value: Double): String =
   if (value > 0.0) "%.1f".format(value) else "—"
 
 private val BACK_BUTTON_TOUCH = 48.dp
-private val BACK_BUTTON_VISUAL = 36.dp
-private val StatCardShape = RoundedCornerShape(14.dp)
+private val BACK_BUTTON_VISUAL = 40.dp
 private const val AVERAGE_MAX: String = "/5"

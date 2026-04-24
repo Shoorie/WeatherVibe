@@ -5,7 +5,7 @@ import com.weather.vibe.data.viberating.local.mapper.toDomain
 import com.weather.vibe.data.viberating.local.mapper.toEntity
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.repository.RatingRepository
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -20,12 +20,12 @@ internal class DefaultRatingRepository(
   override fun observeAll(): Flow<List<RatingEntry>> =
     dao.observeAll()
       .map { entities -> entities.map { it.toDomain() } }
-      .flowOn(Dispatchers.IO)
+      .flowOn(IO)
 
   override fun observeForDate(date: LocalDate): Flow<RatingEntry?> =
     dao.observeForDate(date)
       .map { it?.toDomain() }
-      .flowOn(Dispatchers.IO)
+      .flowOn(IO)
 
   override suspend fun upsert(entry: RatingEntry) {
     dao.upsert(entry.toEntity())

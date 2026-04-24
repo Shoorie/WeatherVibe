@@ -15,6 +15,4 @@ internal sealed interface RatingCardAction {
   data object EditClick : RatingCardAction
 
   data object ViewHistoryClick : RatingCardAction
-
-  data object SharePosterClick : RatingCardAction
 }

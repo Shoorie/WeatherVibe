@@ -147,8 +147,7 @@ private fun LazyListScope.forecastItems(
     RatingCardHost(
       modifier = horizontalPadding,
       weatherSnapshot = weatherSnapshot,
-      onNavigateToHistory = onNavigateToVibeHistory,
-      onSharePoster = onShareClick
+      onNavigateToHistory = onNavigateToVibeHistory
     )
   }
   item(key = BRIEFING) {

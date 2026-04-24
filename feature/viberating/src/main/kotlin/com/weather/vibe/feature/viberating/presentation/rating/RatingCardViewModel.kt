@@ -11,14 +11,13 @@ import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.EditClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveRetryClick
-import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SharePosterClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SliderValueChanged
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.ViewHistoryClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardEvent.NavigateToHistory
-import com.weather.vibe.feature.viberating.presentation.rating.RatingCardEvent.SharePoster
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
@@ -61,16 +60,24 @@ internal class RatingCardViewModel(
       DismissErrorClick -> onDismissErrorClick()
       EditClick -> onEditClick()
       ViewHistoryClick -> eventChannel.trySend(NavigateToHistory)
-      SharePosterClick -> eventChannel.trySend(SharePoster)
     }
   }
 
   private fun observeToday() {
     observeTodayRating()
       .distinctUntilChanged()
-      .catch { _state.update { stateFactory.notRated() } }
-      .onEach { entry -> _state.update { stateFactory.fromTodayEntry(entry) } }
+      .catch { _state.update { if (it is Loading) stateFactory.notRated() else it } }
+      .onEach { entry -> mergeToday(entry) }
       .launchIn(viewModelScope)
+  }
+
+  private fun mergeToday(entry: RatingEntry?) {
+    _state.update { current ->
+      when (current) {
+        Loading, is Rated -> stateFactory.fromTodayEntry(entry)
+        else -> current
+      }
+    }
   }
 
   private fun onSliderValueChanged(value: Int) {
@@ -121,6 +128,8 @@ internal class RatingCardViewModel(
   }
 
   private fun onEditClick() {
-    _state.update { stateFactory.notRated() }
+    val currentRating = (_state.value as? Rated)?.rating
+      ?: RatingCardStateFactory.DEFAULT_SLIDER_DRAFT
+    _state.update { stateFactory.editFrom(currentRating) }
   }
 }

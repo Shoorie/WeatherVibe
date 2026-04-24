@@ -28,6 +28,7 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -85,6 +86,13 @@ private fun DayDetailContent(
       modifier = Modifier.fillMaxWidth(),
       verticalAlignment = Alignment.CenterVertically
     ) {
+      detail.condition?.let { condition ->
+        Text(
+          text = VibeRatingResources.conditionEmoji(condition),
+          fontSize = WeatherEmojiSize
+        )
+        Spacer(Modifier.size(Padding.Small))
+      }
       Column(modifier = Modifier.weight(1f)) {
         Text(
           text = detail.date.format(DATE_FORMATTER),
@@ -140,3 +148,4 @@ private fun detailTitle(detail: DayDetailUiState): String {
 
 private val DATE_FORMATTER: DateTimeFormatter =
   DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))
+private val WeatherEmojiSize = 28.sp

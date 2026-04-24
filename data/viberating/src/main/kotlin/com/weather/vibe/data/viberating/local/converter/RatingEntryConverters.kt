@@ -8,20 +8,26 @@ import java.time.LocalDate
 internal class RatingEntryConverters {
 
   @TypeConverter
-  fun fromLocalDate(value: LocalDate?): String? = value?.toString()
+  fun fromLocalDate(value: LocalDate?): String? =
+    value?.toString()
 
   @TypeConverter
-  fun toLocalDate(value: String?): LocalDate? = value?.let(LocalDate::parse)
+  fun toLocalDate(value: String?): LocalDate? =
+    value?.let(LocalDate::parse)
 
   @TypeConverter
-  fun fromCondition(value: Condition?): String? = value?.name
+  fun fromCondition(value: Condition?): String? =
+    value?.name
 
   @TypeConverter
-  fun toCondition(value: String?): Condition? = value?.let(Condition::valueOf)
+  fun toCondition(value: String?): Condition? =
+    value?.let(Condition::valueOf)
 
   @TypeConverter
-  fun fromPollenLevel(value: PollenLevel?): String? = value?.name
+  fun fromPollenLevel(value: PollenLevel?): String? =
+    value?.name
 
   @TypeConverter
-  fun toPollenLevel(value: String?): PollenLevel? = value?.let(PollenLevel::valueOf)
+  fun toPollenLevel(value: String?): PollenLevel? =
+    value?.let(PollenLevel::valueOf)
 }

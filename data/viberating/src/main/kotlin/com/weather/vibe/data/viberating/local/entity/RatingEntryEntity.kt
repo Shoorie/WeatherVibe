@@ -12,10 +12,22 @@ import java.time.LocalDate
   indices = [Index(value = ["date"], unique = true)]
 )
 internal data class RatingEntryEntity(
-  @PrimaryKey(autoGenerate = true) val id: Long = 0,
-  @ColumnInfo(name = "date") val date: LocalDate,
-  @ColumnInfo(name = "rating") val rating: Int,
-  @ColumnInfo(name = "note") val note: String,
-  @Embedded(prefix = "w_") val weather: WeatherSnapshotEmbedded,
-  @ColumnInfo(name = "created_at_epoch_ms") val createdAtEpochMs: Long
+
+  @PrimaryKey(autoGenerate = true)
+  val id: Long = 0,
+
+  @ColumnInfo(name = "date")
+  val date: LocalDate,
+
+  @ColumnInfo(name = "rating")
+  val rating: Int,
+
+  @ColumnInfo(name = "note")
+  val note: String,
+
+  @Embedded(prefix = "w_")
+  val weather: WeatherSnapshotEmbedded,
+
+  @ColumnInfo(name = "created_at_epoch_ms")
+  val createdAtEpochMs: Long
 )

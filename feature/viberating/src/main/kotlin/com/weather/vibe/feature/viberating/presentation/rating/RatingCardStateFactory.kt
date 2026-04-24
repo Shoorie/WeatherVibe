@@ -33,6 +33,11 @@ internal class RatingCardStateFactory {
 
   fun saveError(draft: Int): RatingCardUiState = SaveError(sliderDraft = draft)
 
+  fun editFrom(currentRating: Int): RatingCardUiState = NotRated(
+    sliderDraft = currentRating,
+    sliderTouched = true
+  )
+
   companion object {
     const val DEFAULT_SLIDER_DRAFT: Int = 3
   }

@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.locations.ui.screen
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,9 +24,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -35,6 +38,7 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocat
 import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.ReorderLocationFavorites
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
 import com.weather.vibe.feature.locations.presentation.state.LocationCardUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
@@ -43,6 +47,7 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Lo
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
@@ -53,6 +58,8 @@ import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState
 import com.weather.vibe.feature.locations.ui.component.header.LocationsHeader
 import com.weather.vibe.feature.locations.ui.component.label.LocationFavoriteLabelSheet
 import com.weather.vibe.feature.locations.ui.component.row.LocationRow
+import com.weather.vibe.feature.locations.ui.reorder.LocationsReorderAutoScroller
+import com.weather.vibe.feature.locations.ui.reorder.rememberLocationsReorderState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +69,18 @@ internal fun LocationsContent(
   snackbarHostState: SnackbarHostState,
   dispatch: (LocationsAction) -> Unit
 ) {
+
   var renameTarget by remember { mutableStateOf<LocationCardUiState?>(null) }
+
+  val snackbarVisible by remember(snackbarHostState) {
+    derivedStateOf { snackbarHostState.currentSnackbarData != null }
+  }
+
+  val fabLift by animateDpAsState(
+    targetValue = if (snackbarVisible) SnackbarPushOffset else 0.dp,
+    label = "fab_snackbar_lift"
+  )
+
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -78,7 +96,7 @@ internal fun LocationsContent(
         .align(Alignment.BottomEnd)
         .padding(
           end = Medium,
-          bottom = LocationsDefaults.FabBottomOffset
+          bottom = LocationsDefaults.FabBottomOffset + fabLift
         ),
       enabled = state !is Loaded || state.canAddMoreFavorites,
       onClick = { dispatch(AddLocationClick) }
@@ -185,7 +203,25 @@ private fun LocationsList(
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
+  val listState = rememberLazyListState()
+  val reorderState = rememberLocationsReorderState(
+    listState = listState,
+    cards = state.cards,
+    onCommit = { orderedIds -> dispatch(ReorderLocationFavorites(orderedIds = orderedIds)) }
+  )
+  val isEmpty by remember(reorderState) {
+    derivedStateOf { reorderState.orderedCards.isEmpty() }
+  }
+
+  LocationsReorderAutoScroller(
+    listState = listState,
+    reorder = reorderState,
+    edgeZone = LocationsDefaults.ReorderEdgeZone,
+    pixelsPerSecond = LocationsDefaults.ReorderAutoScrollSpeed
+  )
+
   LazyColumn(
+    state = listState,
     modifier = Modifier
       .fillMaxSize()
       .statusBarsPadding(),
@@ -193,7 +229,7 @@ private fun LocationsList(
       start = Medium,
       end = Medium,
       top = Medium,
-      bottom = ExtraLarge
+      bottom = LocationsDefaults.ListBottomPadding
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
@@ -206,20 +242,25 @@ private fun LocationsList(
         onToggleCompareMode = { dispatch(ToggleCompareMode) }
       )
     }
-    if (state.cards.isEmpty()) {
+    if (isEmpty) {
       item(key = EMPTY) { LocationsEmptyState() }
       return@LazyColumn
     }
-    itemsIndexed(
-      items = state.cards,
-      key = { _, card -> card(card.favoriteId) }
-    ) { index, card ->
+    items(
+      items = reorderState.orderedCards,
+      key = { card -> card(card.favoriteId) }
+    ) { card ->
+      val rowModifier = when {
+        reorderState.isDragging(favoriteId = card.favoriteId) -> Modifier
+        else -> Modifier.animateItem()
+      }
       LocationRow(
+        modifier = rowModifier,
         card = card,
-        positionIndex = index,
         compareMode = state.compareMode,
         isSelected = state.isCardSelected(card.favoriteId),
         isLocked = state.isCardLocked(card.favoriteId),
+        reorder = reorderState,
         onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
         onRename = { onRenameRequest(card) },
         onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }

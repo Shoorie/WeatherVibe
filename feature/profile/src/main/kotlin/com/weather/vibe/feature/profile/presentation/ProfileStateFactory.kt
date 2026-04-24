@@ -32,6 +32,7 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
         canSave = false
       ),
       locationsCount = INITIAL_LOCATIONS_COUNT,
+
       morningBriefEnabled = false,
       alertsEnabled = false
     )
@@ -57,6 +58,9 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
       morningBriefEnabled = settings.morningBriefEnabled,
       alertsEnabled = settings.alertsEnabled
     ).rebuildStats()
+
+  fun withLocationsCount(state: ProfileUiState, count: Int): ProfileUiState =
+    state.copy(locationsCount = count).rebuildStats()
 
   fun triggerEditSheet(state: ProfileUiState): ProfileUiState =
     state.copy(
@@ -154,7 +158,7 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     const val EMPTY_TONE_LABEL = ""
     const val EMPTY_QUOTE = ""
     const val INITIAL_USAGE_DAYS = 0
-    const val INITIAL_LOCATIONS_COUNT = 1
+    const val INITIAL_LOCATIONS_COUNT = 0
     const val NO_USAGE_DAYS = 0
   }
 }

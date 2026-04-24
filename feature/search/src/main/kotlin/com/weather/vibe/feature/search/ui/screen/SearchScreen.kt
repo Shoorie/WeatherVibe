@@ -17,6 +17,7 @@ import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWith
 import com.weather.vibe.feature.search.presentation.SearchMode
 import com.weather.vibe.feature.search.presentation.SearchViewModel
 import com.weather.vibe.feature.search.ui.SearchResources
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -39,7 +40,7 @@ fun SearchScreen(
   }
 
   LaunchedEffect(Unit) {
-    viewModel.event.collect { event ->
+    viewModel.event.collectLatest { event ->
       when (event) {
         is NavigateBack -> {
           keyboardController?.hide()

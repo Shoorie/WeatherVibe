@@ -14,6 +14,9 @@ interface LocationFavoriteDao {
   @Query("SELECT * FROM favorite_locations ORDER BY position ASC, id ASC")
   fun observeAll(): Flow<List<LocationFavoriteEntity>>
 
+  @Query("SELECT COUNT(*) FROM favorite_locations")
+  fun observeCount(): Flow<Int>
+
   @Query("SELECT * FROM favorite_locations WHERE id = :id")
   suspend fun findById(id: Long): LocationFavoriteEntity?
 
@@ -34,6 +37,9 @@ interface LocationFavoriteDao {
 
   @Query("UPDATE favorite_locations SET label = :label WHERE id = :id")
   suspend fun updateLabel(id: Long, label: String?)
+
+  @Query("UPDATE favorite_locations SET position = :position WHERE id = :id")
+  suspend fun updatePosition(id: Long, position: Int)
 
   @Query(
     """

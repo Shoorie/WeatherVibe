@@ -82,18 +82,21 @@ internal class LocationsViewModel(
   }
 
   private fun onInitialize() {
+
     if (observeJob?.isActive == true) return
+
     observeJob = combine(
       useCases.observeFavoritesWithWeather(),
       useCases.observeTemperatureUnit(),
       ::onFavoritesUpdate
     ).launchIn(viewModelScope)
-    refreshStaleInBackground()
+
+    refreshOutdatedInBackground()
   }
 
-  private fun refreshStaleInBackground() {
+  private fun refreshOutdatedInBackground() {
     viewModelScope.launch(backgroundErrorHandler) {
-      useCases.refreshStaleFavoritesWeather()
+      useCases.refreshOutdatedFavoritesWeather()
     }
   }
 
@@ -163,10 +166,18 @@ internal class LocationsViewModel(
   }
 
   private fun onRemoveFavoriteClick(favoriteId: Long) {
-    val source = latestFavorites.firstOrNull { it.favorite.id == favoriteId } ?: return
-    val originalOrder = latestFavorites.map { it.favorite.id }
+
+    val source = latestFavorites
+      .firstOrNull { it.favorite.id == favoriteId }
+      ?: return
+
+    val originalOrder = latestFavorites
+      .map { it.favorite.id }
+
     viewModelScope.launch(snackbarErrorHandler) {
+
       useCases.removeFavorite(favoriteId)
+
       pendingRemoval = PendingRemoval(
         location = source.favorite.location,
         label = source.favorite.label,
@@ -174,13 +185,16 @@ internal class LocationsViewModel(
         removedFavoriteId = favoriteId,
         originalOrder = originalOrder
       )
-      emit(ShowRemovedSnackbar(locationName = source.favorite.location.name))
+
+      emit(ShowRemovedSnackbar(source.favorite.location.name))
     }
   }
 
   private fun onUndoRemoveFavoriteClick() {
+
     val pending = pendingRemoval ?: return
     pendingRemoval = null
+
     viewModelScope.launch(snackbarErrorHandler) {
       useCases.restoreFavoriteAtOriginalPosition(
         location = pending.location,

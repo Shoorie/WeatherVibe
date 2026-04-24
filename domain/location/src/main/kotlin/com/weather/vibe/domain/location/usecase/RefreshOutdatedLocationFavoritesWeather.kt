@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Factory
 
 @Factory
-class RefreshStaleLocationFavoritesWeather(
+class RefreshOutdatedLocationFavoritesWeather(
   private val favoriteRepository: LocationFavoriteRepository,
   private val snapshotRepository: LocationWeatherSnapshotRepository,
   private val refreshLocationsWeather: RefreshLocationsWeather,
@@ -22,7 +22,7 @@ class RefreshStaleLocationFavoritesWeather(
 
     val outdatedFavorites = favoriteRepository
       .observeFavorites().first()
-      .filter { freshnessPolicy.isStale(snapshotByLocationId[it.location.id]) }
+      .filter { freshnessPolicy.needsRefresh(snapshotByLocationId[it.location.id]) }
 
     refreshLocationsWeather(favorites = outdatedFavorites)
   }

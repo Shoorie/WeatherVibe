@@ -5,7 +5,7 @@ import com.weather.vibe.domain.location.model.LocationFavoriteWithWeather
 import com.weather.vibe.domain.location.usecase.CompareLocationWeather
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeather
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
-import com.weather.vibe.domain.location.usecase.RefreshStaleLocationFavoritesWeather
+import com.weather.vibe.domain.location.usecase.RefreshOutdatedLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
 import com.weather.vibe.domain.location.usecase.ReorderLocationFavorites as ReorderLocationFavoritesUseCase
@@ -70,7 +70,7 @@ class LocationsViewModelTest {
   private val observeFavoritesWithWeather = mockk<ObserveLocationFavoritesWithWeather>()
   private val observeTemperatureUnit = mockk<ObserveTemperatureUnit>()
   private val refreshFavoritesWeather = mockk<RefreshLocationFavoritesWeather>()
-  private val refreshStaleFavoritesWeather = mockk<RefreshStaleLocationFavoritesWeather>(relaxed = true)
+  private val refreshOutdatedFavoritesWeather = mockk<RefreshOutdatedLocationFavoritesWeather>(relaxed = true)
   private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val renameFavorite = mockk<RenameLocationFavorite>()
   private val reorderFavorites = mockk<ReorderLocationFavoritesUseCase>()
@@ -111,7 +111,7 @@ class LocationsViewModelTest {
     observeFavoritesWithWeather = observeFavoritesWithWeather,
     observeTemperatureUnit = observeTemperatureUnit,
     refreshFavoritesWeather = refreshFavoritesWeather,
-    refreshStaleFavoritesWeather = refreshStaleFavoritesWeather,
+    refreshOutdatedFavoritesWeather = refreshOutdatedFavoritesWeather,
     removeFavorite = removeFavorite,
     renameFavorite = renameFavorite,
     reorderFavorites = reorderFavorites,
@@ -135,12 +135,12 @@ class LocationsViewModelTest {
   }
 
   @Test
-  fun `when initialized, then stale favorites weather refreshed`() = runTest {
+  fun `when initialized, then outdated favorites weather refreshed`() = runTest {
 
     mockFavorites(sources = listOf(WARSAW_WITH_WEATHER))
     createViewModel().also { it.dispatch(Initialize) }
 
-    coVerify { refreshStaleFavoritesWeather() }
+    coVerify { refreshOutdatedFavoritesWeather() }
   }
 
   @Test

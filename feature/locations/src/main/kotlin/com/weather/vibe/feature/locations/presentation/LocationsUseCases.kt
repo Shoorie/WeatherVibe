@@ -3,7 +3,7 @@ package com.weather.vibe.feature.locations.presentation
 import com.weather.vibe.domain.location.usecase.CompareLocationWeather
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesWithWeather
 import com.weather.vibe.domain.location.usecase.RefreshLocationFavoritesWeather
-import com.weather.vibe.domain.location.usecase.RefreshStaleLocationFavoritesWeather
+import com.weather.vibe.domain.location.usecase.RefreshOutdatedLocationFavoritesWeather
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.RenameLocationFavorite
 import com.weather.vibe.domain.location.usecase.ReorderLocationFavorites
@@ -17,7 +17,7 @@ internal data class LocationsUseCases(
   val observeFavoritesWithWeather: ObserveLocationFavoritesWithWeather,
   val observeTemperatureUnit: ObserveTemperatureUnit,
   val refreshFavoritesWeather: RefreshLocationFavoritesWeather,
-  val refreshStaleFavoritesWeather: RefreshStaleLocationFavoritesWeather,
+  val refreshOutdatedFavoritesWeather: RefreshOutdatedLocationFavoritesWeather,
   val removeFavorite: RemoveLocationFavorite,
   val renameFavorite: RenameLocationFavorite,
   val reorderFavorites: ReorderLocationFavorites,

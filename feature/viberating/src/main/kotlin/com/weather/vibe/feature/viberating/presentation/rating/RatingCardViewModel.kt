@@ -108,6 +108,7 @@ internal class RatingCardViewModel(
             createdAtEpochMs = timeProvider.nowEpochMillis()
           )
         )
+        _state.update { stateFactory.rated(draft) }
       } catch (e: CancellationException) {
         throw e
       } catch (e: Exception) {

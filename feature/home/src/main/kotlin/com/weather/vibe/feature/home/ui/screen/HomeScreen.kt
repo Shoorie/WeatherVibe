@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
@@ -103,7 +103,7 @@ internal fun HomeContent(
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(rememberAppBackgroundBrush())
+      .background(color = colors.backgroundGradientEnd)
   ) {
     when (state) {
       is Loading -> LoadingIndicator(modifier = Modifier.fillMaxSize())

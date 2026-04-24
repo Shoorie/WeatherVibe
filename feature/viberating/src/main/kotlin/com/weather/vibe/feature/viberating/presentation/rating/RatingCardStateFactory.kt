@@ -31,6 +31,8 @@ internal class RatingCardStateFactory {
 
   fun saving(draft: Int): RatingCardUiState = Saving(sliderDraft = draft)
 
+  fun rated(rating: Int): RatingCardUiState = Rated(rating = rating)
+
   fun saveError(draft: Int): RatingCardUiState = SaveError(sliderDraft = draft)
 
   fun editFrom(currentRating: Int): RatingCardUiState = NotRated(

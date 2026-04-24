@@ -17,7 +17,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.core.permissions.openSystemNotificationSettings
 import com.weather.vibe.core.permissions.rememberNotificationPermissionGranted
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.NotificationPermissionLost
@@ -91,7 +90,7 @@ internal fun NotificationsContent(
       modifier = Modifier
         .fillMaxSize()
         .padding(innerPadding)
-        .background(rememberAppBackgroundBrush())
+        .background(colors.backgroundGradientEnd)
     ) {
       when (state) {
         is Loaded -> NotificationsLoadedContent(

@@ -11,7 +11,7 @@ import org.koin.core.annotation.Factory
  * and re-attaches its weather snapshot when one was captured.
  * The favorite insert and reorder are atomic; the snapshot restore is
  * a separate best-effort step — a failed snapshot save still leaves
- * the card in the right place and the next stale-refresh will repopulate it.
+ * the card in the right place and the next freshness refresh will repopulate it.
  */
 @Factory
 class RestoreLocationFavoriteAtOriginalPosition(

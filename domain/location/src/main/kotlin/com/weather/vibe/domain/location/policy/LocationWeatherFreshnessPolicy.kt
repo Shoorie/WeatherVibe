@@ -11,7 +11,7 @@ class LocationWeatherFreshnessPolicy(
   private val timeProvider: TimeProvider
 ) {
 
-  fun isStale(snapshot: LocationWeatherSnapshot?): Boolean {
+  fun needsRefresh(snapshot: LocationWeatherSnapshot?): Boolean {
     if (snapshot == null) return true
     val now = ofEpochMilli(timeProvider.nowEpochMillis())
     return Duration.between(snapshot.updatedAt, now) >= FRESHNESS_WINDOW

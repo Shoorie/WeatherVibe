@@ -21,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
-import com.weather.vibe.core.designsystem.components.header.rememberVibeScreenScrollBehavior
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.viberating.R
@@ -76,10 +75,8 @@ internal fun VibeHistoryContent(
   state: VibeHistoryUiState,
   callbacks: VibeHistoryCallbacks
 ) {
-  val scrollBehavior = rememberVibeScreenScrollBehavior()
   VibeScreenScaffold(
     modifier = modifier,
-    scrollBehavior = scrollBehavior,
     header = {
       VibeScreenHeader(
         title = stringResource(R.string.vibe_history_title),

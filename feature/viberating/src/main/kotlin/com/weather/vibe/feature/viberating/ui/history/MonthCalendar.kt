@@ -169,7 +169,8 @@ private fun WeekdayRow() {
         style = WeatherVibeTheme.typography.labelSmall,
         color = WeatherVibeTheme.colors.onSurfaceVariant,
         modifier = Modifier.weight(1f),
-        fontWeight = FontWeight.Medium
+        fontWeight = FontWeight.Medium,
+        textAlign = TextAlign.Center
       )
     }
   }

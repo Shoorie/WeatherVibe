@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.viberating.ui.rating
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,10 +29,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
@@ -79,11 +82,7 @@ internal fun RatingCard(
         .padding(bottom = Padding.Small)
         .semantics { heading() }
     )
-    VibeCard(
-      shape = shapes.card,
-      containerColor = WeatherVibeTheme.colors.glassSurface,
-      contentPadding = Padding.Medium
-    ) {
+    VibeCard(contentPadding = Padding.Medium) {
       Column(modifier = Modifier.fillMaxWidth()) {
         when (state) {
           Loading -> RatingCardLoadingContent()
@@ -92,14 +91,16 @@ internal fun RatingCard(
             touched = state.sliderTouched,
             saving = false,
             onSliderValueChanged = onSliderValueChanged,
-            onSaveClicked = onSaveClicked
+            onSaveClicked = onSaveClicked,
+            onViewHistoryClicked = onViewHistoryClicked
           )
           is Saving -> DraftContent(
             draft = state.sliderDraft,
             touched = true,
             saving = true,
             onSliderValueChanged = {},
-            onSaveClicked = {}
+            onSaveClicked = {},
+            onViewHistoryClicked = onViewHistoryClicked
           )
           is SaveError -> SaveErrorContent(
             draft = state.sliderDraft,
@@ -112,20 +113,6 @@ internal fun RatingCard(
             onViewHistoryClicked = onViewHistoryClicked
           )
         }
-      }
-    }
-    if (state is NotRated || state is Saving) {
-      TextButton(
-        onClick = onViewHistoryClicked,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(top = Padding.ExtraSmall)
-      ) {
-        Text(
-          text = stringResource(R.string.vibe_rating_view_history_link),
-          style = WeatherVibeTheme.typography.bodySmall,
-          color = WeatherVibeTheme.colors.accent
-        )
       }
     }
   }
@@ -146,7 +133,8 @@ private fun DraftContent(
   touched: Boolean,
   saving: Boolean,
   onSliderValueChanged: (Int) -> Unit,
-  onSaveClicked: () -> Unit
+  onSaveClicked: () -> Unit,
+  onViewHistoryClicked: () -> Unit
 ) {
   val activeColor = ratingColor(draft)
   Text(
@@ -208,6 +196,33 @@ private fun DraftContent(
     } else {
       Text(stringResource(R.string.vibe_rating_save))
     }
+  }
+  Spacer(Modifier.height(Padding.Small))
+  ViewHistoryPillRow(onClick = onViewHistoryClicked)
+}
+
+@Composable
+private fun ViewHistoryPillRow(onClick: () -> Unit) {
+  val label = stringResource(R.string.vibe_rating_view_history_link)
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clip(WeatherVibeTheme.shapes.pill)
+      .clickable(
+        role = Role.Button,
+        onClickLabel = label,
+        onClick = onClick
+      )
+      .padding(vertical = Padding.Small),
+    horizontalArrangement = Arrangement.Center,
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Text(
+      text = label,
+      style = WeatherVibeTheme.typography.labelMedium,
+      color = WeatherVibeTheme.colors.accent,
+      fontWeight = FontWeight.SemiBold
+    )
   }
 }
 

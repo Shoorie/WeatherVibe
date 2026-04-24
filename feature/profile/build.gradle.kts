@@ -11,6 +11,7 @@ android {
 dependencies {
   implementation(projects.domain.profile)
   implementation(projects.domain.settings)
+  implementation(projects.domain.viberating)
   implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.coroutineRules)

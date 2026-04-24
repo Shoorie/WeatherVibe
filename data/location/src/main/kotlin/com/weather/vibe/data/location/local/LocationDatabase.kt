@@ -15,7 +15,7 @@ import com.weather.vibe.data.location.local.entity.RecentLocationEntity
     LocationFavoriteEntity::class,
     LocationWeatherSnapshotEntity::class
   ],
-  version = 3
+  version = 4
 )
 abstract class LocationDatabase : RoomDatabase() {
   abstract fun favoriteDao(): LocationFavoriteDao

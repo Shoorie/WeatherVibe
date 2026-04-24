@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.onboarding.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.Location
@@ -46,7 +47,8 @@ internal class OnboardingViewModel(
   private val _event = Channel<OnboardingEvent>(capacity = BUFFERED)
   val event: Flow<OnboardingEvent> = _event.receiveAsFlow()
 
-  private val fallbackToSearchOnError = CoroutineExceptionHandler { _, _ ->
+  private val fallbackToSearchOnError = CoroutineExceptionHandler { _, throwable ->
+    Log.w("OnboardingViewModel", "Failed to obtain location", throwable)
     handOverToSearch()
   }
 
@@ -90,7 +92,10 @@ internal class OnboardingViewModel(
   private fun onLocationResult(result: Result<Location>) {
     result
       .onSuccess(::onLocationResolved)
-      .onFailure { handOverToSearch() }
+      .onFailure {
+        Log.w("OnboardingViewModel", "Failed to obtain location", it)
+        handOverToSearch()
+      }
   }
 
   private fun onLocationResolved(location: Location) {

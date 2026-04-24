@@ -7,7 +7,6 @@ import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 
 internal fun RatingEntryEntity.toDomain(): RatingEntry =
   RatingEntry(
-    id = id,
     date = date,
     rating = rating,
     note = note,
@@ -17,7 +16,6 @@ internal fun RatingEntryEntity.toDomain(): RatingEntry =
 
 internal fun RatingEntry.toEntity(): RatingEntryEntity =
   RatingEntryEntity(
-    id = id,
     date = date,
     rating = rating,
     note = note,

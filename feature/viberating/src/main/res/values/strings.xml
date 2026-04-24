@@ -12,7 +12,7 @@
   <string name="vibe_rating_dismiss_error">Anuluj</string>
   <string name="vibe_rating_change">Zmień ocenę</string>
   <string name="vibe_rating_view_history">Zobacz Twój vibe</string>
-  <string name="vibe_rating_view_history_link">Zobacz ostatnie oceny →</string>
+  <string name="vibe_rating_view_history_link">Zobacz ostatnie oceny</string>
   <string name="vibe_rating_rated_label">Ocenione · %1$s · %2$d/5</string>
 
   <string name="vibe_rating_scale_1">Słaby</string>

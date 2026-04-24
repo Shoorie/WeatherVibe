@@ -20,7 +20,9 @@ class DataVibeRatingModule {
       context = context,
       klass = VibeRatingDatabase::class.java,
       name = "vibe_rating.db"
-    ).build()
+    )
+      .fallbackToDestructiveMigration(dropAllTables = true)
+      .build()
 
   @Single
   internal fun provideRatingDao(database: VibeRatingDatabase): RatingDao =

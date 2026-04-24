@@ -3,19 +3,13 @@ package com.weather.vibe.data.viberating.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.LocalDate
 
-@Entity(
-  tableName = "rating_entries",
-  indices = [Index(value = ["date"], unique = true)]
-)
+@Entity(tableName = "rating_entries")
 internal data class RatingEntryEntity(
 
-  @PrimaryKey(autoGenerate = true)
-  val id: Long = 0,
-
+  @PrimaryKey
   @ColumnInfo(name = "date")
   val date: LocalDate,
 

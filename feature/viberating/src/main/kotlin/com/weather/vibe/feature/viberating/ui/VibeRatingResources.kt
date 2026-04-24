@@ -67,6 +67,71 @@ internal object VibeRatingResources {
     stringResource(R.string.vibe_weekday_sunday)
   )
 
+  object Texts {
+
+    @Composable
+    @ReadOnlyComposable
+    fun sectionLabel(): String = stringResource(R.string.vibe_rating_section_label)
+
+    @Composable
+    @ReadOnlyComposable
+    fun cardTitle(): String = stringResource(R.string.vibe_rating_card_title)
+
+    @Composable
+    @ReadOnlyComposable
+    fun cardSubtitle(): String = stringResource(R.string.vibe_rating_card_subtitle)
+
+    @Composable
+    @ReadOnlyComposable
+    fun save(): String = stringResource(R.string.vibe_rating_save)
+
+    @Composable
+    @ReadOnlyComposable
+    fun saving(): String = stringResource(R.string.vibe_rating_saving)
+
+    @Composable
+    @ReadOnlyComposable
+    fun saveErrorTitle(): String = stringResource(R.string.vibe_rating_save_error_title)
+
+    @Composable
+    @ReadOnlyComposable
+    fun saveErrorBody(): String = stringResource(R.string.vibe_rating_save_error_body)
+
+    @Composable
+    @ReadOnlyComposable
+    fun retry(): String = stringResource(R.string.vibe_rating_retry)
+
+    @Composable
+    @ReadOnlyComposable
+    fun dismissError(): String = stringResource(R.string.vibe_rating_dismiss_error)
+
+    @Composable
+    @ReadOnlyComposable
+    fun change(): String = stringResource(R.string.vibe_rating_change)
+
+    @Composable
+    @ReadOnlyComposable
+    fun viewHistory(): String = stringResource(R.string.vibe_rating_view_history)
+
+    @Composable
+    @ReadOnlyComposable
+    fun viewHistoryLink(): String = stringResource(R.string.vibe_rating_view_history_link)
+
+    @Composable
+    @ReadOnlyComposable
+    fun sliderDescription(): String = stringResource(R.string.vibe_rating_slider_description)
+
+    @Composable
+    @ReadOnlyComposable
+    fun moodFaceDescription(rating: Int): String =
+      stringResource(R.string.vibe_rating_mood_face_description, rating)
+
+    @Composable
+    @ReadOnlyComposable
+    fun ratedLabel(label: String, rating: Int): String =
+      stringResource(R.string.vibe_rating_rated_label, label, rating)
+  }
+
   private fun monthResource(month: Int): Int =
     when (month) {
       1 -> R.string.vibe_month_1

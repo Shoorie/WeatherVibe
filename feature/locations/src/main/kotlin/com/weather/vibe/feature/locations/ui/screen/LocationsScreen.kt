@@ -17,11 +17,13 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.Initializ
 import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsEvent
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateToSearch
+import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowErrorSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowLimitReachedSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowRemovedSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsViewModel
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsResources
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
@@ -41,7 +43,7 @@ fun LocationsScreen(
   }
 
   LaunchedEffect(viewModel) {
-    viewModel.event.collect { event ->
+    viewModel.event.collectLatest { event ->
       onEvent(
         event = event,
         resources = resources,
@@ -72,40 +74,33 @@ private suspend fun onEvent(
     is ShowRemovedSnackbar -> onRemovedSnackbar(
       event = event,
       resources = resources,
-      snackbarHostState = host,
+      host = host,
       dispatch = dispatch
     )
-    is ShowLimitReachedSnackbar -> {
-      host.currentSnackbarData?.dismiss()
-      host.showSnackbar(
-        message = resources.limitReached(MAX_FAVORITES),
-        duration = Short
-      )
-    }
+    is ShowErrorSnackbar -> host.showSnackbar(
+      message = resources.defaultError(),
+      duration = Short
+    )
+    is ShowLimitReachedSnackbar -> host.showSnackbar(
+      message = resources.limitReached(MAX_FAVORITES),
+      duration = Short
+    )
   }
 }
 
 private suspend fun onRemovedSnackbar(
   event: ShowRemovedSnackbar,
   resources: LocationsResources,
-  snackbarHostState: SnackbarHostState,
+  host: SnackbarHostState,
   dispatch: (LocationsAction) -> Unit
 ) {
-
-  val result = snackbarHostState.showSnackbar(
+  val result = host.showSnackbar(
     message = resources.removedSnackbar(name = event.locationName),
     actionLabel = resources.undoAction(),
     duration = Short
   )
-
   if (result == ActionPerformed) {
-    dispatch(
-      UndoRemoveLocationFavoriteClick(
-        location = event.location,
-        label = event.label,
-        snapshot = event.snapshot
-      )
-    )
+    dispatch(UndoRemoveLocationFavoriteClick)
   }
 }
 

@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.locations.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.error.LocationFavoritesLimitReached
@@ -13,9 +14,11 @@ import com.weather.vibe.feature.locations.presentation.LocationsAction.OpenLocat
 import com.weather.vibe.feature.locations.presentation.LocationsAction.PullToRefresh
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.RenameLocationFavoriteClick
+import com.weather.vibe.feature.locations.presentation.LocationsAction.ReorderLocationFavorites
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ToggleCompareMode
 import com.weather.vibe.feature.locations.presentation.LocationsAction.UndoRemoveLocationFavoriteClick
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.NavigateToSearch
+import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowErrorSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowLimitReachedSnackbar
 import com.weather.vibe.feature.locations.presentation.LocationsEvent.ShowRemovedSnackbar
 import com.weather.vibe.feature.locations.presentation.factory.LocationsFactories
@@ -49,11 +52,19 @@ internal class LocationsViewModel(
   private val _event = Channel<LocationsEvent>(BUFFERED)
   val event: Flow<LocationsEvent> = _event.receiveAsFlow()
 
-  private val errorHandler = CoroutineExceptionHandler { _, _ -> }
+  private val snackbarErrorHandler = CoroutineExceptionHandler { _, error ->
+    emit(snackbarFor(error = error))
+  }
+
+  private val backgroundErrorHandler = CoroutineExceptionHandler { _, error ->
+    Log.w(TAG, "Background work failed", error)
+  }
 
   private var latestFavorites: List<LocationFavoriteWithWeather> = emptyList()
   private var latestTemperatureUnit: TemperatureUnit = CELSIUS
   private var observeJob: Job? = null
+  private var reorderJob: Job? = null
+  private var pendingRemoval: PendingRemoval? = null
 
   fun dispatch(action: LocationsAction) {
     when (action) {
@@ -64,18 +75,29 @@ internal class LocationsViewModel(
       is PullToRefresh -> onPullToRefresh()
       is RemoveLocationFavoriteClick -> onRemoveFavoriteClick(action.favoriteId)
       is RenameLocationFavoriteClick -> onRenameFavoriteClick(action.favoriteId, action.label)
+      is ReorderLocationFavorites -> onReorderFavorites(action.orderedIds)
       is ToggleCompareMode -> onToggleCompareMode()
-      is UndoRemoveLocationFavoriteClick -> onUndoRemoveFavoriteClick(action)
+      is UndoRemoveLocationFavoriteClick -> onUndoRemoveFavoriteClick()
     }
   }
 
   private fun onInitialize() {
+
     if (observeJob?.isActive == true) return
+
     observeJob = combine(
       useCases.observeFavoritesWithWeather(),
       useCases.observeTemperatureUnit(),
       ::onFavoritesUpdate
     ).launchIn(viewModelScope)
+
+    refreshOutdatedInBackground()
+  }
+
+  private fun refreshOutdatedInBackground() {
+    viewModelScope.launch(backgroundErrorHandler) {
+      useCases.refreshOutdatedFavoritesWeather()
+    }
   }
 
   private fun onFavoritesUpdate(
@@ -92,10 +114,8 @@ internal class LocationsViewModel(
     sources: List<LocationFavoriteWithWeather>,
     temperatureUnit: TemperatureUnit
   ) {
-
     latestFavorites = sources
     latestTemperatureUnit = temperatureUnit
-
     _state.update { current ->
       factories.loaded.create(
         current = current,
@@ -111,7 +131,7 @@ internal class LocationsViewModel(
 
   private fun onPullToRefresh() {
     markRefreshing(true)
-    viewModelScope.launch(errorHandler) {
+    viewModelScope.launch(snackbarErrorHandler) {
       try {
         useCases.refreshFavoritesWeather()
       } finally {
@@ -142,7 +162,7 @@ internal class LocationsViewModel(
   }
 
   private fun onAddLocationClick() {
-    send(event = NavigateToSearch)
+    emit(NavigateToSearch)
   }
 
   private fun onRemoveFavoriteClick(favoriteId: Long) {
@@ -151,36 +171,53 @@ internal class LocationsViewModel(
       .firstOrNull { it.favorite.id == favoriteId }
       ?: return
 
-    viewModelScope.launch(errorHandler) {
+    val originalOrder = latestFavorites
+      .map { it.favorite.id }
+
+    viewModelScope.launch(snackbarErrorHandler) {
+
       useCases.removeFavorite(favoriteId)
-      send(removedSnackbarFor(source))
+
+      pendingRemoval = PendingRemoval(
+        location = source.favorite.location,
+        label = source.favorite.label,
+        snapshot = source.snapshot,
+        removedFavoriteId = favoriteId,
+        originalOrder = originalOrder
+      )
+
+      emit(ShowRemovedSnackbar(source.favorite.location.name))
     }
   }
 
-  private fun onUndoRemoveFavoriteClick(action: UndoRemoveLocationFavoriteClick) {
-    viewModelScope.launch(errorHandler) {
-      try {
-        useCases.addFavorite(action.location, action.label)
-        action.snapshot?.let { useCases.restoreSnapshot(snapshot = it) }
-      } catch (_: LocationFavoritesLimitReached) {
-        send(event = ShowLimitReachedSnackbar)
-      }
+  private fun onUndoRemoveFavoriteClick() {
+
+    val pending = pendingRemoval ?: return
+    pendingRemoval = null
+
+    viewModelScope.launch(snackbarErrorHandler) {
+      useCases.restoreFavoriteAtOriginalPosition(
+        location = pending.location,
+        label = pending.label,
+        snapshot = pending.snapshot,
+        removedFavoriteId = pending.removedFavoriteId,
+        originalOrder = pending.originalOrder
+      )
     }
   }
 
   private fun onRenameFavoriteClick(favoriteId: Long, label: String?) {
-    viewModelScope.launch(errorHandler) {
+    viewModelScope.launch(snackbarErrorHandler) {
       useCases.renameFavorite(favoriteId, label)
     }
   }
 
-  private fun removedSnackbarFor(source: LocationFavoriteWithWeather): ShowRemovedSnackbar =
-    ShowRemovedSnackbar(
-      locationName = source.favorite.location.name,
-      location = source.favorite.location,
-      label = source.favorite.label,
-      snapshot = source.snapshot
-    )
+  private fun onReorderFavorites(orderedIds: List<Long>) {
+    reorderJob?.cancel()
+    reorderJob = viewModelScope.launch(snackbarErrorHandler) {
+      useCases.reorderFavorites(orderedIds = orderedIds)
+    }
+  }
 
   private fun markRefreshing(isRefreshing: Boolean) =
     updateLoaded { current ->
@@ -193,9 +230,16 @@ internal class LocationsViewModel(
     }
   }
 
-  private fun send(event: LocationsEvent) {
-    viewModelScope.launch(errorHandler) {
-      _event.send(event)
-    }
+  private fun emit(event: LocationsEvent) {
+    _event.trySend(event)
+  }
+
+  private fun snackbarFor(error: Throwable): LocationsEvent = when (error) {
+    is LocationFavoritesLimitReached -> ShowLimitReachedSnackbar
+    else -> ShowErrorSnackbar
+  }
+
+  private companion object {
+    const val TAG = "LocationsViewModel"
   }
 }

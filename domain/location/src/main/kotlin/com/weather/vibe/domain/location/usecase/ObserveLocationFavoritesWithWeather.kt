@@ -22,7 +22,7 @@ class ObserveLocationFavoritesWithWeather(
   operator fun invoke(): Flow<Result<List<LocationFavoriteWithWeather>>> =
     combine(
       favoriteRepository.observeFavorites(),
-      snapshotRepository.observeSnapshots()
+      snapshotRepository.observeWeatherSnapshots()
     ) { favorites, snapshots -> joinByLocation(favorites, snapshots) }
       .map { success(it) }
       .catch { emit(failure(it)) }

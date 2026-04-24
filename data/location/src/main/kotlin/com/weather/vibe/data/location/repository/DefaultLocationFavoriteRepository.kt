@@ -27,25 +27,62 @@ internal class DefaultLocationFavoriteRepository(
       .map { it.map(mapper::toDomain) }
       .flowOn(IO)
 
+  override fun observeCount(): Flow<Int> =
+    dao.observeCount()
+      .flowOn(IO)
+
   override suspend fun findById(id: Long): LocationFavorite? =
     withContext(IO) {
       dao.findById(id)
         ?.let(mapper::toDomain)
     }
 
-  override suspend fun findByLocationId(locationId: Long): LocationFavorite? =
+  override suspend fun removeFavorite(id: Long) =
     withContext(IO) {
-      dao.findByLocationId(locationId)
-        ?.let(mapper::toDomain)
+      dao.deleteByIdAndPromoteDefault(id = id)
     }
 
-  override suspend fun count(): Int =
-    withContext(IO) { dao.count() }
+  override suspend fun renameFavorite(id: Long, label: String?) =
+    withContext(IO) {
+      dao.updateLabel(id = id, label = label)
+    }
 
   override suspend fun addFavoriteWithinLimit(
     location: Location,
     label: String?,
     maxAllowed: Int
+  ) = insertFavoriteWithinLimit(
+    location = location,
+    label = label,
+    maxAllowed = maxAllowed
+  )
+
+  override suspend fun reorderFavorites(orderedIds: List<Long>) =
+    database.withTransaction {
+      updatePositions(orderedIds = orderedIds)
+    }
+
+  override suspend fun restoreFavoriteAtOriginalPosition(
+    location: Location,
+    label: String?,
+    removedFavoriteId: Long,
+    originalOrder: List<Long>,
+    maxAllowed: Int
+  ) = insertFavoriteWithinLimit(
+    location = location,
+    label = label,
+    maxAllowed = maxAllowed
+  ) { insertedId ->
+    val restoredOrder = originalOrder
+      .map { id -> if (id == removedFavoriteId) insertedId else id }
+    updatePositions(orderedIds = restoredOrder)
+  }
+
+  private suspend fun insertFavoriteWithinLimit(
+    location: Location,
+    label: String?,
+    maxAllowed: Int,
+    onInserted: suspend (insertedId: Long) -> Unit = {}
   ) = database.withTransaction {
 
     if (dao.findByLocationId(location.id) != null) {
@@ -57,20 +94,32 @@ internal class DefaultLocationFavoriteRepository(
       throw LocationFavoritesLimitReached(limit = maxAllowed)
     }
 
+    val insertedId = insertFavorite(
+      location = location,
+      label = label,
+      isDefault = existingCount == 0
+    )
+
+    onInserted(insertedId)
+  }
+
+  private suspend fun insertFavorite(
+    location: Location,
+    label: String?,
+    isDefault: Boolean
+  ): Long {
     val entity = mapper.toEntity(
       location = location,
       label = label,
       position = dao.maxPosition() + 1,
-      isDefault = existingCount == 0
+      isDefault = isDefault
     )
-    dao.insert(entity = entity)
+    return dao.insert(entity = entity)
   }
 
-  override suspend fun removeFavorite(id: Long) {
-    withContext(IO) { dao.deleteByIdAndPromoteDefault(id = id) }
-  }
-
-  override suspend fun renameFavorite(id: Long, label: String?) {
-    withContext(IO) { dao.updateLabel(id = id, label = label) }
+  private suspend fun updatePositions(orderedIds: List<Long>) {
+    orderedIds.forEachIndexed { index, id ->
+      dao.updatePosition(id = id, position = index)
+    }
   }
 }

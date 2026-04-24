@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 
 @Single(binds = [LocationFavoriteRepository::class])
@@ -28,35 +27,23 @@ internal class DefaultLocationFavoriteRepository(
       .flowOn(IO)
 
   override suspend fun findById(id: Long): LocationFavorite? =
-    withContext(IO) {
-      dao.findById(id)
-        ?.let(mapper::toDomain)
-    }
+    dao.findById(id)?.let(mapper::toDomain)
 
   override suspend fun findByLocationId(locationId: Long): LocationFavorite? =
-    withContext(IO) {
-      dao.findByLocationId(locationId)
-        ?.let(mapper::toDomain)
-    }
+    dao.findByLocationId(locationId)?.let(mapper::toDomain)
 
-  override suspend fun count(): Int =
-    withContext(IO) { dao.count() }
+  override suspend fun count(): Int = dao.count()
 
   override suspend fun addFavoriteWithinLimit(
     location: Location,
     label: String?,
     maxAllowed: Int
   ) = database.withTransaction {
-
-    if (dao.findByLocationId(location.id) != null) {
-      return@withTransaction
-    }
-
+    if (dao.findByLocationId(location.id) != null) return@withTransaction
     val existingCount = dao.count()
     if (existingCount >= maxAllowed) {
       throw LocationFavoritesLimitReached(limit = maxAllowed)
     }
-
     val entity = mapper.toEntity(
       location = location,
       label = label,
@@ -67,10 +54,39 @@ internal class DefaultLocationFavoriteRepository(
   }
 
   override suspend fun removeFavorite(id: Long) {
-    withContext(IO) { dao.deleteByIdAndPromoteDefault(id = id) }
+    dao.deleteByIdAndPromoteDefault(id = id)
   }
 
   override suspend fun renameFavorite(id: Long, label: String?) {
-    withContext(IO) { dao.updateLabel(id = id, label = label) }
+    dao.updateLabel(id = id, label = label)
+  }
+
+  override suspend fun reorderFavorites(orderedIds: List<Long>) {
+    dao.replacePositions(orderedIds = orderedIds)
+  }
+
+  override suspend fun restoreFavoriteAtOriginalPosition(
+    location: Location,
+    label: String?,
+    removedFavoriteId: Long,
+    originalOrder: List<Long>,
+    maxAllowed: Int
+  ) = database.withTransaction {
+    if (dao.findByLocationId(location.id) != null) return@withTransaction
+    val existingCount = dao.count()
+    if (existingCount >= maxAllowed) {
+      throw LocationFavoritesLimitReached(limit = maxAllowed)
+    }
+    val entity = mapper.toEntity(
+      location = location,
+      label = label,
+      position = dao.maxPosition() + 1,
+      isDefault = existingCount == 0
+    )
+    val insertedId = dao.insert(entity = entity)
+    val restoredOrder = originalOrder.map { id ->
+      if (id == removedFavoriteId) insertedId else id
+    }
+    dao.replacePositions(orderedIds = restoredOrder)
   }
 }

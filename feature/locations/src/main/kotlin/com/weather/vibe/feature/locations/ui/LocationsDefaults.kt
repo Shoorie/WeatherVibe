@@ -21,7 +21,12 @@ internal object LocationsDefaults {
   val TimelineDotRadius = 4.dp
   val FabBottomOffset = 24.dp
 
+  val ReorderEdgeZone = 64.dp
+  val ReorderAutoScrollSpeed = 480.dp
+
   const val CompareMinCards: Int = 2
+  const val DraggedAlpha = 0.92f
+  const val DraggedZIndex = 1f
   const val IconBadgeAlpha = 0.18f
   const val LabelMaxLength = 20
   const val LockedAlpha = 0.35f

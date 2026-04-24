@@ -9,8 +9,6 @@ interface LocationFavoriteRepository {
 
   fun observeFavorites(): Flow<List<LocationFavorite>>
   suspend fun findById(id: Long): LocationFavorite?
-  suspend fun findByLocationId(locationId: Long): LocationFavorite?
-  suspend fun count(): Int
   suspend fun removeFavorite(id: Long)
   suspend fun renameFavorite(id: Long, label: String?)
 

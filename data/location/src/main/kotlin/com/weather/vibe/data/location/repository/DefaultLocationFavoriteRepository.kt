@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 
 @Single(binds = [LocationFavoriteRepository::class])
@@ -27,43 +28,35 @@ internal class DefaultLocationFavoriteRepository(
       .flowOn(IO)
 
   override suspend fun findById(id: Long): LocationFavorite? =
-    dao.findById(id)?.let(mapper::toDomain)
+    withContext(IO) {
+      dao.findById(id)
+        ?.let(mapper::toDomain)
+    }
 
-  override suspend fun findByLocationId(locationId: Long): LocationFavorite? =
-    dao.findByLocationId(locationId)?.let(mapper::toDomain)
+  override suspend fun removeFavorite(id: Long) =
+    withContext(IO) {
+      dao.deleteByIdAndPromoteDefault(id = id)
+    }
 
-  override suspend fun count(): Int = dao.count()
+  override suspend fun renameFavorite(id: Long, label: String?) =
+    withContext(IO) {
+      dao.updateLabel(id = id, label = label)
+    }
 
   override suspend fun addFavoriteWithinLimit(
     location: Location,
     label: String?,
     maxAllowed: Int
-  ) = database.withTransaction {
-    if (dao.findByLocationId(location.id) != null) return@withTransaction
-    val existingCount = dao.count()
-    if (existingCount >= maxAllowed) {
-      throw LocationFavoritesLimitReached(limit = maxAllowed)
+  ) = insertFavoriteWithinLimit(
+    location = location,
+    label = label,
+    maxAllowed = maxAllowed
+  )
+
+  override suspend fun reorderFavorites(orderedIds: List<Long>) =
+    database.withTransaction {
+      updatePositions(orderedIds = orderedIds)
     }
-    val entity = mapper.toEntity(
-      location = location,
-      label = label,
-      position = dao.maxPosition() + 1,
-      isDefault = existingCount == 0
-    )
-    dao.insert(entity = entity)
-  }
-
-  override suspend fun removeFavorite(id: Long) {
-    dao.deleteByIdAndPromoteDefault(id = id)
-  }
-
-  override suspend fun renameFavorite(id: Long, label: String?) {
-    dao.updateLabel(id = id, label = label)
-  }
-
-  override suspend fun reorderFavorites(orderedIds: List<Long>) = database.withTransaction {
-    writeOrder(orderedIds = orderedIds)
-  }
 
   override suspend fun restoreFavoriteAtOriginalPosition(
     location: Location,
@@ -71,26 +64,56 @@ internal class DefaultLocationFavoriteRepository(
     removedFavoriteId: Long,
     originalOrder: List<Long>,
     maxAllowed: Int
+  ) = insertFavoriteWithinLimit(
+    location = location,
+    label = label,
+    maxAllowed = maxAllowed
+  ) { insertedId ->
+    val restoredOrder = originalOrder
+      .map { id -> if (id == removedFavoriteId) insertedId else id }
+    updatePositions(orderedIds = restoredOrder)
+  }
+
+  private suspend fun insertFavoriteWithinLimit(
+    location: Location,
+    label: String?,
+    maxAllowed: Int,
+    onInserted: suspend (insertedId: Long) -> Unit = {}
   ) = database.withTransaction {
-    if (dao.findByLocationId(location.id) != null) return@withTransaction
+
+    if (dao.findByLocationId(location.id) != null) {
+      return@withTransaction
+    }
+
     val existingCount = dao.count()
     if (existingCount >= maxAllowed) {
       throw LocationFavoritesLimitReached(limit = maxAllowed)
     }
+
+    val insertedId = insertFavorite(
+      location = location,
+      label = label,
+      isDefault = existingCount == 0
+    )
+
+    onInserted(insertedId)
+  }
+
+  private suspend fun insertFavorite(
+    location: Location,
+    label: String?,
+    isDefault: Boolean
+  ): Long {
     val entity = mapper.toEntity(
       location = location,
       label = label,
       position = dao.maxPosition() + 1,
-      isDefault = existingCount == 0
+      isDefault = isDefault
     )
-    val insertedId = dao.insert(entity = entity)
-    val restoredOrder = originalOrder.map { id ->
-      if (id == removedFavoriteId) insertedId else id
-    }
-    writeOrder(orderedIds = restoredOrder)
+    return dao.insert(entity = entity)
   }
 
-  private suspend fun writeOrder(orderedIds: List<Long>) {
+  private suspend fun updatePositions(orderedIds: List<Long>) {
     orderedIds.forEachIndexed { index, id ->
       dao.updatePosition(id = id, position = index)
     }

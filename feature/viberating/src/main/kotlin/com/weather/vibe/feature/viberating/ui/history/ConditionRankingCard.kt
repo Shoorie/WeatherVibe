@@ -15,8 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.progressBarRangeInfo
@@ -27,13 +25,13 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
-import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.state.ConditionRankingUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entriesPlural
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingDisclaimer
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingTitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionEmoji
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionLabel
 import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.AverageRatingFormat
 import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.EmojiSize
 import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.ProgressHeight
@@ -58,7 +56,7 @@ internal fun ConditionRankingCard(
     Column(modifier = Modifier.fillMaxWidth()) {
       Text(
         modifier = Modifier.semantics { heading() },
-        text = stringResource(R.string.vibe_history_ranking_title),
+        text = rankingTitle(),
         style = typography.labelMedium,
         color = colors.onSurfaceVariant,
         fontWeight = FontWeight.Medium
@@ -80,14 +78,7 @@ internal fun ConditionRankingCard(
 
 @Composable
 private fun RankingRow(item: ConditionRankingUiState) {
-  val itemColor = ratingColor(item.averageRating.toInt().coerceAtLeast(MIN_RATING))
-  val conditionLabel = VibeRatingResources.conditionLabel(item.condition)
-  val average = AverageRatingFormat.format(item.averageRating)
-  val entryCountText = pluralStringResource(
-    id = R.plurals.vibe_history_entries,
-    count = item.entryCount,
-    item.entryCount
-  )
+  val itemColor = ratingColor(item.ratingForColor)
   Column(
     modifier = Modifier
       .fillMaxWidth()
@@ -99,10 +90,10 @@ private fun RankingRow(item: ConditionRankingUiState) {
       }
   ) {
     RankingRowHeader(
-      conditionLabel = conditionLabel,
+      conditionLabel = conditionLabel(item.condition),
       conditionEmoji = conditionEmoji(item.condition),
-      entryCountText = entryCountText,
-      averageLabel = average,
+      entryCountText = entriesPlural(count = item.entryCount),
+      averageLabel = AverageRatingFormat.format(item.averageRating),
       itemColor = itemColor
     )
     Spacer(Modifier.height(Padding.ExtraSmall))

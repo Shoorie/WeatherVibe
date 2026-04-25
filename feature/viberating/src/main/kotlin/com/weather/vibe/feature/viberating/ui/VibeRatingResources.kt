@@ -7,6 +7,7 @@ import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.feature.viberating.R
+import com.weather.vibe.feature.viberating.presentation.history.state.DayCellDescription
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import java.time.YearMonth
@@ -174,6 +175,18 @@ internal object VibeRatingResources {
       stringResource(R.string.vibe_history_entry_temperature_format, temperatureC)
 
     @Composable
+    fun entrySubtitle(condition: String, temperature: String): String =
+      stringResource(R.string.vibe_history_entry_subtitle_format, condition, temperature)
+
+    @Composable
+    fun entryRatingLabel(rating: Int): String =
+      stringResource(R.string.vibe_history_entry_rating_format, rating)
+
+    @Composable
+    fun entryNoteQuote(note: String): String =
+      stringResource(R.string.vibe_history_entry_note_quote, note)
+
+    @Composable
     fun entryRatingA11y(rating: Int, conditionLabel: String): String =
       stringResource(R.string.vibe_history_entry_rating_a11y, rating, conditionLabel)
 
@@ -192,6 +205,108 @@ internal object VibeRatingResources {
     @Composable
     fun patternsLockedBody(threshold: Int, entriesSoFar: Int): String =
       stringResource(R.string.vibe_history_patterns_locked_body, threshold, entriesSoFar)
+
+    @Composable
+    fun statsAverageLabel(): String =
+      stringResource(R.string.vibe_history_average_label)
+
+    @Composable
+    fun statsTotalLabel(): String =
+      stringResource(R.string.vibe_history_total_label)
+
+    @Composable
+    fun averageSuffix(): String =
+      stringResource(R.string.vibe_history_average_suffix)
+
+    @Composable
+    fun averageEmpty(): String =
+      stringResource(R.string.vibe_history_average_empty)
+
+    @Composable
+    fun statsAverageA11y(value: String, suffix: String, label: String): String =
+      stringResource(R.string.vibe_history_stat_average_a11y, value, suffix, label)
+
+    @Composable
+    fun statsTotalA11y(total: Int, label: String): String =
+      stringResource(R.string.vibe_history_stat_total_a11y, total, label)
+
+    @Composable
+    fun legendLow(): String =
+      stringResource(R.string.vibe_history_legend_low)
+
+    @Composable
+    fun legendHigh(): String =
+      stringResource(R.string.vibe_history_legend_high)
+
+    @Composable
+    fun legendDescription(): String =
+      stringResource(R.string.vibe_history_legend_description)
+
+    @Composable
+    fun previousMonth(): String =
+      stringResource(R.string.vibe_history_previous_month)
+
+    @Composable
+    fun nextMonth(): String =
+      stringResource(R.string.vibe_history_next_month)
+
+    @Composable
+    fun nextMonthDisabled(): String =
+      stringResource(R.string.vibe_history_next_month_disabled)
+
+    @Composable
+    fun dayOpenDetails(): String =
+      stringResource(R.string.vibe_history_day_open_details)
+
+    @Composable
+    fun dayDetailClose(): String =
+      stringResource(R.string.vibe_history_day_detail_close)
+
+    @Composable
+    fun dayRatedDescription(dateLabel: String, average: Int): String =
+      stringResource(R.string.vibe_history_day_rated_description, dateLabel, average)
+
+    @Composable
+    fun dayUnratedDescription(dateLabel: String): String =
+      stringResource(R.string.vibe_history_day_unrated_description, dateLabel)
+
+    @Composable
+    fun dayTodaySuffix(): String =
+      stringResource(R.string.vibe_history_day_today_suffix)
+
+    @Composable
+    fun daySelectedSuffix(): String =
+      stringResource(R.string.vibe_history_day_selected_suffix)
+
+    @Composable
+    fun dayCellDescription(description: DayCellDescription): String {
+      val base = when (val rating = description.averageRating) {
+        null -> dayUnratedDescription(dateLabel = description.dateLabel)
+        else -> dayRatedDescription(
+          dateLabel = description.dateLabel,
+          average = rating
+        )
+      }
+      val today = if (description.isToday) dayTodaySuffix() else ""
+      val selected = if (description.isSelected) daySelectedSuffix() else ""
+      return base + today + selected
+    }
+
+    @Composable
+    fun rankingTitle(): String =
+      stringResource(R.string.vibe_history_ranking_title)
+
+    @Composable
+    fun rankingEntries(count: Int, label: String): String =
+      stringResource(R.string.vibe_history_ranking_entries, count, label)
+
+    @Composable
+    fun entriesPlural(count: Int): String =
+      pluralStringResource(R.plurals.vibe_history_entries, count, count)
+
+    @Composable
+    fun entryTimePattern(): String =
+      stringResource(R.string.vibe_history_entry_time_format)
   }
 
   private val monthStrings: List<Int> = listOf(

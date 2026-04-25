@@ -21,8 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.pluralStringResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -40,13 +38,17 @@ import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.domain.weather.model.Condition.SUNNY
-import com.weather.vibe.feature.profile.R
 import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Faded
 import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Rating
+import com.weather.vibe.feature.profile.presentation.MoodSummary
+import com.weather.vibe.feature.profile.presentation.MoodSummary.Available
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState.Companion.EMPTY
 import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodBodyEmpty
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodCta
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodDaysPlural
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodSummary
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodTitle
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles.rowBody
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles.sectionTitle
@@ -54,6 +56,7 @@ import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.Ave
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.BadgeSize
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.DotSize
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.DotSpacing
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.EmptyBodyAlpha
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.FadedAccentAlpha
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.TitleRowSpacing
 import org.koin.androidx.compose.koinViewModel
@@ -133,26 +136,32 @@ private fun MoodTeaserCardContent(
 
 @Composable
 private fun SummaryLine(state: MoodTeaserUiState) {
-  if (!state.hasData) {
-    Text(
-      text = stringResource(R.string.profile_mood_body_empty),
-      style = rowBody(),
-      color = colors.onPrimaryContainer.copy(alpha = 0.82f)
-    )
-    return
+  when (val summary = state.summary) {
+    is Available -> AvailableSummaryText(summary = summary)
+    MoodSummary.Empty -> EmptySummaryText()
   }
-  val average = AverageRatingFormat.format(state.averageRating)
-  val daysLabel = pluralStringResource(R.plurals.profile_mood_days, state.dayCount)
+}
+
+@Composable
+private fun AvailableSummaryText(summary: Available) {
   Text(
-    text = stringResource(
-      R.string.profile_mood_summary_format,
-      average,
-      state.dayCount,
-      daysLabel
+    text = moodSummary(
+      average = summary.averageFormatted,
+      dayCount = summary.dayCount,
+      daysLabel = moodDaysPlural(count = summary.dayCount)
     ),
     style = rowBody(),
     color = colors.onPrimaryContainer,
     fontWeight = FontWeight.SemiBold
+  )
+}
+
+@Composable
+private fun EmptySummaryText() {
+  Text(
+    text = moodBodyEmpty(),
+    style = rowBody(),
+    color = colors.onPrimaryContainer.copy(alpha = EmptyBodyAlpha)
   )
 }
 

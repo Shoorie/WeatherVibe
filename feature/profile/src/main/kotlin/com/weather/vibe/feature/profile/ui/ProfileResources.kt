@@ -3,6 +3,7 @@ package com.weather.vibe.feature.profile.ui
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
@@ -130,6 +131,23 @@ internal class ProfileResources(private val context: Context) {
     @Composable
     fun moodCta(): String =
       stringResource(R.string.profile_mood_cta)
+
+    @Composable
+    fun moodBodyEmpty(): String =
+      stringResource(R.string.profile_mood_body_empty)
+
+    @Composable
+    fun moodDaysPlural(count: Int): String =
+      pluralStringResource(R.plurals.profile_mood_days, count)
+
+    @Composable
+    fun moodSummary(average: String, dayCount: Int, daysLabel: String): String =
+      stringResource(
+        R.string.profile_mood_summary_format,
+        average,
+        dayCount,
+        daysLabel
+      )
 
     @Composable
     fun editSheetTitle(): String =

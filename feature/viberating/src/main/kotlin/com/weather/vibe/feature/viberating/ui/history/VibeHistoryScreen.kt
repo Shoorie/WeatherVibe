@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,9 +31,9 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewM
 import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.history.VibeHistoryDefaults.ScrollContentBottomPadding
 import com.weather.vibe.feature.viberating.ui.history.preview.VibeHistoryPreviewData
 import org.koin.androidx.compose.koinViewModel
-import java.time.LocalDate
 
 @Composable
 fun VibeHistoryScreen(
@@ -100,10 +99,10 @@ private fun VibeHistoryScrollContent(
       .fillMaxSize()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)
-      .padding(bottom = BOTTOM_PADDING)
+      .padding(bottom = ScrollContentBottomPadding)
   ) {
     VibeHistoryStats(
-      averageRating = state.averageRating,
+      averageDisplay = state.averageDisplay,
       totalEntries = state.totalEntries
     )
     Spacer(Modifier.height(Padding.Medium))
@@ -139,26 +138,6 @@ private fun PatternsSection(state: PatternsSectionUiState) {
     )
   }
 }
-
-internal data class VibeHistoryCallbacks(
-  val onBackClicked: () -> Unit,
-  val onPreviousMonthClicked: () -> Unit,
-  val onNextMonthClicked: () -> Unit,
-  val onDayClicked: (LocalDate) -> Unit,
-  val onDayDetailDismissed: () -> Unit
-) {
-  companion object {
-    val Noop: VibeHistoryCallbacks = VibeHistoryCallbacks(
-      onBackClicked = {},
-      onPreviousMonthClicked = {},
-      onNextMonthClicked = {},
-      onDayClicked = {},
-      onDayDetailDismissed = {}
-    )
-  }
-}
-
-private val BOTTOM_PADDING = 110.dp
 
 @PreviewLightDark
 @Composable

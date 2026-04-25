@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
@@ -30,7 +29,6 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.state.DayDetailUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import java.time.format.DateTimeFormatter
@@ -120,7 +118,7 @@ private fun DayDetailHeader(
     IconButton(onClick = onDismissClicked) {
       Icon(
         imageVector = Icons.Default.Close,
-        contentDescription = stringResource(R.string.vibe_history_day_detail_close),
+        contentDescription = Texts.dayDetailClose(),
         tint = colors.onSurfaceVariant
       )
     }

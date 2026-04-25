@@ -4,7 +4,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -13,9 +12,10 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.rating.RatingColors
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.sliderDescription
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,25 +27,23 @@ internal fun HapticSlider(
   onValueChanged: (Int) -> Unit
 ) {
   val haptics = LocalHapticFeedback.current
-  val stateLabel = VibeRatingResources.scaleLabel(draft)
-  val description = Texts.sliderDescription()
+  val resolvedDescription = sliderDescription()
+  val resolvedScaleLabel = scaleLabel(draft)
   val sliderColors = SliderDefaults.colors(
     thumbColor = activeColor,
     activeTrackColor = activeColor,
     inactiveTrackColor = colors.outline
   )
-
-  LaunchedEffect(draft) {
-    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-  }
-
   Slider(
     value = draft.toFloat(),
     onValueChange = { newValue ->
-      val rounded = newValue.roundToInt().coerceIn(RatingColors.MIN_RATING, RatingColors.MAX_RATING)
-      if (rounded != draft) onValueChanged(rounded)
+      val rounded = newValue.roundToInt().coerceIn(MIN_RATING, MAX_RATING)
+      if (rounded != draft) {
+        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        onValueChanged(rounded)
+      }
     },
-    valueRange = RatingColors.MIN_RATING.toFloat()..RatingColors.MAX_RATING.toFloat(),
+    valueRange = MIN_RATING.toFloat()..MAX_RATING.toFloat(),
     enabled = enabled,
     colors = sliderColors,
     track = { sliderState ->
@@ -56,8 +54,8 @@ internal fun HapticSlider(
       )
     },
     modifier = Modifier.semantics {
-      contentDescription = description
-      stateDescription = stateLabel
+      contentDescription = resolvedDescription
+      stateDescription = resolvedScaleLabel
     }
   )
 }

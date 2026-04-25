@@ -130,6 +130,18 @@ internal object VibeRatingResources {
     @ReadOnlyComposable
     fun ratedLabel(label: String, rating: Int): String =
       stringResource(R.string.vibe_rating_rated_label, label, rating)
+
+    @Composable
+    @ReadOnlyComposable
+    fun historyTitle(): String = stringResource(R.string.vibe_history_title)
+
+    @Composable
+    @ReadOnlyComposable
+    fun historySubtitle(): String = stringResource(R.string.vibe_history_subtitle)
+
+    @Composable
+    @ReadOnlyComposable
+    fun historyBack(): String = stringResource(R.string.vibe_history_back)
   }
 
   private fun monthResource(month: Int): Int =

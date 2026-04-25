@@ -2,8 +2,8 @@
 <resources>
   <string name="profile_screen_title">Profile</string>
   <string name="profile_screen_subtitle">Account, preferences and app info</string>
-  <string name="profile_placeholder_privacy_subtitle">Your data and permissions</string>
-  <string name="profile_placeholder_about_subtitle">Version, licenses and changelog</string>
+  <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
+  <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Hey 👋</string>
   <string name="profile_header_unnamed_subtitle">Tap to introduce yourself</string>

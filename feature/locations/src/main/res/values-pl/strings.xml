@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="locations_screen_title">Lokalizacje</string>
-  <string name="locations_screen_subtitle">Twoje ulubione miejsca</string>
+  <string name="locations_screen_title">Ulubione miejsca</string>
 
   <string name="locations_header_title">Ulubione</string>
   <string name="locations_header_subtitle">%1$d z %2$d ulubionych</string>

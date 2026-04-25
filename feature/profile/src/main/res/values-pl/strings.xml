@@ -2,8 +2,8 @@
 <resources>
   <string name="profile_screen_title">Profil</string>
   <string name="profile_screen_subtitle">Konto, preferencje i aplikacja</string>
-  <string name="profile_placeholder_privacy_subtitle">Twoje dane i uprawnienia</string>
-  <string name="profile_placeholder_about_subtitle">Wersja, licencje i changelog</string>
+  <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
+  <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Cześć 👋</string>
   <string name="profile_header_unnamed_subtitle">Dotknij, aby się przedstawić</string>

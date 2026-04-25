@@ -15,12 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
-import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
@@ -34,8 +35,6 @@ import com.weather.vibe.feature.profile.preview.ProfilePreview
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_HERO
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_MOOD
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_QUICK_STATS
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.screenSubtitle
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.screenTitle
 import com.weather.vibe.feature.profile.ui.component.editsheet.EditProfileSheet
 import com.weather.vibe.feature.profile.ui.component.header.ProfileHero
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserCard
@@ -90,42 +89,36 @@ internal fun ProfileContent(
     PaddingValues(
       start = Medium,
       end = Medium,
+      top = Medium,
       bottom = ExtraLarge
     )
   }
 
-  VibeScreenScaffold(
-    modifier = modifier,
-    header = {
-      VibeScreenHeader(
-        title = screenTitle(),
-        subtitle = screenSubtitle()
+  LazyColumn(
+    modifier = modifier
+      .fillMaxSize()
+      .background(rememberAppBackgroundBrush())
+      .statusBarsPadding(),
+    contentPadding = contentPadding,
+    verticalArrangement = Arrangement.spacedBy(Medium)
+  ) {
+    item(key = KEY_HERO) {
+      ProfileHero(
+        header = state.header,
+        onEditClick = callbacks.onEditUsernameClick,
+        onBriefToneClick = callbacks.onPersonalizationClick
       )
     }
-  ) {
-    LazyColumn(
-      modifier = Modifier.fillMaxSize(),
-      contentPadding = contentPadding,
-      verticalArrangement = Arrangement.spacedBy(Medium)
-    ) {
-      item(key = KEY_HERO) {
-        ProfileHero(
-          header = state.header,
-          onEditClick = callbacks.onEditUsernameClick,
-          onBriefToneClick = callbacks.onPersonalizationClick
-        )
-      }
-      item(key = KEY_QUICK_STATS) {
-        QuickStatsRow(
-          stats = state.quickStats,
-          onStatClick = callbacks.onStatClick
-        )
-      }
-      item(key = KEY_MOOD) {
-        MoodTeaserCard(onClick = onOpenVibeHistory)
-      }
-      navigationItems(callbacks = callbacks)
+    item(key = KEY_QUICK_STATS) {
+      QuickStatsRow(
+        stats = state.quickStats,
+        onStatClick = callbacks.onStatClick
+      )
     }
+    item(key = KEY_MOOD) {
+      MoodTeaserCard(onClick = onOpenVibeHistory)
+    }
+    navigationItems(callbacks = callbacks)
   }
 
   if (state.editSheet.isVisible) {

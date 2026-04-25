@@ -1,13 +1,11 @@
 package com.weather.vibe.feature.locations.ui.screen
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -30,10 +28,8 @@ import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenSubtitle
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenTitle
+import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
@@ -50,15 +46,19 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Lo
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
 import com.weather.vibe.feature.locations.preview.LocationsPreviewData
 import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.CompareMinCards
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
-import com.weather.vibe.feature.locations.ui.LocationsKeys.HEADER
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickOne
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickZero
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.headerSubtitle
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
+import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenTitle
 import com.weather.vibe.feature.locations.ui.component.add.AddLocationFab
 import com.weather.vibe.feature.locations.ui.component.compare.LocationCompareSheet
 import com.weather.vibe.feature.locations.ui.component.empty.LocationsEmptyState
-import com.weather.vibe.feature.locations.ui.component.header.LocationsHeader
+import com.weather.vibe.feature.locations.ui.component.header.CompareTogglePill
 import com.weather.vibe.feature.locations.ui.component.label.LocationFavoriteLabelSheet
 import com.weather.vibe.feature.locations.ui.component.row.LocationRow
 import com.weather.vibe.feature.locations.ui.reorder.LocationsReorderAutoScroller
@@ -89,7 +89,15 @@ internal fun LocationsContent(
     header = {
       VibeScreenHeader(
         title = screenTitle(),
-        subtitle = screenSubtitle()
+        subtitle = locationsSubtitle(state),
+        trailing = {
+          if (state is Loaded && state.cards.size >= CompareMinCards) {
+            CompareTogglePill(
+              compareMode = state.compareMode,
+              onClick = { dispatch(ToggleCompareMode) }
+            )
+          }
+        }
       )
     }
   ) {
@@ -134,6 +142,16 @@ internal fun LocationsContent(
   }
 }
 
+@Composable
+private fun locationsSubtitle(state: LocationsUiState): String? = when (state) {
+  is Loaded -> when {
+    state.compareMode && state.selectedIds.isEmpty() -> compareHintPickZero()
+    state.compareMode && state.selectedIds.size == 1 -> compareHintPickOne()
+    else -> headerSubtitle(count = state.cards.size, limit = MAX_FAVORITES)
+  }
+  else -> null
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun LocationsBody(
@@ -155,27 +173,14 @@ private fun LocationsBody(
 }
 
 @Composable
-private fun LocationsLoading(modifier: Modifier) {
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .statusBarsPadding(),
-    contentAlignment = Alignment.Center
-  ) {
-    LoadingIndicator()
-  }
+private fun LocationsLoading(modifier: Modifier = Modifier) {
+  LoadingIndicator(modifier = modifier.fillMaxSize())
 }
 
 @Composable
-private fun LocationsError(modifier: Modifier, message: String) {
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .statusBarsPadding()
-      .padding(Medium),
-    contentAlignment = Alignment.Center
-  ) {
-    VibeMessage(message = message)
+private fun LocationsError(modifier: Modifier = Modifier, message: String) {
+  Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    VibeMessage(title = message, message = "")
   }
 }
 
@@ -231,9 +236,7 @@ private fun LocationsList(
 
   LazyColumn(
     state = listState,
-    modifier = Modifier
-      .fillMaxSize()
-      .statusBarsPadding(),
+    modifier = Modifier.fillMaxSize(),
     contentPadding = PaddingValues(
       start = Medium,
       end = Medium,
@@ -242,15 +245,6 @@ private fun LocationsList(
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
-    item(key = HEADER) {
-      LocationsHeader(
-        modifier = Modifier.padding(bottom = Small),
-        count = state.cards.size,
-        compareMode = state.compareMode,
-        selectedCount = state.selectedIds.size,
-        onToggleCompareMode = { dispatch(ToggleCompareMode) }
-      )
-    }
     if (isEmpty) {
       item(key = EMPTY) { LocationsEmptyState() }
       return@LazyColumn
@@ -259,15 +253,10 @@ private fun LocationsList(
       items = reorderState.orderedCards,
       key = { card -> card(card.favoriteId) }
     ) { card ->
-      val rowModifier = when {
-        reorderState.isDragging(favoriteId = card.favoriteId) -> Modifier
-        else -> Modifier.animateItem()
-      }
       LocationRow(
-        modifier = rowModifier,
         card = card,
         compareMode = state.compareMode,
-        isSelected = state.isCardSelected(card.favoriteId),
+        isSelected = state.selectedIds.contains(card.favoriteId),
         isLocked = state.isCardLocked(card.favoriteId),
         reorder = reorderState,
         onClick = { dispatch(OpenLocationDetails(favoriteId = card.favoriteId)) },
@@ -280,34 +269,10 @@ private fun LocationsList(
 
 @PreviewLightDark
 @Composable
-private fun PreviewBrowse() {
+private fun Preview() {
   WeatherVibeTheme {
     LocationsContent(
       state = LocationsPreviewData.browseLoaded,
-      snackbarHostState = remember { SnackbarHostState() },
-      dispatch = {}
-    )
-  }
-}
-
-@PreviewLightDark
-@Composable
-private fun PreviewComparing() {
-  WeatherVibeTheme {
-    LocationsContent(
-      state = LocationsPreviewData.comparingLoaded,
-      snackbarHostState = remember { SnackbarHostState() },
-      dispatch = {}
-    )
-  }
-}
-
-@PreviewLightDark
-@Composable
-private fun PreviewLoading() {
-  WeatherVibeTheme {
-    LocationsContent(
-      state = Loading,
       snackbarHostState = remember { SnackbarHostState() },
       dispatch = {}
     )

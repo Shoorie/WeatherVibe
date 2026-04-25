@@ -25,7 +25,7 @@
   <string name="vibe_rating_slider_description">Suwak oceny dnia, pięciostopniowa skala</string>
 
   <string name="vibe_history_title">Twój vibe</string>
-  <string name="vibe_history_subtitle">Jak oceniałeś ostatnie dni</string>
+  <string name="vibe_history_subtitle">Twoje dni oceniane krok po kroku</string>
   <string name="vibe_history_back">Wstecz</string>
   <string name="vibe_history_average_label">Twoja średnia</string>
   <string name="vibe_history_total_label">Ocenione dni</string>

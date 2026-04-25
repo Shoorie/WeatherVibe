@@ -20,7 +20,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
-import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -101,7 +100,6 @@ private fun DraftMoodRow(
     MoodFace(
       rating = rating,
       active = touched,
-      size = MoodFaceDefaults.Size,
       contentDescription = Texts.moodFaceDescription(rating)
     )
     Spacer(Modifier.width(Padding.Medium))

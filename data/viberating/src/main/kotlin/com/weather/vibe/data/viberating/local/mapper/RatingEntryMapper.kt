@@ -1,50 +1,31 @@
 package com.weather.vibe.data.viberating.local.mapper
 
 import com.weather.vibe.data.viberating.local.entity.RatingEntryEntity
-import com.weather.vibe.data.viberating.local.entity.WeatherSnapshotEmbedded
 import com.weather.vibe.domain.viberating.model.RatingEntry
-import com.weather.vibe.domain.viberating.model.WeatherSnapshot
+import org.koin.core.annotation.Factory
 
-internal fun RatingEntryEntity.toDomain(): RatingEntry =
-  RatingEntry(
-    id = id,
-    date = date,
-    rating = rating,
-    weather = weather.toDomain(),
-    createdAtEpochMs = createdAtEpochMs,
-    note = note
-  )
+@Factory
+internal class RatingEntryMapper(
+  private val weatherSnapshotMapper: WeatherSnapshotMapper
+) {
 
-internal fun RatingEntry.toEntity(): RatingEntryEntity =
-  RatingEntryEntity(
-    id = id,
-    date = date,
-    rating = rating,
-    weather = weather.toEmbedded(),
-    createdAtEpochMs = createdAtEpochMs,
-    note = note
-  )
+  fun toDomain(entity: RatingEntryEntity): RatingEntry =
+    RatingEntry(
+      id = entity.id,
+      date = entity.date,
+      rating = entity.rating,
+      weather = weatherSnapshotMapper.toDomain(entity.weather),
+      createdAtEpochMs = entity.createdAtEpochMs,
+      note = entity.note
+    )
 
-private fun WeatherSnapshotEmbedded.toDomain(): WeatherSnapshot =
-  WeatherSnapshot(
-    temperatureC = temperatureC,
-    feelsLikeC = feelsLikeC,
-    condition = condition,
-    humidityPercent = humidityPercent,
-    windKph = windKph,
-    pressureHpa = pressureHpa,
-    airQualityIndex = airQualityIndex,
-    pollenLevel = pollenLevel
-  )
-
-private fun WeatherSnapshot.toEmbedded(): WeatherSnapshotEmbedded =
-  WeatherSnapshotEmbedded(
-    temperatureC = temperatureC,
-    feelsLikeC = feelsLikeC,
-    condition = condition,
-    humidityPercent = humidityPercent,
-    windKph = windKph,
-    pressureHpa = pressureHpa,
-    airQualityIndex = airQualityIndex,
-    pollenLevel = pollenLevel
-  )
+  fun toEntity(entry: RatingEntry): RatingEntryEntity =
+    RatingEntryEntity(
+      id = entry.id,
+      date = entry.date,
+      rating = entry.rating,
+      weather = weatherSnapshotMapper.toEmbedded(entry.weather),
+      createdAtEpochMs = entry.createdAtEpochMs,
+      note = entry.note
+    )
+}

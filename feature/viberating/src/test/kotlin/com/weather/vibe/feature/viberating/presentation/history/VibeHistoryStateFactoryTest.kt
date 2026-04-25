@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.viberating.presentation.history
 
-import com.weather.vibe.domain.viberating.model.Condition
-import com.weather.vibe.domain.viberating.model.Condition.SUNNY
+import com.weather.vibe.domain.weather.model.Condition
+import com.weather.vibe.domain.weather.model.Condition.SUNNY
 import com.weather.vibe.domain.viberating.model.ConditionAverage
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.VibeStats

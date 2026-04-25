@@ -1,6 +1,6 @@
 package com.weather.vibe.feature.home.mapper
 
-import com.weather.vibe.domain.viberating.model.Condition
+import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherData

@@ -9,8 +9,10 @@ android {
 }
 
 dependencies {
-  implementation(projects.domain.viberating)
   implementation(projects.core.time)
+  implementation(projects.domain.airquality)
+  implementation(projects.domain.viberating)
+  implementation(projects.domain.weather)
   implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.viberatingFixtures)

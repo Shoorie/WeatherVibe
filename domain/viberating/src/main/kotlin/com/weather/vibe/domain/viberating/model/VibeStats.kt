@@ -1,5 +1,7 @@
 package com.weather.vibe.domain.viberating.model
 
+import com.weather.vibe.domain.weather.model.Condition
+
 data class VibeStats(
   val averageRating: Double,
   val totalEntries: Int,

@@ -11,8 +11,10 @@ android {
 }
 
 dependencies {
-  implementation(projects.domain.viberating)
   implementation(projects.core.time)
+  implementation(projects.domain.airquality)
+  implementation(projects.domain.viberating)
+  implementation(projects.domain.weather)
   implementation(libs.koin.android)
 
   testImplementation(projects.testing.viberatingFixtures)

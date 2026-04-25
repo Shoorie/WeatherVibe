@@ -1,7 +1,7 @@
 package com.weather.vibe.testing.viberating.fixture
 
-import com.weather.vibe.domain.viberating.model.Condition
-import com.weather.vibe.domain.viberating.model.PollenLevel
+import com.weather.vibe.domain.weather.model.Condition
+import com.weather.vibe.domain.airquality.model.PollenLevel
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 
 object WeatherSnapshotFixtures {

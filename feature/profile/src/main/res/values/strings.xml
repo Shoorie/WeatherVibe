@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profile</string>
-  <string name="profile_screen_subtitle">Account, preferences and app info</string>
   <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
   <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
 

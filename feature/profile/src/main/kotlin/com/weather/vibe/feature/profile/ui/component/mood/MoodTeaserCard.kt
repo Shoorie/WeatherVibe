@@ -131,8 +131,8 @@ private fun SummaryLine(state: MoodTeaserUiState) {
     text = stringResource(
       R.string.profile_mood_summary_format,
       average,
-      state.totalEntries,
-      daysPlural(state.totalEntries)
+      state.dayCount,
+      daysPlural(state.dayCount)
     ),
     style = ProfileTextStyles.rowBody(),
     color = colors.onPrimaryContainer,
@@ -224,7 +224,7 @@ private fun PreviewLoaded() {
       state = MoodTeaserUiState(
         hasData = true,
         averageRating = 4.2,
-        totalEntries = 47,
+        dayCount = 47,
         favoriteCondition = Condition.SUNNY
       ),
       onClick = {}

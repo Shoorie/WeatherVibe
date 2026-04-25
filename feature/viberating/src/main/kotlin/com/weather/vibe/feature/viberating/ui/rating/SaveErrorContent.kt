@@ -21,12 +21,13 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 
 @Composable
 internal fun SaveErrorContent(
-  draft: Int,
+  draft: RatingFormDraft,
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit
 ) {
@@ -49,31 +50,50 @@ internal fun SaveErrorContent(
     )
     Spacer(Modifier.height(Padding.ExtraSmall))
     Text(
-      text = "${VibeRatingResources.scaleLabel(draft)} · $draft/5",
+      text = "${VibeRatingResources.scaleLabel(draft.sliderValue)} · ${draft.sliderValue}/5",
       style = typography.bodyMedium,
-      color = ratingColor(draft),
+      color = ratingColor(draft.sliderValue),
       fontWeight = FontWeight.SemiBold
     )
+    if (draft.note.isNotBlank()) {
+      Spacer(Modifier.height(Padding.ExtraSmall))
+      Text(
+        text = "„${draft.note}\"",
+        style = typography.bodySmall,
+        color = colors.onSurfaceVariant
+      )
+    }
     Spacer(Modifier.height(Padding.Medium))
-    Row(horizontalArrangement = Arrangement.spacedBy(Padding.Small)) {
-      Button(
-        onClick = onRetryClicked,
-        modifier = Modifier.weight(1f),
-        shape = shapes.cardSmall,
-        colors = ButtonDefaults.buttonColors(
-          containerColor = colors.accent,
-          contentColor = colors.onAccent
-        )
-      ) {
-        Text(Texts.retry())
-      }
-      OutlinedButton(
-        onClick = onDismissErrorClicked,
-        modifier = Modifier.weight(1f),
-        shape = shapes.cardSmall
-      ) {
-        Text(Texts.dismissError())
-      }
+    ErrorActionRow(
+      onRetryClicked = onRetryClicked,
+      onDismissErrorClicked = onDismissErrorClicked
+    )
+  }
+}
+
+@Composable
+private fun ErrorActionRow(
+  onRetryClicked: () -> Unit,
+  onDismissErrorClicked: () -> Unit
+) {
+  Row(horizontalArrangement = Arrangement.spacedBy(Padding.Small)) {
+    Button(
+      onClick = onRetryClicked,
+      modifier = Modifier.weight(1f),
+      shape = shapes.cardSmall,
+      colors = ButtonDefaults.buttonColors(
+        containerColor = colors.accent,
+        contentColor = colors.onAccent
+      )
+    ) {
+      Text(Texts.retry())
+    }
+    OutlinedButton(
+      onClick = onDismissErrorClicked,
+      modifier = Modifier.weight(1f),
+      shape = shapes.cardSmall
+    ) {
+      Text(Texts.dismissError())
     }
   }
 }

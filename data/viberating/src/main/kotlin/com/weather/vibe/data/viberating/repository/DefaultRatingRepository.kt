@@ -22,12 +22,12 @@ internal class DefaultRatingRepository(
       .map { entities -> entities.map { it.toDomain() } }
       .flowOn(IO)
 
-  override fun observeForDate(date: LocalDate): Flow<RatingEntry?> =
+  override fun observeForDate(date: LocalDate): Flow<List<RatingEntry>> =
     dao.observeForDate(date)
-      .map { it?.toDomain() }
+      .map { entities -> entities.map { it.toDomain() } }
       .flowOn(IO)
 
-  override suspend fun upsert(entry: RatingEntry) {
-    dao.upsert(entry.toEntity())
+  override suspend fun insert(entry: RatingEntry) {
+    dao.insert(entry.toEntity())
   }
 }

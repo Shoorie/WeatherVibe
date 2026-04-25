@@ -186,9 +186,5 @@ internal class ProfileResources(private val context: Context) {
     @Composable
     fun placeholderAboutSubtitle(): String =
       stringResource(R.string.profile_placeholder_about_subtitle)
-
-    @Composable
-    fun screenSubtitle(): String =
-      stringResource(R.string.profile_screen_subtitle)
   }
 }

@@ -12,7 +12,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.DismissErrorClick
-import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.EditClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteCollapseClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteExpandClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteValueChanged
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveRetryClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SliderValueChanged
@@ -33,6 +35,9 @@ fun RatingCardHost(
   val callbacks = remember(viewModel) {
     RatingCardCallbacks(
       onSliderValueChanged = { viewModel.dispatch(SliderValueChanged(it)) },
+      onNoteValueChanged = { viewModel.dispatch(NoteValueChanged(it)) },
+      onNoteExpandClick = { viewModel.dispatch(NoteExpandClick) },
+      onNoteCollapseClick = { viewModel.dispatch(NoteCollapseClick) },
       onSaveClicked = {
         val snapshot = snapshotRef.value ?: return@RatingCardCallbacks
         viewModel.dispatch(SaveClick(snapshot))
@@ -42,7 +47,6 @@ fun RatingCardHost(
         viewModel.dispatch(SaveRetryClick(snapshot))
       },
       onDismissErrorClicked = { viewModel.dispatch(DismissErrorClick) },
-      onEditClicked = { viewModel.dispatch(EditClick) },
       onViewHistoryClicked = { viewModel.dispatch(ViewHistoryClick) }
     )
   }
@@ -62,19 +66,23 @@ fun RatingCardHost(
     modifier = modifier,
     state = state,
     onSliderValueChanged = callbacks.onSliderValueChanged,
+    onNoteValueChanged = callbacks.onNoteValueChanged,
+    onNoteExpandClick = callbacks.onNoteExpandClick,
+    onNoteCollapseClick = callbacks.onNoteCollapseClick,
     onSaveClicked = callbacks.onSaveClicked,
     onRetryClicked = callbacks.onRetryClicked,
     onDismissErrorClicked = callbacks.onDismissErrorClicked,
-    onEditClicked = callbacks.onEditClicked,
     onViewHistoryClicked = callbacks.onViewHistoryClicked
   )
 }
 
 private class RatingCardCallbacks(
   val onSliderValueChanged: (Int) -> Unit,
+  val onNoteValueChanged: (String) -> Unit,
+  val onNoteExpandClick: () -> Unit,
+  val onNoteCollapseClick: () -> Unit,
   val onSaveClicked: () -> Unit,
   val onRetryClicked: () -> Unit,
   val onDismissErrorClicked: () -> Unit,
-  val onEditClicked: () -> Unit,
   val onViewHistoryClicked: () -> Unit
 )

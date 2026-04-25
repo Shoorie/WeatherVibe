@@ -31,12 +31,14 @@ import com.weather.vibe.core.designsystem.theme.ratingColor
 import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.state.ConditionRankingUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 internal fun ConditionRankingCard(
   modifier: Modifier = Modifier,
-  ranking: ImmutableList<ConditionRankingUiState>
+  ranking: ImmutableList<ConditionRankingUiState>,
+  basedOnEntries: Int
 ) {
   if (ranking.isEmpty()) return
   VibeCard(
@@ -58,6 +60,12 @@ internal fun ConditionRankingCard(
         RankingRow(item = item)
         Spacer(Modifier.height(Padding.Small))
       }
+      Spacer(Modifier.height(Padding.ExtraSmall))
+      Text(
+        text = Texts.rankingDisclaimer(basedOnEntries = basedOnEntries),
+        style = WeatherVibeTheme.typography.labelSmall,
+        color = WeatherVibeTheme.colors.onSurfaceVariant
+      )
     }
   }
 }

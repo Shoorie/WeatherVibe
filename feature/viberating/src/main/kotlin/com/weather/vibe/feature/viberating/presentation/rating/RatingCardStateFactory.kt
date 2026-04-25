@@ -2,45 +2,74 @@ package com.weather.vibe.feature.viberating.presentation.rating
 
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
 import org.koin.core.annotation.Factory
 
 @Factory
 internal class RatingCardStateFactory {
 
-  fun fromTodayEntry(entry: RatingEntry?): RatingCardUiState =
-    when (entry) {
-      null -> notRated()
-      else -> Rated(rating = entry.rating)
-    }
-
-  fun notRated(): RatingCardUiState =
-    NotRated(
-      sliderDraft = DEFAULT_SLIDER_DRAFT,
-      sliderTouched = false
+  fun fromTodayEntries(entries: List<RatingEntry>): RatingCardUiState =
+    Editing(
+      draft = blankDraft(),
+      todayEntryCount = entries.size
     )
 
   fun withSliderValue(current: RatingCardUiState, value: Int): RatingCardUiState =
-    when (current) {
-      is NotRated -> current.copy(sliderDraft = value, sliderTouched = true)
-      else -> current
+    updateDraft(current) { draft ->
+      draft.copy(sliderValue = value, sliderTouched = true)
     }
 
-  fun saving(draft: Int): RatingCardUiState = Saving(sliderDraft = draft)
+  fun withNoteValue(current: RatingCardUiState, value: String): RatingCardUiState =
+    updateDraft(current) { draft ->
+      draft.copy(note = value.take(NOTE_MAX_LENGTH))
+    }
 
-  fun rated(rating: Int): RatingCardUiState = Rated(rating = rating)
+  fun withNoteExpanded(current: RatingCardUiState, expanded: Boolean): RatingCardUiState =
+    updateDraft(current) { draft ->
+      draft.copy(
+        noteExpanded = expanded,
+        note = if (expanded) draft.note else ""
+      )
+    }
 
-  fun saveError(draft: Int): RatingCardUiState = SaveError(sliderDraft = draft)
+  fun withTodayCount(current: RatingCardUiState, count: Int): RatingCardUiState =
+    when (current) {
+      Loading -> Editing(draft = blankDraft(), todayEntryCount = count)
+      is Editing -> current.copy(todayEntryCount = count)
+      is Saving -> current.copy(todayEntryCount = count)
+      is SaveError -> current.copy(todayEntryCount = count)
+    }
 
-  fun editFrom(currentRating: Int): RatingCardUiState = NotRated(
-    sliderDraft = currentRating,
-    sliderTouched = true
+  fun saving(draft: RatingFormDraft, todayEntryCount: Int): RatingCardUiState =
+    Saving(draft = draft, todayEntryCount = todayEntryCount)
+
+  fun saveError(draft: RatingFormDraft, todayEntryCount: Int): RatingCardUiState =
+    SaveError(draft = draft, todayEntryCount = todayEntryCount)
+
+  fun afterSaveSuccess(todayEntryCount: Int): RatingCardUiState =
+    Editing(draft = blankDraft(), todayEntryCount = todayEntryCount)
+
+  fun blankDraft(): RatingFormDraft = RatingFormDraft(
+    sliderValue = DEFAULT_SLIDER_VALUE,
+    sliderTouched = false,
+    note = "",
+    noteExpanded = false
   )
 
+  private fun updateDraft(
+    current: RatingCardUiState,
+    transform: (RatingFormDraft) -> RatingFormDraft
+  ): RatingCardUiState = when (current) {
+    is Editing -> current.copy(draft = transform(current.draft))
+    Loading, is Saving, is SaveError -> current
+  }
+
   companion object {
-    const val DEFAULT_SLIDER_DRAFT: Int = 3
+    const val DEFAULT_SLIDER_VALUE: Int = 3
+    const val NOTE_MAX_LENGTH: Int = RatingEntry.NOTE_MAX_LENGTH
   }
 }

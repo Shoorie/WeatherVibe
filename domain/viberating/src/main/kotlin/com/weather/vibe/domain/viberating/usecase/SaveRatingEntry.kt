@@ -8,6 +8,6 @@ import org.koin.core.annotation.Factory
 class SaveRatingEntry(private val repository: RatingRepository) {
 
   suspend operator fun invoke(entry: RatingEntry) {
-    repository.upsert(entry)
+    repository.insert(entry)
   }
 }

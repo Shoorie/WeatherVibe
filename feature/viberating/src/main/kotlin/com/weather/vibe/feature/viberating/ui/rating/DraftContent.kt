@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
@@ -25,64 +26,87 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.SpinnerSize
 
 @Composable
 internal fun DraftContent(
-  draft: Int,
-  touched: Boolean,
+  draft: RatingFormDraft,
+  todayEntryCount: Int,
   saving: Boolean,
   onSliderValueChanged: (Int) -> Unit,
+  onNoteValueChanged: (String) -> Unit,
+  onNoteExpandClick: () -> Unit,
+  onNoteCollapseClick: () -> Unit,
   onSaveClicked: () -> Unit,
   onViewHistoryClicked: () -> Unit
 ) {
-  val activeColor = ratingColor(draft)
+  val activeColor = ratingColor(draft.sliderValue)
+  DraftHeader(todayEntryCount = todayEntryCount)
+  Spacer(Modifier.height(Padding.Small))
+  DraftMoodRow(
+    rating = draft.sliderValue,
+    touched = draft.sliderTouched,
+    activeColor = activeColor
+  )
+  Spacer(Modifier.height(Padding.ExtraSmall))
+  HapticSlider(
+    draft = draft.sliderValue,
+    enabled = !saving,
+    activeColor = activeColor,
+    onValueChanged = onSliderValueChanged
+  )
+  ScaleLabelsRow(selected = draft.sliderValue, activeColor = activeColor)
+  Spacer(Modifier.height(Padding.Small))
+  NoteEditor(
+    expanded = draft.noteExpanded,
+    enabled = !saving,
+    note = draft.note,
+    onExpandClick = onNoteExpandClick,
+    onCollapseClick = onNoteCollapseClick,
+    onValueChange = onNoteValueChanged
+  )
+  Spacer(Modifier.height(Padding.Small))
+  SaveButton(
+    saving = saving,
+    enabled = draft.sliderTouched && !saving,
+    onClick = onSaveClicked
+  )
+  Spacer(Modifier.height(Padding.ExtraSmall))
+  ViewHistoryPillRow(onClick = onViewHistoryClicked)
+}
+
+@Composable
+private fun DraftHeader(todayEntryCount: Int) {
   Text(
     text = Texts.cardTitle(),
     style = typography.titleMedium,
     color = colors.onSurface
   )
-  Spacer(Modifier.height(Padding.ExtraSmall))
-  Text(
-    text = Texts.cardSubtitle(),
-    style = typography.bodySmall,
-    color = colors.onSurfaceVariant
-  )
-  Spacer(Modifier.height(Padding.Medium))
-  DraftMoodRow(draft = draft, touched = touched, activeColor = activeColor)
-  Spacer(Modifier.height(Padding.Small))
-  HapticSlider(
-    draft = draft,
-    enabled = !saving,
-    activeColor = activeColor,
-    onValueChanged = onSliderValueChanged
-  )
-  Spacer(Modifier.height(Padding.ExtraSmall))
-  ScaleLabelsRow(selected = draft, activeColor = activeColor)
-  Spacer(Modifier.height(Padding.Medium))
-  SaveButton(saving = saving, enabled = touched && !saving, onClick = onSaveClicked)
-  Spacer(Modifier.height(Padding.Small))
-  ViewHistoryPillRow(onClick = onViewHistoryClicked)
+  if (todayEntryCount > 0) {
+    Spacer(Modifier.height(Padding.ExtraSmall))
+    TodayEntriesBadge(count = todayEntryCount)
+  }
 }
 
 @Composable
 private fun DraftMoodRow(
-  draft: Int,
+  rating: Int,
   touched: Boolean,
-  activeColor: androidx.compose.ui.graphics.Color
+  activeColor: Color
 ) {
   Row(verticalAlignment = Alignment.CenterVertically) {
     MoodFace(
-      rating = draft,
+      rating = rating,
       active = touched,
       size = MoodFaceDefaults.Size,
-      contentDescription = Texts.moodFaceDescription(draft)
+      contentDescription = Texts.moodFaceDescription(rating)
     )
     Spacer(Modifier.width(Padding.Medium))
     Text(
-      text = VibeRatingResources.scaleLabel(draft),
+      text = VibeRatingResources.scaleLabel(rating),
       style = typography.titleMedium,
       color = if (touched) activeColor else colors.onSurfaceVariant,
       fontWeight = FontWeight.SemiBold,
@@ -111,7 +135,7 @@ private fun SaveButton(
       CircularProgressIndicator(
         modifier = Modifier.size(SpinnerSize),
         color = colors.onAccent,
-        strokeWidth = 2.dp
+        strokeWidth = SaveSpinnerStroke
       )
       Spacer(Modifier.width(Padding.Small))
       Text(Texts.saving())
@@ -120,3 +144,5 @@ private fun SaveButton(
     }
   }
 }
+
+private val SaveSpinnerStroke = 2.dp

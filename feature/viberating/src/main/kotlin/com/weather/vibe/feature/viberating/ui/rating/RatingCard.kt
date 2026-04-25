@@ -17,9 +17,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
@@ -29,10 +28,12 @@ internal fun RatingCard(
   modifier: Modifier = Modifier,
   state: RatingCardUiState,
   onSliderValueChanged: (Int) -> Unit,
+  onNoteValueChanged: (String) -> Unit,
+  onNoteExpandClick: () -> Unit,
+  onNoteCollapseClick: () -> Unit,
   onSaveClicked: () -> Unit,
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit,
-  onEditClicked: () -> Unit,
   onViewHistoryClicked: () -> Unit
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
@@ -49,10 +50,12 @@ internal fun RatingCard(
         RatingCardStateContent(
           state = state,
           onSliderValueChanged = onSliderValueChanged,
+          onNoteValueChanged = onNoteValueChanged,
+          onNoteExpandClick = onNoteExpandClick,
+          onNoteCollapseClick = onNoteCollapseClick,
           onSaveClicked = onSaveClicked,
           onRetryClicked = onRetryClicked,
           onDismissErrorClicked = onDismissErrorClicked,
-          onEditClicked = onEditClicked,
           onViewHistoryClicked = onViewHistoryClicked
         )
       }
@@ -64,39 +67,42 @@ internal fun RatingCard(
 private fun RatingCardStateContent(
   state: RatingCardUiState,
   onSliderValueChanged: (Int) -> Unit,
+  onNoteValueChanged: (String) -> Unit,
+  onNoteExpandClick: () -> Unit,
+  onNoteCollapseClick: () -> Unit,
   onSaveClicked: () -> Unit,
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit,
-  onEditClicked: () -> Unit,
   onViewHistoryClicked: () -> Unit
 ) {
   when (state) {
     Loading -> LoadingContent()
-    is NotRated -> DraftContent(
-      draft = state.sliderDraft,
-      touched = state.sliderTouched,
+    is Editing -> DraftContent(
+      draft = state.draft,
+      todayEntryCount = state.todayEntryCount,
       saving = false,
       onSliderValueChanged = onSliderValueChanged,
+      onNoteValueChanged = onNoteValueChanged,
+      onNoteExpandClick = onNoteExpandClick,
+      onNoteCollapseClick = onNoteCollapseClick,
       onSaveClicked = onSaveClicked,
       onViewHistoryClicked = onViewHistoryClicked
     )
     is Saving -> DraftContent(
-      draft = state.sliderDraft,
-      touched = true,
+      draft = state.draft,
+      todayEntryCount = state.todayEntryCount,
       saving = true,
       onSliderValueChanged = {},
+      onNoteValueChanged = {},
+      onNoteExpandClick = {},
+      onNoteCollapseClick = {},
       onSaveClicked = {},
       onViewHistoryClicked = onViewHistoryClicked
     )
     is SaveError -> SaveErrorContent(
-      draft = state.sliderDraft,
+      draft = state.draft,
       onRetryClicked = onRetryClicked,
       onDismissErrorClicked = onDismissErrorClicked
-    )
-    is Rated -> RatedContent(
-      rating = state.rating,
-      onEditClicked = onEditClicked,
-      onViewHistoryClicked = onViewHistoryClicked
     )
   }
 }
@@ -123,10 +129,12 @@ private fun RatingCardPreview(
         .padding(Padding.Medium),
       state = state,
       onSliderValueChanged = {},
+      onNoteValueChanged = {},
+      onNoteExpandClick = {},
+      onNoteCollapseClick = {},
       onSaveClicked = {},
       onRetryClicked = {},
       onDismissErrorClicked = {},
-      onEditClicked = {},
       onViewHistoryClicked = {}
     )
   }

@@ -235,7 +235,7 @@ private fun DayCell(
       .background(cellBackground)
       .then(
         if (borderColor != null) {
-          Modifier.border(width = 2.dp, color = borderColor, shape = CellShape)
+          Modifier.border(width = CellBorderWidth, color = borderColor, shape = CellShape)
         } else {
           Modifier
         }
@@ -301,6 +301,7 @@ private fun dayCellBorder(day: Day): Color? =
 
 private const val DAYS_IN_WEEK: Int = 7
 private val CellShape = RoundedCornerShape(10.dp)
+private val CellBorderWidth = 2.dp
 private val NAV_BUTTON_TOUCH = 48.dp
 private val NAV_BUTTON_VISUAL = 32.dp
 private val CellDateFormatter: DateTimeFormatter =

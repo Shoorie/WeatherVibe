@@ -124,7 +124,11 @@ internal object VibeRatingResources {
 
     @Composable
     fun errorSummary(scaleLabel: String, rating: Int): String =
-      stringResource(R.string.vibe_rating_error_summary_format, scaleLabel, rating)
+      stringResource(
+        R.string.vibe_rating_error_summary_format,
+        scaleLabel,
+        rating
+      )
 
     @Composable
     fun errorNoteQuote(note: String): String =
@@ -148,11 +152,19 @@ internal object VibeRatingResources {
 
     @Composable
     fun noteCounter(current: Int, max: Int): String =
-      stringResource(R.string.vibe_rating_note_counter_format, current, max)
+      stringResource(
+        R.string.vibe_rating_note_counter_format,
+        current,
+        max
+      )
 
     @Composable
     fun todayEntryCount(count: Int): String =
-      pluralStringResource(R.plurals.vibe_rating_today_count, count, count)
+      pluralStringResource(
+        id = R.plurals.vibe_rating_today_count,
+        count = count,
+        count
+      )
 
     @Composable
     fun historyTitle(): String =
@@ -176,7 +188,11 @@ internal object VibeRatingResources {
 
     @Composable
     fun entrySubtitle(condition: String, temperature: String): String =
-      stringResource(R.string.vibe_history_entry_subtitle_format, condition, temperature)
+      stringResource(
+        R.string.vibe_history_entry_subtitle_format,
+        condition,
+        temperature
+      )
 
     @Composable
     fun entryRatingLabel(rating: Int): String =
@@ -188,11 +204,19 @@ internal object VibeRatingResources {
 
     @Composable
     fun entryRatingA11y(rating: Int, conditionLabel: String): String =
-      stringResource(R.string.vibe_history_entry_rating_a11y, rating, conditionLabel)
+      stringResource(
+        R.string.vibe_history_entry_rating_a11y,
+        rating,
+        conditionLabel
+      )
 
     @Composable
     fun dayEntryCount(count: Int): String =
-      pluralStringResource(R.plurals.vibe_history_day_entry_count, count, count)
+      pluralStringResource(
+        id = R.plurals.vibe_history_day_entry_count,
+        count = count,
+        count
+      )
 
     @Composable
     fun rankingDisclaimer(basedOnEntries: Int): String =
@@ -204,7 +228,11 @@ internal object VibeRatingResources {
 
     @Composable
     fun patternsLockedBody(threshold: Int, entriesSoFar: Int): String =
-      stringResource(R.string.vibe_history_patterns_locked_body, threshold, entriesSoFar)
+      stringResource(
+        R.string.vibe_history_patterns_locked_body,
+        threshold,
+        entriesSoFar
+      )
 
     @Composable
     fun statsAverageLabel(): String =
@@ -224,11 +252,20 @@ internal object VibeRatingResources {
 
     @Composable
     fun statsAverageA11y(value: String, suffix: String, label: String): String =
-      stringResource(R.string.vibe_history_stat_average_a11y, value, suffix, label)
+      stringResource(
+        R.string.vibe_history_stat_average_a11y,
+        value,
+        suffix,
+        label
+      )
 
     @Composable
     fun statsTotalA11y(total: Int, label: String): String =
-      stringResource(R.string.vibe_history_stat_total_a11y, total, label)
+      stringResource(
+        R.string.vibe_history_stat_total_a11y,
+        total,
+        label
+      )
 
     @Composable
     fun legendLow(): String =
@@ -264,7 +301,11 @@ internal object VibeRatingResources {
 
     @Composable
     fun dayRatedDescription(dateLabel: String, average: Int): String =
-      stringResource(R.string.vibe_history_day_rated_description, dateLabel, average)
+      stringResource(
+        R.string.vibe_history_day_rated_description,
+        dateLabel,
+        average
+      )
 
     @Composable
     fun dayUnratedDescription(dateLabel: String): String =
@@ -298,11 +339,19 @@ internal object VibeRatingResources {
 
     @Composable
     fun rankingEntries(count: Int, label: String): String =
-      stringResource(R.string.vibe_history_ranking_entries, count, label)
+      stringResource(
+        R.string.vibe_history_ranking_entries,
+        count,
+        label
+      )
 
     @Composable
     fun entriesPlural(count: Int): String =
-      pluralStringResource(R.plurals.vibe_history_entries, count, count)
+      pluralStringResource(
+        id = R.plurals.vibe_history_entries,
+        count = count,
+        count
+      )
 
     @Composable
     fun entryTimePattern(): String =

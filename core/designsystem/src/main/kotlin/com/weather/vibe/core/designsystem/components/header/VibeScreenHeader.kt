@@ -59,11 +59,11 @@ fun VibeScreenHeader(
       }
       Column(modifier = Modifier.weight(1f)) {
         Text(
+          modifier = Modifier.semantics { heading() },
           text = title,
           style = typography.headlineMedium,
           color = colors.onSurface,
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier.semantics { heading() }
+          fontWeight = FontWeight.Bold
         )
         if (subtitle != null) {
           Text(

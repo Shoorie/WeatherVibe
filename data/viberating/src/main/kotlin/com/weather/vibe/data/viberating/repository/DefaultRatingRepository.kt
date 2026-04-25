@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.koin.core.annotation.Single
 import java.time.LocalDate
 
@@ -28,6 +29,8 @@ internal class DefaultRatingRepository(
       .flowOn(IO)
 
   override suspend fun insert(entry: RatingEntry) {
-    dao.insert(entry.toEntity())
+    withContext(IO) {
+      dao.insert(entry.toEntity())
+    }
   }
 }

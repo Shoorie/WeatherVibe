@@ -19,9 +19,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
-import com.weather.vibe.core.designsystem.theme.RatingColors
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.R
 
 @Composable
@@ -36,15 +38,15 @@ internal fun CalendarLegend(modifier: Modifier = Modifier) {
   ) {
     Text(
       text = stringResource(R.string.vibe_history_legend_low),
-      style = WeatherVibeTheme.typography.labelSmall,
-      color = WeatherVibeTheme.colors.onSurfaceVariant
+      style = typography.labelSmall,
+      color = colors.onSurfaceVariant
     )
     Spacer(Modifier.size(Padding.Small))
     Row(
       horizontalArrangement = Arrangement.spacedBy(4.dp),
       modifier = Modifier.clearAndSetSemantics {}
     ) {
-      for (rating in RatingColors.MIN_RATING..RatingColors.MAX_RATING) {
+      for (rating in MIN_RATING..MAX_RATING) {
         Box(
           modifier = Modifier
             .size(LegendSwatch)
@@ -56,8 +58,8 @@ internal fun CalendarLegend(modifier: Modifier = Modifier) {
     Spacer(Modifier.size(Padding.Small))
     Text(
       text = stringResource(R.string.vibe_history_legend_high),
-      style = WeatherVibeTheme.typography.labelSmall,
-      color = WeatherVibeTheme.colors.onSurfaceVariant
+      style = typography.labelSmall,
+      color = colors.onSurfaceVariant
     )
   }
 }

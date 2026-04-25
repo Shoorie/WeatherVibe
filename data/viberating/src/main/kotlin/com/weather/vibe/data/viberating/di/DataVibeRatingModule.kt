@@ -2,7 +2,6 @@ package com.weather.vibe.data.viberating.di
 
 import android.content.Context
 import androidx.room.Room
-import com.weather.vibe.data.viberating.di.DataVibeRatingDefaults.DatabaseName
 import com.weather.vibe.data.viberating.local.VibeRatingDatabase
 import com.weather.vibe.data.viberating.local.dao.RatingDao
 import org.koin.core.annotation.ComponentScan
@@ -20,7 +19,7 @@ class DataVibeRatingModule {
     Room.databaseBuilder(
       context = context,
       klass = VibeRatingDatabase::class.java,
-      name = DatabaseName
+      name = DATABASE_NAME
     )
       .fallbackToDestructiveMigration(dropAllTables = true)
       .build()
@@ -28,4 +27,8 @@ class DataVibeRatingModule {
   @Single
   internal fun provideRatingDao(database: VibeRatingDatabase): RatingDao =
     database.ratingDao()
+
+  private companion object {
+    const val DATABASE_NAME = "vibe_rating_database"
+  }
 }

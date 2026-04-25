@@ -8,4 +8,3 @@ import org.koin.core.annotation.Module
 @Configuration
 @ComponentScan("com.weather.vibe.domain.viberating")
 class DomainVibeRatingModule
-

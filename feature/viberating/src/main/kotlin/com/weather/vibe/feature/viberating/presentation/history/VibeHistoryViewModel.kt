@@ -14,21 +14,20 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryActio
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.PreviousMonthClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryEvent.NavigateBack
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
+import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState.Companion.emptyFor
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import java.time.LocalDate
 import java.time.YearMonth
@@ -54,7 +53,11 @@ internal class VibeHistoryViewModel(
       .catch { emit(emptyList<RatingEntry>() to VibeStats.EMPTY) }
 
   val state: StateFlow<VibeHistoryUiState> =
-    combine(entriesWithStatsFlow, viewMonthFlow, selectedDateFlow) { entriesAndStats, month, selected ->
+    combine(
+      entriesWithStatsFlow,
+      viewMonthFlow,
+      selectedDateFlow
+    ) { entriesAndStats, month, selected ->
       val (entries, stats) = entriesAndStats
       stateFactory.create(
         entriesByDate = entries.groupBy(RatingEntry::date),
@@ -66,21 +69,25 @@ internal class VibeHistoryViewModel(
       )
     }.stateIn(
       scope = viewModelScope,
-      started = SharingStarted.WhileSubscribed(SHARING_TIMEOUT_MS),
-      initialValue = VibeHistoryUiState.emptyFor(currentMonth)
+      started = WhileSubscribed(SHARING_TIMEOUT_MS),
+      initialValue = emptyFor(currentMonth)
     )
 
-  private val eventChannel = Channel<VibeHistoryEvent>(Channel.BUFFERED)
-  val event: Flow<VibeHistoryEvent> = eventChannel.receiveAsFlow()
+  private val _events = Channel<VibeHistoryEvent>(Channel.BUFFERED)
+  val events: Flow<VibeHistoryEvent> = _events.receiveAsFlow()
 
   fun dispatch(action: VibeHistoryAction) {
     when (action) {
-      PreviousMonthClick -> onPreviousMonthClick()
-      NextMonthClick -> onNextMonthClick()
+      is BackClick -> onBackClick()
+      is DayDetailDismissed -> onDayDetailDismissed()
       is DaySelected -> onDaySelected(action.date)
-      DayDetailDismissed -> onDayDetailDismissed()
-      BackClick -> eventChannel.trySend(NavigateBack)
+      is NextMonthClick -> onNextMonthClick()
+      is PreviousMonthClick -> onPreviousMonthClick()
     }
+  }
+
+  private fun onBackClick() {
+    send(NavigateBack)
   }
 
   private fun onPreviousMonthClick() {
@@ -88,16 +95,28 @@ internal class VibeHistoryViewModel(
   }
 
   private fun onNextMonthClick() {
-    viewMonthFlow.update { month -> if (month < currentMonth) month.plusMonths(1) else month }
+    viewMonthFlow.update { month ->
+      if (month < currentMonth) month.plusMonths(1) else month
+    }
   }
 
   private fun onDaySelected(date: LocalDate) {
+
     if (date.isAfter(today)) return
-    selectedDateFlow.update { current -> if (current == date) null else date }
+
+    selectedDateFlow.update { current ->
+      if (current == date) null else date
+    }
   }
 
   private fun onDayDetailDismissed() {
     selectedDateFlow.value = null
+  }
+
+  private fun send(event: VibeHistoryEvent) {
+    viewModelScope.launch {
+      _events.send(event)
+    }
   }
 
   companion object {

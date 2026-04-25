@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import com.weather.vibe.core.designsystem.theme.RatingColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 
 @Composable

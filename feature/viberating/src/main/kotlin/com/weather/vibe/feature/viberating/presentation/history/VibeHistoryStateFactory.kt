@@ -14,11 +14,11 @@ import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistor
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.core.annotation.Factory
-import java.time.DayOfWeek
-import java.time.Instant
+import java.time.DayOfWeek.MONDAY
+import java.time.Instant.ofEpochMilli
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.ZoneId
+import java.time.ZoneId.systemDefault
 import kotlin.math.roundToInt
 
 @Factory
@@ -32,21 +32,22 @@ internal class VibeHistoryStateFactory {
     today: LocalDate,
     selectedDate: LocalDate?
   ): VibeHistoryUiState {
+
     val cells = calendarCells(
       viewMonth = viewMonth,
       entriesByDate = entriesByDate,
       today = today,
       selectedDate = selectedDate
     )
+
     return VibeHistoryUiState(
       viewMonth = viewMonth,
       canNavigateNext = viewMonth < currentMonth,
       averageRating = stats.averageRating,
       totalEntries = stats.totalEntries,
       cells = cells,
-      selectedDayDetail = selectedDate?.let { date ->
-        dayDetail(date = date, entries = entriesByDate[date].orEmpty())
-      },
+      selectedDayDetail = selectedDate
+        ?.let { date -> dayDetail(date = date, entries = entriesByDate[date].orEmpty()) },
       patterns = patternsSection(stats = stats)
     )
   }
@@ -57,11 +58,15 @@ internal class VibeHistoryStateFactory {
     today: LocalDate,
     selectedDate: LocalDate?
   ): ImmutableList<CalendarCellUiState> {
+
     val firstOfMonth = viewMonth.atDay(1)
     val daysInMonth = viewMonth.lengthOfMonth()
-    val leadingEmpty = (firstOfMonth.dayOfWeek.value - DayOfWeek.MONDAY.value).mod(DAYS_IN_WEEK)
+    val leadingEmpty = (firstOfMonth.dayOfWeek.value - MONDAY.value).mod(DAYS_IN_WEEK)
+
     val cells = buildList(CALENDAR_TOTAL_CELLS) {
+
       repeat(leadingEmpty) { add(Empty) }
+
       for (dayOfMonth in 1..daysInMonth) {
         val date = viewMonth.atDay(dayOfMonth)
         val dayEntries = entriesByDate[date].orEmpty()
@@ -94,7 +99,9 @@ internal class VibeHistoryStateFactory {
   private fun dayEntry(entry: RatingEntry): DayEntryUiState =
     DayEntryUiState(
       id = entry.id,
-      time = Instant.ofEpochMilli(entry.createdAtEpochMs).atZone(ZoneId.systemDefault()).toLocalTime(),
+      time = ofEpochMilli(entry.createdAtEpochMs)
+        .atZone(systemDefault())
+        .toLocalTime(),
       rating = entry.rating,
       condition = entry.weather.condition,
       temperatureC = entry.weather.temperatureC,
@@ -116,14 +123,19 @@ internal class VibeHistoryStateFactory {
     }
 
   private fun conditionRanking(stats: VibeStats): ImmutableList<ConditionRankingUiState> {
-    val maxAverage = stats.conditionAverages.maxOf(ConditionAverage::averageRating)
+
+    val maxAverage = stats.conditionAverages
+      .maxOf(ConditionAverage::averageRating)
+
     return stats.conditionAverages
       .map { average ->
         ConditionRankingUiState(
           condition = average.condition,
           averageRating = average.averageRating,
           entryCount = average.entryCount,
-          progressFraction = (average.averageRating / maxAverage).toFloat().coerceIn(0f, 1f)
+          progressFraction = (average.averageRating / maxAverage)
+            .toFloat()
+            .coerceIn(0f, 1f)
         )
       }
       .toImmutableList()

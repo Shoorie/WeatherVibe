@@ -8,17 +8,14 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults.EmojiSizeRatio
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults.InactiveBackground
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 
 internal object MoodFaceStyles {
 
   @Composable
   @ReadOnlyComposable
   fun background(rating: Int, active: Boolean): Color =
-    when {
-      active -> ratingColor(rating)
-      else -> InactiveBackground
-    }
+    if (active) ratingColor(rating) else InactiveBackground
 
   fun emojiSize(faceSize: Dp): TextUnit =
     (faceSize.value * EmojiSizeRatio).sp

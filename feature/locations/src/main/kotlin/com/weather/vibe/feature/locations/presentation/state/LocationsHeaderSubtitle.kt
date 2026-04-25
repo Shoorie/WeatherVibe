@@ -11,5 +11,8 @@ internal sealed interface LocationsHeaderSubtitle {
   data object CompareHintPickOne : LocationsHeaderSubtitle
 
   @Immutable
-  data class LocationCount(val count: Int, val limit: Int) : LocationsHeaderSubtitle
+  data class LocationCount(
+    val count: Int,
+    val limit: Int
+  ) : LocationsHeaderSubtitle
 }

@@ -5,25 +5,25 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
 
 internal class RatingCardStatePreview : PreviewParameterProvider<RatingCardUiState> {
 
-  private val freshDraft = RatingFormDraft(
+  private val freshDraft = RatingFormDraftUiState(
     sliderValue = 3,
     sliderTouched = false,
     note = "",
     noteExpanded = false
   )
 
-  private val touchedDraft = RatingFormDraft(
+  private val touchedDraft = RatingFormDraftUiState(
     sliderValue = 4,
     sliderTouched = true,
     note = "",
     noteExpanded = false
   )
 
-  private val draftWithNote = RatingFormDraft(
+  private val draftWithNote = RatingFormDraftUiState(
     sliderValue = 5,
     sliderTouched = true,
     note = "Świetny dzień, kawa i słońce!",

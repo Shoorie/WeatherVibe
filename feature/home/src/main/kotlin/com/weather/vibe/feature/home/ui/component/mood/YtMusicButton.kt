@@ -6,8 +6,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.button.BrandButton
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
-import com.weather.vibe.core.designsystem.theme.BrandColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.brand.BrandColors
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.openInYtMusic
 import com.weather.vibe.feature.home.ui.HomePainters.ytMusicIcon
 

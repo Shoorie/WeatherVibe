@@ -1,8 +1,8 @@
 package com.weather.vibe.data.viberating.local.converter
 
 import androidx.room.TypeConverter
-import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.domain.airquality.model.PollenLevel
+import com.weather.vibe.domain.weather.model.Condition
 import java.time.LocalDate
 
 internal class RatingEntryConverters {

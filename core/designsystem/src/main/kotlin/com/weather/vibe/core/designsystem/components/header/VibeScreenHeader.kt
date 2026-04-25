@@ -24,8 +24,11 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.header.VibeScreenDefaults.BackButtonTouch
+import com.weather.vibe.core.designsystem.components.header.VibeScreenDefaults.BackButtonVisual
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -42,8 +45,8 @@ fun VibeScreenHeader(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = Padding.Medium)
-      .padding(top = Padding.ExtraSmall, bottom = Padding.Medium)
+      .padding(horizontal = Medium)
+      .padding(top = ExtraSmall, bottom = Medium)
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -55,7 +58,7 @@ fun VibeScreenHeader(
           onClick = onBackClicked,
           contentDescription = backContentDescription
         )
-        Spacer(Modifier.size(Padding.ExtraSmall))
+        Spacer(Modifier.size(ExtraSmall))
       }
       Column(modifier = Modifier.weight(1f)) {
         Text(
@@ -76,7 +79,7 @@ fun VibeScreenHeader(
       if (trailing != null) {
         Row(
           verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall),
+          horizontalArrangement = Arrangement.spacedBy(ExtraSmall),
           content = trailing
         )
       }
@@ -91,11 +94,11 @@ private fun VibeHeaderBackButton(
 ) {
   IconButton(
     onClick = onClick,
-    modifier = Modifier.size(BACK_BUTTON_TOUCH)
+    modifier = Modifier.size(BackButtonTouch)
   ) {
     Box(
       modifier = Modifier
-        .size(BACK_BUTTON_VISUAL)
+        .size(BackButtonVisual)
         .clip(CircleShape)
         .background(colors.glassSurface),
       contentAlignment = Alignment.Center
@@ -108,9 +111,6 @@ private fun VibeHeaderBackButton(
     }
   }
 }
-
-private val BACK_BUTTON_TOUCH = 48.dp
-private val BACK_BUTTON_VISUAL = 40.dp
 
 @PreviewLightDark
 @Composable

@@ -1,4 +1,4 @@
-package com.weather.vibe.core.designsystem.theme
+package com.weather.vibe.core.designsystem.theme.rating
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -14,15 +14,13 @@ object RatingColors {
 
   const val MIN_RATING: Int = 1
   const val MAX_RATING: Int = 5
+
+  private val byLevel: List<Color> = listOf(Rating1, Rating2, Rating3, Rating4, Rating5)
+
+  fun forLevel(rating: Int): Color =
+    byLevel[rating.coerceIn(MIN_RATING, MAX_RATING) - MIN_RATING]
 }
 
 @Composable
 @ReadOnlyComposable
-fun ratingColor(rating: Int): Color =
-  when (rating.coerceIn(RatingColors.MIN_RATING, RatingColors.MAX_RATING)) {
-    1 -> RatingColors.Rating1
-    2 -> RatingColors.Rating2
-    3 -> RatingColors.Rating3
-    4 -> RatingColors.Rating4
-    else -> RatingColors.Rating5
-  }
+fun ratingColor(rating: Int): Color = RatingColors.forLevel(rating)

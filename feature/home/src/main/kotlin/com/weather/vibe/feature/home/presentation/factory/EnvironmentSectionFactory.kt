@@ -2,6 +2,12 @@ package com.weather.vibe.feature.home.presentation.factory
 
 import com.weather.vibe.domain.airquality.model.AirQuality
 import com.weather.vibe.domain.airquality.model.AqiLevel
+import com.weather.vibe.domain.airquality.model.AqiLevel.EXTREMELY_POOR
+import com.weather.vibe.domain.airquality.model.AqiLevel.FAIR
+import com.weather.vibe.domain.airquality.model.AqiLevel.GOOD
+import com.weather.vibe.domain.airquality.model.AqiLevel.MODERATE
+import com.weather.vibe.domain.airquality.model.AqiLevel.POOR
+import com.weather.vibe.domain.airquality.model.AqiLevel.VERY_POOR
 import com.weather.vibe.domain.airquality.model.EnvironmentalReadings
 import com.weather.vibe.domain.airquality.model.PollenReading
 import com.weather.vibe.domain.alerts.model.WeatherAlert
@@ -9,6 +15,9 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert.HighPollen
 import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
 import com.weather.vibe.feature.home.presentation.state.EnvChipTint
+import com.weather.vibe.feature.home.presentation.state.EnvChipTint.AMBER
+import com.weather.vibe.feature.home.presentation.state.EnvChipTint.GREEN
+import com.weather.vibe.feature.home.presentation.state.EnvChipTint.ROSE
 import com.weather.vibe.feature.home.presentation.state.HomeAlertUiState
 import com.weather.vibe.feature.home.presentation.state.PollenChipUiState
 import com.weather.vibe.feature.home.ui.HomeAirQualityResources
@@ -47,13 +56,13 @@ internal class EnvironmentSectionFactory(
         level = reading.level,
         species = reading.species
       ),
-      tint = EnvChipTint.GREEN
+      tint = GREEN
     )
 
   private fun AqiLevel.toChipTint(): EnvChipTint = when (this) {
-    AqiLevel.GOOD -> EnvChipTint.GREEN
-    AqiLevel.FAIR, AqiLevel.MODERATE -> EnvChipTint.AMBER
-    AqiLevel.POOR, AqiLevel.VERY_POOR, AqiLevel.EXTREMELY_POOR -> EnvChipTint.ROSE
+    GOOD -> GREEN
+    FAIR, MODERATE -> AMBER
+    POOR, VERY_POOR, EXTREMELY_POOR -> ROSE
   }
 
   private fun createAlert(alert: WeatherAlert): HomeAlertUiState? =

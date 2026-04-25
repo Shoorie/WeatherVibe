@@ -59,9 +59,12 @@
   <string name="vibe_history_ranking_disclaimer">Na podstawie %1$d wpisów. Wzorce nabierają wartości z czasem.</string>
   <string name="vibe_history_patterns_locked_title">Twoje wzorce pogodowe</string>
   <string name="vibe_history_patterns_locked_body">Pojawią się tu po %1$d wpisach. Masz już %2$d, jesteś coraz bliżej.</string>
-  <string name="vibe_history_entries_one">wpis</string>
-  <string name="vibe_history_entries_few">wpisy</string>
-  <string name="vibe_history_entries_many">wpisów</string>
+  <plurals name="vibe_history_entries">
+    <item quantity="one">wpis</item>
+    <item quantity="few">wpisy</item>
+    <item quantity="many">wpisów</item>
+    <item quantity="other">wpisów</item>
+  </plurals>
 
   <string name="vibe_history_day_summary_title">%1$s</string>
   <string name="vibe_history_day_summary_empty">Brak wpisów tego dnia.</string>

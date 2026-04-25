@@ -1,4 +1,4 @@
-package com.weather.vibe.core.designsystem.theme
+package com.weather.vibe.core.designsystem.theme.environment
 
 import androidx.compose.ui.graphics.Color
 

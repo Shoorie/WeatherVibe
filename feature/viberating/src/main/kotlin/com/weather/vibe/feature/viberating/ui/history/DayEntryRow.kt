@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,18 +18,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.DayEntryUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
-import java.time.format.DateTimeFormatter
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BackgroundAlpha
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderAlpha
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderWidth
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ConditionEmojiSize
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ContentPadding
+import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.TimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
@@ -44,13 +46,13 @@ internal fun DayEntryRow(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.cardSmall)
-      .background(ratingTint.copy(alpha = EntryBackgroundAlpha))
+      .background(ratingTint.copy(alpha = BackgroundAlpha))
       .border(
-        width = EntryBorderWidth,
-        color = ratingTint.copy(alpha = EntryBorderAlpha),
+        width = BorderWidth,
+        color = ratingTint.copy(alpha = BorderAlpha),
         shape = shapes.cardSmall
       )
-      .padding(EntryContentPadding)
+      .padding(ContentPadding)
       .semantics(mergeDescendants = true) {
         contentDescription = ""
       }
@@ -81,7 +83,10 @@ private fun EntryHeaderRow(
     MoodFace(
       rating = entry.rating,
       active = true,
-      contentDescription = Texts.entryRatingA11y(rating = entry.rating, conditionLabel = conditionLabel)
+      contentDescription = Texts.entryRatingA11y(
+        rating = entry.rating,
+        conditionLabel = conditionLabel
+      )
     )
     Column(modifier = Modifier.weight(1f)) {
       Text(
@@ -117,13 +122,3 @@ private fun EntryNote(note: String) {
     color = colors.onSurface
   )
 }
-
-private val EntryContentPadding = PaddingValues(
-  horizontal = Padding.Medium,
-  vertical = Padding.Small
-)
-private val EntryBorderWidth = 1.dp
-private const val EntryBackgroundAlpha = 0.32f
-private const val EntryBorderAlpha = 0.55f
-private val ConditionEmojiSize = 22.sp
-private val TimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")

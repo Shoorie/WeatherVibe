@@ -6,7 +6,7 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -20,7 +20,10 @@ internal class RatingCardStateFactory {
 
   fun withSliderValue(current: RatingCardUiState, value: Int): RatingCardUiState =
     updateDraft(current) { draft ->
-      draft.copy(sliderValue = value, sliderTouched = true)
+      draft.copy(
+        sliderValue = value,
+        sliderTouched = true
+      )
     }
 
   fun withNoteValue(current: RatingCardUiState, value: String): RatingCardUiState =
@@ -38,22 +41,22 @@ internal class RatingCardStateFactory {
 
   fun withTodayCount(current: RatingCardUiState, count: Int): RatingCardUiState =
     when (current) {
-      Loading -> Editing(draft = blankDraft(), todayEntryCount = count)
+      is Loading -> Editing(draft = blankDraft(), todayEntryCount = count)
       is Editing -> current.copy(todayEntryCount = count)
       is Saving -> current.copy(todayEntryCount = count)
       is SaveError -> current.copy(todayEntryCount = count)
     }
 
-  fun saving(draft: RatingFormDraft, todayEntryCount: Int): RatingCardUiState =
+  fun saving(draft: RatingFormDraftUiState, todayEntryCount: Int): RatingCardUiState =
     Saving(draft = draft, todayEntryCount = todayEntryCount)
 
-  fun saveError(draft: RatingFormDraft, todayEntryCount: Int): RatingCardUiState =
+  fun saveError(draft: RatingFormDraftUiState, todayEntryCount: Int): RatingCardUiState =
     SaveError(draft = draft, todayEntryCount = todayEntryCount)
 
   fun afterSaveSuccess(todayEntryCount: Int): RatingCardUiState =
     Editing(draft = blankDraft(), todayEntryCount = todayEntryCount)
 
-  fun blankDraft(): RatingFormDraft = RatingFormDraft(
+  fun blankDraft(): RatingFormDraftUiState = RatingFormDraftUiState(
     sliderValue = DEFAULT_SLIDER_VALUE,
     sliderTouched = false,
     note = "",
@@ -62,7 +65,7 @@ internal class RatingCardStateFactory {
 
   private fun updateDraft(
     current: RatingCardUiState,
-    transform: (RatingFormDraft) -> RatingFormDraft
+    transform: (RatingFormDraftUiState) -> RatingFormDraftUiState
   ): RatingCardUiState = when (current) {
     is Editing -> current.copy(draft = transform(current.draft))
     Loading, is Saving, is SaveError -> current

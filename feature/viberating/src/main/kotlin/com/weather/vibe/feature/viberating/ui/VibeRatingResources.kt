@@ -3,6 +3,8 @@ package com.weather.vibe.feature.viberating.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.feature.viberating.R
 import kotlinx.collections.immutable.ImmutableList
@@ -11,17 +13,17 @@ import java.time.YearMonth
 
 internal object VibeRatingResources {
 
+  private val scaleStrings: List<Int> = listOf(
+    R.string.vibe_rating_scale_1,
+    R.string.vibe_rating_scale_2,
+    R.string.vibe_rating_scale_3,
+    R.string.vibe_rating_scale_4,
+    R.string.vibe_rating_scale_5
+  )
+
   @Composable
   fun scaleLabel(rating: Int): String =
-    stringResource(
-      when (rating.coerceIn(1, 5)) {
-        1 -> R.string.vibe_rating_scale_1
-        2 -> R.string.vibe_rating_scale_2
-        3 -> R.string.vibe_rating_scale_3
-        4 -> R.string.vibe_rating_scale_4
-        else -> R.string.vibe_rating_scale_5
-      }
-    )
+    stringResource(scaleStrings[rating.coerceIn(MIN_RATING, MAX_RATING) - MIN_RATING])
 
   fun conditionEmoji(condition: Condition): String =
     when (condition) {
@@ -76,37 +78,44 @@ internal object VibeRatingResources {
   object Texts {
 
     @Composable
-    fun sectionLabel(): String = stringResource(R.string.vibe_rating_section_label)
+    fun sectionLabel(): String =
+      stringResource(R.string.vibe_rating_section_label)
 
     @Composable
-    fun cardTitle(): String = stringResource(R.string.vibe_rating_card_title)
+    fun cardTitle(): String =
+      stringResource(R.string.vibe_rating_card_title)
 
     @Composable
-    fun save(): String = stringResource(R.string.vibe_rating_save)
+    fun save(): String =
+      stringResource(R.string.vibe_rating_save)
 
     @Composable
-    fun saving(): String = stringResource(R.string.vibe_rating_saving)
+    fun saving(): String =
+      stringResource(R.string.vibe_rating_saving)
 
     @Composable
-    fun saveErrorTitle(): String = stringResource(R.string.vibe_rating_save_error_title)
+    fun saveErrorTitle(): String =
+      stringResource(R.string.vibe_rating_save_error_title)
 
     @Composable
-    fun saveErrorBody(): String = stringResource(R.string.vibe_rating_save_error_body)
+    fun saveErrorBody(): String =
+      stringResource(R.string.vibe_rating_save_error_body)
 
     @Composable
-    fun retry(): String = stringResource(R.string.vibe_rating_retry)
+    fun retry(): String =
+      stringResource(R.string.vibe_rating_retry)
 
     @Composable
-    fun dismissError(): String = stringResource(R.string.vibe_rating_dismiss_error)
+    fun dismissError(): String =
+      stringResource(R.string.vibe_rating_dismiss_error)
 
     @Composable
-    fun viewHistory(): String = stringResource(R.string.vibe_rating_view_history)
+    fun viewHistoryLink(): String =
+      stringResource(R.string.vibe_rating_view_history_link)
 
     @Composable
-    fun viewHistoryLink(): String = stringResource(R.string.vibe_rating_view_history_link)
-
-    @Composable
-    fun sliderDescription(): String = stringResource(R.string.vibe_rating_slider_description)
+    fun sliderDescription(): String =
+      stringResource(R.string.vibe_rating_slider_description)
 
     @Composable
     fun moodFaceDescription(rating: Int): String =
@@ -121,16 +130,20 @@ internal object VibeRatingResources {
       stringResource(R.string.vibe_rating_error_note_quote, note)
 
     @Composable
-    fun noteAdd(): String = stringResource(R.string.vibe_rating_note_add)
+    fun noteAdd(): String =
+      stringResource(R.string.vibe_rating_note_add)
 
     @Composable
-    fun noteCollapse(): String = stringResource(R.string.vibe_rating_note_collapse)
+    fun noteCollapse(): String =
+      stringResource(R.string.vibe_rating_note_collapse)
 
     @Composable
-    fun noteLabel(): String = stringResource(R.string.vibe_rating_note_label)
+    fun noteLabel(): String =
+      stringResource(R.string.vibe_rating_note_label)
 
     @Composable
-    fun notePlaceholder(): String = stringResource(R.string.vibe_rating_note_placeholder)
+    fun notePlaceholder(): String =
+      stringResource(R.string.vibe_rating_note_placeholder)
 
     @Composable
     fun noteCounter(current: Int, max: Int): String =
@@ -141,19 +154,20 @@ internal object VibeRatingResources {
       pluralStringResource(R.plurals.vibe_rating_today_count, count, count)
 
     @Composable
-    fun historyTitle(): String = stringResource(R.string.vibe_history_title)
+    fun historyTitle(): String =
+      stringResource(R.string.vibe_history_title)
 
     @Composable
-    fun historySubtitle(): String = stringResource(R.string.vibe_history_subtitle)
+    fun historySubtitle(): String =
+      stringResource(R.string.vibe_history_subtitle)
 
     @Composable
-    fun historyBack(): String = stringResource(R.string.vibe_history_back)
+    fun historyBack(): String =
+      stringResource(R.string.vibe_history_back)
 
     @Composable
-    fun daySummaryEmpty(): String = stringResource(R.string.vibe_history_day_summary_empty)
-
-    @Composable
-    fun entryTimeFormat(): String = stringResource(R.string.vibe_history_entry_time_format)
+    fun daySummaryEmpty(): String =
+      stringResource(R.string.vibe_history_day_summary_empty)
 
     @Composable
     fun entryTemperature(temperatureC: Int): String =
@@ -180,19 +194,21 @@ internal object VibeRatingResources {
       stringResource(R.string.vibe_history_patterns_locked_body, threshold, entriesSoFar)
   }
 
+  private val monthStrings: List<Int> = listOf(
+    R.string.vibe_month_1,
+    R.string.vibe_month_2,
+    R.string.vibe_month_3,
+    R.string.vibe_month_4,
+    R.string.vibe_month_5,
+    R.string.vibe_month_6,
+    R.string.vibe_month_7,
+    R.string.vibe_month_8,
+    R.string.vibe_month_9,
+    R.string.vibe_month_10,
+    R.string.vibe_month_11,
+    R.string.vibe_month_12
+  )
+
   private fun monthResource(month: Int): Int =
-    when (month) {
-      1 -> R.string.vibe_month_1
-      2 -> R.string.vibe_month_2
-      3 -> R.string.vibe_month_3
-      4 -> R.string.vibe_month_4
-      5 -> R.string.vibe_month_5
-      6 -> R.string.vibe_month_6
-      7 -> R.string.vibe_month_7
-      8 -> R.string.vibe_month_8
-      9 -> R.string.vibe_month_9
-      10 -> R.string.vibe_month_10
-      11 -> R.string.vibe_month_11
-      else -> R.string.vibe_month_12
-    }
+    monthStrings[(month - 1).coerceIn(0, monthStrings.lastIndex)]
 }

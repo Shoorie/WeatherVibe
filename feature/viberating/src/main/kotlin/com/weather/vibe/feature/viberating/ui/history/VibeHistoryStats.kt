@@ -22,7 +22,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.R
 
 @Composable

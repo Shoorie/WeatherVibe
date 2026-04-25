@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.viberating.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.weather.model.Condition
@@ -13,7 +12,6 @@ import java.time.YearMonth
 internal object VibeRatingResources {
 
   @Composable
-  @ReadOnlyComposable
   fun scaleLabel(rating: Int): String =
     stringResource(
       when (rating.coerceIn(1, 5)) {
@@ -27,16 +25,25 @@ internal object VibeRatingResources {
 
   fun conditionEmoji(condition: Condition): String =
     when (condition) {
-      Condition.SUNNY -> "☀️"
-      Condition.PARTLY_CLOUDY -> "⛅"
-      Condition.CLOUDY -> "☁️"
-      Condition.RAIN -> "🌧️"
-      Condition.SNOW -> "❄️"
-      Condition.NIGHT -> "🌙"
+      Condition.SUNNY -> Emojis.Sunny
+      Condition.PARTLY_CLOUDY -> Emojis.PartlyCloudy
+      Condition.CLOUDY -> Emojis.Cloudy
+      Condition.RAIN -> Emojis.Rain
+      Condition.SNOW -> Emojis.Snow
+      Condition.NIGHT -> Emojis.Night
     }
 
+  object Emojis {
+    const val Sunny: String = "☀️"
+    const val PartlyCloudy: String = "⛅"
+    const val Cloudy: String = "☁️"
+    const val Rain: String = "🌧️"
+    const val Snow: String = "❄️"
+    const val Night: String = "🌙"
+    const val ViewHistoryPill: String = "📊"
+  }
+
   @Composable
-  @ReadOnlyComposable
   fun conditionLabel(condition: Condition): String =
     stringResource(
       when (condition) {
@@ -50,14 +57,12 @@ internal object VibeRatingResources {
     )
 
   @Composable
-  @ReadOnlyComposable
   fun monthLabel(yearMonth: YearMonth): String {
     val monthName = stringResource(monthResource(yearMonth.monthValue))
     return "$monthName ${yearMonth.year}"
   }
 
   @Composable
-  @ReadOnlyComposable
   fun weekdayLabels(): ImmutableList<String> = persistentListOf(
     stringResource(R.string.vibe_weekday_monday),
     stringResource(R.string.vibe_weekday_tuesday),
@@ -71,127 +76,106 @@ internal object VibeRatingResources {
   object Texts {
 
     @Composable
-    @ReadOnlyComposable
     fun sectionLabel(): String = stringResource(R.string.vibe_rating_section_label)
 
     @Composable
-    @ReadOnlyComposable
     fun cardTitle(): String = stringResource(R.string.vibe_rating_card_title)
 
     @Composable
-    @ReadOnlyComposable
     fun save(): String = stringResource(R.string.vibe_rating_save)
 
     @Composable
-    @ReadOnlyComposable
     fun saving(): String = stringResource(R.string.vibe_rating_saving)
 
     @Composable
-    @ReadOnlyComposable
     fun saveErrorTitle(): String = stringResource(R.string.vibe_rating_save_error_title)
 
     @Composable
-    @ReadOnlyComposable
     fun saveErrorBody(): String = stringResource(R.string.vibe_rating_save_error_body)
 
     @Composable
-    @ReadOnlyComposable
     fun retry(): String = stringResource(R.string.vibe_rating_retry)
 
     @Composable
-    @ReadOnlyComposable
     fun dismissError(): String = stringResource(R.string.vibe_rating_dismiss_error)
 
     @Composable
-    @ReadOnlyComposable
     fun viewHistory(): String = stringResource(R.string.vibe_rating_view_history)
 
     @Composable
-    @ReadOnlyComposable
     fun viewHistoryLink(): String = stringResource(R.string.vibe_rating_view_history_link)
 
     @Composable
-    @ReadOnlyComposable
     fun sliderDescription(): String = stringResource(R.string.vibe_rating_slider_description)
 
     @Composable
-    @ReadOnlyComposable
     fun moodFaceDescription(rating: Int): String =
       stringResource(R.string.vibe_rating_mood_face_description, rating)
 
     @Composable
-    @ReadOnlyComposable
+    fun errorSummary(scaleLabel: String, rating: Int): String =
+      stringResource(R.string.vibe_rating_error_summary_format, scaleLabel, rating)
+
+    @Composable
+    fun errorNoteQuote(note: String): String =
+      stringResource(R.string.vibe_rating_error_note_quote, note)
+
+    @Composable
     fun noteAdd(): String = stringResource(R.string.vibe_rating_note_add)
 
     @Composable
-    @ReadOnlyComposable
     fun noteCollapse(): String = stringResource(R.string.vibe_rating_note_collapse)
 
     @Composable
-    @ReadOnlyComposable
     fun noteLabel(): String = stringResource(R.string.vibe_rating_note_label)
 
     @Composable
-    @ReadOnlyComposable
     fun notePlaceholder(): String = stringResource(R.string.vibe_rating_note_placeholder)
 
     @Composable
-    @ReadOnlyComposable
     fun noteCounter(current: Int, max: Int): String =
       stringResource(R.string.vibe_rating_note_counter_format, current, max)
 
     @Composable
-    @ReadOnlyComposable
     fun todayEntryCount(count: Int): String =
       pluralStringResource(R.plurals.vibe_rating_today_count, count, count)
 
     @Composable
-    @ReadOnlyComposable
     fun historyTitle(): String = stringResource(R.string.vibe_history_title)
 
     @Composable
-    @ReadOnlyComposable
     fun historySubtitle(): String = stringResource(R.string.vibe_history_subtitle)
 
     @Composable
-    @ReadOnlyComposable
     fun historyBack(): String = stringResource(R.string.vibe_history_back)
 
     @Composable
-    @ReadOnlyComposable
     fun daySummaryEmpty(): String = stringResource(R.string.vibe_history_day_summary_empty)
 
     @Composable
-    @ReadOnlyComposable
     fun entryTimeFormat(): String = stringResource(R.string.vibe_history_entry_time_format)
 
     @Composable
-    @ReadOnlyComposable
     fun entryTemperature(temperatureC: Int): String =
       stringResource(R.string.vibe_history_entry_temperature_format, temperatureC)
 
     @Composable
-    @ReadOnlyComposable
     fun entryRatingA11y(rating: Int, conditionLabel: String): String =
       stringResource(R.string.vibe_history_entry_rating_a11y, rating, conditionLabel)
 
     @Composable
-    @ReadOnlyComposable
     fun dayEntryCount(count: Int): String =
       pluralStringResource(R.plurals.vibe_history_day_entry_count, count, count)
 
     @Composable
-    @ReadOnlyComposable
     fun rankingDisclaimer(basedOnEntries: Int): String =
       stringResource(R.string.vibe_history_ranking_disclaimer, basedOnEntries)
 
     @Composable
-    @ReadOnlyComposable
     fun patternsLockedTitle(): String =
       stringResource(R.string.vibe_history_patterns_locked_title)
 
     @Composable
-    @ReadOnlyComposable
     fun patternsLockedBody(threshold: Int, entriesSoFar: Int): String =
       stringResource(R.string.vibe_history_patterns_locked_body, threshold, entriesSoFar)
   }

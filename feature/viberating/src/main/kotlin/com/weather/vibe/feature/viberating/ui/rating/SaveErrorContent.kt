@@ -22,8 +22,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.ratingColor
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 
 @Composable
 internal fun SaveErrorContent(
@@ -50,7 +50,10 @@ internal fun SaveErrorContent(
     )
     Spacer(Modifier.height(Padding.ExtraSmall))
     Text(
-      text = "${VibeRatingResources.scaleLabel(draft.sliderValue)} · ${draft.sliderValue}/5",
+      text = Texts.errorSummary(
+        scaleLabel = scaleLabel(draft.sliderValue),
+        rating = draft.sliderValue
+      ),
       style = typography.bodyMedium,
       color = ratingColor(draft.sliderValue),
       fontWeight = FontWeight.SemiBold
@@ -58,7 +61,7 @@ internal fun SaveErrorContent(
     if (draft.note.isNotBlank()) {
       Spacer(Modifier.height(Padding.ExtraSmall))
       Text(
-        text = "„${draft.note}\"",
+        text = Texts.errorNoteQuote(note = draft.note),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant
       )

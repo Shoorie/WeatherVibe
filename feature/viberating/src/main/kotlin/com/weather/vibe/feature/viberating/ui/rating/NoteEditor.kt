@@ -35,8 +35,10 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardStateFactory
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteFadeMs
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteFieldMinHeight
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteIconSize
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteMaxLines
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.TouchTarget
 
 @Composable
@@ -122,7 +124,7 @@ private fun NoteForm(
       textStyle = typography.bodyMedium,
       shape = shapes.cardSmall,
       colors = noteTextFieldColors(),
-      maxLines = NOTE_MAX_LINES
+      maxLines = NoteMaxLines
     )
     Spacer(Modifier.height(Padding.ExtraSmall))
     NoteCharacterCounter(currentLength = note.length)
@@ -188,5 +190,3 @@ private fun NoteCharacterCounter(currentLength: Int) {
   }
 }
 
-private const val NOTE_MAX_LINES: Int = 4
-private const val NoteFadeMs: Int = 180

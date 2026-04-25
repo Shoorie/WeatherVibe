@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import com.weather.vibe.core.designsystem.components.surface.VibeCard
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -28,15 +25,14 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
-import com.weather.vibe.core.designsystem.components.mood.MoodFace
-import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.state.DayDetailUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -48,8 +44,8 @@ internal fun DayDetailCard(
 ) {
   AnimatedVisibility(
     visible = detail != null,
-    enter = fadeIn() + slideInVertically { it / 10 },
-    exit = fadeOut() + slideOutVertically { it / 10 }
+    enter = fadeIn() + slideInVertically { it / SLIDE_FRACTION },
+    exit = fadeOut() + slideOutVertically { it / SLIDE_FRACTION }
   ) {
     if (detail != null) {
       DayDetailContent(
@@ -67,85 +63,70 @@ private fun DayDetailContent(
   detail: DayDetailUiState,
   onDismissClicked: () -> Unit
 ) {
-  val rating = detail.rating
-  val backgroundColor = if (rating != null) {
-    ratingColor(rating).copy(alpha = 0.15f)
-  } else {
-    WeatherVibeTheme.colors.surfaceVariant
-  }
-
   VibeCard(
     modifier = modifier
       .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
     shape = shapes.cardMedium,
-    containerColor = backgroundColor,
+    containerColor = colors.glassSurfaceHeavy,
     contentPadding = Padding.Medium
   ) {
-   Column(modifier = Modifier.fillMaxWidth()) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      verticalAlignment = Alignment.CenterVertically
-    ) {
-      detail.condition?.let { condition ->
+    Column(modifier = Modifier.fillMaxWidth()) {
+      DayDetailHeader(detail = detail, onDismissClicked = onDismissClicked)
+      if (detail.entries.isEmpty()) {
+        Spacer(Modifier.height(Padding.Small))
         Text(
-          text = VibeRatingResources.conditionEmoji(condition),
-          fontSize = WeatherEmojiSize
+          text = Texts.daySummaryEmpty(),
+          style = typography.bodyMedium,
+          color = colors.onSurfaceVariant
         )
-        Spacer(Modifier.size(Padding.Small))
-      }
-      Column(modifier = Modifier.weight(1f)) {
-        Text(
-          text = detail.date.format(DATE_FORMATTER),
-          style = WeatherVibeTheme.typography.labelSmall,
-          color = WeatherVibeTheme.colors.onSurfaceVariant
-        )
-        Spacer(Modifier.size(Padding.ExtraSmall))
-        Text(
-          text = detailTitle(detail),
-          style = WeatherVibeTheme.typography.titleMedium,
-          color = WeatherVibeTheme.colors.onSurface,
-          fontWeight = FontWeight.SemiBold,
-          modifier = Modifier.semantics { heading() }
-        )
-      }
-      IconButton(onClick = onDismissClicked) {
-        Icon(
-          imageVector = Icons.Default.Close,
-          contentDescription = stringResource(R.string.vibe_history_day_detail_close),
-          tint = WeatherVibeTheme.colors.onSurfaceVariant
-        )
+      } else {
+        Spacer(Modifier.height(Padding.Small))
+        Column(verticalArrangement = Arrangement.spacedBy(Padding.Small)) {
+          detail.entries.forEach { entry ->
+            DayEntryRow(entry = entry)
+          }
+        }
       }
     }
-    if (rating != null) {
-      Spacer(Modifier.height(Padding.Small))
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        MoodFace(
-          rating = rating,
-          active = true,
-          size = MoodFaceDefaults.SizeLarge,
-          contentDescription = stringResource(R.string.vibe_history_day_detail_rating, rating)
-        )
-        Spacer(Modifier.size(Padding.Small))
-        Text(
-          text = "${VibeRatingResources.scaleLabel(rating)} · $rating/5",
-          style = WeatherVibeTheme.typography.bodyMedium,
-          color = ratingColor(rating),
-          fontWeight = FontWeight.SemiBold
-        )
-      }
-    }
-   }
   }
 }
 
 @Composable
-private fun detailTitle(detail: DayDetailUiState): String {
-  val condition = detail.condition?.let { VibeRatingResources.conditionLabel(it) }
-  val temperature = detail.temperatureC?.let { "${it.toInt()}°" }
-  return listOfNotNull(condition, temperature).joinToString(" · ")
-    .ifEmpty { stringResource(R.string.vibe_history_no_rating) }
+private fun DayDetailHeader(
+  detail: DayDetailUiState,
+  onDismissClicked: () -> Unit
+) {
+  Row(
+    modifier = Modifier.fillMaxWidth(),
+    verticalAlignment = Alignment.CenterVertically
+  ) {
+    Column(modifier = Modifier.weight(1f)) {
+      Text(
+        text = detail.date.format(DateFormatter),
+        style = typography.titleMedium,
+        color = colors.onSurface,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.semantics { heading() }
+      )
+      if (detail.entries.isNotEmpty()) {
+        Spacer(Modifier.height(Padding.ExtraSmall))
+        Text(
+          text = Texts.dayEntryCount(detail.entries.size),
+          style = typography.labelSmall,
+          color = colors.onSurfaceVariant
+        )
+      }
+    }
+    IconButton(onClick = onDismissClicked) {
+      Icon(
+        imageVector = Icons.Default.Close,
+        contentDescription = stringResource(R.string.vibe_history_day_detail_close),
+        tint = colors.onSurfaceVariant
+      )
+    }
+  }
 }
 
-private val DATE_FORMATTER: DateTimeFormatter =
+private val DateFormatter: DateTimeFormatter =
   DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))
-private val WeatherEmojiSize = 28.sp
+private const val SLIDE_FRACTION: Int = 10

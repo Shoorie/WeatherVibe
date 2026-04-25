@@ -3,6 +3,7 @@ package com.weather.vibe.domain.viberating.usecase
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.repository.RatingRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -11,13 +12,14 @@ import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Factory
 import java.time.LocalDate
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Factory
-class ObserveTodayRating(
+class ObserveTodayEntries(
   private val repository: RatingRepository,
   private val timeProvider: TimeProvider
 ) {
 
-  operator fun invoke(): Flow<RatingEntry?> =
+  operator fun invoke(): Flow<List<RatingEntry>> =
     todayFlow().flatMapLatest { today -> repository.observeForDate(today) }
 
   private fun todayFlow(): Flow<LocalDate> = flow {

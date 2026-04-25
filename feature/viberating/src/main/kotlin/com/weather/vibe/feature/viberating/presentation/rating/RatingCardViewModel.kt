@@ -5,21 +5,22 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
-import com.weather.vibe.domain.viberating.usecase.ObserveTodayRating
+import com.weather.vibe.domain.viberating.usecase.ObserveTodayEntries
 import com.weather.vibe.domain.viberating.usecase.SaveRatingEntry
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.DismissErrorClick
-import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.EditClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteCollapseClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteExpandClick
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteValueChanged
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SaveRetryClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.SliderValueChanged
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.ViewHistoryClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardEvent.NavigateToHistory
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.NotRated
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Rated
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -37,10 +38,10 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class RatingCardViewModel(
-  private val observeTodayRating: ObserveTodayRating,
+  private val observeTodayEntries: ObserveTodayEntries,
   private val saveRatingEntry: SaveRatingEntry,
-  private val timeProvider: TimeProvider,
-  private val stateFactory: RatingCardStateFactory
+  private val stateFactory: RatingCardStateFactory,
+  private val timeProvider: TimeProvider
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<RatingCardUiState>(Loading)
@@ -50,88 +51,109 @@ internal class RatingCardViewModel(
   val event: Flow<RatingCardEvent> = eventChannel.receiveAsFlow()
 
   init {
-    observeToday()
+    startObservingToday()
   }
 
   fun dispatch(action: RatingCardAction) {
     when (action) {
       is SliderValueChanged -> onSliderValueChanged(action.value)
+      is NoteValueChanged -> onNoteValueChanged(action.value)
+      NoteExpandClick -> onNoteExpandClick()
+      NoteCollapseClick -> onNoteCollapseClick()
       is SaveClick -> onSaveClick(action.weatherSnapshot)
       is SaveRetryClick -> onSaveRetryClick(action.weatherSnapshot)
       DismissErrorClick -> onDismissErrorClick()
-      EditClick -> onEditClick()
-      ViewHistoryClick -> eventChannel.trySend(NavigateToHistory)
+      ViewHistoryClick -> send(NavigateToHistory)
     }
   }
 
-  private fun observeToday() {
-    observeTodayRating()
+  private fun startObservingToday() {
+    observeTodayEntries.invoke()
       .distinctUntilChanged()
-      .catch { _state.update { if (it is Loading) stateFactory.notRated() else it } }
-      .onEach { entry -> mergeToday(entry) }
+      .catch { initializeIfStillLoading() }
+      .onEach { entries -> mergeTodayCount(entries.size) }
       .launchIn(viewModelScope)
   }
 
-  private fun mergeToday(entry: RatingEntry?) {
+  private fun initializeIfStillLoading() {
     _state.update { current ->
-      when (current) {
-        Loading, is Rated, is Saving -> stateFactory.fromTodayEntry(entry)
-        else -> current
-      }
+      if (current is Loading) stateFactory.fromTodayEntries(emptyList()) else current
     }
+  }
+
+  private fun mergeTodayCount(count: Int) {
+    _state.update { stateFactory.withTodayCount(it, count) }
   }
 
   private fun onSliderValueChanged(value: Int) {
     _state.update { stateFactory.withSliderValue(it, value) }
   }
 
+  private fun onNoteValueChanged(value: String) {
+    _state.update { stateFactory.withNoteValue(it, value) }
+  }
+
+  private fun onNoteExpandClick() {
+    _state.update { stateFactory.withNoteExpanded(it, expanded = true) }
+  }
+
+  private fun onNoteCollapseClick() {
+    _state.update { stateFactory.withNoteExpanded(it, expanded = false) }
+  }
+
   private fun onSaveClick(weatherSnapshot: WeatherSnapshot) {
-    val draft = (_state.value as? NotRated)?.sliderDraft ?: return
-    saveRating(draft = draft, weatherSnapshot = weatherSnapshot)
+    val editing = _state.value as? Editing ?: return
+    saveRating(draft = editing.draft, todayCount = editing.todayEntryCount, weatherSnapshot = weatherSnapshot)
   }
 
   private fun onSaveRetryClick(weatherSnapshot: WeatherSnapshot) {
-    val draft = (_state.value as? SaveError)?.sliderDraft ?: return
-    saveRating(draft = draft, weatherSnapshot = weatherSnapshot)
+    val errored = _state.value as? SaveError ?: return
+    saveRating(draft = errored.draft, todayCount = errored.todayEntryCount, weatherSnapshot = weatherSnapshot)
   }
 
-  private fun saveRating(draft: Int, weatherSnapshot: WeatherSnapshot) {
-    _state.update { stateFactory.saving(draft) }
+  private fun saveRating(draft: RatingFormDraft, todayCount: Int, weatherSnapshot: WeatherSnapshot) {
+    _state.update { stateFactory.saving(draft = draft, todayEntryCount = todayCount) }
     viewModelScope.launch {
       try {
-        saveRatingEntry(
-          RatingEntry(
-            date = timeProvider.today(),
-            rating = draft,
-            note = "",
-            weather = weatherSnapshot,
-            createdAtEpochMs = timeProvider.nowEpochMillis()
-          )
-        )
-        _state.update { stateFactory.rated(draft) }
+        saveRatingEntry(buildEntry(draft, weatherSnapshot))
+        onSaveSucceeded()
       } catch (e: CancellationException) {
         throw e
       } catch (e: Exception) {
-        onSaveFailed(draft, e)
+        onSaveFailed(draft = draft, todayCount = todayCount, error = e)
       }
     }
   }
 
-  private fun onSaveFailed(draft: Int, error: Exception) {
-    error.printStackTrace()
-    _state.update { stateFactory.saveError(draft) }
-  }
+  private fun buildEntry(draft: RatingFormDraft, weatherSnapshot: WeatherSnapshot): RatingEntry =
+    RatingEntry(
+      date = timeProvider.today(),
+      rating = draft.sliderValue,
+      weather = weatherSnapshot,
+      createdAtEpochMs = timeProvider.nowEpochMillis(),
+      note = draft.note.takeIf { it.isNotBlank() }
+    )
 
-  private fun onDismissErrorClick() {
-    val draft = (_state.value as? SaveError)?.sliderDraft ?: return
-    _state.update {
-      stateFactory.withSliderValue(stateFactory.notRated(), draft)
+  private fun onSaveSucceeded() {
+    _state.update { current ->
+      val count = (current as? RatingCardUiState.Saving)?.todayEntryCount ?: 0
+      stateFactory.afterSaveSuccess(todayEntryCount = count)
     }
   }
 
-  private fun onEditClick() {
-    val currentRating = (_state.value as? Rated)?.rating
-      ?: RatingCardStateFactory.DEFAULT_SLIDER_DRAFT
-    _state.update { stateFactory.editFrom(currentRating) }
+  private fun onSaveFailed(draft: RatingFormDraft, todayCount: Int, error: Exception) {
+    error.printStackTrace()
+    _state.update { stateFactory.saveError(draft = draft, todayEntryCount = todayCount) }
+  }
+
+  private fun onDismissErrorClick() {
+    val errored = _state.value as? SaveError ?: return
+    _state.update {
+      Editing(draft = errored.draft, todayEntryCount = errored.todayEntryCount)
+    }
+  }
+
+  private fun send(event: RatingCardEvent) {
+    viewModelScope.launch { eventChannel.send(event) }
   }
 }

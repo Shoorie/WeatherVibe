@@ -7,7 +7,7 @@ import com.weather.vibe.domain.viberating.model.Condition
 internal data class MoodTeaserUiState(
   val hasData: Boolean,
   val averageRating: Double,
-  val totalEntries: Int,
+  val dayCount: Int,
   val favoriteCondition: Condition?
 ) {
 
@@ -15,7 +15,7 @@ internal data class MoodTeaserUiState(
     val EMPTY: MoodTeaserUiState = MoodTeaserUiState(
       hasData = false,
       averageRating = 0.0,
-      totalEntries = 0,
+      dayCount = 0,
       favoriteCondition = null
     )
   }

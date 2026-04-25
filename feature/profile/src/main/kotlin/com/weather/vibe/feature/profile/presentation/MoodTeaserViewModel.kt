@@ -23,7 +23,7 @@ internal class MoodTeaserViewModel(
       MoodTeaserUiState(
         hasData = entries.isNotEmpty(),
         averageRating = stats.averageRating,
-        totalEntries = stats.totalEntries,
+        dayCount = stats.uniqueDayCount,
         favoriteCondition = stats.favoriteCondition
       )
     }

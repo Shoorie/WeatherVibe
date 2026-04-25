@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profil</string>
-  <string name="profile_screen_subtitle">Konto, preferencje i aplikacja</string>
   <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
   <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
 

@@ -8,7 +8,7 @@ interface RatingRepository {
 
   fun observeAll(): Flow<List<RatingEntry>>
 
-  fun observeForDate(date: LocalDate): Flow<RatingEntry?>
+  fun observeForDate(date: LocalDate): Flow<List<RatingEntry>>
 
-  suspend fun upsert(entry: RatingEntry)
+  suspend fun insert(entry: RatingEntry)
 }

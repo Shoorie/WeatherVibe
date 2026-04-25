@@ -13,7 +13,7 @@ internal data class VibeHistoryUiState(
   val totalEntries: Int,
   val cells: ImmutableList<CalendarCellUiState>,
   val selectedDayDetail: DayDetailUiState?,
-  val conditionRanking: ImmutableList<ConditionRankingUiState>
+  val patterns: PatternsSectionUiState
 ) {
 
   companion object {
@@ -24,7 +24,7 @@ internal data class VibeHistoryUiState(
       totalEntries = 0,
       cells = persistentListOf(),
       selectedDayDetail = null,
-      conditionRanking = persistentListOf()
+      patterns = PatternsSectionUiState.Hidden
     )
   }
 }

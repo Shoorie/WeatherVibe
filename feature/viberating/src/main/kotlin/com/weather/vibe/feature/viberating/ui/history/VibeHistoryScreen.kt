@@ -29,6 +29,7 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryActio
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.PreviousMonthClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryEvent.NavigateBack
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewModel
+import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import org.koin.androidx.compose.koinViewModel
@@ -120,7 +121,22 @@ private fun VibeHistoryScrollContent(
       onDismissClicked = callbacks.onDayDetailDismissed
     )
     Spacer(Modifier.height(Padding.Medium))
-    ConditionRankingCard(ranking = state.conditionRanking)
+    PatternsSection(state = state.patterns)
+  }
+}
+
+@Composable
+private fun PatternsSection(state: PatternsSectionUiState) {
+  when (state) {
+    PatternsSectionUiState.Hidden -> Unit
+    is PatternsSectionUiState.Locked -> PatternsLockedCard(
+      entriesSoFar = state.entriesSoFar,
+      unlockThreshold = state.unlockThreshold
+    )
+    is PatternsSectionUiState.Unlocked -> ConditionRankingCard(
+      ranking = state.ranking,
+      basedOnEntries = state.basedOnEntries
+    )
   }
 }
 

@@ -7,20 +7,18 @@ internal sealed interface RatingCardUiState {
 
   data object Loading : RatingCardUiState
 
-  data class NotRated(
-    val sliderDraft: Int,
-    val sliderTouched: Boolean
+  data class Editing(
+    val draft: RatingFormDraft,
+    val todayEntryCount: Int
   ) : RatingCardUiState
 
   data class Saving(
-    val sliderDraft: Int
+    val draft: RatingFormDraft,
+    val todayEntryCount: Int
   ) : RatingCardUiState
 
   data class SaveError(
-    val sliderDraft: Int
-  ) : RatingCardUiState
-
-  data class Rated(
-    val rating: Int
+    val draft: RatingFormDraft,
+    val todayEntryCount: Int
   ) : RatingCardUiState
 }

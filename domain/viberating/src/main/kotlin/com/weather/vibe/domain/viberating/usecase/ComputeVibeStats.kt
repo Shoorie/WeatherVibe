@@ -25,6 +25,7 @@ class ComputeVibeStats {
     return VibeStats(
       averageRating = entries.map(RatingEntry::rating).average(),
       totalEntries = entries.size,
+      uniqueDayCount = entries.distinctBy(RatingEntry::date).size,
       favoriteCondition = conditionAverages.firstOrNull()?.condition,
       conditionAverages = conditionAverages
     )

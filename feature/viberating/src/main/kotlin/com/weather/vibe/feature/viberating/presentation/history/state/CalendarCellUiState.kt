@@ -12,6 +12,7 @@ internal sealed interface CalendarCellUiState {
     val date: LocalDate,
     val dayOfMonth: Int,
     val rating: Int?,
+    val entryCount: Int,
     val isToday: Boolean,
     val isFuture: Boolean,
     val isSelected: Boolean

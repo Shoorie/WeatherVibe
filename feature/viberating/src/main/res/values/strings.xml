@@ -2,24 +2,34 @@
 <resources>
 
   <string name="vibe_rating_section_label">Twój vibe · dziś</string>
-  <string name="vibe_rating_card_title">Jak oceniasz ten dzień?</string>
-  <string name="vibe_rating_card_subtitle">Pomóż nam uczyć się Twoich preferencji.</string>
-  <string name="vibe_rating_save">Zapisz</string>
+  <string name="vibe_rating_card_title">Jak się teraz czujesz?</string>
+  <string name="vibe_rating_save">Zapisz vibe</string>
   <string name="vibe_rating_saving">Zapisywanie…</string>
   <string name="vibe_rating_save_error_title">Nie udało się zapisać oceny</string>
   <string name="vibe_rating_save_error_body">Sprawdź połączenie i spróbuj ponownie.</string>
   <string name="vibe_rating_retry">Ponów</string>
   <string name="vibe_rating_dismiss_error">Anuluj</string>
-  <string name="vibe_rating_change">Zmień ocenę</string>
   <string name="vibe_rating_view_history">Zobacz Twój vibe</string>
   <string name="vibe_rating_view_history_link">Zobacz ostatnie oceny</string>
-  <string name="vibe_rating_rated_label">Ocenione · %1$s · %2$d/5</string>
 
-  <string name="vibe_rating_scale_1">Słaby</string>
-  <string name="vibe_rating_scale_2">Taki sobie</string>
+  <string name="vibe_rating_note_add">Dodaj notatkę</string>
+  <string name="vibe_rating_note_collapse">Schowaj notatkę</string>
+  <string name="vibe_rating_note_label">Twoja notatka</string>
+  <string name="vibe_rating_note_placeholder">Co Ci się dziś podobało albo przeszkodziło?</string>
+  <string name="vibe_rating_note_counter_format">%1$d/%2$d</string>
+
+  <plurals name="vibe_rating_today_count">
+    <item quantity="one">Już dziś · %1$d wpis ✨</item>
+    <item quantity="few">Już dziś · %1$d wpisy ✨</item>
+    <item quantity="many">Już dziś · %1$d wpisów ✨</item>
+    <item quantity="other">Już dziś · %1$d wpisu ✨</item>
+  </plurals>
+
+  <string name="vibe_rating_scale_1">Słabo</string>
+  <string name="vibe_rating_scale_2">Tak sobie</string>
   <string name="vibe_rating_scale_3">OK</string>
-  <string name="vibe_rating_scale_4">Dobry</string>
-  <string name="vibe_rating_scale_5">Super</string>
+  <string name="vibe_rating_scale_4">Dobrze</string>
+  <string name="vibe_rating_scale_5">Świetnie</string>
 
   <string name="vibe_rating_mood_face_description">Ocena %1$d z 5</string>
   <string name="vibe_rating_slider_description">Suwak oceny dnia, pięciostopniowa skala</string>
@@ -28,28 +38,41 @@
   <string name="vibe_history_subtitle">Twoje dni oceniane krok po kroku</string>
   <string name="vibe_history_back">Wstecz</string>
   <string name="vibe_history_average_label">Twoja średnia</string>
-  <string name="vibe_history_total_label">Ocenione dni</string>
+  <string name="vibe_history_total_label">Wszystkie wpisy</string>
   <string name="vibe_history_previous_month">Poprzedni miesiąc</string>
   <string name="vibe_history_next_month">Następny miesiąc</string>
   <string name="vibe_history_legend_low">słabo</string>
   <string name="vibe_history_legend_high">super</string>
   <string name="vibe_history_legend_description">Legenda skali ocen od słabo do super</string>
-  <string name="vibe_history_no_data">Brak ocen w tym miesiącu</string>
-  <string name="vibe_history_no_rating">Brak oceny</string>
+  <string name="vibe_history_no_rating">Brak ocen</string>
   <string name="vibe_history_day_detail_close">Zamknij szczegóły dnia</string>
-  <string name="vibe_history_day_detail_rating">Ocena %1$d z 5</string>
-  <string name="vibe_history_day_rated_description">%1$s, ocena %2$d z 5</string>
+  <string name="vibe_history_day_rated_description">%1$s, średnia %2$d z 5</string>
   <string name="vibe_history_day_unrated_description">%1$s, brak oceny</string>
   <string name="vibe_history_day_today_suffix">, dziś</string>
   <string name="vibe_history_day_selected_suffix">, wybrany</string>
   <string name="vibe_history_day_open_details">otwórz szczegóły dnia</string>
   <string name="vibe_history_next_month_disabled">Nie można przejść na przyszły miesiąc</string>
-  <string name="vibe_history_progress_description">Średnia ocena dla tej pogody</string>
   <string name="vibe_history_ranking_title">Średnia ocena wg pogody</string>
   <string name="vibe_history_ranking_entries">%1$d %2$s</string>
-  <string name="vibe_history_entries_one">dzień</string>
-  <string name="vibe_history_entries_few">dni</string>
-  <string name="vibe_history_entries_many">dni</string>
+  <string name="vibe_history_ranking_disclaimer">Na podstawie %1$d wpisów. Wzorce nabierają wartości z czasem.</string>
+  <string name="vibe_history_patterns_locked_title">Twoje wzorce pogodowe</string>
+  <string name="vibe_history_patterns_locked_body">Pojawią się tu po %1$d wpisach. Masz już %2$d, jesteś coraz bliżej.</string>
+  <string name="vibe_history_entries_one">wpis</string>
+  <string name="vibe_history_entries_few">wpisy</string>
+  <string name="vibe_history_entries_many">wpisów</string>
+
+  <string name="vibe_history_day_summary_title">%1$s</string>
+  <string name="vibe_history_day_summary_empty">Brak wpisów tego dnia.</string>
+  <string name="vibe_history_entry_time_format">HH:mm</string>
+  <string name="vibe_history_entry_temperature_format">%1$d°</string>
+  <string name="vibe_history_entry_rating_a11y">Ocena %1$d z 5, %2$s</string>
+
+  <plurals name="vibe_history_day_entry_count">
+    <item quantity="one">%1$d wpis</item>
+    <item quantity="few">%1$d wpisy</item>
+    <item quantity="many">%1$d wpisów</item>
+    <item quantity="other">%1$d wpisu</item>
+  </plurals>
 
   <string name="vibe_condition_sunny">Słonecznie</string>
   <string name="vibe_condition_partly_cloudy">Częściowe zachmurzenie</string>

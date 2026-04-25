@@ -7,5 +7,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.domain.airquality)
   implementation(projects.domain.viberating)
+  implementation(projects.domain.weather)
 }

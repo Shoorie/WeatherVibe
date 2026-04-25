@@ -1,7 +1,7 @@
 package com.weather.vibe.feature.profile.presentation
 
 import androidx.compose.runtime.Immutable
-import com.weather.vibe.domain.viberating.model.Condition
+import com.weather.vibe.domain.weather.model.Condition
 
 @Immutable
 internal data class MoodTeaserUiState(

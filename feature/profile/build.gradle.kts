@@ -9,10 +9,12 @@ android {
 }
 
 dependencies {
+  implementation(projects.domain.airquality)
   implementation(projects.domain.location)
   implementation(projects.domain.profile)
   implementation(projects.domain.settings)
   implementation(projects.domain.viberating)
+  implementation(projects.domain.weather)
   implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.coroutineRules)

@@ -1,8 +1,8 @@
 package com.weather.vibe.data.viberating.local.entity
 
 import androidx.room.ColumnInfo
-import com.weather.vibe.domain.viberating.model.Condition
-import com.weather.vibe.domain.viberating.model.PollenLevel
+import com.weather.vibe.domain.weather.model.Condition
+import com.weather.vibe.domain.airquality.model.PollenLevel
 
 internal data class WeatherSnapshotEmbedded(
 

@@ -1,4 +1,4 @@
-package com.weather.vibe.domain.viberating.model
+package com.weather.vibe.domain.weather.model
 
 enum class Condition {
   SUNNY,

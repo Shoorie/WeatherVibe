@@ -11,6 +11,8 @@ android {
 
 dependencies {
   implementation(projects.core.time)
+  implementation(projects.domain.airquality)
+  implementation(projects.domain.weather)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)
 

@@ -36,7 +36,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.ratingColor
-import com.weather.vibe.domain.viberating.model.Condition
+import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.feature.profile.R
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState
 import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel

@@ -1,9 +1,9 @@
 package com.weather.vibe.domain.viberating.usecase
 
-import com.weather.vibe.domain.viberating.model.Condition.CLOUDY
-import com.weather.vibe.domain.viberating.model.Condition.PARTLY_CLOUDY
-import com.weather.vibe.domain.viberating.model.Condition.RAIN
-import com.weather.vibe.domain.viberating.model.Condition.SUNNY
+import com.weather.vibe.domain.weather.model.Condition.CLOUDY
+import com.weather.vibe.domain.weather.model.Condition.PARTLY_CLOUDY
+import com.weather.vibe.domain.weather.model.Condition.RAIN
+import com.weather.vibe.domain.weather.model.Condition.SUNNY
 import com.weather.vibe.domain.viberating.model.VibeStats
 import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures
 import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures.ratingEntry

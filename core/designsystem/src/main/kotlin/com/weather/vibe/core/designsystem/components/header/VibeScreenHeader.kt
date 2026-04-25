@@ -42,7 +42,8 @@ fun VibeScreenHeader(
   Column(
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = Padding.Medium, vertical = Padding.Medium)
+      .padding(horizontal = Padding.Medium)
+      .padding(top = Padding.ExtraSmall, bottom = Padding.Medium)
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),

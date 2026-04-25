@@ -12,7 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
@@ -23,7 +22,6 @@ import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.BackClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DayDetailDismissed
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DaySelected
@@ -32,6 +30,7 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryActio
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryEvent.NavigateBack
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewModel
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
 import java.time.YearMonth
@@ -79,10 +78,10 @@ internal fun VibeHistoryContent(
     modifier = modifier,
     header = {
       VibeScreenHeader(
-        title = stringResource(R.string.vibe_history_title),
-        subtitle = stringResource(R.string.vibe_history_subtitle),
+        title = Texts.historyTitle(),
+        subtitle = Texts.historySubtitle(),
         onBackClicked = callbacks.onBackClicked,
-        backContentDescription = stringResource(R.string.vibe_history_back)
+        backContentDescription = Texts.historyBack()
       )
     }
   ) {

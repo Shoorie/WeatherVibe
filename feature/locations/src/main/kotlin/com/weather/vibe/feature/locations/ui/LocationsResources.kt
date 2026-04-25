@@ -32,10 +32,6 @@ internal class LocationsResources(private val context: Context) {
       stringResource(R.string.locations_screen_title)
 
     @Composable
-    fun screenSubtitle(): String =
-      stringResource(R.string.locations_screen_subtitle)
-
-    @Composable
     fun headerTitle(): String =
       stringResource(R.string.locations_header_title)
 

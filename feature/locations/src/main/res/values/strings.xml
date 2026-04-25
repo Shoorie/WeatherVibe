@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="locations_screen_title">Locations</string>
-  <string name="locations_screen_subtitle">Your favorite places</string>
+  <string name="locations_screen_title">Favorite places</string>
 
   <string name="locations_header_title">Favorites</string>
   <string name="locations_header_subtitle">%1$d of %2$d favorites</string>

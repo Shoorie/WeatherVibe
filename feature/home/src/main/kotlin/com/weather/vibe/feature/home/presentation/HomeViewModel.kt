@@ -9,7 +9,7 @@ import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.feature.home.mapper.toVibeWeatherSnapshot
+import com.weather.vibe.feature.home.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
@@ -60,7 +60,8 @@ internal class HomeViewModel(
   private val resources: HomeResources,
   private val shareBitmapAsImage: ShareBitmapAsImage,
   private val stateFactory: HomeStateFactory,
-  private val useCases: HomeUseCases
+  private val useCases: HomeUseCases,
+  private val weatherDataToVibeSnapshot: WeatherDataToVibeSnapshot
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<HomeUiState>(Loading)
@@ -222,7 +223,7 @@ internal class HomeViewModel(
     val base = stateFactory.create(
       data = weather,
       metrics = useCases.getCurrentWeatherMetrics(weather),
-      vibeSnapshot = weather.toVibeWeatherSnapshot(),
+      vibeSnapshot = weatherDataToVibeSnapshot.map(weather),
       unit = settings.temperatureUnit
     )
     return base.copy(

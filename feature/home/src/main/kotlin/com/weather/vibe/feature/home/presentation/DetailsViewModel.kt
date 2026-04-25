@@ -6,7 +6,7 @@ import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.feature.home.mapper.toVibeWeatherSnapshot
+import com.weather.vibe.feature.home.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -25,7 +25,8 @@ internal class DetailsViewModel(
   @InjectedParam private val selectedLocation: Location,
   private val resources: HomeResources,
   private val stateFactory: HomeStateFactory,
-  private val useCases: DetailsUseCases
+  private val useCases: DetailsUseCases,
+  private val weatherDataToVibeSnapshot: WeatherDataToVibeSnapshot
 ) : ViewModel() {
 
   val state: StateFlow<HomeUiState> = combine(
@@ -51,7 +52,7 @@ internal class DetailsViewModel(
     stateFactory.create(
       data = weather,
       metrics = useCases.getCurrentWeatherMetrics(weather),
-      vibeSnapshot = weather.toVibeWeatherSnapshot(),
+      vibeSnapshot = weatherDataToVibeSnapshot.map(weather),
       unit = settings.temperatureUnit
     )
 

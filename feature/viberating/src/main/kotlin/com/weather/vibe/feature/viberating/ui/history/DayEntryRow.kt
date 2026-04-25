@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
-import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -82,7 +81,6 @@ private fun EntryHeaderRow(
     MoodFace(
       rating = entry.rating,
       active = true,
-      size = MoodFaceDefaults.Size,
       contentDescription = Texts.entryRatingA11y(rating = entry.rating, conditionLabel = conditionLabel)
     )
     Column(modifier = Modifier.weight(1f)) {

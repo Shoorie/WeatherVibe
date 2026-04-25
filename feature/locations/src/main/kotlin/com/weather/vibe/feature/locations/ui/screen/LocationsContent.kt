@@ -29,7 +29,6 @@ import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
@@ -50,8 +49,6 @@ import com.weather.vibe.feature.locations.ui.LocationsDefaults.CompareMinCards
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickOne
-import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.compareHintPickZero
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.headerSubtitle
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.labelSheetTitleRename
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.screenTitle
@@ -89,7 +86,7 @@ internal fun LocationsContent(
     header = {
       VibeScreenHeader(
         title = screenTitle(),
-        subtitle = locationsSubtitle(state),
+        subtitle = headerSubtitleFor(state),
         trailing = {
           if (state is Loaded && state.cards.size >= CompareMinCards) {
             CompareTogglePill(
@@ -143,14 +140,8 @@ internal fun LocationsContent(
 }
 
 @Composable
-private fun locationsSubtitle(state: LocationsUiState): String? = when (state) {
-  is Loaded -> when {
-    state.compareMode && state.selectedIds.isEmpty() -> compareHintPickZero()
-    state.compareMode && state.selectedIds.size == 1 -> compareHintPickOne()
-    else -> headerSubtitle(count = state.cards.size, limit = MAX_FAVORITES)
-  }
-  else -> null
-}
+private fun headerSubtitleFor(state: LocationsUiState): String? =
+  (state as? Loaded)?.let { headerSubtitle(variant = it.headerSubtitle) }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

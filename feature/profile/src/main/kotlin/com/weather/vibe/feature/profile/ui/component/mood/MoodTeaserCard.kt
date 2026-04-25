@@ -27,7 +27,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -43,6 +42,12 @@ import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodCta
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodTitle
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.AverageRatingFormat
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.BadgeSize
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.DotSize
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.DotSpacing
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.FadedAccentAlpha
+import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.TitleRowSpacing
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -95,7 +100,7 @@ private fun MoodTeaserCardContent(
           modifier = Modifier
             .weight(1f)
             .semantics(mergeDescendants = true) {},
-          verticalArrangement = Arrangement.spacedBy(4.dp)
+          verticalArrangement = Arrangement.spacedBy(TitleRowSpacing)
         ) {
           Text(
             text = moodTitle(),
@@ -142,11 +147,7 @@ private fun SummaryLine(state: MoodTeaserUiState) {
 
 @Composable
 private fun MoodHeroBadge(state: MoodTeaserUiState) {
-  val badgeColor = if (state.hasData) {
-    ratingColor(state.averageRating.toInt().coerceAtLeast(1))
-  } else {
-    colors.accent.copy(alpha = 0.4f)
-  }
+  val badgeColor = badgeColorFor(state)
   Box(
     modifier = Modifier
       .size(BadgeSize)
@@ -156,22 +157,33 @@ private fun MoodHeroBadge(state: MoodTeaserUiState) {
   ) {
     if (state.hasData) {
       Text(
-        text = "%.1f".format(state.averageRating),
+        text = AverageRatingFormat.format(state.averageRating),
         style = WeatherVibeTheme.typography.titleLarge,
         fontWeight = FontWeight.Bold,
         color = badgeColor
       )
     } else {
-      Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-        for (rating in RatingColors.MIN_RATING..RatingColors.MAX_RATING) {
-          Box(
-            modifier = Modifier
-              .size(DotSize)
-              .clip(CircleShape)
-              .background(ratingDotColor(rating))
-          )
-        }
-      }
+      RatingDotsRow()
+    }
+  }
+}
+
+@Composable
+private fun badgeColorFor(state: MoodTeaserUiState): Color = when {
+  state.hasData -> ratingColor(state.averageRating.toInt().coerceAtLeast(1))
+  else -> colors.accent.copy(alpha = FadedAccentAlpha)
+}
+
+@Composable
+private fun RatingDotsRow() {
+  Row(horizontalArrangement = Arrangement.spacedBy(DotSpacing)) {
+    for (rating in RatingColors.MIN_RATING..RatingColors.MAX_RATING) {
+      Box(
+        modifier = Modifier
+          .size(DotSize)
+          .clip(CircleShape)
+          .background(ratingColor(rating))
+      )
     }
   }
 }
@@ -180,7 +192,7 @@ private fun MoodHeroBadge(state: MoodTeaserUiState) {
 private fun heroGradient(): Brush = Brush.linearGradient(
   colors = listOf(
     colors.primaryContainer,
-    colors.accent.copy(alpha = 0.4f)
+    colors.accent.copy(alpha = FadedAccentAlpha)
   )
 )
 
@@ -193,17 +205,6 @@ private fun daysPlural(count: Int): String {
   }
   return stringResource(resId)
 }
-
-private fun ratingDotColor(rating: Int): Color = when (rating) {
-  1 -> RatingColors.Rating1
-  2 -> RatingColors.Rating2
-  3 -> RatingColors.Rating3
-  4 -> RatingColors.Rating4
-  else -> RatingColors.Rating5
-}
-
-private val BadgeSize = 56.dp
-private val DotSize = 6.dp
 
 @PreviewLightDark
 @Composable

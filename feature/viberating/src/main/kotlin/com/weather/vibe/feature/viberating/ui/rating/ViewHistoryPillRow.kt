@@ -20,14 +20,15 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Emojis
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.viewHistoryLink
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.ButtonIconSize
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.ButtonIconSize
 
 @Composable
 internal fun ViewHistoryPillRow(onClick: () -> Unit) {
@@ -41,7 +42,7 @@ internal fun ViewHistoryPillRow(onClick: () -> Unit) {
         onClickLabel = label,
         onClick = onClick
       )
-      .padding(vertical = Padding.Small)
+      .padding(vertical = Small)
       .semantics(mergeDescendants = true) {},
     horizontalArrangement = Arrangement.Center,
     verticalAlignment = Alignment.CenterVertically
@@ -50,14 +51,14 @@ internal fun ViewHistoryPillRow(onClick: () -> Unit) {
       text = Emojis.ViewHistoryPill,
       style = typography.titleSmall
     )
-    Spacer(Modifier.width(Padding.Small))
+    Spacer(Modifier.width(Small))
     Text(
       text = label,
       style = typography.titleSmall,
       color = colors.accent,
       fontWeight = FontWeight.SemiBold
     )
-    Spacer(Modifier.width(Padding.ExtraSmall))
+    Spacer(Modifier.width(ExtraSmall))
     Icon(
       modifier = Modifier.size(ButtonIconSize),
       imageVector = Icons.AutoMirrored.Filled.ArrowForward,

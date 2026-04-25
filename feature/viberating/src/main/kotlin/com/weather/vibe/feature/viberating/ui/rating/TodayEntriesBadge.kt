@@ -8,13 +8,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.LiveRegionMode.Companion.Polite
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -32,8 +33,8 @@ internal fun TodayEntriesBadge(
     modifier = modifier
       .clip(shapes.pill)
       .background(colors.glassSurface)
-      .padding(BadgePadding)
-      .semantics { liveRegion = LiveRegionMode.Polite }
+      .padding(PaddingValues(horizontal = Small, vertical = ExtraSmall))
+      .semantics { liveRegion = Polite }
   ) {
     Text(
       text = todayEntryCount(count),
@@ -43,11 +44,6 @@ internal fun TodayEntriesBadge(
     )
   }
 }
-
-private val BadgePadding: PaddingValues = PaddingValues(
-  horizontal = Padding.Small,
-  vertical = Padding.ExtraSmall
-)
 
 @PreviewLightDark
 @Composable

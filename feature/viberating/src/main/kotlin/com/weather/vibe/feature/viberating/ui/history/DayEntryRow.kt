@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -36,11 +36,11 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entrySub
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryTemperature
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionEmoji
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionLabel
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BackgroundAlpha
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderAlpha
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderWidth
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ConditionEmojiSize
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ContentPadding
+import com.weather.vibe.feature.viberating.ui.history.defaults.DayEntryDefaults.BackgroundAlpha
+import com.weather.vibe.feature.viberating.ui.history.defaults.DayEntryDefaults.BorderAlpha
+import com.weather.vibe.feature.viberating.ui.history.defaults.DayEntryDefaults.BorderWidth
+import com.weather.vibe.feature.viberating.ui.history.defaults.DayEntryDefaults.ConditionEmojiSize
+import com.weather.vibe.feature.viberating.ui.history.defaults.DayEntryDefaults.ContentPadding
 
 @Composable
 internal fun DayEntryRow(
@@ -70,7 +70,7 @@ internal fun DayEntryRow(
       ratingTint = ratingTint
     )
     if (entry.note != null) {
-      Spacer(Modifier.height(Padding.Small))
+      Spacer(Modifier.height(Small))
       EntryNote(note = entry.note)
     }
   }
@@ -85,7 +85,7 @@ private fun EntryHeaderRow(
   Row(
     modifier = Modifier.fillMaxWidth(),
     verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(Padding.Small)
+    horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     MoodFace(
       rating = entry.rating,
@@ -105,7 +105,7 @@ private fun EntryHeaderRow(
       Text(
         text = entrySubtitle(
           condition = conditionLabel,
-          temperature = entryTemperature(temperatureC = entry.temperatureRounded)
+          temperature = entryTemperature(entry.temperatureRounded)
         ),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant

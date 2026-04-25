@@ -16,21 +16,23 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
-import com.weather.vibe.feature.viberating.ui.history.CalendarLegendDefaults.SwatchShape
-import com.weather.vibe.feature.viberating.ui.history.CalendarLegendDefaults.SwatchSize
-import com.weather.vibe.feature.viberating.ui.history.CalendarLegendDefaults.SwatchSpacing
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.legendDescription
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.legendHigh
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.legendLow
+import com.weather.vibe.feature.viberating.ui.history.defaults.CalendarLegendDefaults.SwatchShape
+import com.weather.vibe.feature.viberating.ui.history.defaults.CalendarLegendDefaults.SwatchSize
+import com.weather.vibe.feature.viberating.ui.history.defaults.CalendarLegendDefaults.SwatchSpacing
 
 @Composable
 internal fun CalendarLegend(modifier: Modifier = Modifier) {
-  val description = Texts.legendDescription()
+  val description = legendDescription()
   Row(
     modifier = modifier
       .fillMaxWidth()
@@ -39,15 +41,15 @@ internal fun CalendarLegend(modifier: Modifier = Modifier) {
     horizontalArrangement = Arrangement.Center
   ) {
     Text(
-      text = Texts.legendLow(),
+      text = legendLow(),
       style = typography.labelSmall,
       color = colors.onSurfaceVariant
     )
-    Spacer(Modifier.size(Padding.Small))
+    Spacer(Modifier.size(Small))
     LegendSwatchRow()
-    Spacer(Modifier.size(Padding.Small))
+    Spacer(Modifier.size(Small))
     Text(
-      text = Texts.legendHigh(),
+      text = legendHigh(),
       style = typography.labelSmall,
       color = colors.onSurfaceVariant
     )

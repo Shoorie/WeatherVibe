@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.viberating.ui.history
+package com.weather.vibe.feature.viberating.ui.history.defaults
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp

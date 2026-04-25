@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.viberating.ui.history
+package com.weather.vibe.feature.viberating.ui.history.defaults
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp

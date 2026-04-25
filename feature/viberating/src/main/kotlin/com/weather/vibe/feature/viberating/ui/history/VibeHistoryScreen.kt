@@ -35,7 +35,7 @@ import com.weather.vibe.feature.viberating.preview.VibeHistoryScreenPreview
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historyBack
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historySubtitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historyTitle
-import com.weather.vibe.feature.viberating.ui.history.VibeHistoryDefaults.ScrollContentBottomPadding
+import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryDefaults.ScrollContentBottomPadding
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

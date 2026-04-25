@@ -23,7 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -37,12 +39,12 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingD
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingTitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionEmoji
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionLabel
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.AverageRatingFormat
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.EmojiSize
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.ProgressHeight
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.ProgressMaxFraction
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.ProgressMinFraction
-import com.weather.vibe.feature.viberating.ui.history.ConditionRankingDefaults.ProgressShape
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.AverageRatingFormat
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.EmojiSize
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.ProgressHeight
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.ProgressMaxFraction
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.ProgressMinFraction
+import com.weather.vibe.feature.viberating.ui.history.defaults.ConditionRankingDefaults.ProgressShape
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -56,7 +58,7 @@ internal fun ConditionRankingCard(
     modifier = modifier,
     shape = shapes.cardMedium,
     containerColor = colors.surfaceVariant,
-    contentPadding = Padding.Medium
+    contentPadding = Medium
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {
       Text(
@@ -66,14 +68,14 @@ internal fun ConditionRankingCard(
         color = colors.onSurfaceVariant,
         fontWeight = FontWeight.Medium
       )
-      Spacer(Modifier.height(Padding.Medium))
+      Spacer(Modifier.height(Medium))
       ranking.forEach { item ->
         RankingRow(item = item)
-        Spacer(Modifier.height(Padding.Small))
+        Spacer(Modifier.height(Small))
       }
-      Spacer(Modifier.height(Padding.ExtraSmall))
+      Spacer(Modifier.height(ExtraSmall))
       Text(
-        text = rankingDisclaimer(basedOnEntries = basedOnEntries),
+        text = rankingDisclaimer(basedOnEntries),
         style = typography.labelSmall,
         color = colors.onSurfaceVariant
       )
@@ -101,8 +103,11 @@ private fun RankingRow(item: ConditionRankingUiState) {
       averageLabel = AverageRatingFormat.format(item.averageRating),
       itemColor = itemColor
     )
-    Spacer(Modifier.height(Padding.ExtraSmall))
-    RankingProgressBar(progressFraction = item.progressFraction, itemColor = itemColor)
+    Spacer(Modifier.height(ExtraSmall))
+    RankingProgressBar(
+      progressFraction = item.progressFraction,
+      itemColor = itemColor
+    )
   }
 }
 
@@ -123,7 +128,7 @@ private fun RankingRowHeader(
       text = conditionEmoji,
       fontSize = EmojiSize
     )
-    Spacer(Modifier.size(Padding.Small))
+    Spacer(Modifier.size(Small))
     Column(modifier = Modifier.weight(1f)) {
       Text(
         text = conditionLabel,
@@ -147,7 +152,10 @@ private fun RankingRowHeader(
 }
 
 @Composable
-private fun RankingProgressBar(progressFraction: Float, itemColor: Color) {
+private fun RankingProgressBar(
+  progressFraction: Float,
+  itemColor: Color
+) {
   Box(
     modifier = Modifier
       .fillMaxWidth()

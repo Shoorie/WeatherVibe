@@ -34,7 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -51,14 +53,14 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.nextMont
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.previousMonth
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.monthLabel
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.weekdayLabels
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarDefaults.CellBorderWidth
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarDefaults.CellShape
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarDefaults.DaysInWeek
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarDefaults.NavButtonTouch
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarDefaults.NavButtonVisual
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarStyles.cellBackground
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarStyles.cellBorder
-import com.weather.vibe.feature.viberating.ui.history.MonthCalendarStyles.cellTextColor
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarDefaults.CellBorderWidth
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarDefaults.CellShape
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarDefaults.DaysInWeek
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarDefaults.NavButtonTouch
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarDefaults.NavButtonVisual
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarStyles.cellBackground
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarStyles.cellBorder
+import com.weather.vibe.feature.viberating.ui.history.defaults.MonthCalendarStyles.cellTextColor
 import kotlinx.collections.immutable.ImmutableList
 import java.time.LocalDate
 import java.time.YearMonth
@@ -77,7 +79,7 @@ internal fun MonthCalendar(
     modifier = modifier,
     shape = shapes.cardMedium,
     containerColor = colors.surfaceVariant,
-    contentPadding = Padding.Medium
+    contentPadding = Medium
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {
       CalendarHeader(
@@ -86,11 +88,11 @@ internal fun MonthCalendar(
         onPreviousMonthClicked = onPreviousMonthClicked,
         onNextMonthClicked = onNextMonthClicked
       )
-      Spacer(Modifier.height(Padding.Small))
+      Spacer(Modifier.height(Small))
       WeekdayRow()
-      Spacer(Modifier.height(Padding.ExtraSmall))
+      Spacer(Modifier.height(ExtraSmall))
       CalendarGrid(cells = cells, onDayClicked = onDayClicked)
-      Spacer(Modifier.height(Padding.Medium))
+      Spacer(Modifier.height(Medium))
       CalendarLegend()
     }
   }
@@ -170,6 +172,7 @@ private fun Modifier.navButtonStateDescription(
 ): Modifier = when {
   !enabled && disabledStateDescription != null ->
     semantics { stateDescription = disabledStateDescription }
+
   else -> this
 }
 
@@ -179,7 +182,7 @@ private fun WeekdayRow() {
     modifier = Modifier
       .fillMaxWidth()
       .clearAndSetSemantics {},
-    horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall)
+    horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
   ) {
     weekdayLabels().forEach { label ->
       Text(
@@ -202,7 +205,7 @@ private fun CalendarGrid(
   cells.chunked(DaysInWeek).forEach { week ->
     Row(
       modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(Padding.ExtraSmall)
+      horizontalArrangement = Arrangement.spacedBy(ExtraSmall)
     ) {
       week.forEach { cell ->
         CalendarCell(
@@ -214,7 +217,7 @@ private fun CalendarGrid(
         )
       }
     }
-    Spacer(Modifier.height(Padding.ExtraSmall))
+    Spacer(Modifier.height(ExtraSmall))
   }
 }
 
@@ -265,9 +268,8 @@ private fun DayCell(
 }
 
 @Composable
-private fun Modifier.dayCellBorder(day: Day): Modifier {
-  val borderColor = cellBorder(day = day)
-  return when (borderColor) {
+private fun Modifier.dayCellBorder(day: Day): Modifier =
+  when (val borderColor = cellBorder(day = day)) {
     null -> this
     else -> border(
       width = CellBorderWidth,
@@ -275,16 +277,15 @@ private fun Modifier.dayCellBorder(day: Day): Modifier {
       shape = CellShape
     )
   }
-}
 
 private fun Modifier.dayCellInteractive(
   day: Day,
   description: String,
   openLabel: String,
   onDayClicked: (LocalDate) -> Unit
-): Modifier = when {
-  day.isFuture -> semantics { contentDescription = description }
-  else -> semantics { contentDescription = description }
+): Modifier = when (day.isFuture) {
+  true -> semantics { contentDescription = description }
+  false -> semantics { contentDescription = description }
     .clickable(
       role = Role.Button,
       onClickLabel = openLabel

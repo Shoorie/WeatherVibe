@@ -6,7 +6,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType.Companion.TextHandleMove
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -44,7 +44,7 @@ internal fun HapticSlider(
     onValueChange = { newValue ->
       val rounded = newValue.roundToInt().coerceIn(MIN_RATING, MAX_RATING)
       if (rounded != draft) {
-        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+        haptics.performHapticFeedback(TextHandleMove)
         onValueChanged(rounded)
       }
     },

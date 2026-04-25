@@ -12,13 +12,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.LiveRegionMode.Companion.Assertive
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -43,7 +45,7 @@ internal fun SaveErrorContent(
   Column(
     modifier = Modifier
       .fillMaxWidth()
-      .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }
+      .semantics(mergeDescendants = true) { liveRegion = Assertive }
   ) {
     Text(
       text = saveErrorTitle(),
@@ -51,13 +53,13 @@ internal fun SaveErrorContent(
       color = colors.error,
       fontWeight = FontWeight.SemiBold
     )
-    Spacer(Modifier.height(Padding.ExtraSmall))
+    Spacer(Modifier.height(ExtraSmall))
     Text(
       text = saveErrorBody(),
       style = typography.bodySmall,
       color = colors.onSurfaceVariant
     )
-    Spacer(Modifier.height(Padding.ExtraSmall))
+    Spacer(Modifier.height(ExtraSmall))
     Text(
       text = errorSummary(
         scaleLabel = scaleLabel(draft.sliderValue),
@@ -68,14 +70,14 @@ internal fun SaveErrorContent(
       fontWeight = FontWeight.SemiBold
     )
     if (draft.note.isNotBlank()) {
-      Spacer(Modifier.height(Padding.ExtraSmall))
+      Spacer(Modifier.height(ExtraSmall))
       Text(
         text = errorNoteQuote(note = draft.note),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant
       )
     }
-    Spacer(Modifier.height(Padding.Medium))
+    Spacer(Modifier.height(Medium))
     ErrorActionRow(
       onRetryClicked = onRetryClicked,
       onDismissErrorClicked = onDismissErrorClicked
@@ -88,7 +90,7 @@ private fun ErrorActionRow(
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit
 ) {
-  Row(horizontalArrangement = Arrangement.spacedBy(Padding.Small)) {
+  Row(horizontalArrangement = Arrangement.spacedBy(Small)) {
     Button(
       onClick = onRetryClicked,
       modifier = Modifier.weight(1f),

@@ -19,6 +19,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -35,8 +37,8 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAve
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAverageLabel
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalA11y
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalLabel
-import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsDefaults.AverageFormat
-import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsDefaults.SuffixBaselineOffset
+import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsDefaults.AverageFormat
+import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsDefaults.SuffixBaselineOffset
 
 @Composable
 internal fun VibeHistoryStats(
@@ -122,7 +124,7 @@ private fun SummaryStatCard(
     modifier = modifier,
     shape = shapes.cardSmall,
     containerColor = colors.glassSurface,
-    contentPadding = Padding.Medium
+    contentPadding = Medium
   ) {
     Column(
       modifier = Modifier.fillMaxWidth(),
@@ -136,7 +138,7 @@ private fun SummaryStatCard(
           fontWeight = FontWeight.Light
         )
         if (suffix != null) {
-          Spacer(Modifier.size(Padding.ExtraSmall))
+          Spacer(Modifier.size(ExtraSmall))
           Text(
             text = suffix,
             style = typography.bodySmall,

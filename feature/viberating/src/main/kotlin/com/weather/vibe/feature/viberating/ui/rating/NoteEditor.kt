@@ -23,23 +23,27 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.viberating.presentation.rating.RatingCardStateFactory
+import com.weather.vibe.feature.viberating.presentation.rating.RatingCardStateFactory.Companion.NOTE_MAX_LENGTH
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteFadeMs
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteFieldMinHeight
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteIconSize
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.NoteMaxLines
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.TouchTarget
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.noteCollapse
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.noteLabel
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.notePlaceholder
+import com.weather.vibe.feature.viberating.ui.rating.defaults.NoteColors.noteTextFieldColors
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.NoteFadeMs
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.NoteFieldMinHeight
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.NoteIconSize
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.NoteMaxLines
+import com.weather.vibe.feature.viberating.ui.rating.defaults.RatingCardDefaults.TouchTarget
 
 @Composable
 internal fun NoteEditor(
@@ -65,7 +69,10 @@ internal fun NoteEditor(
         onValueChange = onValueChange
       )
     } else {
-      AddNoteButton(enabled = enabled, onClick = onExpandClick)
+      AddNoteButton(
+        enabled = enabled,
+        onClick = onExpandClick
+      )
     }
   }
 }
@@ -84,7 +91,10 @@ private fun AddNoteButton(
       enabled = enabled,
       modifier = Modifier.defaultMinSize(minHeight = TouchTarget),
       shape = shapes.pill,
-      contentPadding = PaddingValues(horizontal = Padding.Medium, vertical = Padding.ExtraSmall)
+      contentPadding = PaddingValues(
+        horizontal = Medium,
+        vertical = ExtraSmall
+      )
     ) {
       Icon(
         imageVector = Icons.Filled.Edit,
@@ -111,41 +121,33 @@ private fun NoteForm(
   onValueChange: (String) -> Unit
 ) {
   Column(modifier = Modifier.fillMaxWidth()) {
-    NoteFormHeader(enabled = enabled, onCollapseClick = onCollapseClick)
-    Spacer(Modifier.height(Padding.ExtraSmall))
+    NoteFormHeader(
+      enabled = enabled,
+      onCollapseClick = onCollapseClick
+    )
+    Spacer(Modifier.height(ExtraSmall))
     TextField(
       value = note,
-      onValueChange = { onValueChange(it.take(RatingCardStateFactory.NOTE_MAX_LENGTH)) },
+      onValueChange = { onValueChange(it.take(NOTE_MAX_LENGTH)) },
       modifier = Modifier
         .fillMaxWidth()
         .defaultMinSize(minHeight = NoteFieldMinHeight),
       enabled = enabled,
-      placeholder = { Text(Texts.notePlaceholder(), style = typography.bodyMedium) },
+      placeholder = {
+        Text(
+          text = notePlaceholder(),
+          style = typography.bodyMedium
+        )
+      },
       textStyle = typography.bodyMedium,
       shape = shapes.cardSmall,
       colors = noteTextFieldColors(),
       maxLines = NoteMaxLines
     )
-    Spacer(Modifier.height(Padding.ExtraSmall))
+    Spacer(Modifier.height(ExtraSmall))
     NoteCharacterCounter(currentLength = note.length)
   }
 }
-
-@Composable
-private fun noteTextFieldColors() = TextFieldDefaults.colors(
-  focusedContainerColor = colors.glassSurface,
-  unfocusedContainerColor = colors.glassSurface,
-  disabledContainerColor = colors.glassSurface,
-  focusedIndicatorColor = Color.Transparent,
-  unfocusedIndicatorColor = Color.Transparent,
-  disabledIndicatorColor = Color.Transparent,
-  errorIndicatorColor = Color.Transparent,
-  focusedTextColor = colors.onSurface,
-  unfocusedTextColor = colors.onSurface,
-  cursorColor = colors.accent,
-  focusedPlaceholderColor = colors.onSurfaceVariant,
-  unfocusedPlaceholderColor = colors.onSurfaceVariant
-)
 
 @Composable
 private fun NoteFormHeader(
@@ -158,7 +160,7 @@ private fun NoteFormHeader(
     horizontalArrangement = Arrangement.SpaceBetween
   ) {
     Text(
-      text = Texts.noteLabel(),
+      text = noteLabel(),
       style = typography.labelMedium,
       color = colors.onSurface,
       fontWeight = FontWeight.SemiBold
@@ -169,7 +171,7 @@ private fun NoteFormHeader(
     ) {
       Icon(
         imageVector = Icons.Filled.Close,
-        contentDescription = Texts.noteCollapse(),
+        contentDescription = noteCollapse(),
         tint = colors.onSurfaceVariant
       )
     }
@@ -186,7 +188,7 @@ private fun NoteCharacterCounter(currentLength: Int) {
     Text(
       text = Texts.noteCounter(
         current = currentLength,
-        max = RatingCardStateFactory.NOTE_MAX_LENGTH
+        max = NOTE_MAX_LENGTH
       ),
       style = typography.labelSmall,
       color = colors.onSurfaceVariant

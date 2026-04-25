@@ -14,8 +14,7 @@ internal object HomeDefaults {
   val HeroIconSize = 24.dp
   val HourlyItemHeight = 96.dp
   val HourlyItemWidth = 68.dp
-  val MinInteractiveSize = 48.dp
-  val MusicButtonSize = 28.dp
+  val ArrowButtonIconSize = 18.dp
   val SunArcHeight = 160.dp
   val SunArcStrokeWidth = 3.dp
   val SunDotRadius = 6.dp

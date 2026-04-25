@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.viberating.ui.rating
+package com.weather.vibe.feature.viberating.ui.rating.defaults
 
 import androidx.compose.ui.unit.dp
 

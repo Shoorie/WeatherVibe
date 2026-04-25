@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -53,7 +53,7 @@ fun RatingCardHost(
 
   val lifecycleOwner = LocalLifecycleOwner.current
   LaunchedEffect(viewModel, lifecycleOwner) {
-    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+    lifecycleOwner.repeatOnLifecycle(STARTED) {
       viewModel.events.collect { event ->
         when (event) {
           NavigateToHistory -> onNavigateToHistory()

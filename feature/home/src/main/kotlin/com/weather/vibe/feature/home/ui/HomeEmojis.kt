@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.home.ui
 
 internal object HomeEmojis {
-  fun arrowRight(): String = "→"
   fun cloud(): String = "☁️"
   fun compass(): String = "🧭"
   fun dewDrop(): String = "🌿"

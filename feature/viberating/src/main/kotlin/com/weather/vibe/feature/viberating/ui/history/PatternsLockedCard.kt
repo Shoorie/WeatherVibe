@@ -13,7 +13,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
-import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
+import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
@@ -33,7 +34,7 @@ internal fun PatternsLockedCard(
     modifier = modifier,
     shape = shapes.cardMedium,
     containerColor = colors.glassSurface,
-    contentPadding = Padding.Medium
+    contentPadding = Medium
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {
       Text(
@@ -43,9 +44,12 @@ internal fun PatternsLockedCard(
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier.semantics { heading() }
       )
-      Spacer(Modifier.height(Padding.ExtraSmall))
+      Spacer(Modifier.height(ExtraSmall))
       Text(
-        text = patternsLockedBody(threshold = unlockThreshold, entriesSoFar = entriesSoFar),
+        text = patternsLockedBody(
+          threshold = unlockThreshold,
+          entriesSoFar = entriesSoFar
+        ),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant
       )

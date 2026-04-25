@@ -8,6 +8,6 @@ internal object RatingCardDefaults {
   val ButtonIconSize = 18.dp
   val NoteIconSize = 18.dp
   val NoteFieldMinHeight = 96.dp
-  const val PillEmoji = "📊"
-  const val PillArrow = "→"
+  const val NoteMaxLines: Int = 4
+  const val NoteFadeMs: Int = 180
 }

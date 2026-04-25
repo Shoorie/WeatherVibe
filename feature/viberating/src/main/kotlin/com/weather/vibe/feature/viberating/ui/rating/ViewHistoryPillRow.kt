@@ -6,7 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,9 +23,9 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Emojis
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.PillArrow
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.PillEmoji
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.ButtonIconSize
 
 @Composable
 internal fun ViewHistoryPillRow(onClick: () -> Unit) {
@@ -41,7 +45,7 @@ internal fun ViewHistoryPillRow(onClick: () -> Unit) {
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
-      text = PillEmoji,
+      text = Emojis.ViewHistoryPill,
       style = typography.titleSmall
     )
     Spacer(Modifier.width(Padding.Small))
@@ -52,11 +56,11 @@ internal fun ViewHistoryPillRow(onClick: () -> Unit) {
       fontWeight = FontWeight.SemiBold
     )
     Spacer(Modifier.width(Padding.ExtraSmall))
-    Text(
-      text = PillArrow,
-      style = typography.titleSmall,
-      color = colors.accent,
-      fontWeight = FontWeight.SemiBold
+    Icon(
+      modifier = Modifier.size(ButtonIconSize),
+      imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+      contentDescription = null,
+      tint = colors.accent
     )
   }
 }

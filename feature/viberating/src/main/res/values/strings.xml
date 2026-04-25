@@ -33,6 +33,8 @@
 
   <string name="vibe_rating_mood_face_description">Ocena %1$d z 5</string>
   <string name="vibe_rating_slider_description">Suwak oceny dnia, pięciostopniowa skala</string>
+  <string name="vibe_rating_error_summary_format">%1$s · %2$d/5</string>
+  <string name="vibe_rating_error_note_quote">„%1$s\"</string>
 
   <string name="vibe_history_title">Twój vibe</string>
   <string name="vibe_history_subtitle">Twoje dni oceniane krok po kroku</string>

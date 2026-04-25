@@ -6,7 +6,7 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
 import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures.ratingEntry
 import org.junit.Test
 import strikt.api.expectThat
@@ -135,7 +135,7 @@ class RatingCardStateFactoryTest {
   @Test
   fun `when a save is in progress, then the slider value is preserved`() {
 
-    val draft = RatingFormDraft(sliderValue = 4, sliderTouched = true, note = "", noteExpanded = false)
+    val draft = RatingFormDraftUiState(sliderValue = 4, sliderTouched = true, note = "", noteExpanded = false)
 
     val state = factory.saving(draft = draft, todayEntryCount = 0)
 
@@ -145,7 +145,7 @@ class RatingCardStateFactoryTest {
   @Test
   fun `when saving fails, then the slider value is preserved for retry`() {
 
-    val draft = RatingFormDraft(sliderValue = 2, sliderTouched = true, note = "", noteExpanded = false)
+    val draft = RatingFormDraftUiState(sliderValue = 2, sliderTouched = true, note = "", noteExpanded = false)
 
     val state = factory.saveError(draft = draft, todayEntryCount = 0)
 
@@ -155,7 +155,7 @@ class RatingCardStateFactoryTest {
   @Test
   fun `when saving fails, then any typed note is preserved for retry`() {
 
-    val draft = RatingFormDraft(
+    val draft = RatingFormDraftUiState(
       sliderValue = 3,
       sliderTouched = true,
       note = "Świetny dzień",

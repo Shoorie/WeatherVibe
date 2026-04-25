@@ -21,29 +21,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
-import com.weather.vibe.core.designsystem.theme.RatingColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
-import com.weather.vibe.core.designsystem.theme.ratingColor
-import com.weather.vibe.domain.weather.model.Condition
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
+import com.weather.vibe.domain.weather.model.Condition.SUNNY
 import com.weather.vibe.feature.profile.R
 import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Faded
 import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Rating
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState
+import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState.Companion.EMPTY
 import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodCta
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodTitle
-import com.weather.vibe.feature.profile.ui.ProfileTextStyles
+import com.weather.vibe.feature.profile.ui.ProfileTextStyles.rowBody
+import com.weather.vibe.feature.profile.ui.ProfileTextStyles.sectionTitle
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.AverageRatingFormat
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.BadgeSize
 import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserDefaults.DotSize
@@ -75,10 +81,12 @@ private fun MoodTeaserCardContent(
   val clickLabel = moodCta()
   val cardModifier = modifier.then(
     if (onClick != null) {
-      Modifier.clickable(role = Role.Button, onClickLabel = clickLabel, onClick = onClick)
-    } else {
-      Modifier
-    }
+      Modifier.clickable(
+        role = Role.Button,
+        onClickLabel = clickLabel,
+        onClick = onClick
+      )
+    } else Modifier
   )
   VibeCard(
     modifier = cardModifier,
@@ -105,11 +113,11 @@ private fun MoodTeaserCardContent(
           verticalArrangement = Arrangement.spacedBy(TitleRowSpacing)
         ) {
           Text(
+            modifier = Modifier.semantics { heading() },
             text = moodTitle(),
-            style = ProfileTextStyles.sectionTitle(),
+            style = sectionTitle(),
             color = colors.onPrimaryContainer,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.semantics { heading() }
+            fontWeight = Bold
           )
           SummaryLine(state = state)
         }
@@ -128,20 +136,21 @@ private fun SummaryLine(state: MoodTeaserUiState) {
   if (!state.hasData) {
     Text(
       text = stringResource(R.string.profile_mood_body_empty),
-      style = ProfileTextStyles.rowBody(),
+      style = rowBody(),
       color = colors.onPrimaryContainer.copy(alpha = 0.82f)
     )
     return
   }
-  val average = "%.1f".format(state.averageRating)
+  val average = AverageRatingFormat.format(state.averageRating)
+  val daysLabel = pluralStringResource(R.plurals.profile_mood_days, state.dayCount)
   Text(
     text = stringResource(
       R.string.profile_mood_summary_format,
       average,
       state.dayCount,
-      daysPlural(state.dayCount)
+      daysLabel
     ),
-    style = ProfileTextStyles.rowBody(),
+    style = rowBody(),
     color = colors.onPrimaryContainer,
     fontWeight = FontWeight.SemiBold
   )
@@ -157,7 +166,10 @@ private fun MoodHeroBadge(state: MoodTeaserUiState) {
     contentAlignment = Alignment.Center
   ) {
     when (val style = state.badgeStyle) {
-      is Rating -> AverageRatingText(value = state.averageRating, ratingForColor = style.rating)
+      is Rating -> AverageRatingText(
+        value = state.averageRating,
+        ratingForColor = style.rating
+      )
       Faded -> RatingDotsRow()
     }
   }
@@ -167,8 +179,8 @@ private fun MoodHeroBadge(state: MoodTeaserUiState) {
 private fun AverageRatingText(value: Double, ratingForColor: Int) {
   Text(
     text = AverageRatingFormat.format(value),
-    style = WeatherVibeTheme.typography.titleLarge,
-    fontWeight = FontWeight.Bold,
+    style = typography.titleLarge,
+    fontWeight = Bold,
     color = ratingColor(ratingForColor)
   )
 }
@@ -176,7 +188,7 @@ private fun AverageRatingText(value: Double, ratingForColor: Int) {
 @Composable
 private fun RatingDotsRow() {
   Row(horizontalArrangement = Arrangement.spacedBy(DotSpacing)) {
-    for (rating in RatingColors.MIN_RATING..RatingColors.MAX_RATING) {
+    for (rating in MIN_RATING..MAX_RATING) {
       Box(
         modifier = Modifier
           .size(DotSize)
@@ -195,22 +207,12 @@ private fun heroGradient(): Brush = Brush.linearGradient(
   )
 )
 
-@Composable
-private fun daysPlural(count: Int): String {
-  val resId = when {
-    count == 1 -> R.string.profile_mood_days_one
-    count % 10 in 2..4 && count % 100 !in 12..14 -> R.string.profile_mood_days_few
-    else -> R.string.profile_mood_days_many
-  }
-  return stringResource(resId)
-}
-
 @PreviewLightDark
 @Composable
 private fun PreviewEmpty() {
   WeatherVibeTheme {
     MoodTeaserCardContent(
-      state = MoodTeaserUiState.EMPTY,
+      state = EMPTY,
       onClick = {}
     )
   }
@@ -225,7 +227,7 @@ private fun PreviewLoaded() {
         hasData = true,
         averageRating = 4.2,
         dayCount = 47,
-        favoriteCondition = Condition.SUNNY
+        favoriteCondition = SUNNY
       ),
       onClick = {}
     )

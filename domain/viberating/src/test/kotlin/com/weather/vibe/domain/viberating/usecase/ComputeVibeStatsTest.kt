@@ -1,13 +1,16 @@
 package com.weather.vibe.domain.viberating.usecase
 
+import com.weather.vibe.domain.viberating.model.VibeStats
 import com.weather.vibe.domain.weather.model.Condition.CLOUDY
 import com.weather.vibe.domain.weather.model.Condition.PARTLY_CLOUDY
 import com.weather.vibe.domain.weather.model.Condition.RAIN
 import com.weather.vibe.domain.weather.model.Condition.SUNNY
-import com.weather.vibe.domain.viberating.model.VibeStats
-import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures
+import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures.DEFAULT_DATE
 import com.weather.vibe.testing.viberating.fixture.RatingEntryFixtures.ratingEntry
-import com.weather.vibe.testing.viberating.fixture.WeatherSnapshotFixtures
+import com.weather.vibe.testing.viberating.fixture.WeatherSnapshotFixtures.CLOUDY_14C
+import com.weather.vibe.testing.viberating.fixture.WeatherSnapshotFixtures.PARTLY_CLOUDY_18C
+import com.weather.vibe.testing.viberating.fixture.WeatherSnapshotFixtures.RAIN_12C
+import com.weather.vibe.testing.viberating.fixture.WeatherSnapshotFixtures.SUNNY_20C
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.containsExactly
@@ -38,7 +41,7 @@ class ComputeVibeStatsTest {
   fun `given a single rating, then the average matches that rating`() {
 
     val stats = computeVibeStats(
-      entries = listOf(ratingEntry(rating = 4, weather = WeatherSnapshotFixtures.SUNNY_20C))
+      entries = listOf(ratingEntry(rating = 4, weather = SUNNY_20C))
     )
 
     expectThat(stats.averageRating).isEqualTo(4.0)
@@ -48,7 +51,7 @@ class ComputeVibeStatsTest {
   fun `given a single rating, then the favorite weather is the one rated`() {
 
     val stats = computeVibeStats(
-      entries = listOf(ratingEntry(rating = 4, weather = WeatherSnapshotFixtures.SUNNY_20C))
+      entries = listOf(ratingEntry(rating = 4, weather = SUNNY_20C))
     )
 
     expectThat(stats.favoriteCondition).isEqualTo(SUNNY)
@@ -59,10 +62,10 @@ class ComputeVibeStatsTest {
 
     val stats = computeVibeStats(
       entries = listOf(
-        ratingEntry(rating = 5, weather = WeatherSnapshotFixtures.SUNNY_20C),
-        ratingEntry(rating = 4, weather = WeatherSnapshotFixtures.SUNNY_20C),
-        ratingEntry(rating = 2, weather = WeatherSnapshotFixtures.RAIN_12C),
-        ratingEntry(rating = 3, weather = WeatherSnapshotFixtures.CLOUDY_14C)
+        ratingEntry(rating = 5, weather = SUNNY_20C),
+        ratingEntry(rating = 4, weather = SUNNY_20C),
+        ratingEntry(rating = 2, weather = RAIN_12C),
+        ratingEntry(rating = 3, weather = CLOUDY_14C)
       )
     )
 
@@ -75,8 +78,8 @@ class ComputeVibeStatsTest {
 
     val stats = computeVibeStats(
       entries = listOf(
-        ratingEntry(rating = 2, weather = WeatherSnapshotFixtures.SUNNY_20C),
-        ratingEntry(rating = 5, weather = WeatherSnapshotFixtures.PARTLY_CLOUDY_18C)
+        ratingEntry(rating = 2, weather = SUNNY_20C),
+        ratingEntry(rating = 5, weather = PARTLY_CLOUDY_18C)
       )
     )
 
@@ -88,8 +91,8 @@ class ComputeVibeStatsTest {
 
     val stats = computeVibeStats(
       entries = listOf(
-        ratingEntry(rating = 4, weather = WeatherSnapshotFixtures.RAIN_12C),
-        ratingEntry(rating = 2, weather = WeatherSnapshotFixtures.RAIN_12C)
+        ratingEntry(rating = 4, weather = RAIN_12C),
+        ratingEntry(rating = 2, weather = RAIN_12C)
       )
     )
 
@@ -100,7 +103,7 @@ class ComputeVibeStatsTest {
   @Test
   fun `given several ratings on the same day, then the day count is one`() {
 
-    val today = RatingEntryFixtures.DEFAULT_DATE
+    val today = DEFAULT_DATE
     val stats = computeVibeStats(
       entries = listOf(
         ratingEntry(date = today, rating = 4, createdAtEpochMs = 1L),
@@ -115,7 +118,7 @@ class ComputeVibeStatsTest {
   @Test
   fun `given several ratings on the same day, then every entry is counted in the total`() {
 
-    val today = RatingEntryFixtures.DEFAULT_DATE
+    val today = DEFAULT_DATE
     val stats = computeVibeStats(
       entries = listOf(
         ratingEntry(date = today, rating = 4, createdAtEpochMs = 1L),
@@ -130,7 +133,7 @@ class ComputeVibeStatsTest {
   @Test
   fun `given ratings span several days, then the day count matches the number of distinct days`() {
 
-    val day = RatingEntryFixtures.DEFAULT_DATE
+    val day = DEFAULT_DATE
     val stats = computeVibeStats(
       entries = listOf(
         ratingEntry(date = day, rating = 4),

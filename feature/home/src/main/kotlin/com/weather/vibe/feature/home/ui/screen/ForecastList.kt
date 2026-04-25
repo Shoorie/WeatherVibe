@@ -34,7 +34,6 @@ import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
 import com.weather.vibe.feature.home.ui.HomeKeys.HERO
 import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
 import com.weather.vibe.feature.home.ui.HomeKeys.RATING_CARD
-import com.weather.vibe.feature.viberating.ui.rating.RatingCardHost
 import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
 import com.weather.vibe.feature.home.ui.component.activityplanner.ActivityPlannerTeaserCard
 import com.weather.vibe.feature.home.ui.component.alert.HomeAlertBanner
@@ -44,6 +43,7 @@ import com.weather.vibe.feature.home.ui.component.details.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.hero.HomeHeroCard
 import com.weather.vibe.feature.home.ui.component.hourly.HourlyForecastRow
 import com.weather.vibe.feature.home.ui.component.vibe.DailyVibeCard
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -40,9 +40,12 @@
   <string name="profile_mood_title">Twój vibe</string>
   <string name="profile_mood_body_empty">Jeszcze nic nie oceniłeś — zacznij od dzisiaj, a po kilku dniach zobaczysz tu swoje trendy.</string>
   <string name="profile_mood_summary_format">%1$s/5 · %2$d %3$s</string>
-  <string name="profile_mood_days_one">dzień</string>
-  <string name="profile_mood_days_few">dni</string>
-  <string name="profile_mood_days_many">dni</string>
+  <plurals name="profile_mood_days">
+    <item quantity="one">dzień</item>
+    <item quantity="few">dni</item>
+    <item quantity="many">dni</item>
+    <item quantity="other">dni</item>
+  </plurals>
   <string name="profile_mood_cta">Otwórz historię ocen</string>
 
   <string name="profile_edit_sheet_title">What should we call you?</string>

@@ -12,8 +12,8 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
-import com.weather.vibe.core.designsystem.theme.RatingColors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import kotlin.math.roundToInt

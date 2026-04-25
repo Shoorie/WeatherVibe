@@ -20,14 +20,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.ratingColor
-import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraft
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 
 @Composable
 internal fun SaveErrorContent(
-  draft: RatingFormDraft,
+  draft: RatingFormDraftUiState,
   onRetryClicked: () -> Unit,
   onDismissErrorClicked: () -> Unit
 ) {

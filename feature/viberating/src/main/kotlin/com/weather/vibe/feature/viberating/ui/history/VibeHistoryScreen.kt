@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -32,9 +32,9 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewM
 import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.history.preview.VibeHistoryPreviewData
 import org.koin.androidx.compose.koinViewModel
 import java.time.LocalDate
-import java.time.YearMonth
 
 @Composable
 fun VibeHistoryScreen(
@@ -54,8 +54,8 @@ fun VibeHistoryScreen(
 
   val lifecycleOwner = LocalLifecycleOwner.current
   LaunchedEffect(viewModel, lifecycleOwner) {
-    lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-      viewModel.event.collect { event ->
+    lifecycleOwner.repeatOnLifecycle(STARTED) {
+      viewModel.events.collect { event ->
         when (event) {
           NavigateBack -> onNavigateBack()
         }
@@ -140,7 +140,7 @@ private fun PatternsSection(state: PatternsSectionUiState) {
   }
 }
 
-internal class VibeHistoryCallbacks(
+internal data class VibeHistoryCallbacks(
   val onBackClicked: () -> Unit,
   val onPreviousMonthClicked: () -> Unit,
   val onNextMonthClicked: () -> Unit,
@@ -165,7 +165,7 @@ private val BOTTOM_PADDING = 110.dp
 private fun VibeHistoryContentPreview() {
   WeatherVibeTheme {
     VibeHistoryContent(
-      state = VibeHistoryUiState.emptyFor(YearMonth.of(2026, 4)),
+      state = VibeHistoryPreviewData.emptyState,
       callbacks = VibeHistoryCallbacks.Noop
     )
   }

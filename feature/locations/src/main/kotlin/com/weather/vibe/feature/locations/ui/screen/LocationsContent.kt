@@ -43,9 +43,12 @@ import com.weather.vibe.feature.locations.presentation.state.LocationsUiState
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Error
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loaded
 import com.weather.vibe.feature.locations.presentation.state.LocationsUiState.Loading
-import com.weather.vibe.feature.locations.preview.LocationsPreviewData
-import com.weather.vibe.feature.locations.ui.LocationsDefaults
+import com.weather.vibe.feature.locations.preview.LocationsPreviewData.browseLoaded
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.CompareMinCards
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.FabBottomOffset
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.ListBottomPadding
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.ReorderAutoScrollSpeed
+import com.weather.vibe.feature.locations.ui.LocationsDefaults.ReorderEdgeZone
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
@@ -109,7 +112,7 @@ internal fun LocationsContent(
           .align(Alignment.BottomEnd)
           .padding(
             end = Medium,
-            bottom = LocationsDefaults.FabBottomOffset + fabLift
+            bottom = FabBottomOffset + fabLift
           ),
         enabled = state !is Loaded || state.canAddMoreFavorites,
         onClick = { dispatch(AddLocationClick) }
@@ -141,7 +144,8 @@ internal fun LocationsContent(
 
 @Composable
 private fun headerSubtitleFor(state: LocationsUiState): String? =
-  (state as? Loaded)?.let { headerSubtitle(variant = it.headerSubtitle) }
+  (state as? Loaded)
+    ?.let { headerSubtitle(variant = it.headerSubtitle) }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -169,8 +173,14 @@ private fun LocationsLoading(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun LocationsError(modifier: Modifier = Modifier, message: String) {
-  Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+private fun LocationsError(
+  modifier: Modifier = Modifier,
+  message: String
+) {
+  Box(
+    modifier = modifier.fillMaxSize(),
+    contentAlignment = Alignment.Center
+  ) {
     VibeMessage(title = message, message = "")
   }
 }
@@ -221,8 +231,8 @@ private fun LocationsList(
   LocationsReorderAutoScroller(
     listState = listState,
     reorder = reorderState,
-    edgeZone = LocationsDefaults.ReorderEdgeZone,
-    pixelsPerSecond = LocationsDefaults.ReorderAutoScrollSpeed
+    edgeZone = ReorderEdgeZone,
+    pixelsPerSecond = ReorderAutoScrollSpeed
   )
 
   LazyColumn(
@@ -232,7 +242,7 @@ private fun LocationsList(
       start = Medium,
       end = Medium,
       top = Medium,
-      bottom = LocationsDefaults.ListBottomPadding
+      bottom = ListBottomPadding
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
@@ -263,7 +273,7 @@ private fun LocationsList(
 private fun Preview() {
   WeatherVibeTheme {
     LocationsContent(
-      state = LocationsPreviewData.browseLoaded,
+      state = browseLoaded,
       snackbarHostState = remember { SnackbarHostState() },
       dispatch = {}
     )

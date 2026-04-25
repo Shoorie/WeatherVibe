@@ -20,8 +20,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import com.weather.vibe.core.designsystem.components.surface.VibeCard
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,9 +34,11 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.ratingColor
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.R
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Day
@@ -66,20 +66,20 @@ internal fun MonthCalendar(
     containerColor = WeatherVibeTheme.colors.surfaceVariant,
     contentPadding = Padding.Medium
   ) {
-   Column(modifier = Modifier.fillMaxWidth()) {
-    CalendarHeader(
-      viewMonth = viewMonth,
-      canNavigateNext = canNavigateNext,
-      onPreviousMonthClicked = onPreviousMonthClicked,
-      onNextMonthClicked = onNextMonthClicked
-    )
-    Spacer(Modifier.height(Padding.Small))
-    WeekdayRow()
-    Spacer(Modifier.height(Padding.ExtraSmall))
-    CalendarGrid(cells = cells, onDayClicked = onDayClicked)
-    Spacer(Modifier.height(Padding.Medium))
-    CalendarLegend()
-   }
+    Column(modifier = Modifier.fillMaxWidth()) {
+      CalendarHeader(
+        viewMonth = viewMonth,
+        canNavigateNext = canNavigateNext,
+        onPreviousMonthClicked = onPreviousMonthClicked,
+        onNextMonthClicked = onNextMonthClicked
+      )
+      Spacer(Modifier.height(Padding.Small))
+      WeekdayRow()
+      Spacer(Modifier.height(Padding.ExtraSmall))
+      CalendarGrid(cells = cells, onDayClicked = onDayClicked)
+      Spacer(Modifier.height(Padding.Medium))
+      CalendarLegend()
+    }
   }
 }
 
@@ -270,8 +270,14 @@ private fun dayCellDescription(day: Day): String {
   val base = day.rating?.let {
     stringResource(R.string.vibe_history_day_rated_description, dateLabel, it)
   } ?: stringResource(R.string.vibe_history_day_unrated_description, dateLabel)
-  val todayPart = if (day.isToday) stringResource(R.string.vibe_history_day_today_suffix) else ""
-  val selectedPart = if (day.isSelected) stringResource(R.string.vibe_history_day_selected_suffix) else ""
+  val todayPart = when {
+    day.isToday -> stringResource(R.string.vibe_history_day_today_suffix)
+    else -> ""
+  }
+  val selectedPart = when {
+    day.isSelected -> stringResource(R.string.vibe_history_day_selected_suffix)
+    else -> ""
+  }
   return base + todayPart + selectedPart
 }
 

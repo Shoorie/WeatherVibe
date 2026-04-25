@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.viberating.usecase.ComputeVibeStats
 import com.weather.vibe.domain.viberating.usecase.ObserveRatingEntries
-import kotlinx.coroutines.flow.SharingStarted
+import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState.Companion.EMPTY
+import kotlinx.coroutines.flow.SharingStarted.Companion.WhileSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -27,11 +28,11 @@ internal class MoodTeaserViewModel(
         favoriteCondition = stats.favoriteCondition
       )
     }
-    .catch { emit(MoodTeaserUiState.EMPTY) }
+    .catch { emit(EMPTY) }
     .stateIn(
       scope = viewModelScope,
-      started = SharingStarted.WhileSubscribed(SUBSCRIPTION_TIMEOUT_MS),
-      initialValue = MoodTeaserUiState.EMPTY
+      started = WhileSubscribed(SUBSCRIPTION_TIMEOUT_MS),
+      initialValue = EMPTY
     )
 
   private companion object {

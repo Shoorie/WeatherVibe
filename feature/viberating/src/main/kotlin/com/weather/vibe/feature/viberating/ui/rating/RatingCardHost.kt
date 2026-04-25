@@ -54,7 +54,7 @@ fun RatingCardHost(
   val lifecycleOwner = LocalLifecycleOwner.current
   LaunchedEffect(viewModel, lifecycleOwner) {
     lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-      viewModel.event.collect { event ->
+      viewModel.events.collect { event ->
         when (event) {
           NavigateToHistory -> onNavigateToHistory()
         }
@@ -76,7 +76,7 @@ fun RatingCardHost(
   )
 }
 
-private class RatingCardCallbacks(
+private data class RatingCardCallbacks(
   val onSliderValueChanged: (Int) -> Unit,
   val onNoteValueChanged: (String) -> Unit,
   val onNoteExpandClick: () -> Unit,

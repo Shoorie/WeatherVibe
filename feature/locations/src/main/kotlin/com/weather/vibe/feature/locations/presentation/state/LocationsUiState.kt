@@ -43,12 +43,10 @@ internal sealed interface LocationsUiState {
       }
 
     @Stable
-    fun isCardSelected(favoriteId: Long): Boolean =
-      favoriteId in selectedIds
-
-    @Stable
     fun isCardLocked(favoriteId: Long): Boolean =
-      compareMode && selectedIds.size >= SelectionLimit && favoriteId !in selectedIds
+      compareMode &&
+        selectedIds.size >= SelectionLimit &&
+        favoriteId !in selectedIds
 
     @Stable
     fun withRefreshing(isRefreshing: Boolean): Loaded =

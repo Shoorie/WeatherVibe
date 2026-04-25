@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.Dp
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceDefaults.Size
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceStyles.background
 import com.weather.vibe.core.designsystem.components.mood.MoodFaceStyles.emojiSize
-import com.weather.vibe.core.designsystem.theme.RatingColors.MAX_RATING
-import com.weather.vibe.core.designsystem.theme.RatingColors.MIN_RATING
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 
 @Composable
 fun MoodFace(
@@ -32,6 +32,7 @@ fun MoodFace(
   active: Boolean = false,
   contentDescription: String? = null
 ) {
+
   val safeRating = remember(rating) { rating.coerceIn(MIN_RATING, MAX_RATING) }
   val emoji = remember(safeRating) { moodEmoji(safeRating) }
   val resolvedEmojiSize = remember(size) { emojiSize(size) }

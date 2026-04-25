@@ -1,10 +1,10 @@
 package com.weather.vibe.feature.viberating.ui.rating
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -182,11 +182,14 @@ private fun NoteCharacterCounter(currentLength: Int) {
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.End
   ) {
+
     Text(
-      text = Texts.noteCounter(current = currentLength, max = RatingCardStateFactory.NOTE_MAX_LENGTH),
+      text = Texts.noteCounter(
+        current = currentLength,
+        max = RatingCardStateFactory.NOTE_MAX_LENGTH
+      ),
       style = typography.labelSmall,
       color = colors.onSurfaceVariant
     )
   }
 }
-

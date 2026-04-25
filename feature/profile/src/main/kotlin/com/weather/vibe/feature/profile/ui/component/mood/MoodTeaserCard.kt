@@ -37,6 +37,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.ratingColor
 import com.weather.vibe.domain.weather.model.Condition
 import com.weather.vibe.feature.profile.R
+import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Faded
+import com.weather.vibe.feature.profile.presentation.MoodBadgeStyle.Rating
 import com.weather.vibe.feature.profile.presentation.MoodTeaserUiState
 import com.weather.vibe.feature.profile.presentation.MoodTeaserViewModel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.moodCta
@@ -147,7 +149,6 @@ private fun SummaryLine(state: MoodTeaserUiState) {
 
 @Composable
 private fun MoodHeroBadge(state: MoodTeaserUiState) {
-  val badgeColor = badgeColorFor(state)
   Box(
     modifier = Modifier
       .size(BadgeSize)
@@ -155,23 +156,21 @@ private fun MoodHeroBadge(state: MoodTeaserUiState) {
       .background(colors.glassSurface),
     contentAlignment = Alignment.Center
   ) {
-    if (state.hasData) {
-      Text(
-        text = AverageRatingFormat.format(state.averageRating),
-        style = WeatherVibeTheme.typography.titleLarge,
-        fontWeight = FontWeight.Bold,
-        color = badgeColor
-      )
-    } else {
-      RatingDotsRow()
+    when (val style = state.badgeStyle) {
+      is Rating -> AverageRatingText(value = state.averageRating, ratingForColor = style.rating)
+      Faded -> RatingDotsRow()
     }
   }
 }
 
 @Composable
-private fun badgeColorFor(state: MoodTeaserUiState): Color = when {
-  state.hasData -> ratingColor(state.averageRating.toInt().coerceAtLeast(1))
-  else -> colors.accent.copy(alpha = FadedAccentAlpha)
+private fun AverageRatingText(value: Double, ratingForColor: Int) {
+  Text(
+    text = AverageRatingFormat.format(value),
+    style = WeatherVibeTheme.typography.titleLarge,
+    fontWeight = FontWeight.Bold,
+    color = ratingColor(ratingForColor)
+  )
 }
 
 @Composable

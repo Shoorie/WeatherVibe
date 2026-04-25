@@ -9,7 +9,7 @@ import java.time.YearMonth
 internal data class VibeHistoryUiState(
   val viewMonth: YearMonth,
   val canNavigateNext: Boolean,
-  val averageRating: Double,
+  val averageDisplay: AverageRatingDisplay,
   val totalEntries: Int,
   val cells: ImmutableList<CalendarCellUiState>,
   val selectedDayDetail: DayDetailUiState?,
@@ -20,7 +20,7 @@ internal data class VibeHistoryUiState(
     fun emptyFor(month: YearMonth): VibeHistoryUiState = VibeHistoryUiState(
       viewMonth = month,
       canNavigateNext = false,
-      averageRating = 0.0,
+      averageDisplay = AverageRatingDisplay.Empty,
       totalEntries = 0,
       cells = persistentListOf(),
       selectedDayDetail = null,

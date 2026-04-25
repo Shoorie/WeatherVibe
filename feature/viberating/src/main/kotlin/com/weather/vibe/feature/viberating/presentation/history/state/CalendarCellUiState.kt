@@ -15,6 +15,7 @@ internal sealed interface CalendarCellUiState {
     val entryCount: Int,
     val isToday: Boolean,
     val isFuture: Boolean,
-    val isSelected: Boolean
+    val isSelected: Boolean,
+    val description: DayCellDescription
   ) : CalendarCellUiState
 }

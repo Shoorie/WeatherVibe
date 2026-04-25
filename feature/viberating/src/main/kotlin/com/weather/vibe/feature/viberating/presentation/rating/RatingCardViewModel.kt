@@ -22,7 +22,7 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
-import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -126,15 +126,12 @@ internal class RatingCardViewModel(
     weatherSnapshot: WeatherSnapshot
   ) {
     _state.update { stateFactory.saving(draft = draft, todayEntryCount = todayCount) }
-    viewModelScope.launch {
-      try {
-        saveRatingEntry(buildEntry(draft, weatherSnapshot))
-        onSaveSucceeded()
-      } catch (e: CancellationException) {
-        throw e
-      } catch (e: Exception) {
-        onSaveFailed(draft = draft, todayCount = todayCount, error = e)
-      }
+    val errorHandler = CoroutineExceptionHandler { _, _ ->
+      onSaveFailed(draft = draft, todayCount = todayCount)
+    }
+    viewModelScope.launch(errorHandler) {
+      saveRatingEntry(buildEntry(draft, weatherSnapshot))
+      onSaveSucceeded()
     }
   }
 
@@ -159,10 +156,8 @@ internal class RatingCardViewModel(
 
   private fun onSaveFailed(
     draft: RatingFormDraftUiState,
-    todayCount: Int,
-    error: Exception
+    todayCount: Int
   ) {
-    error.printStackTrace()
     _state.update {
       stateFactory.saveError(
         draft = draft,

@@ -1,12 +1,15 @@
 package com.weather.vibe.feature.viberating.presentation.history
 
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
 import com.weather.vibe.domain.viberating.model.ConditionAverage
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.VibeStats
+import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Day
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Empty
 import com.weather.vibe.feature.viberating.presentation.history.state.ConditionRankingUiState
+import com.weather.vibe.feature.viberating.presentation.history.state.DayCellDescription
 import com.weather.vibe.feature.viberating.presentation.history.state.DayDetailUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.DayEntryUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
@@ -43,7 +46,7 @@ internal class VibeHistoryStateFactory {
     return VibeHistoryUiState(
       viewMonth = viewMonth,
       canNavigateNext = viewMonth < currentMonth,
-      averageRating = stats.averageRating,
+      averageDisplay = averageDisplay(stats = stats),
       totalEntries = stats.totalEntries,
       cells = cells,
       selectedDayDetail = selectedDate
@@ -51,6 +54,16 @@ internal class VibeHistoryStateFactory {
       patterns = patternsSection(stats = stats)
     )
   }
+
+  private fun averageDisplay(stats: VibeStats): AverageRatingDisplay =
+    when {
+      stats.averageRating > 0.0 -> AverageRatingDisplay.Available(
+        value = stats.averageRating,
+        ratingForColor = stats.averageRating.toInt()
+          .coerceAtLeast(MIN_RATING)
+      )
+      else -> AverageRatingDisplay.Empty
+    }
 
   private fun calendarCells(
     viewMonth: YearMonth,
@@ -70,15 +83,24 @@ internal class VibeHistoryStateFactory {
       for (dayOfMonth in 1..daysInMonth) {
         val date = viewMonth.atDay(dayOfMonth)
         val dayEntries = entriesByDate[date].orEmpty()
+        val averageRating = dayEntries.averageRatingOrNull()?.roundToInt()
+        val isToday = date == today
+        val isSelected = date == selectedDate
         add(
           Day(
             date = date,
             dayOfMonth = dayOfMonth,
-            rating = dayEntries.averageRatingOrNull()?.roundToInt(),
+            rating = averageRating,
             entryCount = dayEntries.size,
-            isToday = date == today,
+            isToday = isToday,
             isFuture = date.isAfter(today),
-            isSelected = date == selectedDate
+            isSelected = isSelected,
+            description = DayCellDescription(
+              dateLabel = date.format(CellDateFormatter),
+              averageRating = averageRating,
+              isToday = isToday,
+              isSelected = isSelected
+            )
           )
         )
       }
@@ -104,7 +126,7 @@ internal class VibeHistoryStateFactory {
         .toLocalTime(),
       rating = entry.rating,
       condition = entry.weather.condition,
-      temperatureC = entry.weather.temperatureC,
+      temperatureRounded = entry.weather.temperatureC.roundToInt(),
       note = entry.note?.takeIf { it.isNotBlank() }
     )
 
@@ -132,6 +154,7 @@ internal class VibeHistoryStateFactory {
         ConditionRankingUiState(
           condition = average.condition,
           averageRating = average.averageRating,
+          ratingForColor = average.averageRating.toInt().coerceAtLeast(MIN_RATING),
           entryCount = average.entryCount,
           progressFraction = (average.averageRating / maxAverage)
             .toFloat()
@@ -148,5 +171,7 @@ internal class VibeHistoryStateFactory {
     const val PATTERNS_UNLOCK_THRESHOLD: Int = 14
     private const val DAYS_IN_WEEK: Int = 7
     private const val CALENDAR_TOTAL_CELLS: Int = 42
+    private val CellDateFormatter: java.time.format.DateTimeFormatter =
+      java.time.format.DateTimeFormatter.ofPattern("d MMMM")
   }
 }

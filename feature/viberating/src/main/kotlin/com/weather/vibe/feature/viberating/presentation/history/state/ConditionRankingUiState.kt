@@ -7,6 +7,7 @@ import com.weather.vibe.domain.weather.model.Condition
 internal data class ConditionRankingUiState(
   val condition: Condition,
   val averageRating: Double,
+  val ratingForColor: Int,
   val entryCount: Int,
   val progressFraction: Float
 )

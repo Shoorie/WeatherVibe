@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="vibe_rating_section_label">Twój vibe · dziś</string>
+  <string name="vibe_rating_card_title">Jak się teraz czujesz?</string>
+  <string name="vibe_rating_save">Zapisz vibe</string>
+  <string name="vibe_rating_saving">Zapisywanie…</string>
+  <string name="vibe_rating_save_error_title">Nie udało się zapisać oceny</string>
+  <string name="vibe_rating_save_error_body">Sprawdź połączenie i spróbuj ponownie.</string>
+  <string name="vibe_rating_retry">Ponów</string>
+  <string name="vibe_rating_dismiss_error">Anuluj</string>
+  <string name="vibe_rating_view_history">Zobacz Twój vibe</string>
+  <string name="vibe_rating_view_history_link">Zobacz ostatnie oceny</string>
+
+  <string name="vibe_rating_note_add">Dodaj notatkę</string>
+  <string name="vibe_rating_note_collapse">Schowaj notatkę</string>
+  <string name="vibe_rating_note_label">Twoja notatka</string>
+  <string name="vibe_rating_note_placeholder">Co Ci się dziś podobało albo przeszkodziło?</string>
+  <string name="vibe_rating_note_counter_format">%1$d/%2$d</string>
+
+  <plurals name="vibe_rating_today_count">
+    <item quantity="one">Już dziś · %1$d wpis ✨</item>
+    <item quantity="few">Już dziś · %1$d wpisy ✨</item>
+    <item quantity="many">Już dziś · %1$d wpisów ✨</item>
+    <item quantity="other">Już dziś · %1$d wpisu ✨</item>
+  </plurals>
+
+  <string name="vibe_rating_scale_1">Słabo</string>
+  <string name="vibe_rating_scale_2">Tak sobie</string>
+  <string name="vibe_rating_scale_3">OK</string>
+  <string name="vibe_rating_scale_4">Dobrze</string>
+  <string name="vibe_rating_scale_5">Świetnie</string>
+
+  <string name="vibe_rating_mood_face_description">Ocena %1$d z 5</string>
+  <string name="vibe_rating_slider_description">Suwak oceny dnia, pięciostopniowa skala</string>
+  <string name="vibe_rating_error_summary_format">%1$s · %2$d/5</string>
+  <string name="vibe_rating_error_note_quote">„%1$s\"</string>
+
+  <string name="vibe_history_title">Twój vibe</string>
+  <string name="vibe_history_subtitle">Twoje dni oceniane krok po kroku</string>
+  <string name="vibe_history_back">Wstecz</string>
+  <string name="vibe_history_average_label">Twoja średnia</string>
+  <string name="vibe_history_total_label">Wszystkie wpisy</string>
+  <string name="vibe_history_stat_average_a11y">%1$s%2$s, %3$s</string>
+  <string name="vibe_history_stat_total_a11y">%1$d, %2$s</string>
+  <string name="vibe_history_average_suffix">/5</string>
+  <string name="vibe_history_average_empty">—</string>
+  <string name="vibe_history_previous_month">Poprzedni miesiąc</string>
+  <string name="vibe_history_next_month">Następny miesiąc</string>
+  <string name="vibe_history_legend_low">słabo</string>
+  <string name="vibe_history_legend_high">super</string>
+  <string name="vibe_history_legend_description">Legenda skali ocen od słabo do super</string>
+  <string name="vibe_history_no_rating">Brak ocen</string>
+  <string name="vibe_history_day_detail_close">Zamknij szczegóły dnia</string>
+  <string name="vibe_history_day_rated_description">%1$s, średnia %2$d z 5</string>
+  <string name="vibe_history_day_unrated_description">%1$s, brak oceny</string>
+  <string name="vibe_history_day_today_suffix">, dziś</string>
+  <string name="vibe_history_day_selected_suffix">, wybrany</string>
+  <string name="vibe_history_day_open_details">otwórz szczegóły dnia</string>
+  <string name="vibe_history_next_month_disabled">Nie można przejść na przyszły miesiąc</string>
+  <string name="vibe_history_ranking_title">Średnia ocena wg pogody</string>
+  <string name="vibe_history_ranking_entries">%1$d %2$s</string>
+  <string name="vibe_history_ranking_disclaimer">Na podstawie %1$d wpisów. Wzorce nabierają wartości z czasem.</string>
+  <string name="vibe_history_patterns_locked_title">Twoje wzorce pogodowe</string>
+  <string name="vibe_history_patterns_locked_body">Pojawią się tu po %1$d wpisach. Masz już %2$d, jesteś coraz bliżej.</string>
+  <plurals name="vibe_history_entries">
+    <item quantity="one">wpis</item>
+    <item quantity="few">wpisy</item>
+    <item quantity="many">wpisów</item>
+    <item quantity="other">wpisów</item>
+  </plurals>
+
+  <string name="vibe_history_day_summary_title">%1$s</string>
+  <string name="vibe_history_day_summary_empty">Brak wpisów tego dnia.</string>
+  <string name="vibe_history_entry_time_format">HH:mm</string>
+  <string name="vibe_history_entry_temperature_format">%1$d°</string>
+  <string name="vibe_history_entry_subtitle_format">%1$s · %2$s</string>
+  <string name="vibe_history_entry_rating_format">%1$d/5</string>
+  <string name="vibe_history_entry_note_quote">„%1$s\"</string>
+  <string name="vibe_history_entry_rating_a11y">Ocena %1$d z 5, %2$s</string>
+
+  <plurals name="vibe_history_day_entry_count">
+    <item quantity="one">%1$d wpis</item>
+    <item quantity="few">%1$d wpisy</item>
+    <item quantity="many">%1$d wpisów</item>
+    <item quantity="other">%1$d wpisu</item>
+  </plurals>
+
+  <string name="vibe_condition_sunny">Słonecznie</string>
+  <string name="vibe_condition_partly_cloudy">Częściowe zachmurzenie</string>
+  <string name="vibe_condition_cloudy">Pochmurno</string>
+  <string name="vibe_condition_rain">Deszczowo</string>
+  <string name="vibe_condition_snow">Śnieg</string>
+  <string name="vibe_condition_night">Noc</string>
+
+  <string name="vibe_weekday_monday">Pn</string>
+  <string name="vibe_weekday_tuesday">Wt</string>
+  <string name="vibe_weekday_wednesday">Śr</string>
+  <string name="vibe_weekday_thursday">Cz</string>
+  <string name="vibe_weekday_friday">Pt</string>
+  <string name="vibe_weekday_saturday">So</string>
+  <string name="vibe_weekday_sunday">Nd</string>
+
+  <string name="vibe_month_1">Styczeń</string>
+  <string name="vibe_month_2">Luty</string>
+  <string name="vibe_month_3">Marzec</string>
+  <string name="vibe_month_4">Kwiecień</string>
+  <string name="vibe_month_5">Maj</string>
+  <string name="vibe_month_6">Czerwiec</string>
+  <string name="vibe_month_7">Lipiec</string>
+  <string name="vibe_month_8">Sierpień</string>
+  <string name="vibe_month_9">Wrzesień</string>
+  <string name="vibe_month_10">Październik</string>
+  <string name="vibe_month_11">Listopad</string>
+  <string name="vibe_month_12">Grudzień</string>
+
+</resources>

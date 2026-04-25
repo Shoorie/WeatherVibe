@@ -75,14 +75,3 @@ fun RatingCardHost(
     onViewHistoryClicked = callbacks.onViewHistoryClicked
   )
 }
-
-private data class RatingCardCallbacks(
-  val onSliderValueChanged: (Int) -> Unit,
-  val onNoteValueChanged: (String) -> Unit,
-  val onNoteExpandClick: () -> Unit,
-  val onNoteCollapseClick: () -> Unit,
-  val onSaveClicked: () -> Unit,
-  val onRetryClicked: () -> Unit,
-  val onDismissErrorClicked: () -> Unit,
-  val onViewHistoryClicked: () -> Unit
-)

@@ -9,26 +9,29 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormD
 
 internal class RatingCardStatePreview : PreviewParameterProvider<RatingCardUiState> {
 
-  private val freshDraft = RatingFormDraftUiState(
-    sliderValue = 3,
-    sliderTouched = false,
-    note = "",
-    noteExpanded = false
-  )
+  private val freshDraft: RatingFormDraftUiState =
+    RatingFormDraftUiState(
+      sliderValue = 3,
+      sliderTouched = false,
+      note = "",
+      noteExpanded = false
+    )
 
-  private val touchedDraft = RatingFormDraftUiState(
-    sliderValue = 4,
-    sliderTouched = true,
-    note = "",
-    noteExpanded = false
-  )
+  private val touchedDraft: RatingFormDraftUiState =
+    RatingFormDraftUiState(
+      sliderValue = 4,
+      sliderTouched = true,
+      note = "",
+      noteExpanded = false
+    )
 
-  private val draftWithNote = RatingFormDraftUiState(
-    sliderValue = 5,
-    sliderTouched = true,
-    note = "Świetny dzień, kawa i słońce!",
-    noteExpanded = true
-  )
+  private val draftWithNote: RatingFormDraftUiState =
+    RatingFormDraftUiState(
+      sliderValue = 5,
+      sliderTouched = true,
+      note = "Świetny dzień, kawa i słońce!",
+      noteExpanded = true
+    )
 
   override val values: Sequence<RatingCardUiState> = sequenceOf(
     Editing(draft = freshDraft, todayEntryCount = 0),

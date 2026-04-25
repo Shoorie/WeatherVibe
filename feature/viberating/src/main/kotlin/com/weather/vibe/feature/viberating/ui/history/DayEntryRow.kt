@@ -25,15 +25,20 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.DayEntryUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryNoteQuote
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryRatingA11y
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryRatingLabel
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entrySubtitle
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryTemperature
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryTimePattern
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionEmoji
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionLabel
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BackgroundAlpha
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderAlpha
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderWidth
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ConditionEmojiSize
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ContentPadding
-import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.TimeFormatter
-import kotlin.math.roundToInt
+import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun DayEntryRow(
@@ -41,7 +46,7 @@ internal fun DayEntryRow(
   entry: DayEntryUiState
 ) {
   val ratingTint = ratingColor(entry.rating)
-  val conditionLabel = VibeRatingResources.conditionLabel(entry.condition)
+  val resolvedConditionLabel = conditionLabel(entry.condition)
   Column(
     modifier = modifier
       .fillMaxWidth()
@@ -59,10 +64,10 @@ internal fun DayEntryRow(
   ) {
     EntryHeaderRow(
       entry = entry,
-      conditionLabel = conditionLabel,
+      conditionLabel = resolvedConditionLabel,
       ratingTint = ratingTint
     )
-    if (!entry.note.isNullOrBlank()) {
+    if (entry.note != null) {
       Spacer(Modifier.height(Padding.Small))
       EntryNote(note = entry.note)
     }
@@ -83,30 +88,33 @@ private fun EntryHeaderRow(
     MoodFace(
       rating = entry.rating,
       active = true,
-      contentDescription = Texts.entryRatingA11y(
+      contentDescription = entryRatingA11y(
         rating = entry.rating,
         conditionLabel = conditionLabel
       )
     )
     Column(modifier = Modifier.weight(1f)) {
       Text(
-        text = entry.time.format(TimeFormatter),
+        text = entry.time.format(DateTimeFormatter.ofPattern(entryTimePattern())),
         style = typography.titleSmall,
         color = colors.onSurface,
         fontWeight = FontWeight.SemiBold
       )
       Text(
-        text = "$conditionLabel · ${Texts.entryTemperature(entry.temperatureC.roundToInt())}",
+        text = entrySubtitle(
+          condition = conditionLabel,
+          temperature = entryTemperature(temperatureC = entry.temperatureRounded)
+        ),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant
       )
     }
     Text(
-      text = VibeRatingResources.conditionEmoji(entry.condition),
+      text = conditionEmoji(entry.condition),
       fontSize = ConditionEmojiSize
     )
     Text(
-      text = "${entry.rating}/5",
+      text = entryRatingLabel(rating = entry.rating),
       style = typography.titleSmall,
       color = ratingTint,
       fontWeight = FontWeight.Bold
@@ -117,7 +125,7 @@ private fun EntryHeaderRow(
 @Composable
 private fun EntryNote(note: String) {
   Text(
-    text = "„$note\"",
+    text = entryNoteQuote(note = note),
     style = typography.bodyMedium,
     color = colors.onSurface
   )

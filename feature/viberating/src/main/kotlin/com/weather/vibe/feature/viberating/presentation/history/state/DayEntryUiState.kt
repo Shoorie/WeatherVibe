@@ -10,6 +10,6 @@ internal data class DayEntryUiState(
   val time: LocalTime,
   val rating: Int,
   val condition: Condition,
-  val temperatureC: Double,
+  val temperatureRounded: Int,
   val note: String?
 )

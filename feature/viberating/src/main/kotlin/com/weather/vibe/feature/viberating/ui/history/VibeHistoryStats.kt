@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -26,11 +27,16 @@ import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay
 import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay.Available
 import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay.Empty
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.VibeHistoryStatsPreview
+import com.weather.vibe.feature.viberating.preview.VibeHistoryStatsPreviewParams
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.averageEmpty
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.averageSuffix
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAverageA11y
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAverageLabel
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalA11y
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalLabel
 import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsDefaults.AverageFormat
 import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsDefaults.SuffixBaselineOffset
-import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsPreviewParams.LoadedAverage
-import com.weather.vibe.feature.viberating.ui.history.VibeHistoryStatsPreviewParams.LoadedTotal
 
 @Composable
 internal fun VibeHistoryStats(
@@ -42,8 +48,14 @@ internal fun VibeHistoryStats(
     modifier = modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.spacedBy(Padding.Small)
   ) {
-    AverageStatCard(modifier = Modifier.weight(1f), display = averageDisplay)
-    TotalStatCard(modifier = Modifier.weight(1f), totalEntries = totalEntries)
+    AverageStatCard(
+      modifier = Modifier.weight(1f),
+      display = averageDisplay
+    )
+    TotalStatCard(
+      modifier = Modifier.weight(1f),
+      totalEntries = totalEntries
+    )
   }
 }
 
@@ -52,10 +64,12 @@ private fun AverageStatCard(
   modifier: Modifier = Modifier,
   display: AverageRatingDisplay
 ) {
-  val label = Texts.statsAverageLabel()
-  val suffix = Texts.averageSuffix()
+
+  val label = statsAverageLabel()
+  val suffix = averageSuffix()
   val averageText = averageText(display = display)
-  val a11y = Texts.statsAverageA11y(value = averageText, suffix = suffix, label = label)
+  val a11y = statsAverageA11y(value = averageText, suffix = suffix, label = label)
+
   SummaryStatCard(
     modifier = modifier.semantics(mergeDescendants = true) { contentDescription = a11y },
     value = averageText,
@@ -68,7 +82,7 @@ private fun AverageStatCard(
 @Composable
 private fun averageText(display: AverageRatingDisplay): String = when (display) {
   is Available -> AverageFormat.format(display.value)
-  Empty -> Texts.averageEmpty()
+  Empty -> averageEmpty()
 }
 
 @Composable
@@ -82,10 +96,13 @@ private fun TotalStatCard(
   modifier: Modifier = Modifier,
   totalEntries: Int
 ) {
-  val label = Texts.statsTotalLabel()
-  val a11y = Texts.statsTotalA11y(total = totalEntries, label = label)
+
+  val label = statsTotalLabel()
+  val a11y = statsTotalA11y(total = totalEntries, label = label)
+
   SummaryStatCard(
-    modifier = modifier.semantics(mergeDescendants = true) { contentDescription = a11y },
+    modifier = modifier
+      .semantics(mergeDescendants = true) { contentDescription = a11y },
     value = totalEntries.toString(),
     valueColor = colors.onSurface,
     suffix = null,
@@ -139,11 +156,14 @@ private fun SummaryStatCard(
 
 @PreviewLightDark
 @Composable
-private fun Preview() {
+private fun Preview(
+  @PreviewParameter(VibeHistoryStatsPreview::class)
+  params: VibeHistoryStatsPreviewParams
+) {
   WeatherVibeTheme {
     VibeHistoryStats(
-      averageDisplay = LoadedAverage,
-      totalEntries = LoadedTotal
+      averageDisplay = params.averageDisplay,
+      totalEntries = params.totalEntries
     )
   }
 }

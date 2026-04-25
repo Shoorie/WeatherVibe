@@ -22,6 +22,9 @@ import java.time.Instant.ofEpochMilli
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId.systemDefault
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Factory
@@ -96,7 +99,7 @@ internal class VibeHistoryStateFactory {
             isFuture = date.isAfter(today),
             isSelected = isSelected,
             description = DayCellDescription(
-              dateLabel = date.format(CellDateFormatter),
+              dateLabel = date.format(CELL_DATE_FORMATTER),
               averageRating = averageRating,
               isToday = isToday,
               isSelected = isSelected
@@ -111,7 +114,7 @@ internal class VibeHistoryStateFactory {
 
   private fun dayDetail(date: LocalDate, entries: List<RatingEntry>): DayDetailUiState =
     DayDetailUiState(
-      date = date,
+      dateLabel = date.format(DAY_DETAIL_DATE_FORMATTER),
       entries = entries
         .sortedByDescending(RatingEntry::createdAtEpochMs)
         .map(::dayEntry)
@@ -121,9 +124,10 @@ internal class VibeHistoryStateFactory {
   private fun dayEntry(entry: RatingEntry): DayEntryUiState =
     DayEntryUiState(
       id = entry.id,
-      time = ofEpochMilli(entry.createdAtEpochMs)
+      timeLabel = ofEpochMilli(entry.createdAtEpochMs)
         .atZone(systemDefault())
-        .toLocalTime(),
+        .toLocalTime()
+        .format(ENTRY_TIME_FORMATTER),
       rating = entry.rating,
       condition = entry.weather.condition,
       temperatureRounded = entry.weather.temperatureC.roundToInt(),
@@ -168,10 +172,14 @@ internal class VibeHistoryStateFactory {
     if (isEmpty()) null else map(RatingEntry::rating).average()
 
   companion object {
+
     const val PATTERNS_UNLOCK_THRESHOLD: Int = 14
     private const val DAYS_IN_WEEK: Int = 7
     private const val CALENDAR_TOTAL_CELLS: Int = 42
-    private val CellDateFormatter: java.time.format.DateTimeFormatter =
-      java.time.format.DateTimeFormatter.ofPattern("d MMMM")
+
+    private val CELL_DATE_FORMATTER: DateTimeFormatter = ofPattern("d MMMM")
+    private val ENTRY_TIME_FORMATTER: DateTimeFormatter = ofPattern("HH:mm")
+    private val DAY_DETAIL_DATE_FORMATTER: DateTimeFormatter =
+      ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))
   }
 }

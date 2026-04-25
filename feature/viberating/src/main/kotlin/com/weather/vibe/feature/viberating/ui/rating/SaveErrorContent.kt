@@ -16,13 +16,22 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.RatingFormDraftPreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.dismissError
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.errorNoteQuote
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.errorSummary
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.retry
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.saveErrorBody
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.saveErrorTitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 
 @Composable
@@ -37,20 +46,20 @@ internal fun SaveErrorContent(
       .semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Assertive }
   ) {
     Text(
-      text = Texts.saveErrorTitle(),
+      text = saveErrorTitle(),
       style = typography.titleMedium,
       color = colors.error,
       fontWeight = FontWeight.SemiBold
     )
     Spacer(Modifier.height(Padding.ExtraSmall))
     Text(
-      text = Texts.saveErrorBody(),
+      text = saveErrorBody(),
       style = typography.bodySmall,
       color = colors.onSurfaceVariant
     )
     Spacer(Modifier.height(Padding.ExtraSmall))
     Text(
-      text = Texts.errorSummary(
+      text = errorSummary(
         scaleLabel = scaleLabel(draft.sliderValue),
         rating = draft.sliderValue
       ),
@@ -61,7 +70,7 @@ internal fun SaveErrorContent(
     if (draft.note.isNotBlank()) {
       Spacer(Modifier.height(Padding.ExtraSmall))
       Text(
-        text = Texts.errorNoteQuote(note = draft.note),
+        text = errorNoteQuote(note = draft.note),
         style = typography.bodySmall,
         color = colors.onSurfaceVariant
       )
@@ -89,14 +98,29 @@ private fun ErrorActionRow(
         contentColor = colors.onAccent
       )
     ) {
-      Text(Texts.retry())
+      Text(retry())
     }
     OutlinedButton(
       onClick = onDismissErrorClicked,
       modifier = Modifier.weight(1f),
       shape = shapes.cardSmall
     ) {
-      Text(Texts.dismissError())
+      Text(dismissError())
     }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(RatingFormDraftPreview::class)
+  draft: RatingFormDraftUiState
+) {
+  WeatherVibeTheme {
+    SaveErrorContent(
+      draft = draft,
+      onRetryClicked = {},
+      onDismissErrorClicked = {}
+    )
   }
 }

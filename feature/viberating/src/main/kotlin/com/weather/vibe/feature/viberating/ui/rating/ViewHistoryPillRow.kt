@@ -19,17 +19,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Emojis
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.viewHistoryLink
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.ButtonIconSize
 
 @Composable
 internal fun ViewHistoryPillRow(onClick: () -> Unit) {
-  val label = Texts.viewHistoryLink()
+  val label = viewHistoryLink()
   Row(
     modifier = Modifier
       .fillMaxWidth()
@@ -62,5 +64,13 @@ internal fun ViewHistoryPillRow(onClick: () -> Unit) {
       contentDescription = null,
       tint = colors.accent
     )
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview() {
+  WeatherVibeTheme {
+    ViewHistoryPillRow(onClick = {})
   }
 }

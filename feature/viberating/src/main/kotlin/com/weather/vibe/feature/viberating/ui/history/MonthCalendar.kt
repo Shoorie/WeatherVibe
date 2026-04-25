@@ -31,14 +31,19 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Day
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Empty
+import com.weather.vibe.feature.viberating.preview.MonthCalendarPreview
+import com.weather.vibe.feature.viberating.preview.MonthCalendarPreviewParams
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.dayCellDescription
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.dayOpenDetails
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.nextMonth
@@ -284,4 +289,22 @@ private fun Modifier.dayCellInteractive(
       role = Role.Button,
       onClickLabel = openLabel
     ) { onDayClicked(day.date) }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(MonthCalendarPreview::class)
+  params: MonthCalendarPreviewParams
+) {
+  WeatherVibeTheme {
+    MonthCalendar(
+      viewMonth = params.viewMonth,
+      canNavigateNext = params.canNavigateNext,
+      cells = params.cells,
+      onPreviousMonthClicked = {},
+      onNextMonthClicked = {},
+      onDayClicked = {}
+    )
+  }
 }

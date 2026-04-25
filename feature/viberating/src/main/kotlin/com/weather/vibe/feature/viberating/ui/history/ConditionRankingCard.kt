@@ -20,13 +20,18 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.ConditionRankingUiState
+import com.weather.vibe.feature.viberating.preview.ConditionRankingCardPreview
+import com.weather.vibe.feature.viberating.preview.ConditionRankingCardPreviewParams
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entriesPlural
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingDisclaimer
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.rankingTitle
@@ -156,6 +161,20 @@ private fun RankingProgressBar(progressFraction: Float, itemColor: Color) {
         .height(ProgressHeight)
         .clip(ProgressShape)
         .background(itemColor)
+    )
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(ConditionRankingCardPreview::class)
+  params: ConditionRankingCardPreviewParams
+) {
+  WeatherVibeTheme {
+    ConditionRankingCard(
+      ranking = params.ranking,
+      basedOnEntries = params.basedOnEntries
     )
   }
 }

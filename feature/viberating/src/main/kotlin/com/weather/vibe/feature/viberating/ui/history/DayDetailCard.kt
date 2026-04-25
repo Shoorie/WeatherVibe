@@ -24,15 +24,20 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.presentation.history.state.DayDetailUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.weather.vibe.feature.viberating.preview.DayDetailCardPreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.dayDetailClose
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.dayEntryCount
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.daySummaryEmpty
+import com.weather.vibe.feature.viberating.ui.history.DayDetailCardDefaults.SlideDivider
 
 @Composable
 internal fun DayDetailCard(
@@ -42,8 +47,8 @@ internal fun DayDetailCard(
 ) {
   AnimatedVisibility(
     visible = detail != null,
-    enter = fadeIn() + slideInVertically { it / SLIDE_FRACTION },
-    exit = fadeOut() + slideOutVertically { it / SLIDE_FRACTION }
+    enter = fadeIn() + slideInVertically { it / SlideDivider },
+    exit = fadeOut() + slideOutVertically { it / SlideDivider }
   ) {
     if (detail != null) {
       DayDetailContent(
@@ -70,20 +75,23 @@ private fun DayDetailContent(
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {
       DayDetailHeader(detail = detail, onDismissClicked = onDismissClicked)
-      if (detail.entries.isEmpty()) {
-        Spacer(Modifier.height(Padding.Small))
-        Text(
-          text = Texts.daySummaryEmpty(),
-          style = typography.bodyMedium,
-          color = colors.onSurfaceVariant
-        )
-      } else {
-        Spacer(Modifier.height(Padding.Small))
-        Column(verticalArrangement = Arrangement.spacedBy(Padding.Small)) {
-          detail.entries.forEach { entry ->
-            DayEntryRow(entry = entry)
-          }
-        }
+      Spacer(Modifier.height(Padding.Small))
+      DayDetailEntriesOrEmpty(detail = detail)
+    }
+  }
+}
+
+@Composable
+private fun DayDetailEntriesOrEmpty(detail: DayDetailUiState) {
+  when {
+    detail.entries.isEmpty() -> Text(
+      text = daySummaryEmpty(),
+      style = typography.bodyMedium,
+      color = colors.onSurfaceVariant
+    )
+    else -> Column(verticalArrangement = Arrangement.spacedBy(Padding.Small)) {
+      detail.entries.forEach { entry ->
+        DayEntryRow(entry = entry)
       }
     }
   }
@@ -100,7 +108,7 @@ private fun DayDetailHeader(
   ) {
     Column(modifier = Modifier.weight(1f)) {
       Text(
-        text = detail.date.format(DateFormatter),
+        text = detail.dateLabel,
         style = typography.titleMedium,
         color = colors.onSurface,
         fontWeight = FontWeight.SemiBold,
@@ -109,7 +117,7 @@ private fun DayDetailHeader(
       if (detail.entries.isNotEmpty()) {
         Spacer(Modifier.height(Padding.ExtraSmall))
         Text(
-          text = Texts.dayEntryCount(detail.entries.size),
+          text = dayEntryCount(detail.entries.size),
           style = typography.labelSmall,
           color = colors.onSurfaceVariant
         )
@@ -118,13 +126,23 @@ private fun DayDetailHeader(
     IconButton(onClick = onDismissClicked) {
       Icon(
         imageVector = Icons.Default.Close,
-        contentDescription = Texts.dayDetailClose(),
+        contentDescription = dayDetailClose(),
         tint = colors.onSurfaceVariant
       )
     }
   }
 }
 
-private val DateFormatter: DateTimeFormatter =
-  DateTimeFormatter.ofPattern("EEEE, d MMMM", Locale.forLanguageTag("pl"))
-private const val SLIDE_FRACTION: Int = 10
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(DayDetailCardPreview::class)
+  detail: DayDetailUiState
+) {
+  WeatherVibeTheme {
+    DayDetailCard(
+      detail = detail,
+      onDismissClicked = {}
+    )
+  }
+}

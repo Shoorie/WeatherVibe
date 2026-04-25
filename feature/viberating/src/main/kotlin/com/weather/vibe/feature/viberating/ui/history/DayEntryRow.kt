@@ -18,19 +18,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.DayEntryUiState
+import com.weather.vibe.feature.viberating.preview.DayEntryRowPreview
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryNoteQuote
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryRatingA11y
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryRatingLabel
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entrySubtitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryTemperature
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.entryTimePattern
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionEmoji
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.conditionLabel
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BackgroundAlpha
@@ -38,7 +41,6 @@ import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderAlp
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.BorderWidth
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ConditionEmojiSize
 import com.weather.vibe.feature.viberating.ui.history.DayEntryDefaults.ContentPadding
-import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun DayEntryRow(
@@ -95,7 +97,7 @@ private fun EntryHeaderRow(
     )
     Column(modifier = Modifier.weight(1f)) {
       Text(
-        text = entry.time.format(DateTimeFormatter.ofPattern(entryTimePattern())),
+        text = entry.timeLabel,
         style = typography.titleSmall,
         color = colors.onSurface,
         fontWeight = FontWeight.SemiBold
@@ -129,4 +131,15 @@ private fun EntryNote(note: String) {
     style = typography.bodyMedium,
     color = colors.onSurface
   )
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(DayEntryRowPreview::class)
+  entry: DayEntryUiState
+) {
+  WeatherVibeTheme {
+    DayEntryRow(entry = entry)
+  }
 }

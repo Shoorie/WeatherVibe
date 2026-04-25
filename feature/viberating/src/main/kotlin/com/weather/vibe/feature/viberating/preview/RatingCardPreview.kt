@@ -1,13 +1,14 @@
-package com.weather.vibe.feature.viberating.ui.rating
+package com.weather.vibe.feature.viberating.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Editing
+import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
 
-internal class RatingCardStatePreview : PreviewParameterProvider<RatingCardUiState> {
+internal class RatingCardPreview : PreviewParameterProvider<RatingCardUiState> {
 
   private val freshDraft: RatingFormDraftUiState =
     RatingFormDraftUiState(
@@ -33,11 +34,30 @@ internal class RatingCardStatePreview : PreviewParameterProvider<RatingCardUiSta
       noteExpanded = true
     )
 
-  override val values: Sequence<RatingCardUiState> = sequenceOf(
-    Editing(draft = freshDraft, todayEntryCount = 0),
-    Editing(draft = touchedDraft, todayEntryCount = 2),
-    Editing(draft = draftWithNote, todayEntryCount = 1),
-    Saving(draft = touchedDraft, todayEntryCount = 0),
+  private val loading: RatingCardUiState = Loading
+
+  private val emptyEditing: RatingCardUiState =
+    Editing(draft = freshDraft, todayEntryCount = 0)
+
+  private val touchedEditing: RatingCardUiState =
+    Editing(draft = touchedDraft, todayEntryCount = 2)
+
+  private val editingWithNote: RatingCardUiState =
+    Editing(draft = draftWithNote, todayEntryCount = 1)
+
+  private val savingInFlight: RatingCardUiState =
+    Saving(draft = touchedDraft, todayEntryCount = 0)
+
+  private val saveErrored: RatingCardUiState =
     SaveError(draft = draftWithNote, todayEntryCount = 1)
-  )
+
+  override val values: Sequence<RatingCardUiState> =
+    sequenceOf(
+      loading,
+      emptyEditing,
+      touchedEditing,
+      editingWithNote,
+      savingInFlight,
+      saveErrored
+    )
 }

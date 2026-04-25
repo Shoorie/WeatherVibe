@@ -11,9 +11,14 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
 import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
+import com.weather.vibe.feature.viberating.preview.HapticSliderPreview
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.sliderDescription
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 import kotlin.math.roundToInt
@@ -58,4 +63,20 @@ internal fun HapticSlider(
       stateDescription = resolvedScaleLabel
     }
   )
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(HapticSliderPreview::class)
+  draft: Int
+) {
+  WeatherVibeTheme {
+    HapticSlider(
+      draft = draft,
+      enabled = true,
+      activeColor = ratingColor(draft),
+      onValueChanged = {}
+    )
+  }
 }

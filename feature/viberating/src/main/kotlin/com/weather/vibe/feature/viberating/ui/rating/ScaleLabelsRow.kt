@@ -10,10 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.rating.RatingColors
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MAX_RATING
+import com.weather.vibe.core.designsystem.theme.rating.RatingColors.MIN_RATING
+import com.weather.vibe.core.designsystem.theme.rating.ratingColor
+import com.weather.vibe.feature.viberating.preview.ScaleLabelsRowPreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 
 @Composable
 internal fun ScaleLabelsRow(
@@ -21,14 +27,14 @@ internal fun ScaleLabelsRow(
   activeColor: Color
 ) {
   Row(modifier = Modifier.fillMaxWidth()) {
-    for (rating in RatingColors.MIN_RATING..RatingColors.MAX_RATING) {
+    for (rating in MIN_RATING..MAX_RATING) {
       val isSelected = rating == selected
       Box(
         modifier = Modifier.weight(1f),
         contentAlignment = Alignment.Center
       ) {
         Text(
-          text = VibeRatingResources.scaleLabel(rating),
+          text = scaleLabel(rating),
           style = typography.labelSmall,
           color = if (isSelected) activeColor else colors.onSurfaceVariant,
           fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium,
@@ -36,5 +42,19 @@ internal fun ScaleLabelsRow(
         )
       }
     }
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(ScaleLabelsRowPreview::class)
+  selected: Int
+) {
+  WeatherVibeTheme {
+    ScaleLabelsRow(
+      selected = selected,
+      activeColor = ratingColor(selected)
+    )
   }
 }

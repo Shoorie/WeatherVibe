@@ -18,16 +18,24 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.components.mood.MoodFace
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingFormDraftUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.DraftContentPreview
+import com.weather.vibe.feature.viberating.preview.DraftContentPreviewParams
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.cardTitle
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.moodFaceDescription
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.save
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.saving
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.SaveSpinnerStroke
 import com.weather.vibe.feature.viberating.ui.rating.RatingCardDefaults.SpinnerSize
 
 @Composable
@@ -57,7 +65,10 @@ internal fun DraftContent(
     activeColor = activeColor,
     onValueChanged = onSliderValueChanged
   )
-  ScaleLabelsRow(selected = draft.sliderValue, activeColor = activeColor)
+  ScaleLabelsRow(
+    selected = draft.sliderValue,
+    activeColor = activeColor
+  )
   Spacer(Modifier.height(Padding.Small))
   NoteEditor(
     expanded = draft.noteExpanded,
@@ -80,7 +91,7 @@ internal fun DraftContent(
 @Composable
 private fun DraftHeader(todayEntryCount: Int) {
   Text(
-    text = Texts.cardTitle(),
+    text = cardTitle(),
     style = typography.titleMedium,
     color = colors.onSurface
   )
@@ -100,11 +111,11 @@ private fun DraftMoodRow(
     MoodFace(
       rating = rating,
       active = touched,
-      contentDescription = Texts.moodFaceDescription(rating)
+      contentDescription = moodFaceDescription(rating)
     )
     Spacer(Modifier.width(Padding.Medium))
     Text(
-      text = VibeRatingResources.scaleLabel(rating),
+      text = scaleLabel(rating),
       style = typography.titleMedium,
       color = if (touched) activeColor else colors.onSurfaceVariant,
       fontWeight = FontWeight.SemiBold,
@@ -136,11 +147,30 @@ private fun SaveButton(
         strokeWidth = SaveSpinnerStroke
       )
       Spacer(Modifier.width(Padding.Small))
-      Text(Texts.saving())
+      Text(saving())
     } else {
-      Text(Texts.save())
+      Text(save())
     }
   }
 }
 
-private val SaveSpinnerStroke = 2.dp
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(DraftContentPreview::class)
+  params: DraftContentPreviewParams
+) {
+  WeatherVibeTheme {
+    DraftContent(
+      draft = params.draft,
+      todayEntryCount = params.todayEntryCount,
+      saving = params.saving,
+      onSliderValueChanged = {},
+      onNoteValueChanged = {},
+      onNoteExpandClick = {},
+      onNoteCollapseClick = {},
+      onSaveClicked = {},
+      onViewHistoryClicked = {}
+    )
+  }
+}

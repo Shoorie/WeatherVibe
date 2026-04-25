@@ -12,11 +12,15 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.TodayEntriesBadgePreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.todayEntryCount
 
 @Composable
 internal fun TodayEntriesBadge(
@@ -32,7 +36,7 @@ internal fun TodayEntriesBadge(
       .semantics { liveRegion = LiveRegionMode.Polite }
   ) {
     Text(
-      text = Texts.todayEntryCount(count),
+      text = todayEntryCount(count),
       style = typography.labelSmall,
       color = colors.onSurfaceVariant,
       fontWeight = FontWeight.Medium
@@ -44,3 +48,14 @@ private val BadgePadding: PaddingValues = PaddingValues(
   horizontal = Padding.Small,
   vertical = Padding.ExtraSmall
 )
+
+@PreviewLightDark
+@Composable
+private fun Preview(
+  @PreviewParameter(TodayEntriesBadgePreview::class)
+  count: Int
+) {
+  WeatherVibeTheme {
+    TodayEntriesBadge(count = count)
+  }
+}

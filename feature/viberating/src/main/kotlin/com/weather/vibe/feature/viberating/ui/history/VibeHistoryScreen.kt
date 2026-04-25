@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,9 +31,11 @@ import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryEvent
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryViewModel
 import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
 import com.weather.vibe.feature.viberating.presentation.history.state.VibeHistoryUiState
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.VibeHistoryScreenPreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historyBack
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historySubtitle
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.historyTitle
 import com.weather.vibe.feature.viberating.ui.history.VibeHistoryDefaults.ScrollContentBottomPadding
-import com.weather.vibe.feature.viberating.ui.history.preview.VibeHistoryPreviewData
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -78,10 +81,10 @@ internal fun VibeHistoryContent(
     modifier = modifier,
     header = {
       VibeScreenHeader(
-        title = Texts.historyTitle(),
-        subtitle = Texts.historySubtitle(),
+        title = historyTitle(),
+        subtitle = historySubtitle(),
         onBackClicked = callbacks.onBackClicked,
-        backContentDescription = Texts.historyBack()
+        backContentDescription = historyBack()
       )
     }
   ) {
@@ -141,10 +144,13 @@ private fun PatternsSection(state: PatternsSectionUiState) {
 
 @PreviewLightDark
 @Composable
-private fun VibeHistoryContentPreview() {
+private fun Preview(
+  @PreviewParameter(VibeHistoryScreenPreview::class)
+  state: VibeHistoryUiState
+) {
   WeatherVibeTheme {
     VibeHistoryContent(
-      state = VibeHistoryPreviewData.emptyState,
+      state = state,
       callbacks = VibeHistoryCallbacks.Noop
     )
   }

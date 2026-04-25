@@ -21,7 +21,9 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Loading
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.preview.RatingCardPreview
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.cardTitle
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.sectionLabel
 
 @Composable
 internal fun RatingCard(
@@ -38,7 +40,7 @@ internal fun RatingCard(
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Text(
-      text = Texts.sectionLabel().uppercase(),
+      text = sectionLabel().uppercase(),
       style = typography.labelMedium,
       color = colors.onSurfaceVariant,
       modifier = Modifier
@@ -110,7 +112,7 @@ private fun RatingCardStateContent(
 @Composable
 private fun LoadingContent() {
   Text(
-    text = Texts.cardTitle(),
+    text = cardTitle(),
     style = typography.titleMedium,
     color = colors.onSurface
   )
@@ -118,8 +120,8 @@ private fun LoadingContent() {
 
 @PreviewLightDark
 @Composable
-private fun RatingCardPreview(
-  @PreviewParameter(RatingCardStatePreview::class)
+private fun Preview(
+  @PreviewParameter(RatingCardPreview::class)
   state: RatingCardUiState
 ) {
   WeatherVibeTheme {

@@ -20,22 +20,22 @@ class ObserveTodayEntries(
 ) {
 
   operator fun invoke(): Flow<List<RatingEntry>> =
-    todayFlow().flatMapLatest { today -> repository.observeForDate(today) }
+    currentDateUpdates().flatMapLatest(repository::observeForDate)
 
-  private fun todayFlow(): Flow<LocalDate> = flow {
+  private fun currentDateUpdates(): Flow<LocalDate> = flow {
     var current = timeProvider.today()
     emit(current)
     while (true) {
-      delay(TICK_INTERVAL_MS)
-      val now = timeProvider.today()
-      if (now != current) {
-        current = now
+      delay(MidnightPollIntervalMs)
+      val today = timeProvider.today()
+      if (today != current) {
+        current = today
         emit(current)
       }
     }
   }.distinctUntilChanged()
 
   private companion object {
-    const val TICK_INTERVAL_MS = 60_000L
+    const val MidnightPollIntervalMs: Long = 60_000L
   }
 }

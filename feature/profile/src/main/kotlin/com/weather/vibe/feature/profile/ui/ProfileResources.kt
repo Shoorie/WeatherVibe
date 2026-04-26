@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.appearance.model.ThemeMode
 import com.weather.vibe.domain.appearance.model.ThemeMode.AUTO

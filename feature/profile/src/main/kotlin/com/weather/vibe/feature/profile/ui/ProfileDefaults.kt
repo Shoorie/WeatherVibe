@@ -38,7 +38,7 @@ internal object ProfileDefaults {
   val HeroDecorationCloudHeight = 62.dp
   val HeroDecorationCloudOffsetX = 10.dp
   val HeroDecorationCloudOffsetY = 0.dp
-  val HeroDecorationCloudFloatRangeDp = 7f
+  const val HeroDecorationCloudFloatRangeDp = 7f
   const val HeroDecorationCloudFloatDurationMs = 3000
   const val HeroDecorationCloudAlpha = 0.35f
   const val HeroDecorationCloudTransitionLabel = "FloatingCloudTransition"

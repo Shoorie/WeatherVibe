@@ -3,10 +3,10 @@ package com.weather.vibe.feature.profile.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight.Companion.Medium
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarInitialFontSize
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarInitialFontSize
 
 internal object ProfileTextStyles {
 
@@ -21,12 +21,6 @@ internal object ProfileTextStyles {
     typography.bodySmall
 
   @Composable
-  fun heroQuote(): TextStyle {
-    val base = typography.bodySmall
-    return remember(base) { base.copy(fontStyle = FontStyle.Italic) }
-  }
-
-  @Composable
   fun heroChipLabel(): TextStyle = typography.labelMedium
 
   @Composable
@@ -37,19 +31,8 @@ internal object ProfileTextStyles {
 
   @Composable
   fun statValue(): TextStyle {
-    val base = typography.titleLarge
+    val base = typography.titleSmall
     return remember(base) { base.copy(fontWeight = SemiBold) }
-  }
-
-  @Composable
-  fun avatarInitial(): TextStyle {
-    val base = typography.titleLarge
-    return remember(base) {
-      base.copy(
-        fontSize = AvatarInitialFontSize,
-        fontWeight = SemiBold
-      )
-    }
   }
 
   @Composable
@@ -57,9 +40,14 @@ internal object ProfileTextStyles {
     typography.labelSmall
 
   @Composable
-  fun sectionTitle(): TextStyle {
-    val base = typography.titleMedium
-    return remember(base) { base.copy(fontWeight = SemiBold) }
+  fun avatarInitial(): TextStyle {
+    val base = typography.titleLarge
+    return remember(base) {
+      base.copy(
+        fontSize = HeroAvatarInitialFontSize,
+        fontWeight = Medium
+      )
+    }
   }
 
   @Composable
@@ -71,6 +59,42 @@ internal object ProfileTextStyles {
   @Composable
   fun rowBody(): TextStyle =
     typography.bodySmall
+
+  @Composable
+  fun vibeAverage(): TextStyle {
+    val base = typography.labelMedium
+    return remember(base) { base.copy(fontWeight = SemiBold) }
+  }
+
+  @Composable
+  fun vibeStreak(): TextStyle =
+    typography.labelMedium
+
+  @Composable
+  fun vibeEmptyCta(): TextStyle =
+    typography.labelMedium
+
+  @Composable
+  fun segmentChipActive(): TextStyle {
+    val base = typography.labelMedium
+    return remember(base) { base.copy(fontWeight = SemiBold) }
+  }
+
+  @Composable
+  fun segmentChipIdle(): TextStyle {
+    val base = typography.labelMedium
+    return remember(base) { base.copy(fontWeight = Medium) }
+  }
+
+  @Composable
+  fun footer(): TextStyle =
+    typography.labelSmall
+
+  @Composable
+  fun sectionTitle(): TextStyle {
+    val base = typography.titleMedium
+    return remember(base) { base.copy(fontWeight = SemiBold) }
+  }
 
   @Composable
   fun sheetTitle(): TextStyle {

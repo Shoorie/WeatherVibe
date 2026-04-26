@@ -30,10 +30,7 @@ class MainActivity : ComponentActivity() {
     val splashScreen = installSplashScreen()
     super.onCreate(savedInstanceState)
 
-    enableEdgeToEdge(
-      statusBarStyle = resources.systemBarStyle(),
-      navigationBarStyle = resources.systemBarStyle()
-    )
+    enableEdgeToEdge()
 
     splashScreen.setKeepOnScreenCondition { startRoute.value == null }
     handleDeepLinks()

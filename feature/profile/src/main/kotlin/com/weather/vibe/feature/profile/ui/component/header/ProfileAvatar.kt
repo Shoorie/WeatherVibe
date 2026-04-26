@@ -12,15 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.profile.preview.ProfileAvatarPreviewProvider
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarBorderAlpha
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarBorderWidth
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarInitialFontSize
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarSize
-import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
 internal fun ProfileAvatar(
@@ -42,7 +44,10 @@ internal fun ProfileAvatar(
     Text(
       modifier = Modifier.clearAndSetSemantics {},
       text = initial,
-      style = ProfileTextStyles.avatarInitial(),
+      style = typography.titleLarge.copy(
+        fontSize = HeroAvatarInitialFontSize,
+        fontWeight = FontWeight.Medium
+      ),
       color = colors.onAccent
     )
   }

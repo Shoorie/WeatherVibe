@@ -60,10 +60,7 @@ internal fun ProfileHero(
         .padding(top = HeroPaddingTop, bottom = HeroPaddingBottom),
       verticalArrangement = Arrangement.spacedBy(HeroChipMarginTop)
     ) {
-      HeroGreetingRow(
-        header = header,
-        onEditClick = onEditClick
-      )
+      HeroGreetingRow(header = header)
       if (header.briefToneLabel.isNotBlank()) {
         HeroToneChip(
           toneValue = header.briefToneLabel,

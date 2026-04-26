@@ -10,27 +10,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarBorderWidth
-import com.weather.vibe.feature.profile.ui.ProfileDefaults.AvatarSize
+import com.weather.vibe.feature.profile.preview.ProfileAvatarPreviewProvider
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarBorderAlpha
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarBorderWidth
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroAvatarSize
 import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
 internal fun ProfileAvatar(
-  initial: String,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  initial: String
 ) {
   Box(
     modifier = modifier
-      .size(AvatarSize)
+      .size(HeroAvatarSize)
       .clip(CircleShape)
       .background(colors.accentDark)
       .border(
-        width = AvatarBorderWidth,
-        color = colors.onAccent,
+        width = HeroAvatarBorderWidth,
+        color = Color.White.copy(alpha = HeroAvatarBorderAlpha),
         shape = CircleShape
       ),
     contentAlignment = Alignment.Center
@@ -46,26 +50,13 @@ internal fun ProfileAvatar(
 
 @PreviewLightDark
 @Composable
-private fun NamedPreview() {
+private fun Preview(
+  @PreviewParameter(ProfileAvatarPreviewProvider::class)
+  initial: String
+) {
   WeatherVibeTheme {
-    Box(
-      modifier = Modifier
-        .background(colors.accent)
-    ) {
-      ProfileAvatar(initial = "A")
-    }
-  }
-}
-
-@PreviewLightDark
-@Composable
-private fun UnnamedPreview() {
-  WeatherVibeTheme {
-    Box(
-      modifier = Modifier
-        .background(colors.accent)
-    ) {
-      ProfileAvatar(initial = "?")
+    Box(modifier = Modifier.background(colors.accent)) {
+      ProfileAvatar(initial = initial)
     }
   }
 }

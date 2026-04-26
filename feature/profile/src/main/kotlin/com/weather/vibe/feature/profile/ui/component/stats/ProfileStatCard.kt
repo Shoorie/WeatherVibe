@@ -57,7 +57,7 @@ internal fun ProfileStatCard(
       )
       Text(
         text = stat.value,
-        style = typography.titleSmall.copy(fontWeight = SemiBold),
+        style = typography.titleLarge.copy(fontWeight = SemiBold),
         color = colors.onPrimaryContainer,
         textAlign = TextAlign.Center
       )

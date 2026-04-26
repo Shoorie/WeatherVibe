@@ -71,7 +71,7 @@ internal fun VibeRow(
         modifier = Modifier.size(IconSize.Small),
         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
         contentDescription = null,
-        tint = colors.textTertiary
+        tint = colors.onPrimaryContainer
       )
     }
   }

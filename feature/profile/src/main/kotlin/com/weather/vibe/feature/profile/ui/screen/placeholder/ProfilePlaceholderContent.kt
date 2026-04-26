@@ -1,54 +1,42 @@
 package com.weather.vibe.feature.profile.ui.screen.placeholder
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
-import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 
 @Composable
 internal fun ProfilePlaceholderContent(
   modifier: Modifier = Modifier,
   topBarTitle: String,
+  topBarSubtitle: String,
   title: String,
   body: String,
   onNavigateBack: () -> Unit
 ) {
-  Scaffold(
+  VibeScreenScaffold(
     modifier = modifier,
-    containerColor = colors.backgroundGradientEnd,
-    contentColor = Color.Unspecified,
-    topBar = {
-      VibeTopBar(
+    header = {
+      VibeScreenHeader(
         title = topBarTitle,
-        onNavigateBack = onNavigateBack
+        subtitle = topBarSubtitle,
+        onBackClicked = onNavigateBack
       )
     }
-  ) { innerPadding ->
-    Box(
-      modifier = Modifier
-        .fillMaxSize()
-        .padding(innerPadding)
-        .background(colors.backgroundGradientEnd),
-      contentAlignment = Alignment.Center
+  ) {
+    Column(
+      modifier = Modifier.fillMaxSize(),
+      verticalArrangement = Arrangement.Center,
+      horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-      ) {
-        VibeMessage(title = title, message = body)
-      }
+      VibeMessage(title = title, message = body)
     }
   }
 }
@@ -58,9 +46,10 @@ internal fun ProfilePlaceholderContent(
 private fun Preview() {
   WeatherVibeTheme {
     ProfilePlaceholderContent(
-      topBarTitle = "Polityka prywatności",
-      title = "Polityka prywatności",
-      body = "WeatherVibe trzyma Twoje dane lokalnie, na urządzeniu. Pełna polityka w drodze.",
+      topBarTitle = "Privacy",
+      topBarSubtitle = "Your data and permissions",
+      title = "Privacy policy",
+      body = "WeatherVibe keeps your data on-device. Full policy on the way.",
       onNavigateBack = {}
     )
   }

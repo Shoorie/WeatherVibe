@@ -1,9 +1,5 @@
 package com.weather.vibe.feature.activityplanner.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -12,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.designsystem.components.topbar.VibeTopBar
+import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
+import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.domain.activityplanner.model.ActivityType
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerEvent.NavigateBack
@@ -24,6 +20,7 @@ import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlann
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Loaded
 import com.weather.vibe.feature.activityplanner.presentation.state.ActivityPlannerUiState.Loading
 import com.weather.vibe.feature.activityplanner.preview.ActivityPlannerPreview
+import com.weather.vibe.feature.activityplanner.ui.ActivityPlannerResources.Texts.screenSubtitle
 import com.weather.vibe.feature.activityplanner.ui.ActivityPlannerResources.Texts.screenTitle
 import com.weather.vibe.feature.activityplanner.ui.screen.callbacks.ActivityPlannerCallbacks
 import org.koin.androidx.compose.koinViewModel
@@ -63,22 +60,21 @@ internal fun ActivityPlannerContent(
   onBackClick: () -> Unit,
   onRetryClick: () -> Unit
 ) {
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(colors.backgroundGradientEnd)
-  ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-      VibeTopBar(
+  VibeScreenScaffold(
+    modifier = modifier,
+    header = {
+      VibeScreenHeader(
         title = screenTitle(),
-        onNavigateBack = onBackClick
-      )
-      ScreenBody(
-        state = state,
-        onActivitySelect = onActivitySelect,
-        onRetryClick = onRetryClick
+        subtitle = screenSubtitle(),
+        onBackClicked = onBackClick
       )
     }
+  ) {
+    ScreenBody(
+      state = state,
+      onActivitySelect = onActivitySelect,
+      onRetryClick = onRetryClick
+    )
   }
 }
 

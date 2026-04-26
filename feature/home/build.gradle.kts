@@ -16,12 +16,15 @@ dependencies {
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.vibe)
+  implementation(projects.domain.viberating)
   implementation(projects.domain.weather)
+  implementation(projects.feature.viberating)
 
   implementation(libs.kotlinx.collections.immutable)
 
   testImplementation(projects.testing.airqualityFixtures)
   testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.timeFixtures)
+  testImplementation(projects.testing.viberatingFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

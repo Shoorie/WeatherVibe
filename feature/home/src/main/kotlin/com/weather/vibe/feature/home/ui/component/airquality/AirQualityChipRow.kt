@@ -19,7 +19,7 @@ import com.weather.vibe.feature.home.preview.HomePreviewData.moderateAirQualityC
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-internal fun BriefAirChipRow(
+internal fun AirQualityChipRow(
   modifier: Modifier = Modifier,
   airQualityChip: AirQualityChipUiState?,
   pollenChip: PollenChipUiState?
@@ -31,17 +31,19 @@ internal fun BriefAirChipRow(
     verticalArrangement = Arrangement.spacedBy(ExtraSmall)
   ) {
     airQualityChip?.let { chip ->
-      BriefAirChip(
+      AirQualityChip(
         indicator = chip.indicator,
         label = chip.label,
-        contentDescription = chip.contentDescription
+        contentDescription = chip.contentDescription,
+        tint = chip.tint
       )
     }
     pollenChip?.let { chip ->
-      BriefAirChip(
+      AirQualityChip(
         indicator = chip.indicator,
         label = chip.label,
-        contentDescription = chip.contentDescription
+        contentDescription = chip.contentDescription,
+        tint = chip.tint
       )
     }
   }
@@ -51,7 +53,7 @@ internal fun BriefAirChipRow(
 @Composable
 private fun Preview() {
   WeatherVibeTheme {
-    BriefAirChipRow(
+    AirQualityChipRow(
       airQualityChip = moderateAirQualityChip,
       pollenChip = highPollenChip
     )

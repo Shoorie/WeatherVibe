@@ -6,5 +6,6 @@ import androidx.compose.runtime.Immutable
 internal data class PollenChipUiState(
   val indicator: String,
   val label: String,
-  val contentDescription: String
+  val contentDescription: String,
+  val tint: EnvChipTint
 )

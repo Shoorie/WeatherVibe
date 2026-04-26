@@ -1,7 +1,6 @@
 package com.weather.vibe.feature.home.ui.component.airquality
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -16,26 +15,27 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
-import com.weather.vibe.core.designsystem.theme.AppDimens.Stroke.Border
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.presentation.state.AirQualityChipUiState
-import com.weather.vibe.feature.home.preview.BriefAirChipPreview
+import com.weather.vibe.feature.home.presentation.state.EnvChipTint
+import com.weather.vibe.feature.home.preview.AirQualityChipPreview
+import com.weather.vibe.feature.home.ui.component.airquality.AirQualityChipStyles.palette
 
 @Composable
-internal fun BriefAirChip(
+internal fun AirQualityChip(
   modifier: Modifier = Modifier,
   indicator: String,
   label: String,
-  contentDescription: String
+  contentDescription: String,
+  tint: EnvChipTint
 ) {
+  val chipColors = palette(tint)
   Row(
     modifier = modifier
       .clip(shapes.pill)
-      .background(colors.glassSurface)
-      .border(width = Border, color = colors.glassBorder, shape = shapes.pill)
+      .background(chipColors.container)
       .padding(horizontal = Small, vertical = ExtraSmall)
       .clearAndSetSemantics { this.contentDescription = contentDescription },
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall),
@@ -48,7 +48,7 @@ internal fun BriefAirChip(
     Text(
       text = label,
       style = typography.labelMedium,
-      color = colors.onSurface
+      color = chipColors.content
     )
   }
 }
@@ -56,14 +56,15 @@ internal fun BriefAirChip(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(BriefAirChipPreview::class)
+  @PreviewParameter(AirQualityChipPreview::class)
   state: AirQualityChipUiState
 ) {
   WeatherVibeTheme {
-    BriefAirChip(
+    AirQualityChip(
       indicator = state.indicator,
       label = state.label,
-      contentDescription = state.contentDescription
+      contentDescription = state.contentDescription,
+      tint = state.tint
     )
   }
 }

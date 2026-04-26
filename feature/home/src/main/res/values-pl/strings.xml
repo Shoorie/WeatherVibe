@@ -49,6 +49,7 @@
   <string name="uv_index_label">Indeks UV</string>
   <string name="visibility_label">Widoczność</string>
   <string name="weather_details_title">Szczegóły pogody</string>
+  <string name="weather_details_subtitle">Pełen obraz dzisiejszej pogody</string>
   <string name="weather_details_view_all">Zobacz wszystkie szczegóły</string>
   <string name="wind_gusts_label">Porywy wiatru</string>
   <string name="wind_section_subtitle">Prędkość, kierunek i porywy</string>

@@ -1,0 +1,95 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "736ccb28867d9aff22a6b71a4865b46a",
+    "entities": [
+      {
+        "tableName": "rating_entries",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `rating` INTEGER NOT NULL, `note` TEXT NOT NULL, `created_at_epoch_ms` INTEGER NOT NULL, `w_temperature_c` REAL NOT NULL, `w_feels_like_c` REAL NOT NULL, `w_condition` TEXT NOT NULL, `w_humidity_percent` INTEGER NOT NULL, `w_wind_kph` REAL NOT NULL, `w_pressure_hpa` INTEGER NOT NULL, `w_aqi` INTEGER, `w_pollen_level` TEXT, PRIMARY KEY(`date`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "createdAtEpochMs",
+            "columnName": "created_at_epoch_ms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.temperatureC",
+            "columnName": "w_temperature_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.feelsLikeC",
+            "columnName": "w_feels_like_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.condition",
+            "columnName": "w_condition",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.humidityPercent",
+            "columnName": "w_humidity_percent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.windKph",
+            "columnName": "w_wind_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.pressureHpa",
+            "columnName": "w_pressure_hpa",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weather.airQualityIndex",
+            "columnName": "w_aqi",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "weather.pollenLevel",
+            "columnName": "w_pollen_level",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "date"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '736ccb28867d9aff22a6b71a4865b46a')"
+    ]
+  }
+}

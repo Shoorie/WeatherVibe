@@ -14,6 +14,7 @@ import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAn
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.feature.home.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
@@ -59,7 +60,8 @@ internal class HomeViewModel(
   private val resources: HomeResources,
   private val shareBitmapAsImage: ShareBitmapAsImage,
   private val stateFactory: HomeStateFactory,
-  private val useCases: HomeUseCases
+  private val useCases: HomeUseCases,
+  private val weatherDataToVibeSnapshot: WeatherDataToVibeSnapshot
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<HomeUiState>(Loading)
@@ -173,6 +175,13 @@ internal class HomeViewModel(
         onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
       ReformatOnly -> onReformatOnly(weather, settings)
     }
+    clearRefreshFlag()
+  }
+
+  private fun clearRefreshFlag() {
+    _state.update { current ->
+      (current as? Loaded)?.copy(isRefreshing = false) ?: current
+    }
   }
 
   private fun onRegenerateSuggestion(weather: WeatherData, settings: UserSettings) {
@@ -201,10 +210,12 @@ internal class HomeViewModel(
   }
 
   private fun onReformatOnly(weather: WeatherData, settings: UserSettings) {
+    val metrics = useCases.getCurrentWeatherMetrics(weather)
     _state.update {
       stateFactory.reformatTemperatures(
         current = it,
         data = weather,
+        metrics = metrics,
         unit = settings.temperatureUnit
       )
     }
@@ -216,11 +227,13 @@ internal class HomeViewModel(
   }
 
   private fun rebuildLoadedState(weather: WeatherData, settings: UserSettings): Loaded {
-    val base = stateFactory.create(data = weather, unit = settings.temperatureUnit)
-    return base.copy(
-      dailyVibe = preservedDailyVibeCard(),
-      isRefreshing = false
+    val base = stateFactory.create(
+      data = weather,
+      metrics = useCases.getCurrentWeatherMetrics(weather),
+      vibeSnapshot = weatherDataToVibeSnapshot.map(weather),
+      unit = settings.temperatureUnit
     )
+    return base.copy(dailyVibe = preservedDailyVibeCard())
   }
 
   private fun preservedDailyVibeCard(): DailyVibeCardUiState? {

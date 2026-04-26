@@ -8,6 +8,7 @@ import com.weather.vibe.domain.vibe.usecase.CalculateDailyVibe
 import com.weather.vibe.domain.weather.usecase.DetermineWeatherRefreshStrategy
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
+import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherMetrics
 import com.weather.vibe.domain.weather.usecase.GetWeather
 import com.weather.vibe.domain.weather.usecase.InvalidateWeatherSuggestion
 import org.koin.core.annotation.Factory
@@ -19,6 +20,7 @@ internal data class HomeUseCases(
   val excludeGenre: ExcludeGenre,
   val generateWeatherSuggestion: GenerateWeatherSuggestion,
   val getCurrentWeatherKey: GetCurrentWeatherKey,
+  val getCurrentWeatherMetrics: GetCurrentWeatherMetrics,
   val getEnvironmentalReadings: GetEnvironmentalReadings,
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,

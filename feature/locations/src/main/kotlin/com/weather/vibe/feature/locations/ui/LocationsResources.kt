@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.feature.locations.R
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.CompareHintPickOne
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.CompareHintPickZero
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.LocationCount
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.TemperaturePlaceholder
 import org.koin.core.annotation.Factory
 
@@ -28,6 +32,10 @@ internal class LocationsResources(private val context: Context) {
   object Texts {
 
     @Composable
+    fun screenTitle(): String =
+      stringResource(R.string.locations_screen_title)
+
+    @Composable
     fun headerTitle(): String =
       stringResource(R.string.locations_header_title)
 
@@ -36,6 +44,13 @@ internal class LocationsResources(private val context: Context) {
       0 -> stringResource(R.string.locations_header_subtitle_empty)
       1 -> stringResource(R.string.locations_header_subtitle_one, limit)
       else -> stringResource(R.string.locations_header_subtitle, count, limit)
+    }
+
+    @Composable
+    fun headerSubtitle(variant: LocationsHeaderSubtitle): String = when (variant) {
+      CompareHintPickZero -> compareHintPickZero()
+      CompareHintPickOne -> compareHintPickOne()
+      is LocationCount -> headerSubtitle(count = variant.count, limit = variant.limit)
     }
 
     @Composable

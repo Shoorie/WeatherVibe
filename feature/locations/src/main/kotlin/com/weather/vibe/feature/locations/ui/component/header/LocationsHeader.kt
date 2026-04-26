@@ -114,7 +114,7 @@ private fun subtitleText(
 }
 
 @Composable
-private fun CompareTogglePill(
+internal fun CompareTogglePill(
   compareMode: Boolean,
   onClick: () -> Unit
 ) {

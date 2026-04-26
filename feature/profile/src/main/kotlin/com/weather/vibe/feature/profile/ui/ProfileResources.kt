@@ -3,6 +3,7 @@ package com.weather.vibe.feature.profile.ui
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
@@ -88,6 +89,10 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_header_brief_tone_click_label)
 
     @Composable
+    fun screenTitle(): String =
+      stringResource(R.string.profile_screen_title)
+
+    @Composable
     fun personalizationTitle(): String =
       stringResource(R.string.profile_row_personalization_title)
 
@@ -124,12 +129,25 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_mood_title)
 
     @Composable
-    fun moodBody(): String =
-      stringResource(R.string.profile_mood_body)
+    fun moodCta(): String =
+      stringResource(R.string.profile_mood_cta)
 
     @Composable
-    fun moodBadge(): String =
-      stringResource(R.string.profile_mood_badge)
+    fun moodBodyEmpty(): String =
+      stringResource(R.string.profile_mood_body_empty)
+
+    @Composable
+    fun moodDaysPlural(count: Int): String =
+      pluralStringResource(R.plurals.profile_mood_days, count)
+
+    @Composable
+    fun moodSummary(average: String, dayCount: Int, daysLabel: String): String =
+      stringResource(
+        R.string.profile_mood_summary_format,
+        average,
+        dayCount,
+        daysLabel
+      )
 
     @Composable
     fun editSheetTitle(): String =
@@ -172,11 +190,19 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_placeholder_privacy_body)
 
     @Composable
+    fun placeholderPrivacySubtitle(): String =
+      stringResource(R.string.profile_placeholder_privacy_subtitle)
+
+    @Composable
     fun placeholderAboutTitle(): String =
       stringResource(R.string.profile_placeholder_about_title)
 
     @Composable
     fun placeholderAboutBody(): String =
       stringResource(R.string.profile_placeholder_about_body)
+
+    @Composable
+    fun placeholderAboutSubtitle(): String =
+      stringResource(R.string.profile_placeholder_about_subtitle)
   }
 }

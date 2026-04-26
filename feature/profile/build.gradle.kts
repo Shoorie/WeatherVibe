@@ -9,7 +9,9 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.time)
   implementation(projects.domain.airquality)
+  implementation(projects.domain.appearance)
   implementation(projects.domain.location)
   implementation(projects.domain.profile)
   implementation(projects.domain.settings)
@@ -19,4 +21,6 @@ dependencies {
 
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.settingsFixtures)
+  testImplementation(projects.testing.timeFixtures)
+  testImplementation(projects.testing.viberatingFixtures)
 }

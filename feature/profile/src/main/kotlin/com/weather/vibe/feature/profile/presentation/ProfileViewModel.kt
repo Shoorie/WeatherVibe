@@ -3,8 +3,7 @@ package com.weather.vibe.feature.profile.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.domain.profile.model.ProfileSummary
-import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.domain.appearance.model.ThemeMode
 import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
@@ -13,12 +12,15 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.Notifications
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.ThemeSelect
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
+import com.weather.vibe.feature.profile.presentation.ProfileAction.VibeRowClick
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenVibeHistory
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCATIONS
@@ -55,8 +57,7 @@ internal class ProfileViewModel(
   }
 
   init {
-    observeProfileSnapshot()
-    observeFavoritesCount()
+    observeSnapshot()
   }
 
   fun dispatch(action: ProfileAction) {
@@ -70,23 +71,38 @@ internal class ProfileViewModel(
       is PersonalizationClick -> onPersonalizationClick()
       is PrivacyClick -> onPrivacyClick()
       is StatClick -> onStatClick(action.type)
+      is ThemeSelect -> onThemeSelect(action.mode)
+      is VibeRowClick -> onVibeRowClick()
     }
   }
 
-  private fun observeProfileSnapshot() {
+  private fun observeSnapshot() {
     combine(
       useCases.observeProfile(),
       useCases.observeUserSettings(),
+      useCases.observeFavoritesCount(),
+      useCases.observeVibeOverview(),
+      useCases.observeThemeMode(),
       ::ProfileSnapshot
     )
-      .onEach(::onProfileSnapshot)
+      .onEach(::applySnapshot)
       .launchIn(viewModelScope)
   }
 
-  private fun observeFavoritesCount() {
-    useCases.observeFavoritesCount()
-      .onEach(::onFavoritesCountResult)
-      .launchIn(viewModelScope)
+  private fun applySnapshot(snapshot: ProfileSnapshot) {
+
+    snapshot.settingsResult
+      .onFailure { Log.e(TAG, "Failed to observe user settings", it) }
+
+    snapshot.favoritesCountResult
+      .onFailure { Log.e(TAG, "Failed to observe favorites", it) }
+
+    _state.update { current ->
+      stateFactory.create(
+        state = current,
+        snapshot = snapshot
+      )
+    }
   }
 
   private fun onAboutClick() {
@@ -105,10 +121,20 @@ internal class ProfileViewModel(
     send(OpenPrivacy)
   }
 
+  private fun onVibeRowClick() {
+    send(OpenVibeHistory)
+  }
+
   private fun onStatClick(type: ProfileStatType) {
     when (type) {
       LOCATIONS -> send(OpenLocations)
       MORNING_BRIEF, ALERTS -> send(OpenNotifications)
+    }
+  }
+
+  private fun onThemeSelect(mode: ThemeMode) {
+    viewModelScope.launch(errorHandler) {
+      useCases.setThemeMode(mode = mode)
     }
   }
 
@@ -127,8 +153,10 @@ internal class ProfileViewModel(
   }
 
   private fun onEditUsernameSubmit() {
+
     val trimmed = _state.value.editSheet.username.trim()
     if (trimmed.isEmpty()) return
+
     persistUsername(trimmed)
     _state.update(stateFactory::dismissEditSheet)
   }
@@ -139,57 +167,11 @@ internal class ProfileViewModel(
     }
   }
 
-  private fun onProfileSnapshot(snapshot: ProfileSnapshot) {
-    applyProfile(snapshot.profile)
-    snapshot.settingsResult
-      .onSuccess(::applySettings)
-      .onFailure(::onSettingsError)
-  }
-
-  private fun applyProfile(profile: ProfileSummary) {
-    _state.update { current ->
-      stateFactory.withProfile(
-        state = current,
-        profile = profile
-      )
-    }
-  }
-
-  private fun onFavoritesCountResult(result: Result<Int>) {
-    result
-      .onSuccess(::applyLocationsCount)
-      .onFailure { Log.e(TAG, "Failed to observe favorites", it) }
-  }
-
-  private fun applyLocationsCount(count: Int) {
-    _state.update { current ->
-      stateFactory.withLocationsCount(state = current, count = count)
-    }
-  }
-
-  private fun applySettings(settings: UserSettings) {
-    _state.update { current ->
-      stateFactory.withSettings(
-        state = current,
-        settings = settings
-      )
-    }
-  }
-
-  private fun onSettingsError(throwable: Throwable) {
-    Log.e(TAG, "Failed to observe user settings", throwable)
-  }
-
   private fun send(event: ProfileEvent) {
     viewModelScope.launch {
       _event.send(event)
     }
   }
-
-  private data class ProfileSnapshot(
-    val profile: ProfileSummary,
-    val settingsResult: Result<UserSettings>
-  )
 
   private companion object {
     const val TAG = "ProfileViewModel"

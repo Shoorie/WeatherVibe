@@ -6,4 +6,5 @@ internal sealed interface ProfileEvent {
   data object OpenNotifications : ProfileEvent
   data object OpenPersonalization : ProfileEvent
   data object OpenPrivacy : ProfileEvent
+  data object OpenVibeHistory : ProfileEvent
 }

@@ -62,7 +62,7 @@ internal fun LocationCompareTemperatureChart(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.card)
-      .background(colors.glassSurface)
+      .background(colors.rowSurface)
       .border(
         width = Border,
         color = colors.outlineVariant,

@@ -38,7 +38,7 @@ internal fun MetricTile(
   Column(
     modifier = modifier
       .clip(shapes.cardSmall)
-      .background(colors.surfaceVariant)
+      .background(colors.primaryContainer)
       .padding(Medium)
       .semantics(mergeDescendants = true) {}
   ) {

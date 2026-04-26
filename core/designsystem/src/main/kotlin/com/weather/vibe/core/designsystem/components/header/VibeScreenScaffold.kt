@@ -18,11 +18,7 @@ fun VibeScreenScaffold(
   header: @Composable () -> Unit,
   content: @Composable ColumnScope.() -> Unit
 ) {
-  Box(
-    modifier = modifier
-      .fillMaxSize()
-      .background(rememberAppBackgroundBrush())
-  ) {
+  Box(modifier = modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
         .fillMaxSize()
@@ -39,6 +35,7 @@ fun VibeScreenScaffold(
 private fun Preview() {
   WeatherVibeTheme {
     VibeScreenScaffold(
+      modifier = Modifier.background(rememberAppBackgroundBrush()),
       header = {
         VibeScreenHeader(
           title = "Your vibe",

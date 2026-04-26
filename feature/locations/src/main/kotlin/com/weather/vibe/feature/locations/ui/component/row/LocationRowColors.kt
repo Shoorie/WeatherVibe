@@ -6,7 +6,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 
 @Composable
 internal fun rowBackgroundColor(isHighlighted: Boolean): Color =
-  if (isHighlighted) colors.primaryContainer else colors.glassSurface
+  if (isHighlighted) colors.selectedRowSurface else colors.rowSurface
 
 @Composable
 internal fun rowBorderColor(isHighlighted: Boolean): Color =

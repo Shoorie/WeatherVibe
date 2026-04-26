@@ -5,6 +5,8 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+private const val SelectedRowOverlayAlpha = 0.20f
+
 @Immutable
 data class WeatherColors(
   val accent: Color,
@@ -14,9 +16,9 @@ data class WeatherColors(
   val backgroundGradientStart: Color,
   val cardContainer: Color,
   val error: Color,
-  val glassBorder: Color,
   val glassSurface: Color,
   val glassSurfaceHeavy: Color,
+  val heroSurface: Color,
   val onAccent: Color,
   val onBackground: Color,
   val onError: Color,
@@ -24,9 +26,14 @@ data class WeatherColors(
   val onSurfaceVariant: Color,
   val outline: Color,
   val outlineVariant: Color,
+  val popupSurface: Color,
   val primaryContainer: Color,
   val onPrimaryContainer: Color,
+  val rowSurface: Color,
+  val screenSurface: Color,
+  val selectedRowSurface: Color,
   val sheetSurface: Color,
+  val success: Color,
   val surfaceVariant: Color,
   val colorCool: Color,
   val colorWarm: Color,
@@ -36,8 +43,8 @@ data class WeatherColors(
 
 fun weatherDarkColors(): WeatherColors =
   WeatherColors(
-    accent = ColorTokens.AccentSkyBlue,
-    accentDark = ColorTokens.AccentSkyBlueDark,
+    accent = ColorTokens.AccentLavender,
+    accentDark = ColorTokens.AccentIndigo,
     appBackgroundStart = ColorTokens.BackgroundGradientStart,
     backgroundGradientEnd = ColorTokens.BackgroundGradientEnd,
     backgroundGradientStart = ColorTokens.BackgroundGradientStart,
@@ -45,9 +52,9 @@ fun weatherDarkColors(): WeatherColors =
     colorCool = ColorTokens.PaletteBlue,
     colorWarm = ColorTokens.PaletteAmber,
     error = ColorTokens.DarkError,
-    glassBorder = ColorTokens.GlassBorder,
     glassSurface = ColorTokens.GlassSurface,
     glassSurfaceHeavy = ColorTokens.GlassSurfaceHeavy,
+    heroSurface = ColorTokens.DarkCardContainer,
     onAccent = ColorTokens.OnAccent,
     onBackground = ColorTokens.TextPrimary,
     onError = ColorTokens.TextPrimary,
@@ -55,10 +62,15 @@ fun weatherDarkColors(): WeatherColors =
     onSurfaceVariant = ColorTokens.TextSecondary,
     outline = ColorTokens.GlassBorder,
     outlineVariant = ColorTokens.GlassBorderSubtle,
-    primaryContainer = ColorTokens.AccentSkyBlueDark,
+    popupSurface = ColorTokens.DarkCardContainer,
+    primaryContainer = ColorTokens.DarkCardContainer,
     onPrimaryContainer = ColorTokens.TextPrimary,
+    rowSurface = ColorTokens.DarkCardContainer,
+    screenSurface = ColorTokens.BackgroundGradientEnd,
+    selectedRowSurface = ColorTokens.AccentLavender.copy(alpha = SelectedRowOverlayAlpha),
     sheetSurface = ColorTokens.SheetSurface,
-    surfaceVariant = ColorTokens.GlassSurface,
+    success = ColorTokens.DarkSuccess,
+    surfaceVariant = ColorTokens.DarkCardContainer,
     textTertiary = ColorTokens.TextTertiary,
     pillPalette = persistentListOf(
       ColorTokens.DarkPillCoral,
@@ -79,9 +91,9 @@ fun weatherLightColors(): WeatherColors =
     backgroundGradientStart = ColorTokens.LightBackground,
     cardContainer = ColorTokens.LightPrimaryContainer,
     error = ColorTokens.LightError,
-    glassBorder = ColorTokens.LightOutlineVariant,
     glassSurface = ColorTokens.LightSurface,
     glassSurfaceHeavy = ColorTokens.LightSurfaceContainer,
+    heroSurface = ColorTokens.LightPrimary,
     onAccent = ColorTokens.OnAccent,
     onBackground = ColorTokens.LightOnSurface,
     onError = ColorTokens.LightSurface,
@@ -89,11 +101,16 @@ fun weatherLightColors(): WeatherColors =
     onSurfaceVariant = ColorTokens.LightOnSurfaceVariant,
     outline = ColorTokens.LightOutline,
     outlineVariant = ColorTokens.LightOutlineVariant,
+    popupSurface = ColorTokens.LightSurface,
     primaryContainer = ColorTokens.LightPrimaryContainer,
     onPrimaryContainer = ColorTokens.LightOnPrimaryContainer,
     colorCool = ColorTokens.LightCool,
     colorWarm = ColorTokens.LightWarm,
+    rowSurface = ColorTokens.LightSurface,
+    screenSurface = ColorTokens.LightSurface,
+    selectedRowSurface = ColorTokens.LightPrimaryContainer,
     sheetSurface = ColorTokens.LightSurface,
+    success = ColorTokens.LightSuccess,
     surfaceVariant = ColorTokens.LightSurfaceContainer,
     textTertiary = ColorTokens.LightTextTertiary,
     pillPalette = persistentListOf(

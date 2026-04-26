@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.activityplanner.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.activityplanner.model.ActivityType
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerEvent.NavigateBack
@@ -61,7 +63,7 @@ internal fun ActivityPlannerContent(
   onRetryClick: () -> Unit
 ) {
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = screenTitle(),

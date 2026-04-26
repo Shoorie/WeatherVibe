@@ -27,6 +27,7 @@ internal object LocationsDefaults {
   val ReorderAutoScrollSpeed = 480.dp
 
   const val CompareMinCards: Int = 2
+  const val CompareTogglePillTintAlpha = 0.16f
   const val DraggedAlpha = 0.92f
   const val DraggedZIndex = 1f
   const val IconBadgeAlpha = 0.18f

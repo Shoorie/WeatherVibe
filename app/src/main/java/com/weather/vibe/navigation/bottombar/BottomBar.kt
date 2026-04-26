@@ -1,9 +1,9 @@
 package com.weather.vibe.navigation.bottombar
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -54,7 +54,7 @@ internal fun WeatherVibeBottomBar(
         key = HOME,
         label = homeLabel(),
         onClickLabel = homeClickLabel(),
-        icon = Icons.Default.Home,
+        icon = Icons.Outlined.Home,
         isSelected = currentTopRoute is HomeRoute,
         onClick = onHomeClick
       ),
@@ -62,7 +62,7 @@ internal fun WeatherVibeBottomBar(
         key = LOCATIONS,
         label = locationsLabel(),
         onClickLabel = locationsClickLabel(),
-        icon = Icons.Default.LocationOn,
+        icon = Icons.Outlined.LocationOn,
         isSelected = currentTopRoute is LocationsRoute,
         onClick = onLocationsClick
       ),
@@ -70,7 +70,7 @@ internal fun WeatherVibeBottomBar(
         key = PROFILE,
         label = profileLabel(),
         onClickLabel = profileClickLabel(),
-        icon = Icons.Default.Person,
+        icon = Icons.Outlined.Person,
         isSelected = currentTopRoute is ProfileRoute,
         onClick = onProfileClick
       )

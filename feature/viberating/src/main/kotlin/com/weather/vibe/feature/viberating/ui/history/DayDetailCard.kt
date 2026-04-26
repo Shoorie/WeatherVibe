@@ -72,7 +72,7 @@ private fun DayDetailContent(
     modifier = modifier
       .semantics(mergeDescendants = true) { liveRegion = Polite },
     shape = shapes.cardMedium,
-    containerColor = colors.glassSurfaceHeavy,
+    containerColor = colors.glassSurface,
     contentPadding = Medium
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {

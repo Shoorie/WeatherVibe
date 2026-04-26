@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.profile.ui.screen.placeholder
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,7 @@ import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 
 @Composable
 internal fun ProfilePlaceholderContent(
@@ -22,7 +24,7 @@ internal fun ProfilePlaceholderContent(
   onNavigateBack: () -> Unit
 ) {
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = topBarTitle,

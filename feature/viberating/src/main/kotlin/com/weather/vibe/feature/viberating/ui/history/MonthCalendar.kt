@@ -253,7 +253,7 @@ private fun DayCell(
         day = day,
         description = description,
         openLabel = dayOpenDetails(),
-        onDayClicked = onDayClicked
+        onDayClick = onDayClicked
       ),
     contentAlignment = Alignment.Center
   ) {
@@ -282,15 +282,17 @@ private fun Modifier.dayCellInteractive(
   day: Day,
   description: String,
   openLabel: String,
-  onDayClicked: (LocalDate) -> Unit
-): Modifier = when (day.isFuture) {
-  true -> semantics { contentDescription = description }
-  false -> semantics { contentDescription = description }
-    .clickable(
-      role = Role.Button,
-      onClickLabel = openLabel
-    ) { onDayClicked(day.date) }
-}
+  onDayClick: (LocalDate) -> Unit
+): Modifier = semantics { contentDescription = description }
+  .then(
+    when (day.isFuture) {
+      true -> Modifier
+      false -> Modifier.clickable(
+        role = Role.Button,
+        onClickLabel = openLabel
+      ) { onDayClick(day.date) }
+    }
+  )
 
 @PreviewLightDark
 @Composable

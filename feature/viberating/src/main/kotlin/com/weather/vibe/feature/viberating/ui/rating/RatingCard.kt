@@ -22,100 +22,61 @@ import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardU
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.SaveError
 import com.weather.vibe.feature.viberating.presentation.rating.state.RatingCardUiState.Saving
 import com.weather.vibe.feature.viberating.preview.RatingCardPreview
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.cardTitle
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.sectionLabel
 
 @Composable
 internal fun RatingCard(
   modifier: Modifier = Modifier,
   state: RatingCardUiState,
-  onSliderValueChanged: (Int) -> Unit,
-  onNoteValueChanged: (String) -> Unit,
-  onNoteExpandClick: () -> Unit,
-  onNoteCollapseClick: () -> Unit,
-  onSaveClicked: () -> Unit,
-  onRetryClicked: () -> Unit,
-  onDismissErrorClicked: () -> Unit,
-  onViewHistoryClicked: () -> Unit
+  callbacks: RatingCardCallbacks
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
-    Text(
-      text = sectionLabel().uppercase(),
-      style = typography.labelMedium,
-      color = colors.onSurfaceVariant,
-      modifier = Modifier
-        .padding(bottom = Padding.Small)
-        .semantics { heading() }
-    )
+    SectionHeading()
     VibeCard(contentPadding = Padding.Medium) {
-      Column(modifier = Modifier.fillMaxWidth()) {
-        RatingCardStateContent(
-          state = state,
-          onSliderValueChanged = onSliderValueChanged,
-          onNoteValueChanged = onNoteValueChanged,
-          onNoteExpandClick = onNoteExpandClick,
-          onNoteCollapseClick = onNoteCollapseClick,
-          onSaveClicked = onSaveClicked,
-          onRetryClicked = onRetryClicked,
-          onDismissErrorClicked = onDismissErrorClicked,
-          onViewHistoryClicked = onViewHistoryClicked
-        )
-      }
+      RatingCardStateContent(
+        state = state,
+        callbacks = callbacks
+      )
     }
   }
 }
 
 @Composable
+private fun SectionHeading() {
+  Text(
+    text = sectionLabel().uppercase(),
+    style = typography.labelMedium,
+    color = colors.onSurfaceVariant,
+    modifier = Modifier
+      .padding(bottom = Padding.Small)
+      .semantics { heading() }
+  )
+}
+
+@Composable
 private fun RatingCardStateContent(
   state: RatingCardUiState,
-  onSliderValueChanged: (Int) -> Unit,
-  onNoteValueChanged: (String) -> Unit,
-  onNoteExpandClick: () -> Unit,
-  onNoteCollapseClick: () -> Unit,
-  onSaveClicked: () -> Unit,
-  onRetryClicked: () -> Unit,
-  onDismissErrorClicked: () -> Unit,
-  onViewHistoryClicked: () -> Unit
+  callbacks: RatingCardCallbacks
 ) {
   when (state) {
-    Loading -> LoadingContent()
+    Loading -> RatingLoadingContent()
     is Editing -> DraftContent(
       draft = state.draft,
       todayEntryCount = state.todayEntryCount,
       saving = false,
-      onSliderValueChanged = onSliderValueChanged,
-      onNoteValueChanged = onNoteValueChanged,
-      onNoteExpandClick = onNoteExpandClick,
-      onNoteCollapseClick = onNoteCollapseClick,
-      onSaveClicked = onSaveClicked,
-      onViewHistoryClicked = onViewHistoryClicked
+      callbacks = callbacks
     )
     is Saving -> DraftContent(
       draft = state.draft,
       todayEntryCount = state.todayEntryCount,
       saving = true,
-      onSliderValueChanged = {},
-      onNoteValueChanged = {},
-      onNoteExpandClick = {},
-      onNoteCollapseClick = {},
-      onSaveClicked = {},
-      onViewHistoryClicked = onViewHistoryClicked
+      callbacks = callbacks
     )
     is SaveError -> SaveErrorContent(
       draft = state.draft,
-      onRetryClicked = onRetryClicked,
-      onDismissErrorClicked = onDismissErrorClicked
+      callbacks = callbacks
     )
   }
-}
-
-@Composable
-private fun LoadingContent() {
-  Text(
-    text = cardTitle(),
-    style = typography.titleMedium,
-    color = colors.onSurface
-  )
 }
 
 @PreviewLightDark
@@ -130,14 +91,7 @@ private fun Preview(
         .background(colors.backgroundGradientEnd)
         .padding(Padding.Medium),
       state = state,
-      onSliderValueChanged = {},
-      onNoteValueChanged = {},
-      onNoteExpandClick = {},
-      onNoteCollapseClick = {},
-      onSaveClicked = {},
-      onRetryClicked = {},
-      onDismissErrorClicked = {},
-      onViewHistoryClicked = {}
+      callbacks = RatingCardCallbacks.Noop
     )
   }
 }

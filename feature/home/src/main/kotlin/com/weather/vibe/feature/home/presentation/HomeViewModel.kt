@@ -175,6 +175,13 @@ internal class HomeViewModel(
         onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
       ReformatOnly -> onReformatOnly(weather, settings)
     }
+    clearRefreshFlag()
+  }
+
+  private fun clearRefreshFlag() {
+    _state.update { current ->
+      (current as? Loaded)?.copy(isRefreshing = false) ?: current
+    }
   }
 
   private fun onRegenerateSuggestion(weather: WeatherData, settings: UserSettings) {
@@ -226,10 +233,7 @@ internal class HomeViewModel(
       vibeSnapshot = weatherDataToVibeSnapshot.map(weather),
       unit = settings.temperatureUnit
     )
-    return base.copy(
-      dailyVibe = preservedDailyVibeCard(),
-      isRefreshing = false
-    )
+    return base.copy(dailyVibe = preservedDailyVibeCard())
   }
 
   private fun preservedDailyVibeCard(): DailyVibeCardUiState? {

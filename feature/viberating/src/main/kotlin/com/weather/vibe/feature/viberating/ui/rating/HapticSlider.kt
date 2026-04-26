@@ -29,7 +29,7 @@ internal fun HapticSlider(
   draft: Int,
   enabled: Boolean,
   activeColor: Color,
-  onValueChanged: (Int) -> Unit
+  onValueChange: (Int) -> Unit
 ) {
   val haptics = LocalHapticFeedback.current
   val resolvedDescription = sliderDescription()
@@ -45,7 +45,7 @@ internal fun HapticSlider(
       val rounded = newValue.roundToInt().coerceIn(MIN_RATING, MAX_RATING)
       if (rounded != draft) {
         haptics.performHapticFeedback(TextHandleMove)
-        onValueChanged(rounded)
+        onValueChange(rounded)
       }
     },
     valueRange = MIN_RATING.toFloat()..MAX_RATING.toFloat(),
@@ -76,7 +76,7 @@ private fun Preview(
       draft = draft,
       enabled = true,
       activeColor = ratingColor(draft),
-      onValueChanged = {}
+      onValueChange = {}
     )
   }
 }

@@ -35,6 +35,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardStateFactory.Companion.NOTE_MAX_LENGTH
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts
+import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.noteAdd
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.noteCollapse
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.noteLabel
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.notePlaceholder
@@ -104,7 +105,7 @@ private fun AddNoteButton(
       )
       Spacer(Modifier.width(Padding.Small))
       Text(
-        text = Texts.noteAdd(),
+        text = noteAdd(),
         style = typography.labelMedium,
         color = colors.onSurfaceVariant,
         fontWeight = FontWeight.Medium
@@ -184,7 +185,6 @@ private fun NoteCharacterCounter(currentLength: Int) {
     modifier = Modifier.fillMaxWidth(),
     horizontalArrangement = Arrangement.End
   ) {
-
     Text(
       text = Texts.noteCounter(
         current = currentLength,

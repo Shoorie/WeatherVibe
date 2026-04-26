@@ -190,18 +190,22 @@ object WeatherDataFixtures {
   )
 
   fun hourlyWeather(
+    apparentTemperature: Double? = null,
     condition: WeatherCondition = CLEAR_SKY,
     humidity: Int = HUMIDITY,
     precipitationProbability: Int = 10,
     temperature: Double = CURRENT_TEMPERATURE,
     time: LocalDateTime = HOUR_1_TIME,
+    windGusts: Double = 0.0,
     windSpeed: Double = WIND_SPEED
   ): HourlyWeather = HourlyWeather(
+    apparentTemperature = apparentTemperature ?: temperature,
     condition = condition,
     humidity = humidity,
     precipitationProbability = precipitationProbability,
     temperature = temperature,
     time = time,
+    windGusts = windGusts,
     windSpeed = windSpeed
   )
 

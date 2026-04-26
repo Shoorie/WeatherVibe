@@ -57,28 +57,32 @@ class BuildActivityPlan(
     hour: HourlyWeather,
     dailyForecast: List<DailyWeather>,
     activity: ActivityType
-  ): ScoredHour =
-    scoreHourForActivity(
+  ): ScoredHour {
+
+    val day = dailyForecastFor(hour, dailyForecast)
+
+    return scoreHourForActivity(
       hour = hour,
-      uvIndex = uvIndexFor(hour, dailyForecast),
+      uvIndex = uvIndexFor(hour, day),
+      sunrise = day?.sunrise,
+      sunset = day?.sunset,
       activity = activity
     )
+  }
 
-  private fun uvIndexFor(
+  private fun dailyForecastFor(
     hour: HourlyWeather,
     dailyForecast: List<DailyWeather>
-  ): Double {
+  ): DailyWeather? =
+    dailyForecast.firstOrNull { it.date == hour.time.toLocalDate() }
 
-    val day = dailyForecast
-      .firstOrNull { it.date == hour.time.toLocalDate() }
-
-    return approximateHourlyUvIndex(
+  private fun uvIndexFor(hour: HourlyWeather, day: DailyWeather?): Double =
+    approximateHourlyUvIndex(
       hour = hour.time,
       sunrise = day?.sunrise,
       sunset = day?.sunset,
       dailyMaxUvIndex = day?.uvIndexMax ?: 0.0
     )
-  }
 
   private companion object {
     const val WINDOW_HOURS = 24L

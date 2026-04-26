@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -25,7 +25,7 @@ internal fun MoodHeroCard(
 ) {
 
   val baseTitle = typography.bodyLarge
-  val titleStyle = remember(baseTitle) { baseTitle.copy(fontWeight = FontWeight.SemiBold) }
+  val titleStyle = remember(baseTitle) { baseTitle.copy(fontWeight = SemiBold) }
 
   VibeCard(modifier = modifier) {
     Column(

@@ -2,11 +2,17 @@ package com.weather.vibe.feature.profile.presentation
 
 import android.util.Log
 import app.cash.turbine.test
+import com.weather.vibe.domain.appearance.model.ThemeMode.AUTO
+import com.weather.vibe.domain.appearance.model.ThemeMode.DARK
+import com.weather.vibe.domain.appearance.usecase.ObserveThemeMode
+import com.weather.vibe.domain.appearance.usecase.SetThemeMode
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavoritesCount
 import com.weather.vibe.domain.profile.usecase.ObserveProfile
 import com.weather.vibe.domain.profile.usecase.SaveUsername
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
+import com.weather.vibe.domain.viberating.model.VibeOverview
+import com.weather.vibe.domain.viberating.usecase.ObserveVibeOverview
 import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
@@ -15,12 +21,15 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.Notifications
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.ThemeSelect
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
+import com.weather.vibe.feature.profile.presentation.ProfileAction.VibeRowClick
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenVibeHistory
 import com.weather.vibe.feature.profile.presentation.fake.fakeProfileResources
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.STATUS_ON
 import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.TONE_LABEL_FORMAL
@@ -30,6 +39,7 @@ import com.weather.vibe.feature.profile.presentation.fixture.ProfileFixtures.pro
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCATIONS
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.MORNING_BRIEF
+import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState.Loaded
 import com.weather.vibe.testing.coroutines.MainDispatcherRule
 import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
 import io.mockk.coJustRun
@@ -39,7 +49,6 @@ import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -51,6 +60,7 @@ import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
+import strikt.assertions.isNotNull
 import strikt.assertions.isTrue
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
@@ -64,23 +74,32 @@ class ProfileViewModelTest {
   private val observeUserSettings = mockk<ObserveUserSettings>()
   private val observeProfile = mockk<ObserveProfile>()
   private val observeFavoritesCount = mockk<ObserveLocationFavoritesCount>()
+  private val observeVibeOverview = mockk<ObserveVibeOverview>()
+  private val observeThemeMode = mockk<ObserveThemeMode>()
+  private val setThemeMode = mockk<SetThemeMode>()
   private val saveUsername = mockk<SaveUsername>()
   private val stateFactory = ProfileStateFactory(resources = fakeProfileResources())
   private val useCases = ProfileUseCases(
     observeFavoritesCount = observeFavoritesCount,
     observeProfile = observeProfile,
+    observeThemeMode = observeThemeMode,
     observeUserSettings = observeUserSettings,
-    saveUsername = saveUsername
+    observeVibeOverview = observeVibeOverview,
+    saveUsername = saveUsername,
+    setThemeMode = setThemeMode
   )
 
   @Before
   fun setUp() {
     mockkStatic(Log::class)
     every { Log.e(any(), any(), any()) } returns 0
-    every { observeUserSettings() } returns emptyFlow()
-    every { observeProfile() } returns emptyFlow()
-    every { observeFavoritesCount() } returns emptyFlow()
+    every { observeProfile() } returns flowOf(profileSummary())
+    every { observeUserSettings() } returns flowOf(success(userSettings()))
+    every { observeFavoritesCount() } returns flowOf(success(0))
+    every { observeVibeOverview() } returns flowOf(VibeOverview.EMPTY)
+    every { observeThemeMode() } returns flowOf(AUTO)
     coJustRun { saveUsername(any()) }
+    coJustRun { setThemeMode(any()) }
   }
 
   @After
@@ -89,23 +108,20 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when profile emitted, then greeting updates`() = runTest {
+  fun `when profile emitted, then header greeting reflects user`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 42))
-    every { observeUserSettings() } returns flowOf(success(userSettings()))
+    every { observeProfile() } returns flowOf(profileSummary())
 
     val viewModel = createViewModel()
     runCurrent()
 
-    expectThat(viewModel.state.value.header.greeting)
-      .isEqualTo(greeting(USERNAME_JOHN))
+    expectThat(viewModel.state.value.header.greeting).isEqualTo(greeting(USERNAME_JOHN))
   }
 
   @Test
-  fun `when profile emitted, then avatar shows first letter`() = runTest {
+  fun `when profile emitted, then avatar uses first letter of name`() = runTest {
 
     every { observeProfile() } returns flowOf(profileSummary(username = USERNAME_JOHN))
-    every { observeUserSettings() } returns flowOf(success(userSettings()))
 
     val viewModel = createViewModel()
     runCurrent()
@@ -114,23 +130,22 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when brief tone emitted, then label updates`() = runTest {
+  fun `given formal tone, when settings emitted, then brief tone label uses formal mapping`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 1))
     every { observeUserSettings() } returns flowOf(success(userSettings(briefTone = FORMAL)))
 
     val viewModel = createViewModel()
     runCurrent()
 
-    expectThat(viewModel.state.value.header.briefToneLabel)
-      .isEqualTo(TONE_LABEL_FORMAL)
+    expectThat(viewModel.state.value.header.briefToneLabel).isEqualTo(TONE_LABEL_FORMAL)
   }
 
   @Test
-  fun `when morning brief enabled, then brief stat shows on`() = runTest {
+  fun `given morning brief enabled, when settings emitted, then brief stat is on`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 1))
-    every { observeUserSettings() } returns flowOf(success(userSettings(morningBriefEnabled = true)))
+    every { observeUserSettings() } returns flowOf(
+      success(userSettings(morningBriefEnabled = true))
+    )
 
     val viewModel = createViewModel()
     runCurrent()
@@ -140,9 +155,8 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when alerts enabled, then alerts stat shows on`() = runTest {
+  fun `given alerts enabled, when settings emitted, then alerts stat is on`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 1))
     every { observeUserSettings() } returns flowOf(success(userSettings(alertsEnabled = true)))
 
     val viewModel = createViewModel()
@@ -153,20 +167,55 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `given settings failure, when profile emitted, then header still updates`() = runTest {
+  fun `given settings failure, when snapshot received, then header greeting still updates`() = runTest {
 
-    every { observeProfile() } returns flowOf(profileSummary(usageDays = 7))
     every { observeUserSettings() } returns flowOf(failure(RuntimeException("boom")))
 
     val viewModel = createViewModel()
     runCurrent()
 
-    expectThat(viewModel.state.value.header.greeting)
-      .isEqualTo(greeting(USERNAME_JOHN))
+    expectThat(viewModel.state.value.header.greeting).isEqualTo(greeting(USERNAME_JOHN))
   }
 
   @Test
-  fun `when edit username clicked, then sheet shown`() = runTest {
+  fun `when non-empty vibe overview emitted, then vibe row becomes loaded`() = runTest {
+
+    every { observeVibeOverview() } returns flowOf(
+      VibeOverview(averageRating = 4.0, streakDays = 1, totalEntries = 2)
+    )
+
+    val viewModel = createViewModel()
+    runCurrent()
+
+    expectThat(viewModel.state.value.vibeRow).isA<Loaded>()
+  }
+
+  @Test
+  fun `when theme mode emitted, then appearance row reflects mode`() = runTest {
+
+    every { observeThemeMode() } returns flowOf(DARK)
+
+    val viewModel = createViewModel()
+    runCurrent()
+
+    expectThat(viewModel.state.value.appearanceRow)
+      .isNotNull()
+      .get { current }.isEqualTo(DARK)
+  }
+
+  @Test
+  fun `when theme select dispatched, then mode is persisted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(ThemeSelect(mode = DARK))
+    runCurrent()
+
+    coVerify { setThemeMode(mode = DARK) }
+  }
+
+  @Test
+  fun `when edit username clicked, then sheet is shown`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -176,7 +225,7 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when edit username dismissed, then sheet hidden`() = runTest {
+  fun `when edit username dismissed, then sheet is hidden`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -187,19 +236,18 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when username changed in sheet, then sheet value reflects input`() = runTest {
+  fun `when username changed, then sheet username reflects input`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.dispatch(EditUsernameClick)
     viewModel.dispatch(UsernameChanged(value = USERNAME_JOHN))
 
-    expectThat(viewModel.state.value.editSheet.username)
-      .isEqualTo(USERNAME_JOHN)
+    expectThat(viewModel.state.value.editSheet.username).isEqualTo(USERNAME_JOHN)
   }
 
   @Test
-  fun `given non-blank draft, when submit dispatched, then save invoked`() = runTest {
+  fun `given non-blank draft, when submit dispatched, then username is persisted`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -212,7 +260,7 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `given blank draft, when submit dispatched, then save not invoked`() = runTest {
+  fun `given blank draft, when submit dispatched, then save is not invoked`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -225,7 +273,7 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when submit dispatched, then sheet hidden`() = runTest {
+  fun `when submit dispatched, then sheet is hidden`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -237,92 +285,93 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when about clicked, then open about event emitted`() = runTest {
+  fun `when about clicked, then open about is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(AboutClick)
-
       expectThat(awaitItem()).isA<OpenAbout>()
     }
   }
 
   @Test
-  fun `when personalization clicked, then open personalization event emitted`() = runTest {
+  fun `when personalization clicked, then open personalization is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(PersonalizationClick)
-
       expectThat(awaitItem()).isA<OpenPersonalization>()
     }
   }
 
   @Test
-  fun `when notifications clicked, then open notifications event emitted`() = runTest {
+  fun `when notifications clicked, then open notifications is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(NotificationsClick)
-
       expectThat(awaitItem()).isA<OpenNotifications>()
     }
   }
 
   @Test
-  fun `when privacy clicked, then open privacy event emitted`() = runTest {
+  fun `when privacy clicked, then open privacy is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(PrivacyClick)
-
       expectThat(awaitItem()).isA<OpenPrivacy>()
     }
   }
 
   @Test
-  fun `when locations stat clicked, then open locations event emitted`() = runTest {
+  fun `when locations stat clicked, then open locations is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(StatClick(type = LOCATIONS))
-
       expectThat(awaitItem()).isA<OpenLocations>()
     }
   }
 
   @Test
-  fun `when morning brief stat clicked, then open notifications event emitted`() = runTest {
+  fun `when morning brief stat clicked, then open notifications is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(StatClick(type = MORNING_BRIEF))
-
       expectThat(awaitItem()).isA<OpenNotifications>()
     }
   }
 
   @Test
-  fun `when alerts stat clicked, then open notifications event emitted`() = runTest {
+  fun `when alerts stat clicked, then open notifications is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
       viewModel.dispatch(StatClick(type = ALERTS))
-
       expectThat(awaitItem()).isA<OpenNotifications>()
     }
   }
 
+  @Test
+  fun `when vibe row clicked, then open vibe history is emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(VibeRowClick)
+      expectThat(awaitItem()).isA<OpenVibeHistory>()
+    }
+  }
+
   private fun createViewModel(): ProfileViewModel =
-    ProfileViewModel(
-      stateFactory = stateFactory,
-      useCases = useCases
-    )
+    ProfileViewModel(stateFactory = stateFactory, useCases = useCases)
 }

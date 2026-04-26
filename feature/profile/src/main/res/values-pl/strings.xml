@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profil</string>
-  <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
-  <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Cześć 👋</string>
   <string name="profile_header_unnamed_subtitle">Dotknij, aby się przedstawić</string>
+  <string name="profile_header_subtitle_returning">Miło Cię widzieć z powrotem</string>
   <string name="profile_header_greeting">Cześć, %1$s</string>
-  <string name="profile_header_edit_hint">Edytuj</string>
+  <string name="profile_header_avatar_unnamed">?</string>
   <string name="profile_header_edit_click_label">Edytuj profil</string>
-  <string name="profile_header_brief_tone_label">Ton briefu</string>
+  <string name="profile_header_brief_tone_label">Ton briefu:</string>
   <string name="profile_header_brief_tone_click_label">Otwórz personalizację</string>
+  <string name="profile_header_decoration_description">Pogodna dekoracja</string>
+  <string name="profile_header_waving_hand_description">Machająca dłoń</string>
   <string name="profile_brief_tone_witty">Dowcipny</string>
   <string name="profile_brief_tone_formal">Formalny</string>
   <string name="profile_brief_tone_humorous">Humorystyczny</string>
-  <string name="profile_header_quote_witty">Nie mamy wpływu na pogodę, ale mamy wpływ na nastawienie.</string>
-  <string name="profile_header_quote_formal">Zewnętrzne okoliczności pozostają poza zakresem naszej kontroli; niemniej jednak to dyscyplina wewnętrznej perspektywy definiuje naszą skuteczność.</string>
-  <string name="profile_header_quote_humorous">Moje nastawienie jest dziś w trybie oszczędzania energii. Proszę nie oczekiwać słońca przed trzecią kawą.</string>
 
   <string name="profile_stat_locations_label">Lokalizacje</string>
+  <string name="profile_stat_locations_emoji">📍</string>
   <string name="profile_stat_locations_click_label">Otwórz lokalizacje</string>
   <string name="profile_stat_morning_brief_label">Poranny brief</string>
+  <string name="profile_stat_morning_brief_emoji">🌅</string>
   <string name="profile_stat_morning_brief_click_label">Otwórz powiadomienia</string>
   <string name="profile_stat_alerts_label">Alerty</string>
+  <string name="profile_stat_alerts_emoji">🔔</string>
   <string name="profile_stat_alerts_click_label">Otwórz powiadomienia</string>
   <string name="profile_stat_status_on">Wł.</string>
   <string name="profile_stat_status_off">Wył.</string>
-  <string name="profile_header_avatar_unnamed">?</string>
+
+  <string name="profile_vibe_title">Twój vibe</string>
+  <string name="profile_vibe_average_format">%1$s/5</string>
+  <string name="profile_vibe_streak_separator">·</string>
+  <string name="profile_vibe_empty_cta">Oceń pierwszy dzień</string>
+  <string name="profile_vibe_click_label_loaded">Otwórz historię vibe</string>
+  <string name="profile_vibe_click_label_empty">Oceń swój pierwszy dzień</string>
+
+  <string name="profile_appearance_title">Wygląd</string>
+  <string name="profile_appearance_body">Jasny, ciemny lub zgodny z systemem</string>
+  <string name="profile_appearance_light_label">Jasny</string>
+  <string name="profile_appearance_auto_label">Auto</string>
+  <string name="profile_appearance_dark_label">Ciemny</string>
 
   <string name="profile_row_personalization_title">Personalizacja</string>
   <string name="profile_row_personalization_body">Ton briefu, jednostki, wykluczone gatunki</string>
@@ -37,16 +50,7 @@
   <string name="profile_row_about_title">O aplikacji</string>
   <string name="profile_row_about_body">Wersja, licencje OSS, changelog</string>
 
-  <string name="profile_mood_title">Twój vibe</string>
-  <string name="profile_mood_body_empty">Jeszcze nic nie oceniłeś — zacznij od dzisiaj, a po kilku dniach zobaczysz tu swoje trendy.</string>
-  <string name="profile_mood_summary_format">%1$s/5 · %2$d %3$s</string>
-  <plurals name="profile_mood_days">
-    <item quantity="one">dzień</item>
-    <item quantity="few">dni</item>
-    <item quantity="many">dni</item>
-    <item quantity="other">dni</item>
-  </plurals>
-  <string name="profile_mood_cta">Otwórz historię ocen</string>
+  <string name="profile_footer">Zrobione z 💜 dla Twojej pogody</string>
 
   <string name="profile_edit_sheet_title">Jak mamy Cię nazywać?</string>
   <string name="profile_edit_sheet_body">Użyjemy imienia w powitaniach i powiadomieniach.</string>
@@ -59,6 +63,8 @@
   <string name="profile_placeholder_notifications_body">Zdecyduj, czy poranny brief i alerty pogodowe mają trafiać na Twój ekran blokady. Wkrótce.</string>
   <string name="profile_placeholder_privacy_title">Polityka prywatności</string>
   <string name="profile_placeholder_privacy_body">WeatherVibe trzyma Twoje dane lokalnie, na urządzeniu. Pełna polityka w drodze.</string>
+  <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
   <string name="profile_placeholder_about_title">O aplikacji</string>
   <string name="profile_placeholder_about_body">Wersja aplikacji, licencje OSS i changelog zamieszkają tutaj.</string>
+  <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
 </resources>

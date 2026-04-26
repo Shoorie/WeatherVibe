@@ -104,6 +104,8 @@ dependencies {
   implementation(projects.domain.vibe)
   implementation(projects.domain.viberating)
   implementation(projects.data.viberating)
+  implementation(projects.domain.appearance)
+  implementation(projects.data.appearance)
   implementation(projects.data.airquality)
   implementation(projects.domain.widget)
   implementation(projects.data.widget)

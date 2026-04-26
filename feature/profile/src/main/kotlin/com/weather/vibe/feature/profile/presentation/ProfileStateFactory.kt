@@ -1,7 +1,12 @@
 package com.weather.vibe.feature.profile.presentation
 
-import com.weather.vibe.domain.profile.model.ProfileSummary
-import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.domain.appearance.model.ThemeMode
+import com.weather.vibe.domain.appearance.model.ThemeMode.AUTO
+import com.weather.vibe.domain.appearance.model.ThemeMode.DARK
+import com.weather.vibe.domain.appearance.model.ThemeMode.LIGHT
+import com.weather.vibe.domain.viberating.model.VibeOverview
+import com.weather.vibe.feature.profile.presentation.state.ProfileAppearanceOptionUiState
+import com.weather.vibe.feature.profile.presentation.state.ProfileAppearanceRowUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileEditSheetUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.ALERTS
@@ -9,6 +14,9 @@ import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.LOCAT
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType.MORNING_BRIEF
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
+import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState
+import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState.Empty
+import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState.Loaded
 import com.weather.vibe.feature.profile.ui.ProfileResources
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -17,50 +25,56 @@ import org.koin.core.annotation.Factory
 @Factory
 internal class ProfileStateFactory(private val resources: ProfileResources) {
 
-  fun initial(): ProfileUiState {
-    val initialState = ProfileUiState(
-      header = createHeader(
-        username = EMPTY_USERNAME,
-        briefToneLabel = EMPTY_TONE_LABEL,
-        quote = EMPTY_QUOTE,
-        usageDays = INITIAL_USAGE_DAYS
-      ),
-      quickStats = persistentListOf(),
+  fun initial(): ProfileUiState =
+    ProfileUiState(
+      alertsEnabled = false,
+      appearanceRow = null,
       editSheet = ProfileEditSheetUiState(
         isVisible = false,
         username = EMPTY_USERNAME,
         canSave = false
       ),
+      header = createHeader(username = EMPTY_USERNAME, briefToneLabel = EMPTY_TONE_LABEL),
       locationsCount = INITIAL_LOCATIONS_COUNT,
-
       morningBriefEnabled = false,
-      alertsEnabled = false
-    )
-    return initialState.rebuildStats()
-  }
-
-  fun withProfile(state: ProfileUiState, profile: ProfileSummary): ProfileUiState =
-    state.copy(
-      header = createHeader(
-        username = profile.username,
-        briefToneLabel = state.header.briefToneLabel,
-        quote = state.header.quote,
-        usageDays = profile.usageDays
-      )
-    ).rebuildStats()
-
-  fun withSettings(state: ProfileUiState, settings: UserSettings): ProfileUiState =
-    state.copy(
-      header = state.header.copy(
-        briefToneLabel = resources.briefToneLabel(tone = settings.briefTone),
-        quote = resources.heroQuote(tone = settings.briefTone)
+      quickStats = createStats(
+        alertsEnabled = false,
+        locationsCount = INITIAL_LOCATIONS_COUNT,
+        morningBriefEnabled = false
       ),
-      morningBriefEnabled = settings.morningBriefEnabled,
-      alertsEnabled = settings.alertsEnabled
-    ).rebuildStats()
+      vibeRow = createEmptyVibeRow()
+    )
 
-  fun withLocationsCount(state: ProfileUiState, count: Int): ProfileUiState =
-    state.copy(locationsCount = count).rebuildStats()
+  fun create(
+    state: ProfileUiState,
+    snapshot: ProfileSnapshot
+  ): ProfileUiState {
+
+    val settings = snapshot.settingsResult.getOrNull()
+    val locationsCount = snapshot.favoritesCountResult.getOrDefault(state.locationsCount)
+    val morningBriefEnabled = settings?.morningBriefEnabled ?: state.morningBriefEnabled
+    val alertsEnabled = settings?.alertsEnabled ?: state.alertsEnabled
+    val briefToneLabel = settings
+      ?.let { resources.briefToneLabel(it.briefTone) }
+      ?: state.header.briefToneLabel
+
+    return state.copy(
+      alertsEnabled = alertsEnabled,
+      appearanceRow = createAppearanceRow(snapshot.themeMode),
+      header = createHeader(
+        username = snapshot.profile.username,
+        briefToneLabel = briefToneLabel
+      ),
+      locationsCount = locationsCount,
+      morningBriefEnabled = morningBriefEnabled,
+      quickStats = createStats(
+        alertsEnabled = alertsEnabled,
+        locationsCount = locationsCount,
+        morningBriefEnabled = morningBriefEnabled
+      ),
+      vibeRow = createVibeRow(snapshot.vibeOverview)
+    )
+  }
 
   fun triggerEditSheet(state: ProfileUiState): ProfileUiState =
     state.copy(
@@ -82,28 +96,14 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
       )
     )
 
-  private fun ProfileUiState.rebuildStats(): ProfileUiState =
-    copy(
-      quickStats = createStats(
-        locationsCount = locationsCount,
-        morningBriefEnabled = morningBriefEnabled,
-        alertsEnabled = alertsEnabled
-      )
-    )
-
-  private fun createHeader(
-    username: String,
-    briefToneLabel: String,
-    quote: String,
-    usageDays: Int
-  ): ProfileHeaderUiState =
+  private fun createHeader(username: String, briefToneLabel: String): ProfileHeaderUiState =
     ProfileHeaderUiState(
-      username = username,
       avatarInitial = createAvatarInitial(username = username),
-      greeting = createGreeting(username = username),
-      subtitle = createSubtitle(username = username, usageDays = usageDays),
       briefToneLabel = briefToneLabel,
-      quote = quote
+      greeting = createGreeting(username = username),
+      showWavingHand = username.isNotBlank(),
+      subtitle = createSubtitle(username = username),
+      username = username
     )
 
   private fun createAvatarInitial(username: String): String {
@@ -120,45 +120,92 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
       else -> resources.greeting(username = username)
     }
 
-  private fun createSubtitle(username: String, usageDays: Int): String =
+  private fun createSubtitle(username: String): String =
     when {
       username.isBlank() -> resources.unnamedSubtitle()
-      usageDays <= NO_USAGE_DAYS -> resources.unnamedSubtitle()
-      else -> resources.daysWithAppSubtitle(days = usageDays)
+      else -> resources.returningSubtitle()
     }
 
   private fun createStats(
+    alertsEnabled: Boolean,
     locationsCount: Int,
-    morningBriefEnabled: Boolean,
-    alertsEnabled: Boolean
+    morningBriefEnabled: Boolean
   ): ImmutableList<ProfileStatUiState> =
     persistentListOf(
       ProfileStatUiState(
-        type = LOCATIONS,
+        emoji = resources.locationsStatEmoji(),
         label = resources.locationsStatLabel(),
-        value = locationsCount.toString(),
-        onClickLabel = resources.locationsStatClickLabel()
+        onClickLabel = resources.locationsStatClickLabel(),
+        type = LOCATIONS,
+        value = locationsCount.toString()
       ),
       ProfileStatUiState(
-        type = MORNING_BRIEF,
+        emoji = resources.morningBriefStatEmoji(),
         label = resources.morningBriefStatLabel(),
-        value = resources.statStatus(enabled = morningBriefEnabled),
-        onClickLabel = resources.morningBriefStatClickLabel()
+        onClickLabel = resources.morningBriefStatClickLabel(),
+        type = MORNING_BRIEF,
+        value = resources.statStatus(enabled = morningBriefEnabled)
       ),
       ProfileStatUiState(
-        type = ALERTS,
+        emoji = resources.alertsStatEmoji(),
         label = resources.alertsStatLabel(),
-        value = resources.statStatus(enabled = alertsEnabled),
-        onClickLabel = resources.alertsStatClickLabel()
+        onClickLabel = resources.alertsStatClickLabel(),
+        type = ALERTS,
+        value = resources.statStatus(enabled = alertsEnabled)
       )
+    )
+
+  private fun createVibeRow(overview: VibeOverview): ProfileVibeRowUiState =
+    when {
+      overview.hasEntries -> Loaded(
+        averageLabel = resources.vibeAverageLabel(value = overview.averageRating),
+        onClickLabel = resources.vibeLoadedClickLabel(),
+        streakLabel = streakLabelOrNull(overview.streakDays),
+        title = resources.vibeTitle()
+      )
+
+      else -> createEmptyVibeRow()
+    }
+
+  private fun createEmptyVibeRow(): Empty =
+    Empty(
+      ctaLabel = resources.vibeEmptyCta(),
+      onClickLabel = resources.vibeEmptyClickLabel(),
+      title = resources.vibeTitle()
+    )
+
+  private fun streakLabelOrNull(streakDays: Int): String? =
+    when {
+      streakDays >= MIN_STREAK_DAYS -> resources.vibeStreakLabel(streakDays)
+      else -> null
+    }
+
+  private fun createAppearanceRow(current: ThemeMode): ProfileAppearanceRowUiState =
+    ProfileAppearanceRowUiState(
+      body = resources.appearanceBody(),
+      current = current,
+      options = persistentListOf(
+        appearanceOption(current = current, mode = LIGHT),
+        appearanceOption(current = current, mode = AUTO),
+        appearanceOption(current = current, mode = DARK)
+      ),
+      title = resources.appearanceTitle()
+    )
+
+  private fun appearanceOption(
+    current: ThemeMode,
+    mode: ThemeMode
+  ): ProfileAppearanceOptionUiState =
+    ProfileAppearanceOptionUiState(
+      isSelected = current == mode,
+      label = resources.appearanceOptionLabel(mode = mode),
+      mode = mode
     )
 
   private companion object {
     const val EMPTY_USERNAME = ""
     const val EMPTY_TONE_LABEL = ""
-    const val EMPTY_QUOTE = ""
-    const val INITIAL_USAGE_DAYS = 0
     const val INITIAL_LOCATIONS_COUNT = 0
-    const val NO_USAGE_DAYS = 0
+    const val MIN_STREAK_DAYS = 2
   }
 }

@@ -5,10 +5,12 @@ import kotlinx.collections.immutable.ImmutableList
 
 @Immutable
 internal data class ProfileUiState(
-  val header: ProfileHeaderUiState,
-  val quickStats: ImmutableList<ProfileStatUiState>,
+  val alertsEnabled: Boolean,
+  val appearanceRow: ProfileAppearanceRowUiState?,
   val editSheet: ProfileEditSheetUiState,
+  val header: ProfileHeaderUiState,
   val locationsCount: Int,
   val morningBriefEnabled: Boolean,
-  val alertsEnabled: Boolean
+  val quickStats: ImmutableList<ProfileStatUiState>,
+  val vibeRow: ProfileVibeRowUiState
 )

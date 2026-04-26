@@ -16,14 +16,6 @@ internal object PersonalizationTextStyles {
     if (isSelected) colors.accent.copy(alpha = SelectedTintAlpha) else Color.Transparent
 
   @Composable
-  fun briefToneLabelColor(isSelected: Boolean): Color =
-    if (isSelected) colors.onBackground else colors.onBackground
-
-  @Composable
-  fun briefToneDescriptionColor(isSelected: Boolean): Color =
-    colors.onSurfaceVariant
-
-  @Composable
   fun briefToneLabelStyle(isSelected: Boolean): TextStyle {
     val base = typography.bodyMedium
     return remember(base, isSelected) {

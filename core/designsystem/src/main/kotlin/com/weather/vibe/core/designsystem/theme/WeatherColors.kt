@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-private const val SelectedRowOverlayAlpha = 0.20f
+private const val SELECTED_ROW_OVERLAY_ALPHA = 0.20f
 
 @Immutable
 data class WeatherColors(
@@ -67,7 +67,7 @@ fun weatherDarkColors(): WeatherColors =
     onPrimaryContainer = ColorTokens.TextPrimary,
     rowSurface = ColorTokens.DarkCardContainer,
     screenSurface = ColorTokens.BackgroundGradientEnd,
-    selectedRowSurface = ColorTokens.AccentLavender.copy(alpha = SelectedRowOverlayAlpha),
+    selectedRowSurface = ColorTokens.AccentLavender.copy(alpha = SELECTED_ROW_OVERLAY_ALPHA),
     sheetSurface = ColorTokens.SheetSurface,
     success = ColorTokens.DarkSuccess,
     surfaceVariant = ColorTokens.DarkCardContainer,

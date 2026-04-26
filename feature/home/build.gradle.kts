@@ -25,5 +25,6 @@ dependencies {
   testImplementation(projects.testing.airqualityFixtures)
   testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.timeFixtures)
+  testImplementation(projects.testing.viberatingFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

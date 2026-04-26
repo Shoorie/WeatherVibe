@@ -39,60 +39,79 @@ import com.weather.vibe.feature.viberating.ui.VibeRatingResources.scaleLabel
 @Composable
 internal fun SaveErrorContent(
   draft: RatingFormDraftUiState,
-  onRetryClicked: () -> Unit,
-  onDismissErrorClicked: () -> Unit
+  callbacks: RatingCardCallbacks
 ) {
   Column(
     modifier = Modifier
       .fillMaxWidth()
       .semantics(mergeDescendants = true) { liveRegion = Assertive }
   ) {
-    Text(
-      text = saveErrorTitle(),
-      style = typography.titleMedium,
-      color = colors.error,
-      fontWeight = FontWeight.SemiBold
-    )
+    ErrorTitle()
     Spacer(Modifier.height(ExtraSmall))
-    Text(
-      text = saveErrorBody(),
-      style = typography.bodySmall,
-      color = colors.onSurfaceVariant
-    )
+    ErrorBody()
     Spacer(Modifier.height(ExtraSmall))
-    Text(
-      text = errorSummary(
-        scaleLabel = scaleLabel(draft.sliderValue),
-        rating = draft.sliderValue
-      ),
-      style = typography.bodyMedium,
-      color = ratingColor(draft.sliderValue),
-      fontWeight = FontWeight.SemiBold
-    )
+    ErrorRatingSummary(draft = draft)
     if (draft.note.isNotBlank()) {
       Spacer(Modifier.height(ExtraSmall))
-      Text(
-        text = errorNoteQuote(note = draft.note),
-        style = typography.bodySmall,
-        color = colors.onSurfaceVariant
-      )
+      ErrorNoteQuote(note = draft.note)
     }
     Spacer(Modifier.height(Medium))
     ErrorActionRow(
-      onRetryClicked = onRetryClicked,
-      onDismissErrorClicked = onDismissErrorClicked
+      onRetryClick = callbacks.onRetryClick,
+      onDismissErrorClick = callbacks.onDismissErrorClick
     )
   }
 }
 
 @Composable
+private fun ErrorTitle() {
+  Text(
+    text = saveErrorTitle(),
+    style = typography.titleMedium,
+    color = colors.error,
+    fontWeight = FontWeight.SemiBold
+  )
+}
+
+@Composable
+private fun ErrorBody() {
+  Text(
+    text = saveErrorBody(),
+    style = typography.bodySmall,
+    color = colors.onSurfaceVariant
+  )
+}
+
+@Composable
+private fun ErrorRatingSummary(draft: RatingFormDraftUiState) {
+  Text(
+    text = errorSummary(
+      scaleLabel = scaleLabel(draft.sliderValue),
+      rating = draft.sliderValue
+    ),
+    style = typography.bodyMedium,
+    color = ratingColor(draft.sliderValue),
+    fontWeight = FontWeight.SemiBold
+  )
+}
+
+@Composable
+private fun ErrorNoteQuote(note: String) {
+  Text(
+    text = errorNoteQuote(note = note),
+    style = typography.bodySmall,
+    color = colors.onSurfaceVariant
+  )
+}
+
+@Composable
 private fun ErrorActionRow(
-  onRetryClicked: () -> Unit,
-  onDismissErrorClicked: () -> Unit
+  onRetryClick: () -> Unit,
+  onDismissErrorClick: () -> Unit
 ) {
   Row(horizontalArrangement = Arrangement.spacedBy(Small)) {
     Button(
-      onClick = onRetryClicked,
+      onClick = onRetryClick,
       modifier = Modifier.weight(1f),
       shape = shapes.cardSmall,
       colors = ButtonDefaults.buttonColors(
@@ -103,7 +122,7 @@ private fun ErrorActionRow(
       Text(retry())
     }
     OutlinedButton(
-      onClick = onDismissErrorClicked,
+      onClick = onDismissErrorClick,
       modifier = Modifier.weight(1f),
       shape = shapes.cardSmall
     ) {
@@ -121,8 +140,7 @@ private fun Preview(
   WeatherVibeTheme {
     SaveErrorContent(
       draft = draft,
-      onRetryClicked = {},
-      onDismissErrorClicked = {}
+      callbacks = RatingCardCallbacks.Noop
     )
   }
 }

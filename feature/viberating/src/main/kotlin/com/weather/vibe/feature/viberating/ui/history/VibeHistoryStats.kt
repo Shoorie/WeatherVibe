@@ -25,20 +25,17 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.rating.ratingColor
 import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay
-import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay.Available
-import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay.Empty
 import com.weather.vibe.feature.viberating.preview.VibeHistoryStatsPreview
 import com.weather.vibe.feature.viberating.preview.VibeHistoryStatsPreviewParams
-import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.averageEmpty
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.averageSuffix
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAverageA11y
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsAverageLabel
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalA11y
 import com.weather.vibe.feature.viberating.ui.VibeRatingResources.Texts.statsTotalLabel
-import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsDefaults.AverageFormat
 import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsDefaults.SuffixBaselineOffset
+import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsStyles.averageColor
+import com.weather.vibe.feature.viberating.ui.history.defaults.VibeHistoryStatsStyles.averageText
 
 @Composable
 internal fun VibeHistoryStats(
@@ -66,15 +63,14 @@ private fun AverageStatCard(
   modifier: Modifier = Modifier,
   display: AverageRatingDisplay
 ) {
-
   val label = statsAverageLabel()
   val suffix = averageSuffix()
-  val averageText = averageText(display = display)
-  val a11y = statsAverageA11y(value = averageText, suffix = suffix, label = label)
+  val value = averageText(display = display)
+  val a11y = statsAverageA11y(value = value, suffix = suffix, label = label)
 
   SummaryStatCard(
     modifier = modifier.semantics(mergeDescendants = true) { contentDescription = a11y },
-    value = averageText,
+    value = value,
     valueColor = averageColor(display = display),
     suffix = suffix,
     label = label
@@ -82,29 +78,15 @@ private fun AverageStatCard(
 }
 
 @Composable
-private fun averageText(display: AverageRatingDisplay): String = when (display) {
-  is Available -> AverageFormat.format(display.value)
-  Empty -> averageEmpty()
-}
-
-@Composable
-private fun averageColor(display: AverageRatingDisplay): Color = when (display) {
-  is Available -> ratingColor(display.ratingForColor)
-  Empty -> colors.onSurface
-}
-
-@Composable
 private fun TotalStatCard(
   modifier: Modifier = Modifier,
   totalEntries: Int
 ) {
-
   val label = statsTotalLabel()
   val a11y = statsTotalA11y(total = totalEntries, label = label)
 
   SummaryStatCard(
-    modifier = modifier
-      .semantics(mergeDescendants = true) { contentDescription = a11y },
+    modifier = modifier.semantics(mergeDescendants = true) { contentDescription = a11y },
     value = totalEntries.toString(),
     valueColor = colors.onSurface,
     suffix = null,
@@ -130,27 +112,40 @@ private fun SummaryStatCard(
       modifier = Modifier.fillMaxWidth(),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      Row(verticalAlignment = Alignment.Bottom) {
-        Text(
-          text = value,
-          style = typography.displaySmall,
-          color = valueColor,
-          fontWeight = FontWeight.Light
-        )
-        if (suffix != null) {
-          Spacer(Modifier.size(ExtraSmall))
-          Text(
-            text = suffix,
-            style = typography.bodySmall,
-            color = colors.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = SuffixBaselineOffset)
-          )
-        }
-      }
+      SummaryValueRow(
+        value = value,
+        valueColor = valueColor,
+        suffix = suffix
+      )
       Text(
         text = label,
         style = typography.labelSmall,
         color = colors.onSurfaceVariant
+      )
+    }
+  }
+}
+
+@Composable
+private fun SummaryValueRow(
+  value: String,
+  valueColor: Color,
+  suffix: String?
+) {
+  Row(verticalAlignment = Alignment.Bottom) {
+    Text(
+      text = value,
+      style = typography.displaySmall,
+      color = valueColor,
+      fontWeight = FontWeight.Light
+    )
+    if (suffix != null) {
+      Spacer(Modifier.size(ExtraSmall))
+      Text(
+        text = suffix,
+        style = typography.bodySmall,
+        color = colors.onSurfaceVariant,
+        modifier = Modifier.padding(bottom = SuffixBaselineOffset)
       )
     }
   }

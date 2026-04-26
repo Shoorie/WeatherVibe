@@ -17,6 +17,7 @@ internal object ColorTokens {
   val PaletteAmber = Color(0xFFFBBF24)
   val PaletteBlue = Color(0xFF38BDF8)
   val SheetSurface = Color(0xFF1C2B48)
+  val DarkCardContainer = Color(0xFF252952)
   val TextPrimary = Color(0xFFFFFFFF)
   val TextSecondary = Color(0xFFB2C5E0)
   val TextTertiary = Color(0xFF7B8FA6)

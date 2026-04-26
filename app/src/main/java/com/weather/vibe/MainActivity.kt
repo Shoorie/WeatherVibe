@@ -12,10 +12,10 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.navigation.WeatherVibeNavHost
 import com.weather.vibe.navigation.deeplink.DeepLinkRouteResolver
 import com.weather.vibe.navigation.splash.SplashBackdrop
+import com.weather.vibe.theme.WeatherVibeAppTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
     handleDeepLinks()
 
     setContent {
-      WeatherVibeTheme {
+      WeatherVibeAppTheme {
         val value by startRoute.collectAsState()
         when (value) {
           null -> SplashBackdrop()

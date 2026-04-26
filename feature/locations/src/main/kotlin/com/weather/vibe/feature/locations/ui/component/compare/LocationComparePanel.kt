@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -229,7 +229,7 @@ private fun MetricValue(
   Text(
     modifier = modifier,
     text = text,
-    style = typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+    style = typography.titleMedium.copy(fontWeight = SemiBold),
     color = color,
     textAlign = textAlign,
     maxLines = 1

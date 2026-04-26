@@ -33,6 +33,7 @@ import com.weather.vibe.feature.home.ui.HomeKeys.DAILY_VIBE
 import com.weather.vibe.feature.home.ui.HomeKeys.DETAILS
 import com.weather.vibe.feature.home.ui.HomeKeys.HERO
 import com.weather.vibe.feature.home.ui.HomeKeys.HOURLY
+import com.weather.vibe.feature.home.ui.HomeKeys.RATING_CARD
 import com.weather.vibe.feature.home.ui.HomeTestTags.FORECAST_LIST
 import com.weather.vibe.feature.home.ui.component.activityplanner.ActivityPlannerTeaserCard
 import com.weather.vibe.feature.home.ui.component.alert.HomeAlertBanner
@@ -42,6 +43,7 @@ import com.weather.vibe.feature.home.ui.component.details.DetailsPreviewCard
 import com.weather.vibe.feature.home.ui.component.hero.HomeHeroCard
 import com.weather.vibe.feature.home.ui.component.hourly.HourlyForecastRow
 import com.weather.vibe.feature.home.ui.component.vibe.DailyVibeCard
+import com.weather.vibe.feature.viberating.ui.rating.RatingCardHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,6 +54,7 @@ internal fun ForecastList(
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
+  onNavigateToVibeHistory: () -> Unit,
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onMusicClick: () -> Unit,
@@ -89,6 +92,7 @@ internal fun ForecastList(
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onNavigateToSettings = onNavigateToSettings,
+        onNavigateToVibeHistory = onNavigateToVibeHistory,
         onRetrySuggestion = onRetrySuggestion,
         onMusicClick = onMusicClick,
         onShareClick = onShareClick
@@ -106,6 +110,7 @@ private fun LazyListScope.forecastItems(
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
+  onNavigateToVibeHistory: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onMusicClick: () -> Unit,
   onShareClick: () -> Unit
@@ -136,6 +141,14 @@ private fun LazyListScope.forecastItems(
         state = state.dailyVibe
       )
     }
+  }
+  val weatherSnapshot = state.weatherSnapshot
+  item(key = RATING_CARD) {
+    RatingCardHost(
+      modifier = horizontalPadding,
+      weatherSnapshot = weatherSnapshot,
+      onNavigateToHistory = onNavigateToVibeHistory
+    )
   }
   item(key = BRIEFING) {
     WeatherBriefingCard(
@@ -185,6 +198,7 @@ private fun Preview() {
       onNavigateToDetails = {},
       onNavigateToSearch = {},
       onNavigateToSettings = {},
+      onNavigateToVibeHistory = {},
       onRefresh = {},
       onRetrySuggestion = {},
       onMusicClick = {},

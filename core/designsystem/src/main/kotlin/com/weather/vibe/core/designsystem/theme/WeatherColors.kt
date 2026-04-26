@@ -9,6 +9,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class WeatherColors(
   val accent: Color,
   val accentDark: Color,
+  val appBackgroundStart: Color,
   val backgroundGradientEnd: Color,
   val backgroundGradientStart: Color,
   val error: Color,
@@ -36,6 +37,7 @@ fun weatherDarkColors(): WeatherColors =
   WeatherColors(
     accent = ColorTokens.AccentSkyBlue,
     accentDark = ColorTokens.AccentSkyBlueDark,
+    appBackgroundStart = ColorTokens.BackgroundGradientStart,
     backgroundGradientEnd = ColorTokens.BackgroundGradientEnd,
     backgroundGradientStart = ColorTokens.BackgroundGradientStart,
     colorCool = ColorTokens.PaletteBlue,
@@ -70,6 +72,7 @@ fun weatherLightColors(): WeatherColors =
   WeatherColors(
     accent = ColorTokens.LightPrimary,
     accentDark = ColorTokens.LightPrimary,
+    appBackgroundStart = ColorTokens.LightPrimaryContainer,
     backgroundGradientEnd = ColorTokens.LightBackground,
     backgroundGradientStart = ColorTokens.LightBackground,
     error = ColorTokens.LightError,

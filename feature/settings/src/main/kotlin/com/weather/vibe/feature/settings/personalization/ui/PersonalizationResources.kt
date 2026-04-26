@@ -51,6 +51,10 @@ internal class PersonalizationResources(private val context: Context) {
       stringResource(R.string.personalization_screen_title)
 
     @Composable
+    fun screenSubtitle(): String =
+      stringResource(R.string.personalization_screen_subtitle)
+
+    @Composable
     fun briefToneSection(): String =
       stringResource(R.string.personalization_section_brief_tone)
 

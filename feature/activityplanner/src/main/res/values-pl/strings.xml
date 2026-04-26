@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="activityplanner_screen_title">Planer aktywności</string>
+  <string name="activityplanner_screen_title">Plan aktywności</string>
+  <string name="activityplanner_screen_subtitle">Wybierz aktywność i znajdź swój moment dnia</string>
   <string name="activityplanner_top_windows">Najlepszy moment dnia</string>
   <string name="activityplanner_timeline">Oś czasu 24h</string>
   <string name="activityplanner_activity_running">🏃 Bieganie</string>

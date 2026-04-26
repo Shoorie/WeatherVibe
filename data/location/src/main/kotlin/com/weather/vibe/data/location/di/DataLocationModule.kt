@@ -11,6 +11,7 @@ import com.weather.vibe.data.location.local.dao.LocationWeatherSnapshotDao
 import com.weather.vibe.data.location.local.dao.RecentLocationDao
 import com.weather.vibe.data.location.local.migration.Migration1To2
 import com.weather.vibe.data.location.local.migration.Migration2To3
+import com.weather.vibe.data.location.local.migration.Migration3To4
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
@@ -28,7 +29,7 @@ class DataLocationModule {
       klass = LocationDatabase::class.java,
       name = "location.db"
     )
-      .addMigrations(Migration1To2, Migration2To3)
+      .addMigrations(Migration1To2, Migration2To3, Migration3To4)
       .build()
 
   @Single

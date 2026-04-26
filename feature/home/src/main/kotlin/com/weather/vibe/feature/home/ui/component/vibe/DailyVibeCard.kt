@@ -28,7 +28,7 @@ import com.weather.vibe.feature.home.presentation.state.DailyVibeCardUiState
 import com.weather.vibe.feature.home.preview.DailyVibePreview
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.dailyVibeSectionLabel
 import com.weather.vibe.feature.home.ui.HomeDefaults.DailyVibeMinHeight
-import com.weather.vibe.feature.home.ui.component.airquality.BriefAirChipRow
+import com.weather.vibe.feature.home.ui.component.airquality.AirQualityChipRow
 
 @Composable
 internal fun DailyVibeCard(
@@ -76,7 +76,7 @@ internal fun DailyVibeCard(
           }
         }
         if (state.airQualityChip != null || state.pollenChip != null) {
-          BriefAirChipRow(
+          AirQualityChipRow(
             airQualityChip = state.airQualityChip,
             pollenChip = state.pollenChip
           )

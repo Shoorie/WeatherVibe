@@ -3,6 +3,9 @@ package com.weather.vibe.feature.locations.presentation.state
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.CompareHintPickOne
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.CompareHintPickZero
+import com.weather.vibe.feature.locations.presentation.state.LocationsHeaderSubtitle.LocationCount
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SelectionLimit
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
@@ -32,12 +35,18 @@ internal sealed interface LocationsUiState {
       get() = cards.size < MAX_FAVORITES
 
     @Stable
-    fun isCardSelected(favoriteId: Long): Boolean =
-      favoriteId in selectedIds
+    val headerSubtitle: LocationsHeaderSubtitle
+      get() = when {
+        compareMode && selectedIds.isEmpty() -> CompareHintPickZero
+        compareMode && selectedIds.size == 1 -> CompareHintPickOne
+        else -> LocationCount(count = cards.size, limit = MAX_FAVORITES)
+      }
 
     @Stable
     fun isCardLocked(favoriteId: Long): Boolean =
-      compareMode && selectedIds.size >= SelectionLimit && favoriteId !in selectedIds
+      compareMode &&
+        selectedIds.size >= SelectionLimit &&
+        favoriteId !in selectedIds
 
     @Stable
     fun withRefreshing(isRefreshing: Boolean): Loaded =

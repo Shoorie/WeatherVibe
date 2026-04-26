@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profile</string>
+  <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
+  <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Hey 👋</string>
   <string name="profile_header_unnamed_subtitle">Tap to introduce yourself</string>
@@ -35,9 +37,16 @@
   <string name="profile_row_about_title">About</string>
   <string name="profile_row_about_body">Version, open-source licenses, changelog</string>
 
-  <string name="profile_mood_title">Mood journal</string>
-  <string name="profile_mood_body">Coming soon — log how you feel each day and see how the weather plays into it.</string>
-  <string name="profile_mood_badge">Soon</string>
+  <string name="profile_mood_title">Twój vibe</string>
+  <string name="profile_mood_body_empty">Jeszcze nic nie oceniłeś — zacznij od dzisiaj, a po kilku dniach zobaczysz tu swoje trendy.</string>
+  <string name="profile_mood_summary_format">%1$s/5 · %2$d %3$s</string>
+  <plurals name="profile_mood_days">
+    <item quantity="one">dzień</item>
+    <item quantity="few">dni</item>
+    <item quantity="many">dni</item>
+    <item quantity="other">dni</item>
+  </plurals>
+  <string name="profile_mood_cta">Otwórz historię ocen</string>
 
   <string name="profile_edit_sheet_title">What should we call you?</string>
   <string name="profile_edit_sheet_body">We\'ll use your name in greetings and notifications.</string>

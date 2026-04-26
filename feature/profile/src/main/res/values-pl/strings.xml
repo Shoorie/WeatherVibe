@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profil</string>
+  <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
+  <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Cześć 👋</string>
   <string name="profile_header_unnamed_subtitle">Dotknij, aby się przedstawić</string>
@@ -35,9 +37,16 @@
   <string name="profile_row_about_title">O aplikacji</string>
   <string name="profile_row_about_body">Wersja, licencje OSS, changelog</string>
 
-  <string name="profile_mood_title">Dziennik nastroju</string>
-  <string name="profile_mood_body">Wkrótce — zapisuj swój nastrój każdego dnia i zobacz, jak pogoda wpływa na Twoje samopoczucie.</string>
-  <string name="profile_mood_badge">Wkrótce</string>
+  <string name="profile_mood_title">Twój vibe</string>
+  <string name="profile_mood_body_empty">Jeszcze nic nie oceniłeś — zacznij od dzisiaj, a po kilku dniach zobaczysz tu swoje trendy.</string>
+  <string name="profile_mood_summary_format">%1$s/5 · %2$d %3$s</string>
+  <plurals name="profile_mood_days">
+    <item quantity="one">dzień</item>
+    <item quantity="few">dni</item>
+    <item quantity="many">dni</item>
+    <item quantity="other">dni</item>
+  </plurals>
+  <string name="profile_mood_cta">Otwórz historię ocen</string>
 
   <string name="profile_edit_sheet_title">Jak mamy Cię nazywać?</string>
   <string name="profile_edit_sheet_body">Użyjemy imienia w powitaniach i powiadomieniach.</string>

@@ -25,6 +25,10 @@ internal class NotificationsResources(private val context: Context) {
       stringResource(R.string.notifications_screen_title)
 
     @Composable
+    fun screenSubtitle(): String =
+      stringResource(R.string.notifications_screen_subtitle)
+
+    @Composable
     fun alertsSection(): String =
       stringResource(R.string.notifications_section_alerts)
 

@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
@@ -37,6 +37,7 @@ fun HomeScreen(
   onNavigateToDetails: () -> Unit = {},
   onNavigateToSearch: () -> Unit = {},
   onNavigateToSettings: () -> Unit = {},
+  onNavigateToVibeHistory: () -> Unit = {},
   onContentReady: () -> Unit = {},
   selectedLocation: Location
 ) {
@@ -70,6 +71,7 @@ fun HomeScreen(
     onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch,
     onNavigateToSettings = onNavigateToSettings,
+    onNavigateToVibeHistory = onNavigateToVibeHistory,
     onRefresh = callbacks.onRefresh,
     onRetrySuggestion = callbacks.onRetrySuggestion,
     onShareClick = callbacks.onShareClick,
@@ -92,6 +94,7 @@ internal fun HomeContent(
   onNavigateToDetails: () -> Unit,
   onNavigateToSearch: () -> Unit,
   onNavigateToSettings: () -> Unit,
+  onNavigateToVibeHistory: () -> Unit,
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onShareClick: () -> Unit,
@@ -100,7 +103,7 @@ internal fun HomeContent(
   Box(
     modifier = modifier
       .fillMaxSize()
-      .background(color = colors.backgroundGradientEnd)
+      .background(rememberAppBackgroundBrush())
   ) {
     when (state) {
       is Loading -> LoadingIndicator(modifier = Modifier.fillMaxSize())
@@ -114,6 +117,7 @@ internal fun HomeContent(
         onNavigateToDetails = onNavigateToDetails,
         onNavigateToSearch = onNavigateToSearch,
         onNavigateToSettings = onNavigateToSettings,
+        onNavigateToVibeHistory = onNavigateToVibeHistory,
         onRefresh = onRefresh,
         onRetrySuggestion = onRetrySuggestion,
         onShareClick = onShareClick,
@@ -136,6 +140,7 @@ private fun Preview(
       onNavigateToDetails = {},
       onNavigateToSearch = {},
       onNavigateToSettings = {},
+      onNavigateToVibeHistory = {},
       onRefresh = {},
       onRetrySuggestion = {},
       onShareClick = {},

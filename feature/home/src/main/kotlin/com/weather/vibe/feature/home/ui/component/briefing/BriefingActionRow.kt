@@ -7,7 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +30,7 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingMusicHint
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.moodPlaylistContentDescription
-import com.weather.vibe.feature.home.ui.HomeEmojis.arrowRight
+import com.weather.vibe.feature.home.ui.HomeDefaults.ArrowButtonIconSize
 import com.weather.vibe.feature.home.ui.HomeEmojis.headphones
 
 @Composable
@@ -63,11 +67,11 @@ internal fun BriefingActionRow(
       fontWeight = SemiBold
     )
     Spacer(modifier = Modifier.width(ExtraSmall))
-    Text(
-      text = arrowRight(),
-      style = typography.titleSmall,
-      color = colors.accent,
-      fontWeight = SemiBold
+    Icon(
+      modifier = Modifier.size(ArrowButtonIconSize),
+      imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+      contentDescription = null,
+      tint = colors.accent
     )
   }
 }

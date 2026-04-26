@@ -1,32 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="profile_screen_title">Profile</string>
-  <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
-  <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
 
   <string name="profile_header_unnamed_greeting">Hey 👋</string>
   <string name="profile_header_unnamed_subtitle">Tap to introduce yourself</string>
+  <string name="profile_header_subtitle_returning">Glad to see you again</string>
   <string name="profile_header_greeting">Hi, %1$s</string>
-  <string name="profile_header_edit_hint">Edit</string>
+  <string name="profile_header_avatar_unnamed">?</string>
   <string name="profile_header_edit_click_label">Edit profile</string>
-  <string name="profile_header_brief_tone_label">Brief tone</string>
+  <string name="profile_header_brief_tone_label">Brief tone:</string>
   <string name="profile_header_brief_tone_click_label">Open personalization</string>
+  <string name="profile_header_decoration_description">Friendly weather decoration</string>
+  <string name="profile_header_waving_hand_description">Waving hand</string>
   <string name="profile_brief_tone_witty">Witty &amp; Friendly</string>
   <string name="profile_brief_tone_formal">Formal</string>
   <string name="profile_brief_tone_humorous">Humorous</string>
-  <string name="profile_header_quote_witty">We can\'t control the weather, but we can control our attitude.</string>
-  <string name="profile_header_quote_formal">External circumstances remain beyond our control; however, it is the discipline of internal perspective that defines our efficacy.</string>
-  <string name="profile_header_quote_humorous">My attitude is in power-saving mode today. Please do not expect any sunshine before the third cup of coffee.</string>
 
   <string name="profile_stat_locations_label">Locations</string>
+  <string name="profile_stat_locations_emoji">📍</string>
   <string name="profile_stat_locations_click_label">Open locations</string>
   <string name="profile_stat_morning_brief_label">Morning brief</string>
+  <string name="profile_stat_morning_brief_emoji">🌅</string>
   <string name="profile_stat_morning_brief_click_label">Open notifications</string>
   <string name="profile_stat_alerts_label">Alerts</string>
+  <string name="profile_stat_alerts_emoji">🔔</string>
   <string name="profile_stat_alerts_click_label">Open notifications</string>
   <string name="profile_stat_status_on">On</string>
   <string name="profile_stat_status_off">Off</string>
-  <string name="profile_header_avatar_unnamed">?</string>
+
+  <string name="profile_vibe_title">Your vibe</string>
+  <string name="profile_vibe_average_format">%1$s/5</string>
+  <string name="profile_vibe_streak_separator">·</string>
+  <string name="profile_vibe_empty_cta">Rate your first day</string>
+  <string name="profile_vibe_click_label_loaded">Open vibe history</string>
+  <string name="profile_vibe_click_label_empty">Rate your first day</string>
+
+  <string name="profile_appearance_title">Appearance</string>
+  <string name="profile_appearance_body">Light, dark or follow system</string>
+  <string name="profile_appearance_light_label">Light</string>
+  <string name="profile_appearance_auto_label">Auto</string>
+  <string name="profile_appearance_dark_label">Dark</string>
 
   <string name="profile_row_personalization_title">Personalization</string>
   <string name="profile_row_personalization_body">Brief tone, units, excluded genres</string>
@@ -37,16 +50,7 @@
   <string name="profile_row_about_title">About</string>
   <string name="profile_row_about_body">Version, open-source licenses, changelog</string>
 
-  <string name="profile_mood_title">Twój vibe</string>
-  <string name="profile_mood_body_empty">Jeszcze nic nie oceniłeś — zacznij od dzisiaj, a po kilku dniach zobaczysz tu swoje trendy.</string>
-  <string name="profile_mood_summary_format">%1$s/5 · %2$d %3$s</string>
-  <plurals name="profile_mood_days">
-    <item quantity="one">dzień</item>
-    <item quantity="few">dni</item>
-    <item quantity="many">dni</item>
-    <item quantity="other">dni</item>
-  </plurals>
-  <string name="profile_mood_cta">Otwórz historię ocen</string>
+  <string name="profile_footer">Made with 💜 for your weather</string>
 
   <string name="profile_edit_sheet_title">What should we call you?</string>
   <string name="profile_edit_sheet_body">We\'ll use your name in greetings and notifications.</string>
@@ -59,6 +63,8 @@
   <string name="profile_placeholder_notifications_body">Decide whether the morning brief and weather alerts land on your lock screen. Coming soon.</string>
   <string name="profile_placeholder_privacy_title">Privacy policy</string>
   <string name="profile_placeholder_privacy_body">WeatherVibe keeps your data on the device. Full policy is on its way.</string>
+  <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
   <string name="profile_placeholder_about_title">About</string>
   <string name="profile_placeholder_about_body">App version, open-source licenses, and changelog will live here.</string>
+  <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
 </resources>

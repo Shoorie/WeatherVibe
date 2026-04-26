@@ -3,29 +3,39 @@ package com.weather.vibe.feature.profile.preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
 
-internal class ProfileHeroPreview :
+internal class ProfileHeaderPreviewProvider :
   PreviewParameterProvider<ProfileHeaderUiState> {
 
   val named: ProfileHeaderUiState =
     ProfileHeaderUiState(
-      username = "John",
       avatarInitial = "J",
+      briefToneLabel = "Witty & Friendly",
       greeting = "Hi, John",
-      subtitle = "42 days with WeatherVibe",
-      briefToneLabel = "Witty",
-      quote = "We can't control the weather, but we can control our attitude."
+      showWavingHand = true,
+      subtitle = "Glad to see you again",
+      username = "John"
     )
 
   val unnamed: ProfileHeaderUiState =
     ProfileHeaderUiState(
-      username = "",
       avatarInitial = "?",
-      greeting = "Hey 👋",
-      subtitle = "Tap to introduce yourself",
       briefToneLabel = "",
-      quote = ""
+      greeting = "Hey 👋",
+      showWavingHand = false,
+      subtitle = "Tap to introduce yourself",
+      username = ""
+    )
+
+  private val longName: ProfileHeaderUiState =
+    ProfileHeaderUiState(
+      avatarInitial = "B",
+      briefToneLabel = "Formal",
+      greeting = "Hi, Bartholomew Aleksander",
+      showWavingHand = true,
+      subtitle = "Glad to see you again",
+      username = "Bartholomew Aleksander"
     )
 
   override val values: Sequence<ProfileHeaderUiState> =
-    sequenceOf(named, unnamed)
+    sequenceOf(named, longName, unnamed)
 }

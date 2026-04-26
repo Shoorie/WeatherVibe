@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Notifications
@@ -18,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.surface.VibeCard
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
@@ -25,10 +25,11 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.ListRowShape
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.NavIconContainerSize
-import com.weather.vibe.feature.profile.ui.ProfileDefaults.NavIconCornerRadius
+import com.weather.vibe.feature.profile.ui.ProfileDefaults.NavIconShape
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.NavIconSize
-import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @Composable
 internal fun ProfileNavigationCard(
@@ -40,6 +41,8 @@ internal fun ProfileNavigationCard(
 ) {
   VibeCard(
     modifier = modifier,
+    shape = ListRowShape,
+    containerColor = colors.cardContainer,
     contentPadding = Medium,
     onClick = onClick,
     onClickLabel = title
@@ -70,7 +73,7 @@ private fun LeadingIcon(icon: ImageVector) {
   Box(
     modifier = Modifier
       .size(NavIconContainerSize)
-      .clip(RoundedCornerShape(NavIconCornerRadius))
+      .clip(NavIconShape)
       .background(colors.glassSurface),
     contentAlignment = Alignment.Center
   ) {
@@ -95,12 +98,12 @@ private fun TitleAndBody(
   ) {
     Text(
       text = title,
-      style = ProfileTextStyles.rowTitle(),
+      style = typography.titleSmall.copy(fontWeight = SemiBold),
       color = colors.onPrimaryContainer
     )
     Text(
       text = body,
-      style = ProfileTextStyles.rowBody(),
+      style = typography.bodySmall,
       color = colors.onPrimaryContainer
     )
   }
@@ -112,8 +115,8 @@ private fun Preview() {
   WeatherVibeTheme {
     ProfileNavigationCard(
       icon = Icons.Default.Notifications,
-      title = "Powiadomienia",
-      body = "Poranny brief i alerty pogodowe",
+      title = "Notifications",
+      body = "Morning brief and weather alerts",
       onClick = {}
     )
   }

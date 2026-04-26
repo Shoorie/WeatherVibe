@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -24,12 +25,12 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
+import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.profile.presentation.state.ProfileEditSheetUiState
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editSheetBody
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editSheetFieldLabel
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editSheetSave
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.editSheetTitle
-import com.weather.vibe.feature.profile.ui.ProfileTextStyles
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,12 +90,12 @@ private fun SheetHeader() {
   Column(verticalArrangement = Arrangement.spacedBy(Small)) {
     Text(
       text = editSheetTitle(),
-      style = ProfileTextStyles.sheetTitle(),
+      style = typography.titleMedium.copy(fontWeight = SemiBold),
       color = colors.onBackground
     )
     Text(
       text = editSheetBody(),
-      style = ProfileTextStyles.rowBody(),
+      style = typography.bodySmall,
       color = colors.onSurfaceVariant
     )
   }

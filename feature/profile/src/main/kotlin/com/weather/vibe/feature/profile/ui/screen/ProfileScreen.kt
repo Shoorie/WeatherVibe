@@ -12,11 +12,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.lifecycle.Lifecycle.State.STARTED
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
@@ -27,29 +31,34 @@ import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPrivacy
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenVibeHistory
 import com.weather.vibe.feature.profile.presentation.ProfileViewModel
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatType
 import com.weather.vibe.feature.profile.presentation.state.ProfileStatUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileUiState
-import com.weather.vibe.feature.profile.preview.ProfilePreview
+import com.weather.vibe.feature.profile.preview.ProfilePreviewProvider
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_FOOTER
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_HERO
-import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_MOOD
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_QUICK_STATS
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_APPEARANCE
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_VIBE
+import com.weather.vibe.feature.profile.ui.component.appearance.AppearanceRow
 import com.weather.vibe.feature.profile.ui.component.editsheet.EditProfileSheet
+import com.weather.vibe.feature.profile.ui.component.footer.ProfileFooter
 import com.weather.vibe.feature.profile.ui.component.header.ProfileHero
-import com.weather.vibe.feature.profile.ui.component.mood.MoodTeaserCard
 import com.weather.vibe.feature.profile.ui.component.stats.ProfileStatCard
+import com.weather.vibe.feature.profile.ui.component.vibe.VibeRow
 import kotlinx.collections.immutable.ImmutableList
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-  onOpenPersonalization: () -> Unit,
-  onOpenNotifications: () -> Unit,
-  onOpenPrivacy: () -> Unit,
   onOpenAbout: () -> Unit,
   onOpenLocations: () -> Unit,
+  onOpenNotifications: () -> Unit,
+  onOpenPersonalization: () -> Unit,
+  onOpenPrivacy: () -> Unit,
   onOpenVibeHistory: () -> Unit
 ) {
 
@@ -57,22 +66,25 @@ fun ProfileScreen(
   val state by viewModel.state.collectAsStateWithLifecycle()
   val callbacks = rememberProfileCallbacks(dispatch = viewModel::dispatch)
 
-  LaunchedEffect(Unit) {
-    viewModel.event.collect { event ->
-      when (event) {
-        OpenPersonalization -> onOpenPersonalization()
-        OpenNotifications -> onOpenNotifications()
-        OpenPrivacy -> onOpenPrivacy()
-        OpenAbout -> onOpenAbout()
-        OpenLocations -> onOpenLocations()
+  val lifecycleOwner = LocalLifecycleOwner.current
+  LaunchedEffect(lifecycleOwner) {
+    lifecycleOwner.lifecycle.repeatOnLifecycle(STARTED) {
+      viewModel.event.collect { event ->
+        when (event) {
+          OpenPersonalization -> onOpenPersonalization()
+          OpenNotifications -> onOpenNotifications()
+          OpenPrivacy -> onOpenPrivacy()
+          OpenAbout -> onOpenAbout()
+          OpenLocations -> onOpenLocations()
+          OpenVibeHistory -> onOpenVibeHistory()
+        }
       }
     }
   }
 
   ProfileContent(
     state = state,
-    callbacks = callbacks,
-    onOpenVibeHistory = onOpenVibeHistory
+    callbacks = callbacks
   )
 }
 
@@ -81,8 +93,7 @@ fun ProfileScreen(
 internal fun ProfileContent(
   modifier: Modifier = Modifier,
   state: ProfileUiState,
-  callbacks: ProfileCallbacks,
-  onOpenVibeHistory: () -> Unit = {}
+  callbacks: ProfileCallbacks
 ) {
 
   val contentPadding = remember {
@@ -115,10 +126,27 @@ internal fun ProfileContent(
         onStatClick = callbacks.onStatClick
       )
     }
-    item(key = KEY_MOOD) {
-      MoodTeaserCard(onClick = onOpenVibeHistory)
+    item(key = KEY_VIBE) {
+      VibeRow(
+        state = state.vibeRow,
+        onClick = callbacks.onVibeRowClick
+      )
     }
-    navigationItems(callbacks = callbacks)
+    personalizationItem(callbacks = callbacks)
+    state.appearanceRow?.let { appearanceRow ->
+      item(key = KEY_ROW_APPEARANCE) {
+        AppearanceRow(
+          state = appearanceRow,
+          onSelect = callbacks.onThemeSelect
+        )
+      }
+    }
+    notificationsItem(callbacks = callbacks)
+    privacyItem(callbacks = callbacks)
+    aboutItem(callbacks = callbacks)
+    item(key = KEY_FOOTER) {
+      ProfileFooter(modifier = Modifier.fillMaxWidth())
+    }
   }
 
   if (state.editSheet.isVisible) {
@@ -141,11 +169,14 @@ private fun QuickStatsRow(
     horizontalArrangement = Arrangement.spacedBy(Small)
   ) {
     stats.forEach { stat ->
-      ProfileStatCard(
-        modifier = Modifier.weight(1f),
-        stat = stat,
-        onClick = { onStatClick(stat.type) }
-      )
+      key(stat.type) {
+        val onClick = remember(stat.type, onStatClick) { { onStatClick(stat.type) } }
+        ProfileStatCard(
+          modifier = Modifier.weight(1f),
+          stat = stat,
+          onClick = onClick
+        )
+      }
     }
   }
 }
@@ -154,7 +185,7 @@ private fun QuickStatsRow(
 @PreviewLightDark
 @Composable
 private fun Preview(
-  @PreviewParameter(ProfilePreview::class)
+  @PreviewParameter(ProfilePreviewProvider::class)
   state: ProfileUiState
 ) {
   WeatherVibeTheme {

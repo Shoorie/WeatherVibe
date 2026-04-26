@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.feature.home.ui.HomeDefaults.BriefingMutedAlpha
@@ -13,7 +13,7 @@ internal object HomeTextStyles {
 
   @Composable
   fun semiBold(style: TextStyle): TextStyle =
-    remember(style) { style.copy(fontWeight = FontWeight.SemiBold) }
+    remember(style) { style.copy(fontWeight = SemiBold) }
 
   @Composable
   fun dayColor(isToday: Boolean): Color =

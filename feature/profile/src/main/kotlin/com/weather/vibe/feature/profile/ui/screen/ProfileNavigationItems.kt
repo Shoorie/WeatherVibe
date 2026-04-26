@@ -20,7 +20,7 @@ import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.privacyBody
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.privacyTitle
 import com.weather.vibe.feature.profile.ui.component.navigation.ProfileNavigationCard
 
-internal fun LazyListScope.navigationItems(callbacks: ProfileCallbacks) {
+internal fun LazyListScope.personalizationItem(callbacks: ProfileCallbacks) {
   item(key = KEY_ROW_PERSONALIZATION) {
     ProfileNavigationCard(
       icon = Icons.Default.Settings,
@@ -29,6 +29,9 @@ internal fun LazyListScope.navigationItems(callbacks: ProfileCallbacks) {
       onClick = callbacks.onPersonalizationClick
     )
   }
+}
+
+internal fun LazyListScope.notificationsItem(callbacks: ProfileCallbacks) {
   item(key = KEY_ROW_NOTIFICATIONS) {
     ProfileNavigationCard(
       icon = Icons.Default.Notifications,
@@ -37,6 +40,9 @@ internal fun LazyListScope.navigationItems(callbacks: ProfileCallbacks) {
       onClick = callbacks.onNotificationsClick
     )
   }
+}
+
+internal fun LazyListScope.privacyItem(callbacks: ProfileCallbacks) {
   item(key = KEY_ROW_PRIVACY) {
     ProfileNavigationCard(
       icon = Icons.Default.Lock,
@@ -45,6 +51,9 @@ internal fun LazyListScope.navigationItems(callbacks: ProfileCallbacks) {
       onClick = callbacks.onPrivacyClick
     )
   }
+}
+
+internal fun LazyListScope.aboutItem(callbacks: ProfileCallbacks) {
   item(key = KEY_ROW_ABOUT) {
     ProfileNavigationCard(
       icon = Icons.Default.Info,

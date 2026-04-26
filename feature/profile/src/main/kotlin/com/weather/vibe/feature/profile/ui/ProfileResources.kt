@@ -3,6 +3,8 @@ package com.weather.vibe.feature.profile.ui
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.weather.vibe.domain.appearance.model.ThemeMode
@@ -113,6 +115,29 @@ internal class ProfileResources(private val context: Context) {
     LIGHT -> R.string.profile_appearance_light_label
     AUTO -> R.string.profile_appearance_auto_label
     DARK -> R.string.profile_appearance_dark_label
+  }
+
+  object Painters {
+
+    @Composable
+    fun appearance(): Painter =
+      painterResource(R.drawable.ic_profile_appearance)
+
+    @Composable
+    fun cloudDecoration(): Painter =
+      painterResource(R.drawable.ic_profile_cloud_decoration)
+
+    @Composable
+    fun sunBadge(): Painter =
+      painterResource(R.drawable.ic_profile_sun_badge)
+
+    @Composable
+    fun smiley(): Painter =
+      painterResource(R.drawable.ic_profile_smiley)
+
+    @Composable
+    fun starsDecor(): Painter =
+      painterResource(R.drawable.ic_profile_stars_decor)
   }
 
   object Texts {

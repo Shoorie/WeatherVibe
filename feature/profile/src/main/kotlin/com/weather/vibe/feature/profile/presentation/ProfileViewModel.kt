@@ -81,8 +81,8 @@ internal class ProfileViewModel(
       useCases.observeProfile(),
       useCases.observeUserSettings(),
       useCases.observeFavoritesCount(),
-      useCases.observeVibeOverview(),
       useCases.observeThemeMode(),
+      useCases.observeVibeOverview(),
       ::ProfileSnapshot
     )
       .onEach(::applySnapshot)

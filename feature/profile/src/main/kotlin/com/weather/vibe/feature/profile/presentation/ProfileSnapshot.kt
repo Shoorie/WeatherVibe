@@ -6,9 +6,9 @@ import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.viberating.model.VibeOverview
 
 internal data class ProfileSnapshot(
-  val favoritesCountResult: Result<Int>,
   val profile: ProfileSummary,
   val settingsResult: Result<UserSettings>,
+  val favoritesCountResult: Result<Int>,
   val themeMode: ThemeMode,
   val vibeOverview: VibeOverview
 )

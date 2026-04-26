@@ -33,7 +33,7 @@ internal fun LocationsCard(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.card)
-      .background(colors.glassSurface)
+      .background(colors.rowSurface)
       .border(width = Stroke.Border, color = colors.outlineVariant, shape = shapes.card)
   ) {
     locations.forEachIndexed { index, location ->

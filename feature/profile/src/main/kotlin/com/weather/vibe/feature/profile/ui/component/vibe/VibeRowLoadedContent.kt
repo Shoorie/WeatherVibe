@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -38,8 +39,8 @@ internal fun VibeRowLoadedContent(
     ) {
       Text(
         text = state.averageLabel,
-        style = typography.labelMedium.copy(fontWeight = SemiBold),
-        color = colors.accent
+        style = typography.titleSmall.copy(fontWeight = Bold),
+        color = colors.success
       )
       if (state.streakLabel != null) {
         Text(

@@ -70,7 +70,7 @@ internal fun DailyVibeCard(
             )
             Text(
               text = state.vibe.oneLiner,
-              color = colors.onPrimaryContainer,
+              color = colors.onSurfaceVariant,
               style = typography.bodySmall
             )
           }

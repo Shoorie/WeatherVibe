@@ -78,7 +78,7 @@ internal fun MonthCalendar(
   VibeCard(
     modifier = modifier,
     shape = shapes.cardMedium,
-    containerColor = colors.surfaceVariant,
+    containerColor = colors.glassSurface,
     contentPadding = Medium
   ) {
     Column(modifier = Modifier.fillMaxWidth()) {

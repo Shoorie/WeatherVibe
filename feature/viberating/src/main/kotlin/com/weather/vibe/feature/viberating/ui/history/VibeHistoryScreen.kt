@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.viberating.ui.history
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.BackClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DayDetailDismissed
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DaySelected
@@ -78,7 +80,7 @@ internal fun VibeHistoryContent(
   callbacks: VibeHistoryCallbacks
 ) {
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = historyTitle(),

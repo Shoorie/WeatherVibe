@@ -30,8 +30,6 @@ import com.weather.vibe.feature.settings.personalization.preview.Personalization
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationDefaults.BriefToneRowMinHeight
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationDefaults.SelectedIndicatorSize
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.briefToneSelectedContentDescription
-import com.weather.vibe.feature.settings.personalization.ui.PersonalizationTextStyles.briefToneDescriptionColor
-import com.weather.vibe.feature.settings.personalization.ui.PersonalizationTextStyles.briefToneLabelColor
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationTextStyles.briefToneLabelStyle
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationTextStyles.briefToneRowBackground
 
@@ -61,12 +59,12 @@ internal fun BriefToneOptionRow(
       Text(
         text = option.label,
         style = briefToneLabelStyle(option.isSelected),
-        color = briefToneLabelColor(option.isSelected)
+        color = colors.onBackground
       )
       Text(
         text = option.description,
         style = typography.bodySmall,
-        color = briefToneDescriptionColor(option.isSelected)
+        color = colors.onSurfaceVariant
       )
     }
     if (option.isSelected) {

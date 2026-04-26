@@ -104,7 +104,7 @@ private fun SplashContent(
   Column(
     modifier = modifier
       .fillMaxSize()
-      .background(color = colors.accent)
+      .background(color = colors.heroSurface)
       .graphicsLayer { alpha = anim.exitAlpha.value },
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally

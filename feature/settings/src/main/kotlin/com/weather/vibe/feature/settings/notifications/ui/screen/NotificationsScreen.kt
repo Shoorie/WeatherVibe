@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.settings.notifications.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.core.permissions.openSystemNotificationSettings
 import com.weather.vibe.core.permissions.rememberNotificationPermissionGranted
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.NotificationPermissionLost
@@ -72,7 +74,7 @@ internal fun NotificationsContent(
   notificationPermissionGranted: Boolean
 ) {
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = screenTitle(),

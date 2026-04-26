@@ -31,7 +31,8 @@ internal fun WindowCard(
 ) {
   VibeCard(
     modifier = modifier
-      .semantics(mergeDescendants = true) { contentDescription = window.contentDescription }
+      .semantics(mergeDescendants = true) { contentDescription = window.contentDescription },
+    containerColor = colors.rowSurface
   ) {
     Column(verticalArrangement = Arrangement.spacedBy(Medium)) {
       TitleRow(

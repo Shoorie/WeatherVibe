@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.IntSize
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.domain.appearance.model.ThemeMode
-import com.weather.vibe.feature.profile.preview.AppearanceRowPreviewProvider
 import com.weather.vibe.feature.profile.presentation.state.ProfileAppearanceRowUiState
+import com.weather.vibe.feature.profile.preview.AppearanceRowPreviewProvider
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.AppearanceSegmentBackgroundAlpha
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.AppearanceSegmentChipShape
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.AppearanceSegmentFirstIndex
@@ -113,7 +113,12 @@ private fun BoxScope.SlidingIndicator(
       .fillMaxHeight()
       .defaultMinSize(minHeight = AppearanceSegmentMinHeight)
       .onSizeChanged(rememberSizeRecorder(widthPx))
-      .offset { IntOffset(x = (position * widthPx.intValue).roundToInt(), y = AppearanceSegmentZeroOffset) }
+      .offset {
+        IntOffset(
+          x = (position * widthPx.intValue).roundToInt(),
+          y = AppearanceSegmentZeroOffset
+        )
+      }
       .clip(AppearanceSegmentChipShape)
       .background(colors.accent)
   )

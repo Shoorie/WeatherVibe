@@ -21,10 +21,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.profile.preview.VibeRowPreviewProvider
 import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState
 import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState.Empty
 import com.weather.vibe.feature.profile.presentation.state.ProfileVibeRowUiState.Loaded
+import com.weather.vibe.feature.profile.preview.VibeRowPreviewProvider
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.VibeRowAvatarToTextsSpacing
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.VibeRowPaddingHorizontal
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.VibeRowPaddingVertical

@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Elevation
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.profile.preview.ProfileHeaderPreviewProvider
 import com.weather.vibe.feature.profile.presentation.state.ProfileHeaderUiState
+import com.weather.vibe.feature.profile.preview.ProfileHeaderPreviewProvider
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroChipMarginTop
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroPaddingBottom
 import com.weather.vibe.feature.profile.ui.ProfileDefaults.HeroPaddingHorizontal

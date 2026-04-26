@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.locations.ui.screen
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,6 +30,7 @@ import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
@@ -85,7 +87,7 @@ internal fun LocationsContent(
   )
 
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = screenTitle(),

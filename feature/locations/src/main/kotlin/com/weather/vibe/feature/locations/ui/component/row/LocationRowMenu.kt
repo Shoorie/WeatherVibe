@@ -152,7 +152,7 @@ private fun AnimatedPopupCard(content: @Composable () -> Unit) {
       modifier = Modifier
         .width(LocationsDefaults.RowMenuPopupWidth)
         .clip(shapes.card)
-        .background(colors.glassSurface)
+        .background(colors.popupSurface)
         .border(width = Border, color = colors.outlineVariant, shape = shapes.card)
         .padding(vertical = ExtraSmall)
     ) {

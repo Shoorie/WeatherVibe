@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.DetailsViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
@@ -45,7 +47,7 @@ internal fun WeatherDetailsContent(
   onNavigateBack: () -> Unit
 ) {
   VibeScreenScaffold(
-    modifier = modifier,
+    modifier = modifier.background(rememberAppBackgroundBrush()),
     header = {
       VibeScreenHeader(
         title = weatherDetailsTitle(),

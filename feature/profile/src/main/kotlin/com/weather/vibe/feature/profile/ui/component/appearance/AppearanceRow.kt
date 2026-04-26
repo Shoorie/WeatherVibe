@@ -70,7 +70,7 @@ private fun AppearanceRowHeader(
       Text(
         text = state.body,
         style = typography.bodySmall,
-        color = colors.onSurfaceVariant
+        color = colors.onPrimaryContainer
       )
     }
   }

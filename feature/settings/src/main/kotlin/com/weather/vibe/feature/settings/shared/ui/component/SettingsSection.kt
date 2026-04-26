@@ -43,7 +43,7 @@ internal fun SettingsSection(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.card)
-      .background(colors.glassSurface)
+      .background(colors.surfaceVariant)
       .border(Stroke.Border, colors.outlineVariant, shapes.card)
       .toggleSectionModifier(toggle)
       .padding(Padding.Large)

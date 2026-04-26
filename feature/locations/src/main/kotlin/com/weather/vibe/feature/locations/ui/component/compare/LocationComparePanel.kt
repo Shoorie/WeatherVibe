@@ -52,7 +52,7 @@ internal fun LocationComparePanel(
     modifier = modifier
       .fillMaxWidth()
       .clip(shapes.card)
-      .background(colors.glassSurface)
+      .background(colors.rowSurface)
       .border(
         width = Border,
         color = colors.outlineVariant,

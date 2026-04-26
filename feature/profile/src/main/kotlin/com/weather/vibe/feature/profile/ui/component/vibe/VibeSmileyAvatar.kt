@@ -24,7 +24,7 @@ internal fun VibeSmileyAvatar(modifier: Modifier = Modifier) {
       .clearAndSetSemantics {}
       .size(VibeAvatarSize)
       .clip(CircleShape)
-      .background(colors.surfaceVariant),
+      .background(colors.glassSurface),
     contentAlignment = Alignment.Center
   ) {
     Image(

@@ -38,6 +38,8 @@ import com.weather.vibe.navigation.locations.AddLocationFavoriteRoute
 import com.weather.vibe.navigation.locations.LocationsRoute
 import com.weather.vibe.navigation.onboarding.LocationOnboardingRoute
 import com.weather.vibe.navigation.onboarding.OnboardingEntry
+import com.weather.vibe.navigation.onboarding.WelcomeOnboardingEntry
+import com.weather.vibe.navigation.onboarding.WelcomeOnboardingRoute
 import com.weather.vibe.navigation.planner.ActivityPlannerEntry
 import com.weather.vibe.navigation.planner.ActivityPlannerRoute
 import com.weather.vibe.navigation.profile.ProfileAboutRoute
@@ -152,6 +154,7 @@ private fun rootEntry(
 ): NavEntry<NavKey> =
   when (key) {
     is SplashRoute -> NavEntry(key) { SplashEntry(backStack) }
+    is WelcomeOnboardingRoute -> NavEntry(key) { WelcomeOnboardingEntry(backStack) }
     is LocationOnboardingRoute -> NavEntry(key) { OnboardingEntry(backStack) }
     is HomeRoute -> NavEntry(key) {
       HomeEntry(

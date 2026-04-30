@@ -29,7 +29,8 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.splash.presentation.SplashEvent
 import com.weather.vibe.feature.splash.presentation.SplashEvent.NavigateToHome
-import com.weather.vibe.feature.splash.presentation.SplashEvent.NavigateToOnboarding
+import com.weather.vibe.feature.splash.presentation.SplashEvent.NavigateToLocationOnboarding
+import com.weather.vibe.feature.splash.presentation.SplashEvent.NavigateToWelcomeOnboarding
 import com.weather.vibe.feature.splash.presentation.SplashViewModel
 import com.weather.vibe.feature.splash.ui.SplashResources.Texts.appName
 import com.weather.vibe.feature.splash.ui.SplashResources.Texts.appTagline
@@ -48,7 +49,8 @@ import org.koin.androidx.compose.koinViewModel
 fun SplashScreen(
   modifier: Modifier = Modifier,
   onNavigateToHome: (Location) -> Unit,
-  onNavigateToOnboarding: () -> Unit
+  onNavigateToLocationOnboarding: () -> Unit,
+  onNavigateToWelcomeOnboarding: () -> Unit
 ) {
 
   val viewModel: SplashViewModel = koinViewModel()
@@ -69,7 +71,8 @@ fun SplashScreen(
     dispatchEvent(
       event = viewModel.event.first(),
       onNavigateToHome = onNavigateToHome,
-      onNavigateToOnboarding = onNavigateToOnboarding
+      onNavigateToLocationOnboarding = onNavigateToLocationOnboarding,
+      onNavigateToWelcomeOnboarding = onNavigateToWelcomeOnboarding
     )
   }
 
@@ -127,11 +130,13 @@ private fun SplashContent(
 private fun dispatchEvent(
   event: SplashEvent,
   onNavigateToHome: (Location) -> Unit,
-  onNavigateToOnboarding: () -> Unit
+  onNavigateToLocationOnboarding: () -> Unit,
+  onNavigateToWelcomeOnboarding: () -> Unit
 ) {
   when (event) {
     is NavigateToHome -> onNavigateToHome(event.location)
-    NavigateToOnboarding -> onNavigateToOnboarding()
+    NavigateToWelcomeOnboarding -> onNavigateToWelcomeOnboarding()
+    NavigateToLocationOnboarding -> onNavigateToLocationOnboarding()
   }
 }
 

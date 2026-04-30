@@ -17,7 +17,8 @@ internal class SettingsCacheMapper {
       briefTone = cacheData.aiPersona.toBriefTone(),
       excludedGenres = cacheData.excludedGenres.toGenreSet(),
       morningBriefEnabled = cacheData.morningBriefEnabled,
-      temperatureUnit = cacheData.temperatureUnit.toTemperatureUnit()
+      temperatureUnit = cacheData.temperatureUnit.toTemperatureUnit(),
+      welcomeOnboardingSeen = cacheData.welcomeOnboardingSeen
     )
 
   fun toCache(
@@ -30,6 +31,7 @@ internal class SettingsCacheMapper {
       .setExcludedGenres(settings.excludedGenres.toCsv())
       .setMorningBriefEnabled(settings.morningBriefEnabled)
       .setTemperatureUnit(settings.temperatureUnit.name)
+      .setWelcomeOnboardingSeen(settings.welcomeOnboardingSeen)
       .build()
 
   private fun String.toBriefTone(): BriefTone =

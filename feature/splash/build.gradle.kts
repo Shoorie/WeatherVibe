@@ -8,4 +8,5 @@ android {
 
 dependencies {
   implementation(projects.domain.location)
+  implementation(projects.domain.settings)
 }

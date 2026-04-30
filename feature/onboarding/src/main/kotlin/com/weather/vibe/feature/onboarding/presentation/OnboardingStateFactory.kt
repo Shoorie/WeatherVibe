@@ -10,10 +10,10 @@ import com.weather.vibe.feature.onboarding.presentation.state.OnboardingPrimaryA
 import com.weather.vibe.feature.onboarding.presentation.state.OnboardingPrimaryAction.USE_MY_LOCATION
 import com.weather.vibe.feature.onboarding.presentation.state.OnboardingUiState
 import com.weather.vibe.feature.onboarding.ui.OnboardingResources
-import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.IntensityFetching
-import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.IntensityIdle
-import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.IntensityPermanentlyDenied
-import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.IntensityRequesting
+import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.INTENSITY_FETCHING
+import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.INTENSITY_IDLE
+import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.INTENSITY_PERMANENTLY_DENIED
+import com.weather.vibe.feature.onboarding.ui.screen.OnboardingDefaults.INTENSITY_REQUESTING
 import org.koin.core.annotation.Factory
 
 @Factory
@@ -43,9 +43,9 @@ internal class OnboardingStateFactory(private val resources: OnboardingResources
 
   private fun OnboardingPhase.pulseIntensity(): Float =
     when (this) {
-      IDLE -> IntensityIdle
-      REQUESTING_PERMISSION -> IntensityRequesting
-      FETCHING_LOCATION -> IntensityFetching
-      PERMISSION_PERMANENTLY_DENIED -> IntensityPermanentlyDenied
+      IDLE -> INTENSITY_IDLE
+      REQUESTING_PERMISSION -> INTENSITY_REQUESTING
+      FETCHING_LOCATION -> INTENSITY_FETCHING
+      PERMISSION_PERMANENTLY_DENIED -> INTENSITY_PERMANENTLY_DENIED
     }
 }

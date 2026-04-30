@@ -1,13 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="onboarding_headline">Pogoda tam, gdzie jesteś</string>
-  <string name="onboarding_subtitle_idle">Pozwól nam namierzyć Twoją pozycję, a pogoda znajdzie Cię sama.</string>
-  <string name="onboarding_subtitle_requesting">Czekamy na zgodę…</string>
-  <string name="onboarding_subtitle_fetching">Wyznaczamy Twoją pozycję…</string>
-  <string name="onboarding_subtitle_permanently_denied">Dostęp do lokalizacji jest wyłączony. Włącz go w ustawieniach aplikacji, a pogoda sama Cię znajdzie.</string>
-  <string name="onboarding_primary_cta_location">Użyj mojej lokalizacji</string>
-  <string name="onboarding_primary_cta_settings">Otwórz ustawienia</string>
-  <string name="onboarding_secondary_cta">Wybiorę miasto ręcznie</string>
-  <string name="onboarding_privacy_note">Używamy współrzędnych tylko do pobrania pogody. Nic nie wysyłamy dalej.</string>
-  <string name="onboarding_location_indicator_a11y">Wskaźnik lokalizacji</string>
+    <string name="onboarding_headline">Pogoda tam, gdzie jesteś</string>
+    <string name="onboarding_subtitle_idle">
+    Daj znać, gdzie jesteś, a pogoda sama się dopasuje.
+  </string>
+    <string name="onboarding_subtitle_requesting">Czekamy na zgodę…</string>
+    <string name="onboarding_subtitle_fetching">Szukamy Twojej lokalizacji…</string>
+    <string name="onboarding_subtitle_permanently_denied">
+    Lokalizacja zablokowana. Włącz ją w ustawieniach.
+  </string>
+    <string name="onboarding_primary_cta_location">Użyj mojej lokalizacji</string>
+    <string name="onboarding_primary_cta_settings">Otwórz ustawienia</string>
+    <string name="onboarding_secondary_cta">Wybiorę miasto ręcznie</string>
+    <string name="onboarding_privacy_note">
+    Twoje współrzędne zostają u nas. Bez obaw.
+  </string>
+    <string name="onboarding_location_indicator_a11y">Wskaźnik lokalizacji</string>
+
+    <string name="welcome_skip">Pomiń</string>
+    <string name="welcome_cta_next">Dalej</string>
+    <string name="welcome_cta_finish">Ustaw lokalizację</string>
+
+    <string name="welcome_talk_temperature">24°</string>
+    <string name="welcome_talk_caption">słonecznie</string>
+    <string name="welcome_talk_headline">Pogoda w Twoim\njęzyku</string>
+    <string name="welcome_talk_body">
+    Zamiast suchych danych dostajesz brief.
+    Krótko, na temat i tak, jak lubisz.
+  </string>
+    <string name="welcome_talk_card_a11y">Dzisiejsza pogoda i Twój nastrój</string>
+    <string name="welcome_talk_card_pill">Twój vibe na dziś</string>
+    <string name="welcome_talk_card_outfit">Czas wyjść z domu</string>
+
+    <string name="welcome_brief_headline">Brief w Twoim\ntonie</string>
+    <string name="welcome_brief_body">
+    Do wyboru trzy style narracji.
+    Zdecyduj, z którym chcesz zaczynać dzień.
+  </string>
+    <string name="welcome_brief_card_title">Poranny brief</string>
+    <string name="welcome_brief_card_meta">Londyn · 07:30</string>
+    <string name="welcome_brief_tone_witty">Błyskotliwy</string>
+    <string name="welcome_brief_tone_formal">Rzeczowy</string>
+    <string name="welcome_brief_tone_humorous">Z przymrużeniem oka</string>
+
+    <string name="welcome_brief_quote_witty">
+    Chmury zakryły niebo na dobre. Nie ma tragedii,
+    ale bez kawy się nie obędzie. Tryb przetrwania.
+  </string>
+    <string name="welcome_brief_quote_formal">
+    Utrzymuje się stabilne zachmurzenie.
+    Aura umiarkowana, zaleca się lekkie okrycie wierzchnie.
+  </string>
+    <string name="welcome_brief_quote_humorous">
+    Słońce wzięło dziś urlop na żądanie.
+    Zimno nie jest, ale weź kurtkę, żeby nie kusić losu.
+  </string>
+
+    <string name="welcome_vibe_headline">Twój nastrój\ndzień po dniu</string>
+    <string name="welcome_vibe_body">
+    Oceniaj samopoczucie. Zobaczysz, jak
+    pogoda wpływa na Twój tydzień.
+  </string>
+    <string name="welcome_vibe_calendar_title">Kwiecień 2026</string>
+    <string name="welcome_vibe_legend_worst">Najgorszy</string>
+    <string name="welcome_vibe_legend_best">Najlepszy</string>
+    <string name="welcome_vibe_calendar_a11y">Kalendarz z Twoimi nastrojami</string>
+
+    <string name="welcome_places_headline">Wszystkie\nTwoje miejsca</string>
+
+    <string name="welcome_places_body">
+    Dom, biuro czy weekendowy wyjazd —
+    masz wszystko pod kontrolą na jednym ekranie.
+  </string>
+    <string name="welcome_places_city_london">Londyn</string>
+
+    <string name="welcome_places_region_london">Wielka Brytania</string>
+    <string name="welcome_places_temp_london">12°</string>
+    <string name="welcome_places_tag_home">Dom</string>
+    <string name="welcome_places_city_berlin">Berlin</string>
+    <string name="welcome_places_region_berlin">Niemcy</string>
+    <string name="welcome_places_temp_berlin">11°</string>
+    <string name="welcome_places_tag_work">Praca</string>
+    <string name="welcome_places_city_lisbon">Lizbona</string>
+    <string name="welcome_places_region_lisbon">Portugalia</string>
+    <string name="welcome_places_temp_lisbon">22°</string>
+    <string name="welcome_places_tag_holiday">Wakacje</string>
+    <string name="welcome_places_city_paris">Paryż</string>
+    <string name="welcome_places_region_paris">Francja</string>
+    <string name="welcome_places_temp_paris">16°</string>
+    <string name="welcome_places_tag_trip">Wyjazd</string>
+    <string name="welcome_places_city_tokyo">Tokio</string>
+    <string name="welcome_places_region_tokyo">Japonia</string>
+    <string name="welcome_places_temp_tokyo">18°</string>
+    <string name="welcome_places_tag_family">Rodzina</string>
+    <string name="welcome_start_hello_pl">Cześć</string>
+
+    <string name="welcome_start_hello_en">Hello</string>
+    <string name="welcome_start_hello_fr">Bonjour</string>
+    <string name="welcome_start_hello_es">Hola</string>
+    <string name="welcome_start_hello_de">Hallo</string>
+    <string name="welcome_start_hello_jp">こんにちは</string>
+    <string name="welcome_start_hello_pt">Olá</string>
+    <string name="welcome_start_hello_it">Ciao</string>
+    <string name="welcome_start_headline_lead">Witaj w</string>
+    <string name="welcome_start_headline_brand">WeatherVibe</string>
+    <string name="welcome_start_body">
+    Pogoda zgrana z Twoim życiem.
+    Dla Twoich miejsc i nastrojów. Startujemy.
+  </string>
+
+    <string name="welcome_start_promise_brief">Brief w Twoim stylu</string>
+    <string name="welcome_start_promise_places">Zawsze pod ręką</string>
+    <string name="welcome_start_promise_mood">Śledzenie nastroju</string>
+    <string-array name="welcome_vibe_weekdays">
+        <item>Pn</item>
+        <item>Wt</item>
+        <item>Śr</item>
+        <item>Cz</item>
+        <item>Pt</item>
+        <item>Sb</item>
+        <item>Nd</item>
+    </string-array>
 </resources>

@@ -15,12 +15,14 @@ object UserSettingsFixtures {
     briefTone: BriefTone = WITTY_AND_FRIENDLY,
     excludedGenres: Set<String> = emptySet(),
     morningBriefEnabled: Boolean = false,
-    temperatureUnit: TemperatureUnit = CELSIUS
+    temperatureUnit: TemperatureUnit = CELSIUS,
+    welcomeOnboardingSeen: Boolean = false
   ): UserSettings = UserSettings(
     alertsEnabled = alertsEnabled,
     briefTone = briefTone,
     excludedGenres = excludedGenres,
     morningBriefEnabled = morningBriefEnabled,
-    temperatureUnit = temperatureUnit
+    temperatureUnit = temperatureUnit,
+    welcomeOnboardingSeen = welcomeOnboardingSeen
   )
 }

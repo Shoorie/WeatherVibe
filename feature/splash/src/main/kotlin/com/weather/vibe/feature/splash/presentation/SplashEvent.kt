@@ -4,5 +4,6 @@ import com.weather.vibe.domain.location.model.Location
 
 internal sealed interface SplashEvent {
   data class NavigateToHome(val location: Location) : SplashEvent
-  data object NavigateToOnboarding : SplashEvent
+  data object NavigateToWelcomeOnboarding : SplashEvent
+  data object NavigateToLocationOnboarding : SplashEvent
 }

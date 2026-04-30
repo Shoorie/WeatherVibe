@@ -1,13 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="onboarding_headline">Weather, right where you are</string>
-  <string name="onboarding_subtitle_idle">Let us pinpoint your spot — the weather will follow you.</string>
-  <string name="onboarding_subtitle_requesting">Waiting for your permission…</string>
-  <string name="onboarding_subtitle_fetching">Pinpointing your location…</string>
-  <string name="onboarding_subtitle_permanently_denied">Location access is off. Turn it on in app settings and the weather will find you on its own.</string>
-  <string name="onboarding_primary_cta_location">Use my location</string>
-  <string name="onboarding_primary_cta_settings">Open settings</string>
-  <string name="onboarding_secondary_cta">I\'ll pick a city</string>
-  <string name="onboarding_privacy_note">We use coordinates only to fetch weather. Nothing leaves your device.</string>
-  <string name="onboarding_location_indicator_a11y">Location indicator</string>
+    <string name="onboarding_headline">Weather where you are</string>
+    <string name="onboarding_subtitle_idle">
+    Let us know your location, and the weather will follow.
+  </string>
+    <string name="onboarding_subtitle_requesting">Waiting for permission…</string>
+    <string name="onboarding_subtitle_fetching">Finding your location…</string>
+    <string name="onboarding_subtitle_permanently_denied">
+    Location denied. Enable it in your settings.
+  </string>
+    <string name="onboarding_primary_cta_location">Use my location</string>
+    <string name="onboarding_primary_cta_settings">Open settings</string>
+    <string name="onboarding_secondary_cta">Pick city manually</string>
+    <string name="onboarding_privacy_note">
+    Your location stays with us. No shady business.
+  </string>
+    <string name="onboarding_location_indicator_a11y">Location indicator</string>
+
+    <string name="welcome_skip">Skip</string>
+    <string name="welcome_cta_next">Next</string>
+    <string name="welcome_cta_finish">Set location</string>
+
+    <string name="welcome_talk_temperature">24°</string>
+    <string name="welcome_talk_caption">sunny</string>
+    <string name="welcome_talk_headline">Weather in\nyour language</string>
+    <string name="welcome_talk_body">
+    Forget raw data. Get a brief that actually
+    tells you how the day feels.
+  </string>
+    <string name="welcome_talk_card_a11y">Today\'s weather and mood</string>
+    <string name="welcome_talk_card_pill">Today\'s vibe</string>
+    <string name="welcome_talk_card_outfit">Perfect time to step out</string>
+
+    <string name="welcome_brief_headline">A brief in\nyour tone</string>
+    <string name="welcome_brief_body">
+    Three narrative styles to choose from.
+    Start the day exactly how you want.
+  </string>
+    <string name="welcome_brief_card_title">Morning Brief</string>
+    <string name="welcome_brief_card_meta">London · 07:30 AM</string>
+    <string name="welcome_brief_tone_witty">Witty</string>
+    <string name="welcome_brief_tone_formal">Formal</string>
+    <string name="welcome_brief_tone_humorous">Humorous</string>
+
+    <string name="welcome_brief_quote_witty">
+    The sky is completely grey. It\'s not a disaster,
+    but you\'ll definitely need more coffee.
+  </string>
+    <string name="welcome_brief_quote_formal">
+    Stable cloud cover persists. Conditions are mild,
+    making a light jacket advisable today.
+  </string>
+    <string name="welcome_brief_quote_humorous">
+    The sun took a sick day. It\'s not freezing,
+    but grab a jacket unless you like shivering.
+  </string>
+
+    <string name="welcome_vibe_headline">Your mood\nday by day</string>
+    <string name="welcome_vibe_body">
+    Track how you feel. See how the weather
+    impacts your week at a glance.
+  </string>
+    <string name="welcome_vibe_calendar_title">April 2026</string>
+    <string name="welcome_vibe_legend_worst">Worst</string>
+    <string name="welcome_vibe_legend_best">Best</string>
+    <string name="welcome_vibe_calendar_a11y">Your mood calendar</string>
+
+    <string name="welcome_places_headline">Every place\nyou love</string>
+
+    <string name="welcome_places_body">
+    Home, the office, or a weekend getaway —
+    keep everything on one simple screen.
+  </string>
+    <string name="welcome_places_city_london">London</string>
+
+    <string name="welcome_places_region_london">United Kingdom</string>
+    <string name="welcome_places_temp_london">12°</string>
+    <string name="welcome_places_tag_home">Home</string>
+    <string name="welcome_places_city_berlin">Berlin</string>
+    <string name="welcome_places_region_berlin">Germany</string>
+    <string name="welcome_places_temp_berlin">11°</string>
+    <string name="welcome_places_tag_work">Work</string>
+    <string name="welcome_places_city_lisbon">Lisbon</string>
+    <string name="welcome_places_region_lisbon">Portugal</string>
+    <string name="welcome_places_temp_lisbon">22°</string>
+    <string name="welcome_places_tag_holiday">Holiday</string>
+    <string name="welcome_places_city_paris">Paris</string>
+    <string name="welcome_places_region_paris">France</string>
+    <string name="welcome_places_temp_paris">16°</string>
+    <string name="welcome_places_tag_trip">Trip</string>
+    <string name="welcome_places_city_tokyo">Tokyo</string>
+    <string name="welcome_places_region_tokyo">Japan</string>
+    <string name="welcome_places_temp_tokyo">18°</string>
+    <string name="welcome_places_tag_family">Family</string>
+    <string name="welcome_start_hello_pl">Cześć</string>
+
+    <string name="welcome_start_hello_en">Hello</string>
+    <string name="welcome_start_hello_fr">Bonjour</string>
+    <string name="welcome_start_hello_es">Hola</string>
+    <string name="welcome_start_hello_de">Hallo</string>
+    <string name="welcome_start_hello_jp">こんにちは</string>
+    <string name="welcome_start_hello_pt">Olá</string>
+    <string name="welcome_start_hello_it">Ciao</string>
+    <string name="welcome_start_headline_lead">Welcome to</string>
+    <string name="welcome_start_headline_brand">WeatherVibe</string>
+    <string name="welcome_start_body">
+    Weather in sync with your life.
+    For your places and your vibes. Let\'s go.
+  </string>
+
+    <string name="welcome_start_promise_brief">Brief in your style</string>
+    <string name="welcome_start_promise_places">Always at hand</string>
+    <string name="welcome_start_promise_mood">Mood tracking</string>
+    <string-array name="welcome_vibe_weekdays">
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+        <item>Sun</item>
+    </string-array>
 </resources>

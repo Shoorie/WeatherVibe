@@ -8,11 +8,15 @@ data class UserSettings(
   val briefTone: BriefTone,
   val excludedGenres: Set<String>,
   val morningBriefEnabled: Boolean,
-  val temperatureUnit: TemperatureUnit
+  val temperatureUnit: TemperatureUnit,
+  val welcomeOnboardingSeen: Boolean
 ) {
 
   fun withAlertsEnabled(enabled: Boolean): UserSettings =
     copy(alertsEnabled = enabled)
+
+  fun withWelcomeOnboardingSeen(): UserSettings =
+    copy(welcomeOnboardingSeen = true)
 
   fun withBriefTone(tone: BriefTone): UserSettings =
     copy(briefTone = tone)

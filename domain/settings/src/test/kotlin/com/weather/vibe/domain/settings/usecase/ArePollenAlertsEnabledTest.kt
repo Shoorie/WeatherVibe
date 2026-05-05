@@ -13,10 +13,11 @@ import strikt.assertions.isEqualTo
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 
-class AreAlertsEnabledTest {
+class ArePollenAlertsEnabledTest {
 
   private val observeUserSettings = mockk<ObserveUserSettings>()
-  private val areAlertsEnabled = AreAlertsEnabled(observeUserSettings = observeUserSettings)
+  private val arePollenAlertsEnabled =
+    ArePollenAlertsEnabled(observeUserSettings = observeUserSettings)
 
   @After
   fun tearDown() {
@@ -24,29 +25,29 @@ class AreAlertsEnabledTest {
   }
 
   @Test
-  fun `given alerts toggled on, when invoked, then alerts enabled`() = runTest {
+  fun `given pollen alerts toggled on, then pollen alerts enabled`() = runTest {
 
     every { observeUserSettings() } returns
-      flowOf(success(userSettings(alertsEnabled = true)))
+      flowOf(success(userSettings(pollenAlertsEnabled = true)))
 
-    expectThat(areAlertsEnabled()).isEqualTo(true)
+    expectThat(arePollenAlertsEnabled()).isEqualTo(true)
   }
 
   @Test
-  fun `given alerts toggled off, when invoked, then alerts disabled`() = runTest {
+  fun `given pollen alerts toggled off, then pollen alerts disabled`() = runTest {
 
     every { observeUserSettings() } returns
-      flowOf(success(userSettings(alertsEnabled = false)))
+      flowOf(success(userSettings(pollenAlertsEnabled = false)))
 
-    expectThat(areAlertsEnabled()).isEqualTo(false)
+    expectThat(arePollenAlertsEnabled()).isEqualTo(false)
   }
 
   @Test
-  fun `given settings read fails, when invoked, then alerts disabled`() = runTest {
+  fun `given settings read fails, then pollen alerts disabled`() = runTest {
 
     every { observeUserSettings() } returns
       flowOf(failure(RuntimeException("boom")))
 
-    expectThat(areAlertsEnabled()).isEqualTo(false)
+    expectThat(arePollenAlertsEnabled()).isEqualTo(false)
   }
 }

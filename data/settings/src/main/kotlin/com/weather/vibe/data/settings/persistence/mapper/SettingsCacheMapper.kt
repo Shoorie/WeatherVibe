@@ -13,11 +13,13 @@ internal class SettingsCacheMapper {
 
   fun toDomain(cacheData: UserSettingsCacheData): UserSettings =
     UserSettings(
-      alertsEnabled = cacheData.alertsEnabled,
       briefTone = cacheData.aiPersona.toBriefTone(),
       excludedGenres = cacheData.excludedGenres.toGenreSet(),
+      moodReminderEnabled = cacheData.moodReminderEnabled,
       morningBriefEnabled = cacheData.morningBriefEnabled,
+      pollenAlertsEnabled = cacheData.pollenAlertsEnabled,
       temperatureUnit = cacheData.temperatureUnit.toTemperatureUnit(),
+      weatherAlertsEnabled = cacheData.weatherAlertsEnabled,
       welcomeOnboardingSeen = cacheData.welcomeOnboardingSeen
     )
 
@@ -27,10 +29,12 @@ internal class SettingsCacheMapper {
   ): UserSettingsCacheData =
     previous.toBuilder()
       .setAiPersona(settings.briefTone.name)
-      .setAlertsEnabled(settings.alertsEnabled)
       .setExcludedGenres(settings.excludedGenres.toCsv())
+      .setMoodReminderEnabled(settings.moodReminderEnabled)
       .setMorningBriefEnabled(settings.morningBriefEnabled)
+      .setPollenAlertsEnabled(settings.pollenAlertsEnabled)
       .setTemperatureUnit(settings.temperatureUnit.name)
+      .setWeatherAlertsEnabled(settings.weatherAlertsEnabled)
       .setWelcomeOnboardingSeen(settings.welcomeOnboardingSeen)
       .build()
 

@@ -15,18 +15,20 @@ import org.koin.core.annotation.Factory
 
 @Factory
 internal class WelcomeStateFactory(
-  private val notificationPermissionSupport: NotificationPermissionSupport,
+  private val notificationPermission: NotificationPermissionSupport,
   private val resources: WelcomeResources
 ) {
 
   fun create(slideIndex: Int): WelcomeUiState {
+
     val slide = WelcomeSlides.ALL[slideIndex]
     val isFinal = WelcomeSlides.isLast(slideIndex)
-    val canRequestPermission = notificationPermissionSupport.isSupported()
+    val canRequestPermission = notificationPermission.isSupported()
     val skipNotificationsLabel = when {
       isFinal && canRequestPermission -> resources.skipNotificationsLabel()
       else -> null
     }
+
     return WelcomeUiState(
       briefTones = briefTones(),
       canRequestNotificationsPermission = canRequestPermission,

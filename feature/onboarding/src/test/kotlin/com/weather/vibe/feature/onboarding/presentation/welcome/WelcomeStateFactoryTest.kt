@@ -23,7 +23,7 @@ class WelcomeStateFactoryTest {
   private val notificationPermissionSupport = mockk<NotificationPermissionSupport>()
   private val resources = mockk<WelcomeResources>(relaxed = true)
   private val factory = WelcomeStateFactory(
-    notificationPermissionSupport = notificationPermissionSupport,
+    notificationPermission = notificationPermissionSupport,
     resources = resources
   )
 

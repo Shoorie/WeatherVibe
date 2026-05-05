@@ -7,21 +7,24 @@ import java.time.DayOfWeek
 import java.time.DayOfWeek.SATURDAY
 import java.time.DayOfWeek.SUNDAY
 import java.time.DayOfWeek.WEDNESDAY
-import java.time.format.TextStyle
+import java.time.format.TextStyle.FULL_STANDALONE
 import java.util.Locale
 
 @Factory
 class MoodReminderResources internal constructor(private val context: Context) {
 
   fun greetingTitle(username: String?, dayOfWeek: DayOfWeek): String {
-    val dayName = dayOfWeek.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+
+    val dayName = dayOfWeek.getDisplayName(FULL_STANDALONE, Locale.getDefault())
     val verb = pastVerbForDay(dayOfWeek)
+
     return when {
       username.isNullOrBlank() -> context.getString(
         R.string.alerts_mood_reminder_title_anon,
         verb,
         dayName
       )
+
       else -> context.getString(
         R.string.alerts_mood_reminder_title_named,
         username,
@@ -43,9 +46,6 @@ class MoodReminderResources internal constructor(private val context: Context) {
   fun emojiForRating(rating: Int): String =
     EMOJIS[rating.coerceIn(MIN_RATING, MAX_RATING) - MIN_RATING]
 
-  fun ratingContentDescription(rating: Int): String =
-    context.getString(RATING_A11Y_RES[rating.coerceIn(MIN_RATING, MAX_RATING) - MIN_RATING])
-
   private fun pastVerbForDay(dayOfWeek: DayOfWeek): String =
     when (dayOfWeek) {
       WEDNESDAY, SATURDAY, SUNDAY -> context.getString(R.string.alerts_mood_reminder_verb_feminine)
@@ -56,12 +56,5 @@ class MoodReminderResources internal constructor(private val context: Context) {
     const val MIN_RATING = 1
     const val MAX_RATING = 5
     val EMOJIS: List<String> = listOf("😞", "🙁", "😐", "🙂", "😄")
-    val RATING_A11Y_RES: List<Int> = listOf(
-      R.string.alerts_mood_rating_1_a11y,
-      R.string.alerts_mood_rating_2_a11y,
-      R.string.alerts_mood_rating_3_a11y,
-      R.string.alerts_mood_rating_4_a11y,
-      R.string.alerts_mood_rating_5_a11y
-    )
   }
 }

@@ -35,7 +35,7 @@ class GatherWeatherAlertsTest {
   private val getAirQuality = mockk<GetAirQuality>()
   private val getWeather = mockk<GetWeather>()
   private val observeCurrentLocation = mockk<ObserveCurrentLocation>()
-  private val gather = GatherWeatherAlerts(
+  private val gatherWeatherAlerts = GatherWeatherAlerts(
     alertDeduplicator = deduplicator,
     detectAqiAlert = detectAqiAlert,
     detectUvAlert = detectUvAlert,
@@ -63,7 +63,7 @@ class GatherWeatherAlertsTest {
   @Test
   fun `when alerts gathered, then detected weather alert returned`() = runTest {
 
-    val alerts = gather()
+    val alerts = gatherWeatherAlerts()
 
     expectThat(alerts).contains(THUNDERSTORM)
   }
@@ -74,7 +74,7 @@ class GatherWeatherAlertsTest {
 
       every { detectAqiAlert(POOR) } returns POOR_AIR_QUALITY
 
-      val alerts = gather()
+      val alerts = gatherWeatherAlerts()
 
       expectThat(alerts).contains(POOR_AIR_QUALITY)
     }
@@ -84,7 +84,7 @@ class GatherWeatherAlertsTest {
 
     every { detectUvAlert(WEATHER) } returns HIGH_UV_INDEX
 
-    val alerts = gather()
+    val alerts = gatherWeatherAlerts()
 
     expectThat(alerts).contains(HIGH_UV_INDEX)
   }
@@ -96,7 +96,7 @@ class GatherWeatherAlertsTest {
       coEvery { getAirQuality(WARSAW.toCoordinates()) } returns
         failure(IllegalStateException("offline"))
 
-      val alerts = gather()
+      val alerts = gatherWeatherAlerts()
 
       expectThat(alerts).contains(THUNDERSTORM)
     }
@@ -106,7 +106,7 @@ class GatherWeatherAlertsTest {
 
     every { observeCurrentLocation() } returns flowOf(null)
 
-    val alerts = gather()
+    val alerts = gatherWeatherAlerts()
 
     expectThat(alerts).isEmpty()
   }
@@ -117,7 +117,7 @@ class GatherWeatherAlertsTest {
     every { getWeather(WARSAW.toCoordinates()) } returns
       flowOf(failure(IllegalStateException("offline")))
 
-    val alerts = gather()
+    val alerts = gatherWeatherAlerts()
 
     expectThat(alerts).isEmpty()
   }
@@ -126,9 +126,9 @@ class GatherWeatherAlertsTest {
   fun `given alert already notified, when alerts gathered again, then empty list returned`() =
     runTest {
 
-      gather()
+      gatherWeatherAlerts()
 
-      val secondCall = gather()
+      val secondCall = gatherWeatherAlerts()
 
       expectThat(secondCall).isEmpty()
     }

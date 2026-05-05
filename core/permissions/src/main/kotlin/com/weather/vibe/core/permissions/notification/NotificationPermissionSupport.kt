@@ -6,8 +6,9 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import org.koin.core.annotation.Single
 
 @Single
-class NotificationPermissionSupport internal constructor() {
+class NotificationPermissionSupport {
 
   @ChecksSdkIntAtLeast(api = TIRAMISU)
-  fun isSupported(): Boolean = SDK_INT >= TIRAMISU
+  fun isSupported(): Boolean =
+    SDK_INT >= TIRAMISU
 }

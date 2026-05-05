@@ -27,7 +27,8 @@ class GatherWeatherAlerts internal constructor(
     val coordinates = currentCoordinates() ?: return emptyList()
     val weather = currentWeather(coordinates) ?: return emptyList()
     val airQuality = getAirQuality(coordinates).getOrNull()
-    return alertDeduplicator.filterFresh(candidates(weather = weather, airQuality = airQuality))
+    val candidates = candidates(weather = weather, airQuality = airQuality)
+    return alertDeduplicator.filterFresh(candidates)
   }
 
   private fun candidates(weather: WeatherData, airQuality: AirQuality?): List<WeatherAlert> =

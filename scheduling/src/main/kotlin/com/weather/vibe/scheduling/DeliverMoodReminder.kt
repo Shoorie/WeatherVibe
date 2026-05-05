@@ -35,5 +35,8 @@ internal class DeliverMoodReminder(
     )
 
   private suspend fun currentUsername(): String? =
-    observeProfile().firstOrNull()?.username?.takeIf(String::isNotBlank)
+    observeProfile()
+      .firstOrNull()
+      ?.username
+      ?.takeIf(String::isNotBlank)
 }

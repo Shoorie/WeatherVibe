@@ -12,11 +12,16 @@ internal val POLLEN_DAYTIME_SLOTS: List<LocalTime> = listOf(
 )
 
 internal fun nextPollenDelay(timeProvider: TimeProvider): Duration {
+
   val now = timeProvider.now()
   val today = now.toLocalDate()
+
   val nextToday = POLLEN_DAYTIME_SLOTS
     .map { slot -> LocalDateTime.of(today, slot) }
     .firstOrNull { dateTime -> dateTime.isAfter(now) }
-  val next = nextToday ?: LocalDateTime.of(today.plusDays(1), POLLEN_DAYTIME_SLOTS.first())
+
+  val next = nextToday
+    ?: LocalDateTime.of(today.plusDays(1), POLLEN_DAYTIME_SLOTS.first())
+
   return Duration.between(now, next)
 }

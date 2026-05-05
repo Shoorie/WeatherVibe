@@ -75,14 +75,13 @@ private fun ReadyNotificationCard(
     body = card.body,
     trailing = if (card.showBell) {
       { PulsingBell(enabled = isSettled) }
-    } else {
-      null
-    }
+    } else null
   )
 }
 
 @Composable
 private fun PulsingBell(enabled: Boolean) {
+
   val transition = rememberInfiniteTransition(label = AURORA_BLOB)
   val scale by transition.animateFloat(
     initialValue = NOTIFICATIONS_BELL_BASE_SCALE,

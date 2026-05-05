@@ -15,24 +15,24 @@ class ResolveHomeAlert internal constructor(
     readings: EnvironmentalReadings,
     weatherAlertsEnabled: Boolean
   ): WeatherAlert? =
-    airQualityAlert(readings = readings, weatherAlertsEnabled = weatherAlertsEnabled)
-      ?: pollenAlert(readings = readings, pollenAlertsEnabled = pollenAlertsEnabled)
+    airQualityAlert(readings, weatherAlertsEnabled)
+      ?: pollenAlert(readings, pollenAlertsEnabled)
 
   private fun airQualityAlert(
     readings: EnvironmentalReadings,
     weatherAlertsEnabled: Boolean
   ): WeatherAlert? =
-    when {
-      weatherAlertsEnabled -> readings.airQuality?.let(detectAqiAlert::invoke)
-      else -> null
+    when (weatherAlertsEnabled) {
+      true -> readings.airQuality?.let(detectAqiAlert::invoke)
+      false -> null
     }
 
   private fun pollenAlert(
     readings: EnvironmentalReadings,
     pollenAlertsEnabled: Boolean
   ): WeatherAlert? =
-    when {
-      pollenAlertsEnabled -> readings.pollen?.let(detectPollenAlert::invoke)
-      else -> null
+    when (pollenAlertsEnabled) {
+      true -> readings.pollen?.let(detectPollenAlert::invoke)
+      false -> null
     }
 }

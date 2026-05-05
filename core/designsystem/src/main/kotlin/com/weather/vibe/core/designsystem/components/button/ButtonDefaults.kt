@@ -10,8 +10,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 
 internal object ButtonDefaults {
 
+  val MinHeight = 52.dp
   val BrandContent = Color.White
-  val BrandMinHeight = 52.dp
   val BrandContentPadding = PaddingValues(horizontal = Large, vertical = Small)
 
   @Composable

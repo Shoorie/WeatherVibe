@@ -272,7 +272,7 @@ internal class ProfileStateFactoryTest {
 
     val result = factory.create(
       state = factory.initial(),
-      snapshot = profileSnapshot(settings = userSettings(alertsEnabled = true))
+      snapshot = profileSnapshot(settings = userSettings(weatherAlertsEnabled = true))
     )
 
     val alerts = result.quickStats.first { it.type == ALERTS }

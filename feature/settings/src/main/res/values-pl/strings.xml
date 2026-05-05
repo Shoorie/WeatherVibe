@@ -23,10 +23,14 @@
 
   <string name="notifications_screen_title">Powiadomienia</string>
   <string name="notifications_screen_subtitle">Zdecyduj, kiedy mamy się odzywać</string>
-  <string name="notifications_section_alerts">Alerty pogodowe</string>
-  <string name="notifications_section_alerts_subtitle">Zawczasu uprzedzę, gdy pogoda szykuje się na psikusa</string>
+  <string name="notifications_section_weather_alerts">Alerty pogodowe</string>
+  <string name="notifications_section_weather_alerts_subtitle">Zawczasu uprzedzę, gdy pogoda szykuje się na psikusa</string>
+  <string name="notifications_section_pollen_alerts">Alerty pyłkowe</string>
+  <string name="notifications_section_pollen_alerts_subtitle">Powiadomię, gdy stężenie pyłków traw, drzew lub chwastów rośnie</string>
   <string name="notifications_section_morning_brief">Poranny brief</string>
   <string name="notifications_section_morning_brief_subtitle">Codziennie o 7:30 dostaniesz notyfikację z dzisiejszym vibe\'em</string>
+  <string name="notifications_section_mood_reminder">Przypomnienie o nastroju</string>
+  <string name="notifications_section_mood_reminder_subtitle">Wieczorne przypomnienie, by zalogować nastrój — bezpośrednio z powiadomienia</string>
   <string name="notifications_toggle_on">Włączone</string>
   <string name="notifications_toggle_off">Wyłączone</string>
   <string name="notifications_error_title">Coś poszło nie tak</string>

@@ -5,9 +5,14 @@ import androidx.compose.runtime.Immutable
 internal sealed interface NotificationsUiState {
 
   @Immutable
+  data object Loading : NotificationsUiState
+
+  @Immutable
   data class Loaded(
-    val alertsEnabled: Boolean,
-    val morningBriefEnabled: Boolean
+    val moodReminderEnabled: Boolean,
+    val morningBriefEnabled: Boolean,
+    val pollenAlertsEnabled: Boolean,
+    val weatherAlertsEnabled: Boolean
   ) : NotificationsUiState
 
   @Immutable

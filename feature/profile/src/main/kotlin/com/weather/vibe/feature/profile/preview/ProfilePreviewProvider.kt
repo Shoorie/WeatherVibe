@@ -97,26 +97,26 @@ internal class ProfilePreviewProvider :
 
   private val loaded: ProfileUiState =
     ProfileUiState(
-      alertsEnabled = true,
       appearanceRow = appearanceAuto,
       editSheet = sheet(),
       header = namedHeader,
       locationsCount = 3,
       morningBriefEnabled = true,
       quickStats = statsLoaded,
-      vibeRow = vibeLoaded
+      vibeRow = vibeLoaded,
+      weatherAlertsEnabled = true
     )
 
   private val unnamed: ProfileUiState =
     ProfileUiState(
-      alertsEnabled = false,
       appearanceRow = appearanceDark,
       editSheet = sheet(),
       header = unnamedHeader,
       locationsCount = 1,
       morningBriefEnabled = false,
       quickStats = statsUnnamed,
-      vibeRow = vibeEmpty
+      vibeRow = vibeEmpty,
+      weatherAlertsEnabled = false
     )
 
   override val values: Sequence<ProfileUiState> =

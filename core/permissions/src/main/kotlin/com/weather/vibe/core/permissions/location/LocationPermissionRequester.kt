@@ -1,4 +1,4 @@
-package com.weather.vibe.core.permissions
+package com.weather.vibe.core.permissions.location
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION

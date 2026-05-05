@@ -1,29 +1,25 @@
 package com.weather.vibe.scheduling
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.CancellationException
+import com.weather.vibe.scheduling.work.DailyWorkRescheduler
+import com.weather.vibe.scheduling.work.runDailyDelivery
 import org.koin.android.annotation.KoinWorker
 
 @KoinWorker
 internal class MorningBriefWorker(
   context: Context,
   params: WorkerParameters,
-  private val deliverMorningBrief: DeliverMorningBrief
+  private val deliverMorningBrief: DeliverMorningBrief,
+  private val rescheduler: DailyWorkRescheduler
 ) : CoroutineWorker(context, params) {
 
-  override suspend fun doWork(): Result =
-    try {
-      deliverMorningBrief()
-      Result.success()
-    } catch (cancellation: CancellationException) {
-      throw cancellation
-    } catch (failure: Throwable) {
-      Log.w(TAG, "Morning brief delivery failed, scheduling retry", failure)
-      Result.retry()
-    }
+  override suspend fun doWork(): Result {
+    val result = runDailyDelivery(tag = TAG) { deliverMorningBrief() }
+    rescheduler.rescheduleMorningBrief()
+    return result
+  }
 
   private companion object {
     const val TAG = "MorningBriefWorker"

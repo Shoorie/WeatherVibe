@@ -7,6 +7,7 @@ import com.weather.vibe.domain.airquality.model.EnvironmentalReadings
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
@@ -14,7 +15,6 @@ import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAn
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.feature.home.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
@@ -271,8 +271,9 @@ internal class HomeViewModel(
     settings: UserSettings
   ) {
     val alertModel = useCases.resolveHomeAlert(
+      pollenAlertsEnabled = settings.pollenAlertsEnabled,
       readings = environmentReadings,
-      alertsEnabled = settings.alertsEnabled
+      weatherAlertsEnabled = settings.weatherAlertsEnabled
     )
     val alertState = factories.environment.buildAlert(alertModel)
     _state.update { it.withAlert(alertState) }

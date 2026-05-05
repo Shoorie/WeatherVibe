@@ -1,4 +1,4 @@
-package com.weather.vibe.core.permissions
+package com.weather.vibe.core.permissions.notification
 
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.os.Build

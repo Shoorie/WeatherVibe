@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.weather.vibe.core.designsystem.components.button.VibePrimaryButton
+import com.weather.vibe.core.designsystem.components.button.VibeButtonStack
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaults.DotsToButton
@@ -23,15 +23,16 @@ import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaul
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaults.FooterBottomPadding
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaults.FooterHorizontalPadding
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaults.FooterTopPadding
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.footer.FooterDefaults.PrimaryButtonHeight
 
 @Composable
 internal fun WelcomeFooter(
   modifier: Modifier = Modifier,
-  ctaLabel: String,
   dotPosition: Float,
+  primaryActionLabel: String,
+  skipNotificationsLabel: String?,
   totalSlides: Int,
-  onCtaClick: () -> Unit
+  onPrimaryActionClick: () -> Unit,
+  onSkipNotificationsClick: () -> Unit
 ) {
 
   val baseColor = colors.backgroundGradientEnd
@@ -59,10 +60,11 @@ internal fun WelcomeFooter(
         total = totalSlides
       )
       Spacer(modifier = Modifier.height(DotsToButton))
-      VibePrimaryButton(
-        modifier = Modifier.height(PrimaryButtonHeight),
-        text = ctaLabel,
-        onClick = onCtaClick
+      VibeButtonStack(
+        primaryLabel = primaryActionLabel,
+        onPrimaryClick = onPrimaryActionClick,
+        secondaryLabel = skipNotificationsLabel,
+        onSecondaryClick = onSkipNotificationsClick
       )
     }
   }
@@ -79,13 +81,30 @@ private fun footerFadeBrush(baseColor: Color): Brush =
 
 @PreviewLightDark
 @Composable
-private fun Preview() {
+private fun PreviewIntermediate() {
   WeatherVibeTheme {
     WelcomeFooter(
-      ctaLabel = "Next",
       dotPosition = 1f,
+      primaryActionLabel = "Next",
+      skipNotificationsLabel = null,
       totalSlides = 5,
-      onCtaClick = {}
+      onPrimaryActionClick = {},
+      onSkipNotificationsClick = {}
+    )
+  }
+}
+
+@PreviewLightDark
+@Composable
+private fun PreviewFinal() {
+  WeatherVibeTheme {
+    WelcomeFooter(
+      dotPosition = 4f,
+      primaryActionLabel = "Enable notifications and start",
+      skipNotificationsLabel = "Maybe later",
+      totalSlides = 5,
+      onPrimaryActionClick = {},
+      onSkipNotificationsClick = {}
     )
   }
 }

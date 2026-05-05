@@ -12,4 +12,19 @@ data class WeatherSnapshot(
   val pressureHpa: Int,
   val airQualityIndex: Int?,
   val pollenLevel: PollenLevel?
-)
+) {
+
+  companion object {
+
+    val Unknown: WeatherSnapshot = WeatherSnapshot(
+      temperatureC = 0.0,
+      feelsLikeC = 0.0,
+      condition = Condition.CLOUDY,
+      humidityPercent = 0,
+      windKph = 0.0,
+      pressureHpa = 0,
+      airQualityIndex = null,
+      pollenLevel = null
+    )
+  }
+}

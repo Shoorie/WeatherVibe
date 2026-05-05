@@ -1,10 +1,9 @@
 package com.weather.vibe.scheduling
 
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import kotlinx.coroutines.CancellationException
+import com.weather.vibe.scheduling.work.runDelivery
 import org.koin.android.annotation.KoinWorker
 
 @KoinWorker
@@ -15,15 +14,7 @@ internal class WeatherAlertsWorker(
 ) : CoroutineWorker(context, params) {
 
   override suspend fun doWork(): Result =
-    try {
-      checkWeatherAlerts()
-      Result.success()
-    } catch (cancellation: CancellationException) {
-      throw cancellation
-    } catch (failure: Throwable) {
-      Log.w(TAG, "Weather alerts check failed, scheduling retry", failure)
-      Result.retry()
-    }
+    runDelivery(tag = TAG) { checkWeatherAlerts() }
 
   private companion object {
     const val TAG = "WeatherAlertsWorker"

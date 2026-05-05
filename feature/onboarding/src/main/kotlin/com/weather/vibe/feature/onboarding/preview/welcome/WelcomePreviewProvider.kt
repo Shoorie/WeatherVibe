@@ -11,7 +11,7 @@ import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeUiS
 import com.weather.vibe.feature.onboarding.preview.welcome.slide.BriefSamples.tones
 import com.weather.vibe.feature.onboarding.preview.welcome.slide.PlacesSamples.places
 import com.weather.vibe.feature.onboarding.preview.welcome.slide.ReadySamples.greetings
-import com.weather.vibe.feature.onboarding.preview.welcome.slide.ReadySamples.promises
+import com.weather.vibe.feature.onboarding.preview.welcome.slide.ReadySamples.notificationCards
 
 internal class WelcomePreviewProvider :
   PreviewParameterProvider<WelcomeUiState> {
@@ -41,11 +41,13 @@ internal class WelcomePreviewProvider :
   ): WelcomeUiState =
     WelcomeUiState(
       briefTones = tones(),
-      ctaLabel = if (isFinal) FINAL_CTA else NEXT_CTA,
+      canRequestNotificationsPermission = isFinal,
       greetings = greetings(),
       isFinalSlide = isFinal,
+      notificationCards = notificationCards(),
       places = places(),
-      promises = promises(),
+      primaryActionLabel = if (isFinal) FINISH_LABEL else NEXT_LABEL,
+      skipNotificationsLabel = if (isFinal) SKIP_NOTIFICATIONS_LABEL else null,
       skipVisible = !isFinal,
       slide = slide,
       slideIndex = slideIndex,
@@ -53,8 +55,9 @@ internal class WelcomePreviewProvider :
     )
 
   private companion object {
-    const val NEXT_CTA = "Next"
-    const val FINAL_CTA = "Set up location"
+    const val NEXT_LABEL = "Next"
+    const val FINISH_LABEL = "Enable notifications and start"
+    const val SKIP_NOTIFICATIONS_LABEL = "Maybe later"
     const val TOTAL_SLIDES = 5
   }
 }

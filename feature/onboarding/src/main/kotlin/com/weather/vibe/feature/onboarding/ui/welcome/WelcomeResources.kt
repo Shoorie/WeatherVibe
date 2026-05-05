@@ -7,16 +7,38 @@ import org.koin.core.annotation.Factory
 @Factory
 internal class WelcomeResources(private val context: Context) {
 
-  fun ctaFor(isFinal: Boolean): String =
-    context.getString(
-      when {
-        isFinal -> R.string.welcome_cta_finish
-        else -> R.string.welcome_cta_next
-      }
-    )
+  fun nextLabel(): String =
+    context.getString(R.string.welcome_action_next)
+
+  fun enableNotificationsAndFinishLabel(): String =
+    context.getString(R.string.welcome_action_enable_notifications)
+
+  fun finishLabel(): String =
+    context.getString(R.string.welcome_action_finish)
+
+  fun skipNotificationsLabel(): String =
+    context.getString(R.string.welcome_action_skip_notifications)
 
   fun skipLabel(): String =
     context.getString(R.string.welcome_skip)
+
+  fun notificationCardBriefTitle(): String =
+    context.getString(R.string.welcome_notifications_card_brief_title)
+
+  fun notificationCardBriefBody(): String =
+    context.getString(R.string.welcome_notifications_card_brief_body)
+
+  fun notificationCardAlertTitle(): String =
+    context.getString(R.string.welcome_notifications_card_alert_title)
+
+  fun notificationCardAlertBody(): String =
+    context.getString(R.string.welcome_notifications_card_alert_body)
+
+  fun notificationCardMoodTitle(): String =
+    context.getString(R.string.welcome_notifications_card_mood_title)
+
+  fun notificationCardMoodBody(): String =
+    context.getString(R.string.welcome_notifications_card_mood_body)
 
   fun briefToneWitty(): String =
     context.getString(R.string.welcome_brief_tone_witty)

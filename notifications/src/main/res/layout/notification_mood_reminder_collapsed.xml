@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/mood_notification_padding"
+    android:paddingEnd="@dimen/mood_notification_padding"
+    android:paddingTop="@dimen/mood_notification_collapsed_vertical_padding"
+    android:paddingBottom="@dimen/mood_notification_collapsed_vertical_padding">
+
+    <TextView
+        android:id="@+id/mood_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="@dimen/mood_notification_title_text_size"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mood_notification_collapsed_buttons_gap"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <TextView
+            android:id="@+id/mood_rating_1"
+            style="@style/MoodEmojiButtonCompact" />
+
+        <TextView
+            android:id="@+id/mood_rating_2"
+            style="@style/MoodEmojiButtonCompact" />
+
+        <TextView
+            android:id="@+id/mood_rating_3"
+            style="@style/MoodEmojiButtonCompact" />
+
+        <TextView
+            android:id="@+id/mood_rating_4"
+            style="@style/MoodEmojiButtonCompact" />
+
+        <TextView
+            android:id="@+id/mood_rating_5"
+            style="@style/MoodEmojiButtonCompact" />
+    </LinearLayout>
+</LinearLayout>

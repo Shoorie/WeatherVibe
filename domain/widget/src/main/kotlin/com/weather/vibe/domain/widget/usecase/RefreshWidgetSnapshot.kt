@@ -34,8 +34,11 @@ class RefreshWidgetSnapshot internal constructor(
       .first().getOrThrow()
 
   private suspend fun fetchMood(weather: WeatherData): String =
-    generateWeatherSuggestion(weather, getCurrentWeatherKey(weather))
-      .first().getOrThrow().mood
+    generateWeatherSuggestion(
+      todayDispositionEntries = emptyList(),
+      weatherData = weather,
+      weatherKey = getCurrentWeatherKey(weather)
+    ).first().getOrThrow().mood
 
   private fun snapshotOf(
     location: Location,

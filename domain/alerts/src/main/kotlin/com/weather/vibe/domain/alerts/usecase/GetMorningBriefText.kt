@@ -36,7 +36,11 @@ class GetMorningBriefText internal constructor(
       .getOrThrow()
 
   private suspend fun briefFor(weather: WeatherData): String =
-    generateWeatherSuggestion(weather, getCurrentWeatherKey(weather))
+    generateWeatherSuggestion(
+      todayDispositionEntries = emptyList(),
+      weatherData = weather,
+      weatherKey = getCurrentWeatherKey(weather)
+    )
       .first()
       .getOrThrow()
       .briefText

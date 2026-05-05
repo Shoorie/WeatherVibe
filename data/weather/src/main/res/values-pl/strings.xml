@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="prompt_role">Piszesz krótki komentarz o pogodzie po polsku.</string>
+    <string name="prompt_brief_instruction">3–4 zdania, maksymalnie 500 znaków.</string>
+    <string name="prompt_outfit_instruction">2–3 elementy ubioru lub dodatków. Maksymalnie 6 słów. Bez kropki na końcu.</string>
+    <string name="prompt_music_instruction">3 gatunki muzyczne, nazwy po angielsku.</string>
+
+    <string name="prompt_output_format">
+Odpowiedz pojedynczym obiektem JSON (bez markdown, bez code fences, bez komentarzy):
+
+{
+  "briefText": "3–4 zdania po polsku, max 500 znaków",
+  "mood": "krótka etykieta nastroju po polsku, max 4 słowa",
+  "moodDescription": "jedno zdanie atmosferyczne po polsku, max 16 słów",
+  "outfitSuggestion": "2–3 części garderoby po polsku, max 6 słów",
+  "genres": ["genre1", "genre2", "genre3"]
+}
+
+briefText, mood, moodDescription, outfitSuggestion są po polsku.
+genres są po angielsku, niezależnie od języka briefu.
+    </string>
+
+    <string name="prompt_user_disposition_intro">
+Użytkownik zapisuje dziś nastawienie w skali 1–5 (1 = najniżej, 5 = najwyżej), każdy wpis opcjonalnie z krótką notatką.
+Wpisy z dziś, chronologicznie:
+    </string>
+
+    <string name="prompt_tone_directive_formal">Ton: formalny komunikat meteorologiczny.</string>
+    <string name="prompt_tone_directive_humorous">Ton: sucha ironia, deadpan.</string>
+    <string name="prompt_tone_directive_witty_friendly">Ton: ciepły, konwersacyjny.</string>
+
+</resources>

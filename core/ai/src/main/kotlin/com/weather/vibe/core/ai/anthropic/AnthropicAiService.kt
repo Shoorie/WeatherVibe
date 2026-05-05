@@ -40,7 +40,7 @@ internal class AnthropicAiService(
     const val API_URL = "https://api.anthropic.com/v1/messages"
     const val HEADER_API_KEY = "x-api-key"
     const val HEADER_VERSION = "anthropic-version"
-    const val MAX_TOKENS = 300
+    const val MAX_TOKENS = 800
     const val ROLE_USER = "user"
   }
 }

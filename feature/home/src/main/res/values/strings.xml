@@ -84,7 +84,7 @@
   <string name="daily_vibe_oneliner_pleasant">Solid vibes all around.</string>
   <string name="daily_vibe_oneliner_okay">Fine, nothing special.</string>
   <string name="daily_vibe_oneliner_dreary">Meh, but liveable.</string>
-  <string name="daily_vibe_oneliner_rough">Stay in, queue up a show.</string>
+  <string name="daily_vibe_oneliner_rough">Better stay in today.</string>
   <string name="daily_vibe_content_description_format">%1$s, vibe score %2$d out of 100. %3$s</string>
   <string name="ai_briefing_retry">Retry</string>
   <string name="ai_briefing_retry_content_description">Retry AI briefing</string>

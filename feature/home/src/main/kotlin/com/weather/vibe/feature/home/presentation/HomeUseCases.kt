@@ -5,6 +5,7 @@ import com.weather.vibe.domain.alerts.usecase.ResolveHomeAlert
 import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.vibe.usecase.CalculateDailyVibe
+import com.weather.vibe.domain.viberating.usecase.ObserveTodayEntries
 import com.weather.vibe.domain.weather.usecase.DetermineWeatherRefreshStrategy
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
@@ -24,6 +25,7 @@ internal data class HomeUseCases(
   val getEnvironmentalReadings: GetEnvironmentalReadings,
   val getWeather: GetWeather,
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
+  val observeTodayEntries: ObserveTodayEntries,
   val observeUserSettings: ObserveUserSettings,
   val resolveHomeAlert: ResolveHomeAlert
 )

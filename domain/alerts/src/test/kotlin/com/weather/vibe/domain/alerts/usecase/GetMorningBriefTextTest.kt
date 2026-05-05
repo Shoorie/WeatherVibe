@@ -47,8 +47,13 @@ class GetMorningBriefTextTest {
     every { observeCurrentLocation() } returns flowOf(WARSAW)
     every { getWeather(WARSAW.toCoordinates()) } returns flowOf(success(WEATHER))
     every { getCurrentWeatherKey(WEATHER) } returns WEATHER_KEY
-    every { generateWeatherSuggestion(WEATHER, WEATHER_KEY) } returns
-      flowOf(success(SUGGESTION))
+    every {
+      generateWeatherSuggestion(
+        todayDispositionEntries = emptyList(),
+        weatherData = WEATHER,
+        weatherKey = WEATHER_KEY
+      )
+    } returns flowOf(success(SUGGESTION))
   }
 
   @After
@@ -90,8 +95,13 @@ class GetMorningBriefTextTest {
   @Test
   fun `given suggestion fails, when invoked, then error propagates`() = runTest {
 
-    every { generateWeatherSuggestion(WEATHER, WEATHER_KEY) } returns
-      flowOf(failure(IllegalStateException("ai down")))
+    every {
+      generateWeatherSuggestion(
+        todayDispositionEntries = emptyList(),
+        weatherData = WEATHER,
+        weatherKey = WEATHER_KEY
+      )
+    } returns flowOf(failure(IllegalStateException("ai down")))
 
     expectThrows<IllegalStateException> { getMorningBriefText() }
   }

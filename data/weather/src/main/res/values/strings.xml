@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="prompt_role">You write a short, casual weather brief in English for someone glancing at their phone.</string>
+    <string name="prompt_brief_instruction">Write 3–4 sentences, max 500 characters.</string>
+    <string name="prompt_outfit_instruction">Suggest 2–3 garments or accessories for today. Max 6 words. No trailing period.</string>
+    <string name="prompt_music_instruction">Pick 3 music genres that match today\'s mood and weather. Use real, searchable English genre names.</string>
+
+    <string name="prompt_output_format">
+Reply with a single JSON object (no markdown, no code fences, no commentary):
+
+{
+  "briefText": "3–4 sentences in English, max 500 characters",
+  "mood": "short mood label in English, max 4 words",
+  "moodDescription": "one atmospheric sentence in English, max 16 words",
+  "outfitSuggestion": "2–3 garments in English, max 6 words",
+  "genres": ["genre1", "genre2", "genre3"]
+}
+
+briefText, mood, moodDescription, outfitSuggestion are in English.
+genres are in English regardless of language.
+    </string>
+
+    <string name="prompt_user_disposition_intro">
+The user logs how they feel today on a 1–5 scale (1 = lowest, 5 = highest), each rating optionally with a short note.
+Today\'s entries are listed below in chronological order.
+Use them to shade the brief.
+    </string>
+
+    <string name="prompt_tone_directive_formal">Tone: factual and professional, like a clean weather report.</string>
+    <string name="prompt_tone_directive_humorous">Tone: dry, deadpan irony — one slightly off-kilter observation.</string>
+    <string name="prompt_tone_directive_witty_friendly">Tone: warm and conversational, like a quick text from a friend who notices things.</string>
+
+</resources>

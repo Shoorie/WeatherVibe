@@ -12,7 +12,7 @@ import com.weather.vibe.data.weather.local.entity.WeatherSuggestionEntity
     WeatherCacheEntity::class,
     WeatherSuggestionEntity::class
   ],
-  version = 3,
+  version = 4,
   exportSchema = true
 )
 abstract class WeatherDatabase : RoomDatabase() {

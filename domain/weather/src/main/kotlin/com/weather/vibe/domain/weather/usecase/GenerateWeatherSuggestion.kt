@@ -5,6 +5,7 @@ import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.usecase.AddToGenreHistory
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
+import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
@@ -28,6 +29,7 @@ class GenerateWeatherSuggestion internal constructor(
 ) {
 
   operator fun invoke(
+    todayDispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): Flow<Result<WeatherSuggestion>> =
@@ -38,8 +40,20 @@ class GenerateWeatherSuggestion internal constructor(
       val excludedGenres = settings?.excludedGenres.orEmpty()
       val languageTag = Locale.getDefault().language
 
-      val suggestion = cachedSuggestion(languageTag, tone, weatherKey, excludedGenres)
-        ?: fetchSuggestion(languageTag, weatherData, weatherKey, tone, excludedGenres)
+      val suggestion = cachedSuggestion(
+        languageTag = languageTag,
+        tone = tone,
+        weatherKey = weatherKey,
+        dispositionEntries = todayDispositionEntries,
+        excludedGenres = excludedGenres
+      ) ?: fetchSuggestion(
+        languageTag = languageTag,
+        weatherData = weatherData,
+        weatherKey = weatherKey,
+        dispositionEntries = todayDispositionEntries,
+        tone = tone,
+        excludedGenres = excludedGenres
+      )
 
       emit(success(suggestion))
     }.catch { emit(failure(it)) }
@@ -48,9 +62,15 @@ class GenerateWeatherSuggestion internal constructor(
     languageTag: String,
     tone: BriefTone,
     weatherKey: WeatherKey,
+    dispositionEntries: List<UserDispositionEntry>,
     excludedGenres: Set<String>
   ): WeatherSuggestion? =
-    cache.get(languageTag, tone, weatherKey)
+    cache.get(
+      dispositionEntries = dispositionEntries,
+      languageTag = languageTag,
+      tone = tone,
+      weatherKey = weatherKey
+    )
       ?.takeIf { it.isValid(excludedGenres) }
       ?.suggestion
 
@@ -58,19 +78,21 @@ class GenerateWeatherSuggestion internal constructor(
     languageTag: String,
     weatherData: WeatherData,
     weatherKey: WeatherKey,
+    dispositionEntries: List<UserDispositionEntry>,
     tone: BriefTone,
     excludedGenres: Set<String>
   ): WeatherSuggestion {
     val prompt = buildWeatherSuggestionPrompt(
       condition = weatherKey.condition,
       excludedGenres = excludedGenres,
-      languageTag = languageTag,
       temperatureCelsius = weatherData.currentTemperature,
       timeOfDay = weatherKey.timeOfDay,
+      todayDispositionEntries = dispositionEntries,
       tone = tone
     )
     val suggestion = repository.getSuggestionBasedOn(prompt)
     cache.save(
+      dispositionEntries = dispositionEntries,
       languageTag = languageTag,
       suggestion = suggestion,
       tone = tone,

@@ -9,6 +9,7 @@ import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.Coordinates
+import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
@@ -47,8 +48,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -201,6 +202,7 @@ internal class HomeViewModel(
     invalidateJob?.cancel()
     invalidateJob = viewModelScope.launch(errorHandler) {
       useCases.invalidateWeatherSuggestion(
+        todayDispositionEntries = currentDispositionEntries(),
         tone = settings.briefTone,
         weatherKey = weatherKey
       )
@@ -299,10 +301,18 @@ internal class HomeViewModel(
     val weatherKey = snapshot.value.weatherKey ?: return
 
     suggestionJob?.cancel()
-    suggestionJob = useCases.generateWeatherSuggestion(weatherData, weatherKey)
-      .onEach(::onWeatherSuggestionResult)
-      .launchIn(viewModelScope)
+    suggestionJob = viewModelScope.launch(errorHandler) {
+      val entries = currentDispositionEntries()
+      useCases.generateWeatherSuggestion(
+        todayDispositionEntries = entries,
+        weatherData = weatherData,
+        weatherKey = weatherKey
+      ).collect(::onWeatherSuggestionResult)
+    }
   }
+
+  private suspend fun currentDispositionEntries(): List<UserDispositionEntry> =
+    useCases.observeTodayEntries().first().toDispositionEntries()
 
   private fun onWeatherSuggestionResult(result: Result<WeatherSuggestion>) {
     result.fold(
@@ -363,7 +373,11 @@ internal class HomeViewModel(
     genreRejectionJob?.cancel()
     genreRejectionJob = viewModelScope.launch(errorHandler) {
       showPlaylistGenerating()
-      useCases.invalidateWeatherSuggestion(tone = tone, weatherKey = weatherKey)
+      useCases.invalidateWeatherSuggestion(
+        todayDispositionEntries = currentDispositionEntries(),
+        tone = tone,
+        weatherKey = weatherKey
+      )
       ensureActive()
       refreshWeatherSuggestion()
     }

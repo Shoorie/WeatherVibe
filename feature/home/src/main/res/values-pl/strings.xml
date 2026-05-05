@@ -79,11 +79,11 @@
   <string name="daily_vibe_mood_okay">Znośny klimat</string>
   <string name="daily_vibe_mood_dreary">Ponury klimat</string>
   <string name="daily_vibe_mood_rough">Kiepsko na dworze</string>
-  <string name="daily_vibe_oneliner_radiant">Idealnie — wyjdź z tego biura.</string>
+  <string name="daily_vibe_oneliner_radiant">Aż się prosi, żeby wyjść.</string>
   <string name="daily_vibe_oneliner_pleasant">Spoko pogódka.</string>
   <string name="daily_vibe_oneliner_okay">Średnio, ale ujdzie.</string>
   <string name="daily_vibe_oneliner_dreary">Kiepsko, ale do przeżycia.</string>
-  <string name="daily_vibe_oneliner_rough">Zostań w domu, obejrzyj serial.</string>
+  <string name="daily_vibe_oneliner_rough">Dziś lepiej nie wychodzić.</string>
   <string name="daily_vibe_content_description_format">%1$s, vibe %2$d na 100. %3$s</string>
   <string name="ai_briefing_retry">Ponów</string>
   <string name="ai_briefing_retry_content_description">Ponów briefing AI</string>

@@ -46,7 +46,13 @@ class RefreshWidgetSnapshotTest {
   fun setUp() {
     every { getWeather(any()) } returns flowOf(success(WEATHER))
     every { getCurrentWeatherKey(WEATHER) } returns WEATHER_KEY
-    every { generateWeatherSuggestion(WEATHER, WEATHER_KEY) } returns flowOf(success(SUGGESTION))
+    every {
+      generateWeatherSuggestion(
+        todayDispositionEntries = emptyList(),
+        weatherData = WEATHER,
+        weatherKey = WEATHER_KEY
+      )
+    } returns flowOf(success(SUGGESTION))
     every { timeProvider.nowEpochMillis() } returns FETCHED_AT_EPOCH_MILLIS
   }
 
@@ -111,8 +117,13 @@ class RefreshWidgetSnapshotTest {
   @Test
   fun `given suggestion generation fails, when refreshed, then rethrows cause`() = runTest {
 
-    every { generateWeatherSuggestion(WEATHER, WEATHER_KEY) } returns
-      flowOf(failure(IllegalStateException("ai down")))
+    every {
+      generateWeatherSuggestion(
+        todayDispositionEntries = emptyList(),
+        weatherData = WEATHER,
+        weatherKey = WEATHER_KEY
+      )
+    } returns flowOf(failure(IllegalStateException("ai down")))
 
     expectThrows<IllegalStateException> { refresh(WARSAW) }
   }

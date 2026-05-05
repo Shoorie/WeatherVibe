@@ -17,7 +17,13 @@ class WeatherSuggestionEntityMapperTest {
 
     val original = cachedSuggestion(suggestion = suggestion(outfitSuggestion = "Raincoat, boots"))
 
-    val roundTripped = mapper.toDomain(mapper.toEntity(original, LANGUAGE_TAG))
+    val roundTripped = mapper.toDomain(
+      mapper.toEntity(
+        cached = original,
+        dispositionEntries = emptyList(),
+        languageTag = LANGUAGE_TAG
+      )
+    )
 
     expectThat(roundTripped.suggestion.outfitSuggestion).isEqualTo("Raincoat, boots")
   }
@@ -27,7 +33,13 @@ class WeatherSuggestionEntityMapperTest {
 
     val original = cachedSuggestion(suggestion = suggestion(outfitSuggestion = null))
 
-    val roundTripped = mapper.toDomain(mapper.toEntity(original, LANGUAGE_TAG))
+    val roundTripped = mapper.toDomain(
+      mapper.toEntity(
+        cached = original,
+        dispositionEntries = emptyList(),
+        languageTag = LANGUAGE_TAG
+      )
+    )
 
     expectThat(roundTripped.suggestion.outfitSuggestion).isNull()
   }
@@ -37,7 +49,11 @@ class WeatherSuggestionEntityMapperTest {
 
     val original = cachedSuggestion(suggestion = suggestion(outfitSuggestion = null))
 
-    val entity = mapper.toEntity(original, LANGUAGE_TAG)
+    val entity = mapper.toEntity(
+      cached = original,
+      dispositionEntries = emptyList(),
+      languageTag = LANGUAGE_TAG
+    )
 
     expectThat(entity.outfitSuggestion).isEqualTo("")
   }

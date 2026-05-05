@@ -6,6 +6,7 @@ import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TemperatureRange
 import com.weather.vibe.domain.weather.model.TimeOfDay
+import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import org.koin.core.annotation.Factory
@@ -33,6 +34,7 @@ internal class WeatherSuggestionEntityMapper {
 
   fun toEntity(
     cached: CachedWeatherSuggestion,
+    dispositionEntries: List<UserDispositionEntry>,
     languageTag: String
   ): WeatherSuggestionEntity =
     WeatherSuggestionEntity(
@@ -46,11 +48,29 @@ internal class WeatherSuggestionEntityMapper {
       temperatureRange = cached.weatherKey.temperature.name,
       timeOfDay = cached.weatherKey.timeOfDay.name,
       tone = cached.tone.name,
-      weatherKeyHash = toLocalizedHash(cached.weatherKey, languageTag)
+      weatherKeyHash = toLocalizedHash(cached.weatherKey, languageTag, dispositionEntries)
     )
 
-  fun toLocalizedHash(weatherKey: WeatherKey, languageTag: String): String =
-    "${weatherKey.toHash()}_$languageTag"
+  fun toLocalizedHash(
+    weatherKey: WeatherKey,
+    languageTag: String,
+    dispositionEntries: List<UserDispositionEntry>
+  ): String =
+    "${weatherKey.toHash()}_${languageTag}_${dispositionFingerprint(dispositionEntries)}"
+
+  private fun dispositionFingerprint(entries: List<UserDispositionEntry>): String {
+
+    if (entries.isEmpty()) return EMPTY_DISPOSITION_KEY
+
+    val sortedHash = entries
+      .sortedBy { it.recordedAtEpochMillis }
+      .joinToString(separator = "|") { entry ->
+        "${entry.rating}:${entry.note?.hashCode() ?: 0}"
+      }
+      .hashCode()
+    
+    return "d$sortedHash"
+  }
 
   private fun String.toGenreList(): List<String> =
     split(GENRES_SEPARATOR)
@@ -59,5 +79,6 @@ internal class WeatherSuggestionEntityMapper {
 
   private companion object {
     const val GENRES_SEPARATOR = ","
+    const val EMPTY_DISPOSITION_KEY = "d0"
   }
 }

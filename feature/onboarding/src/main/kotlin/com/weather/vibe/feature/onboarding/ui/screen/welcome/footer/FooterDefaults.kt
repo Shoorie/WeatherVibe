@@ -11,7 +11,6 @@ internal object FooterDefaults {
   val DotInactiveSize = 6.dp
   val DotActiveWidth = 22.dp
   val DotsGap = 6.dp
-  val PrimaryButtonHeight = 56.dp
   val SkipMinTouchSize = 48.dp
 
   const val INACTIVE_DOT_ALPHA = 0.28f

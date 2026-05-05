@@ -1,5 +1,8 @@
 package com.weather.vibe.feature.onboarding.ui.screen.welcome
 
+import android.Manifest.permission.POST_NOTIFICATIONS
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,7 +21,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.core.permissions.notification.NotificationPermissionSupport
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.NavigateToLocationOnboarding
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.RequestNotificationsPermission
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeViewModel
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlides.LAST_INDEX
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeUiState
@@ -38,14 +43,24 @@ fun WelcomeOnboardingScreen(onFinishWelcome: () -> Unit) {
 
   val viewModel: WelcomeViewModel = koinViewModel()
   val resources: WelcomeResources = koinInject()
+  val permissionSupport: NotificationPermissionSupport = koinInject()
   val state by viewModel.state.collectAsStateWithLifecycle()
   val callbacks = remember(viewModel) { WelcomeCallbacks(viewModel) }
   val pagerState = rememberPagerState(pageCount = { state.totalSlides })
+
+  val permissionLauncher = rememberLauncherForActivityResult(
+    contract = RequestPermission(),
+    onResult = callbacks.onNotificationsPermissionResult
+  )
 
   LaunchedEffect(viewModel) {
     viewModel.event.collect { event ->
       when (event) {
         is NavigateToLocationOnboarding -> onFinishWelcome()
+        is RequestNotificationsPermission -> when (permissionSupport.isSupported()) {
+          true -> permissionLauncher.launch(POST_NOTIFICATIONS)
+          false -> callbacks.onNotificationsPermissionResult(true)
+        }
       }
     }
   }
@@ -66,7 +81,8 @@ fun WelcomeOnboardingScreen(onFinishWelcome: () -> Unit) {
     pagerState = pagerState,
     skipLabel = resources.skipLabel(),
     onNextClick = callbacks.onNextClick,
-    onSkipClick = callbacks.onSkipClick
+    onSkipClick = callbacks.onSkipClick,
+    onSkipNotificationsClick = callbacks.onSkipNotificationsClick
   )
 }
 
@@ -78,7 +94,8 @@ internal fun WelcomeOnboardingContent(
   pagerState: PagerState,
   skipLabel: String,
   onNextClick: () -> Unit,
-  onSkipClick: () -> Unit
+  onSkipClick: () -> Unit,
+  onSkipNotificationsClick: () -> Unit
 ) {
 
   val dotPosition by remember(pagerState) {
@@ -103,10 +120,12 @@ internal fun WelcomeOnboardingContent(
 
     WelcomeFooter(
       modifier = Modifier.align(Alignment.BottomCenter),
-      ctaLabel = state.ctaLabel,
       dotPosition = dotPosition,
+      primaryActionLabel = state.primaryActionLabel,
+      skipNotificationsLabel = state.skipNotificationsLabel,
       totalSlides = state.totalSlides,
-      onCtaClick = onNextClick
+      onPrimaryActionClick = onNextClick,
+      onSkipNotificationsClick = onSkipNotificationsClick
     )
   }
 }
@@ -128,7 +147,8 @@ private fun Preview(
       pagerState = pagerState,
       skipLabel = "Skip",
       onNextClick = {},
-      onSkipClick = {}
+      onSkipClick = {},
+      onSkipNotificationsClick = {}
     )
   }
 }

@@ -11,18 +11,22 @@ object UserSettingsFixtures {
   val DEFAULT_SETTINGS: UserSettings = userSettings()
 
   fun userSettings(
-    alertsEnabled: Boolean = false,
     briefTone: BriefTone = WITTY_AND_FRIENDLY,
     excludedGenres: Set<String> = emptySet(),
+    moodReminderEnabled: Boolean = false,
     morningBriefEnabled: Boolean = false,
+    pollenAlertsEnabled: Boolean = false,
     temperatureUnit: TemperatureUnit = CELSIUS,
+    weatherAlertsEnabled: Boolean = false,
     welcomeOnboardingSeen: Boolean = false
   ): UserSettings = UserSettings(
-    alertsEnabled = alertsEnabled,
     briefTone = briefTone,
     excludedGenres = excludedGenres,
+    moodReminderEnabled = moodReminderEnabled,
     morningBriefEnabled = morningBriefEnabled,
+    pollenAlertsEnabled = pollenAlertsEnabled,
     temperatureUnit = temperatureUnit,
+    weatherAlertsEnabled = weatherAlertsEnabled,
     welcomeOnboardingSeen = welcomeOnboardingSeen
   )
 }

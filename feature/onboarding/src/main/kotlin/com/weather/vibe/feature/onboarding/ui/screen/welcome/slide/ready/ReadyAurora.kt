@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.aurora.AuroraPalette
@@ -33,10 +32,6 @@ import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDe
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.BlobBlurStrong
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.BlobDriftXDp
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.BlobDriftYDp
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.CENTER_BLOB_DURATION_MS
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.CENTER_BLOB_OFFSET_X
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.CENTER_BLOB_OFFSET_Y
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.CenterBlobSizeDp
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.LEFT_BLOB_DURATION_MS
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.LEFT_BLOB_OFFSET_X
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.LEFT_BLOB_OFFSET_Y
@@ -46,7 +41,6 @@ import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDe
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.RIGHT_BLOB_OFFSET_X
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.RIGHT_BLOB_OFFSET_Y
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.RightBlobSizeDp
-import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyDefaults.WARM_PULSE_SCALE
 
 @Composable
 internal fun ReadyAurora(modifier: Modifier = Modifier) {
@@ -54,7 +48,6 @@ internal fun ReadyAurora(modifier: Modifier = Modifier) {
   val accent = colors.accent
   val leftBrush = remember(accent) { blobBrush(accent.copy(alpha = ACCENT_AURORA_ALPHA)) }
   val rightBrush = remember { blobBrush(AuroraPalette.LavenderBlob) }
-  val centerBrush = remember { blobBrush(AuroraPalette.WarmBlob) }
 
   Box(modifier = modifier.fillMaxSize()) {
     DriftingBlob(
@@ -77,17 +70,6 @@ internal fun ReadyAurora(modifier: Modifier = Modifier) {
       brush = rightBrush,
       blurRadius = BlobBlurStrong
     )
-    DriftingBlob(
-      size = CenterBlobSizeDp,
-      offsetXFraction = CENTER_BLOB_OFFSET_X,
-      offsetYFraction = CENTER_BLOB_OFFSET_Y,
-      driftXDp = 0.dp,
-      driftYDp = 0.dp,
-      durationMs = CENTER_BLOB_DURATION_MS,
-      brush = centerBrush,
-      blurRadius = BlobBlurRadius,
-      pulseScale = WARM_PULSE_SCALE
-    )
   }
 }
 
@@ -100,8 +82,7 @@ private fun DriftingBlob(
   driftYDp: Dp,
   durationMs: Int,
   brush: Brush,
-  blurRadius: Dp,
-  pulseScale: Float = NO_PULSE_SCALE
+  blurRadius: Dp
 ) {
 
   val transition = rememberInfiniteTransition(label = AURORA_BLOB)
@@ -126,9 +107,8 @@ private fun DriftingBlob(
         val originY = this.size.height * offsetYFraction
         translationX = originX + driftXDp.toPx() * phase
         translationY = originY + driftYDp.toPx() * phase
-        val scaleFactor = NO_PULSE_SCALE + (pulseScale - NO_PULSE_SCALE) * phase
-        scaleX = scaleFactor
-        scaleY = scaleFactor
+        scaleX = NO_PULSE_SCALE
+        scaleY = NO_PULSE_SCALE
       }
   ) {
     Box(

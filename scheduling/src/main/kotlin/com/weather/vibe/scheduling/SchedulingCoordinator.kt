@@ -1,7 +1,14 @@
 package com.weather.vibe.scheduling
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
+import com.weather.vibe.scheduling.work.MoodReminderWorkSpec
+import com.weather.vibe.scheduling.work.MorningBriefWorkSpec
+import com.weather.vibe.scheduling.work.NotificationScheduler
+import com.weather.vibe.scheduling.work.NotificationWorkSpec
+import com.weather.vibe.scheduling.work.PollenAlertsWorkSpec
+import com.weather.vibe.scheduling.work.WeatherAlertsWorkSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -15,9 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @Single
 class SchedulingCoordinator internal constructor(
-  private val alertsScheduler: SchedulePeriodicWeatherAlerts,
-  private val morningBriefScheduler: SchedulePeriodicMorningBrief,
-  private val observeUserSettings: ObserveUserSettings
+  private val observeUserSettings: ObserveUserSettings,
+  private val scheduler: NotificationScheduler,
+  private val timeProvider: TimeProvider
 ) {
 
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -37,21 +44,28 @@ class SchedulingCoordinator internal constructor(
       .distinctUntilChanged()
 
   private fun applyPreferences(preferences: NotificationPreferences) {
-    applyAlertsPreference(preferences.alertsEnabled)
-    applyMorningBriefPreference(preferences.morningBriefEnabled)
+    apply(
+      spec = MorningBriefWorkSpec.create(timeProvider = timeProvider),
+      enabled = preferences.morningBriefEnabled
+    )
+    apply(
+      spec = WeatherAlertsWorkSpec.create(),
+      enabled = preferences.weatherAlertsEnabled
+    )
+    apply(
+      spec = PollenAlertsWorkSpec.create(timeProvider = timeProvider),
+      enabled = preferences.pollenAlertsEnabled
+    )
+    apply(
+      spec = MoodReminderWorkSpec.create(timeProvider = timeProvider),
+      enabled = preferences.moodReminderEnabled
+    )
   }
 
-  private fun applyAlertsPreference(enabled: Boolean) {
+  private fun apply(spec: NotificationWorkSpec, enabled: Boolean) {
     when (enabled) {
-      true -> alertsScheduler.schedule()
-      false -> alertsScheduler.cancel()
-    }
-  }
-
-  private fun applyMorningBriefPreference(enabled: Boolean) {
-    when (enabled) {
-      true -> morningBriefScheduler.schedule()
-      false -> morningBriefScheduler.cancel()
+      true -> scheduler.schedule(spec)
+      false -> scheduler.cancel(spec.workerName)
     }
   }
 }

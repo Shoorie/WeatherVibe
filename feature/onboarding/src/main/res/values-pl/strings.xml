@@ -18,8 +18,17 @@
     <string name="onboarding_location_indicator_a11y">Wskaźnik lokalizacji</string>
 
     <string name="welcome_skip">Pomiń</string>
-    <string name="welcome_cta_next">Dalej</string>
-    <string name="welcome_cta_finish">Ustaw lokalizację</string>
+    <string name="welcome_action_next">Dalej</string>
+    <string name="welcome_action_enable_notifications">Włącz powiadomienia i zaczynamy</string>
+    <string name="welcome_action_finish">Zaczynamy</string>
+    <string name="welcome_action_skip_notifications">Może później</string>
+
+    <string name="welcome_notifications_card_brief_title">Poranny brief</string>
+    <string name="welcome_notifications_card_brief_body">Dziś: 14°, lekka kurtka — Twój dzień w jednym spojrzeniu.</string>
+    <string name="welcome_notifications_card_alert_title">Alert burzowy</string>
+    <string name="welcome_notifications_card_alert_body">Uwaga — burza nadciąga około 17:00.</string>
+    <string name="welcome_notifications_card_mood_title">Jak minął dzień?</string>
+    <string name="welcome_notifications_card_mood_body">Stuknij emoji, by zalogować nastrój — prosto z powiadomienia.</string>
 
     <string name="welcome_talk_temperature">24°</string>
     <string name="welcome_talk_caption">słonecznie</string>

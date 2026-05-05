@@ -13,14 +13,18 @@ internal class NotificationsStateFactory(
 
   fun initial(): Loaded =
     Loaded(
-      alertsEnabled = false,
-      morningBriefEnabled = false
+      moodReminderEnabled = false,
+      morningBriefEnabled = false,
+      pollenAlertsEnabled = false,
+      weatherAlertsEnabled = false
     )
 
   fun create(settings: UserSettings): Loaded =
     Loaded(
-      alertsEnabled = settings.alertsEnabled,
-      morningBriefEnabled = settings.morningBriefEnabled
+      moodReminderEnabled = settings.moodReminderEnabled,
+      morningBriefEnabled = settings.morningBriefEnabled,
+      pollenAlertsEnabled = settings.pollenAlertsEnabled,
+      weatherAlertsEnabled = settings.weatherAlertsEnabled
     )
 
   fun createError(): Error =

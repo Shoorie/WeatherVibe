@@ -4,19 +4,15 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 
 data class UserSettings(
-  val alertsEnabled: Boolean,
   val briefTone: BriefTone,
   val excludedGenres: Set<String>,
+  val moodReminderEnabled: Boolean,
   val morningBriefEnabled: Boolean,
+  val pollenAlertsEnabled: Boolean,
   val temperatureUnit: TemperatureUnit,
+  val weatherAlertsEnabled: Boolean,
   val welcomeOnboardingSeen: Boolean
 ) {
-
-  fun withAlertsEnabled(enabled: Boolean): UserSettings =
-    copy(alertsEnabled = enabled)
-
-  fun withWelcomeOnboardingSeen(): UserSettings =
-    copy(welcomeOnboardingSeen = true)
 
   fun withBriefTone(tone: BriefTone): UserSettings =
     copy(briefTone = tone)
@@ -27,11 +23,23 @@ data class UserSettings(
   fun withIncludedGenre(genre: String): UserSettings =
     copy(excludedGenres = excludedGenres - genre)
 
+  fun withMoodReminderEnabled(enabled: Boolean): UserSettings =
+    copy(moodReminderEnabled = enabled)
+
   fun withMorningBriefEnabled(enabled: Boolean): UserSettings =
     copy(morningBriefEnabled = enabled)
 
+  fun withPollenAlertsEnabled(enabled: Boolean): UserSettings =
+    copy(pollenAlertsEnabled = enabled)
+
   fun withToggledTemperatureUnit(): UserSettings =
     copy(temperatureUnit = if (temperatureUnit == CELSIUS) FAHRENHEIT else CELSIUS)
+
+  fun withWeatherAlertsEnabled(enabled: Boolean): UserSettings =
+    copy(weatherAlertsEnabled = enabled)
+
+  fun withWelcomeOnboardingSeen(): UserSettings =
+    copy(welcomeOnboardingSeen = true)
 
   fun hasBriefToneChanged(previous: UserSettings?): Boolean =
     previous != null && briefTone != previous.briefTone

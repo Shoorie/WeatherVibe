@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,6 +21,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.onboarding.ui.screen.welcome.SlideContentBottomInset
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.vibe.VibeDefaults.BODY_DELAY_MS
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.vibe.VibeDefaults.BodyToCardGap
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.vibe.VibeDefaults.ContentHorizontal
@@ -43,8 +46,10 @@ internal fun VibeSlide(
   Box(modifier = modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .padding(horizontal = ContentHorizontal)
-        .padding(top = ContentTopPadding),
+        .padding(top = ContentTopPadding, bottom = SlideContentBottomInset),
       verticalArrangement = Arrangement.spacedBy(HeaderToBodyGap)
     ) {
       VibeHeadline()

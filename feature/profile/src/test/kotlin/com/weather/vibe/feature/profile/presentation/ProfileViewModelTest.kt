@@ -157,7 +157,7 @@ class ProfileViewModelTest {
   @Test
   fun `given alerts enabled, when settings emitted, then alerts stat is on`() = runTest {
 
-    every { observeUserSettings() } returns flowOf(success(userSettings(alertsEnabled = true)))
+    every { observeUserSettings() } returns flowOf(success(userSettings(weatherAlertsEnabled = true)))
 
     val viewModel = createViewModel()
     runCurrent()

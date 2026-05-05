@@ -25,75 +25,99 @@ class ResolveHomeAlertTest {
   )
 
   @Test
-  fun `given alerts disabled, then nothing is resolved even for poor air`() {
+  fun `given both alert categories disabled, then nothing resolved even for poor air`() {
 
     val result = resolve(
+      pollenAlertsEnabled = false,
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = VERY_POOR_AQI),
         pollen = null
       ),
-      alertsEnabled = false
+      weatherAlertsEnabled = false
     )
 
     expectThat(result).isNull()
   }
 
   @Test
-  fun `given poor air quality, then aqi alert surfaces`() {
+  fun `given weather alerts on and poor air quality, then aqi alert surfaces`() {
 
     val result = resolve(
+      pollenAlertsEnabled = false,
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = POOR_AQI),
         pollen = null
       ),
-      alertsEnabled = true
+      weatherAlertsEnabled = true
     )
 
     expectThat(result).isA<PoorAirQuality>()
   }
 
   @Test
-  fun `given good air and high pollen, then pollen alert surfaces`() {
+  fun `given pollen alerts on and high pollen, then pollen alert surfaces`() {
 
     val highPollen = pollen(
       readings = listOf(pollenReading(species = BIRCH, level = HIGH))
     )
 
     val result = resolve(
+      pollenAlertsEnabled = true,
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = GOOD_AQI),
         pollen = highPollen
       ),
-      alertsEnabled = true
+      weatherAlertsEnabled = false
     )
 
     expectThat(result).isA<HighPollen>()
   }
 
   @Test
-  fun `given both poor air and high pollen, then aqi takes precedence`() {
+  fun `given both alerts on with poor air and high pollen, then aqi takes precedence`() {
 
     val highPollen = pollen(
       readings = listOf(pollenReading(species = BIRCH, level = VERY_HIGH))
     )
 
     val result = resolve(
+      pollenAlertsEnabled = true,
       readings = EnvironmentalReadings(
         airQuality = airQuality(europeanAqi = POOR_AQI),
         pollen = highPollen
       ),
-      alertsEnabled = true
+      weatherAlertsEnabled = true
     )
 
     expectThat(result).isA<PoorAirQuality>()
   }
 
   @Test
+  fun `given pollen alerts off but high pollen present, then nothing resolved`() {
+
+    val highPollen = pollen(
+      readings = listOf(pollenReading(species = BIRCH, level = HIGH))
+    )
+
+    val result = resolve(
+      pollenAlertsEnabled = false,
+      readings = EnvironmentalReadings(
+        airQuality = airQuality(europeanAqi = GOOD_AQI),
+        pollen = highPollen
+      ),
+      weatherAlertsEnabled = true
+    )
+
+    expectThat(result).isNull()
+  }
+
+  @Test
   fun `given no readings, then nothing is resolved`() {
 
     val result = resolve(
+      pollenAlertsEnabled = true,
       readings = EnvironmentalReadings.Empty,
-      alertsEnabled = true
+      weatherAlertsEnabled = true
     )
 
     expectThat(result).isNull()

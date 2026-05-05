@@ -10,10 +10,13 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.coroutines)
   implementation(projects.core.time)
   implementation(projects.core.workmanager)
   implementation(projects.domain.alerts)
+  implementation(projects.domain.profile)
   implementation(projects.domain.settings)
+  implementation(projects.domain.viberating)
   implementation(projects.notifications)
 
   implementation(libs.androidx.work.runtime.ktx)
@@ -22,5 +25,7 @@ dependencies {
   testImplementation(projects.testing.alertsFixtures)
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.settingsFixtures)
+  testImplementation(projects.testing.timeFixtures)
+  testImplementation(projects.testing.viberatingFixtures)
   testImplementation(projects.testing.weatherFixtures)
 }

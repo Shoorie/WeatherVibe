@@ -12,13 +12,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.MinHeight
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.shapes
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-
-private val MinHeight = 52.dp
 
 @Composable
 fun VibePrimaryButton(
@@ -31,7 +29,9 @@ fun VibePrimaryButton(
 ) {
 
   val baseStyle = typography.titleSmall
-  val labelStyle: TextStyle = remember(baseStyle) { baseStyle.copy(fontWeight = SemiBold) }
+  val labelStyle: TextStyle = remember(baseStyle) {
+    baseStyle.copy(fontWeight = SemiBold)
+  }
 
   Button(
     modifier = modifier

@@ -1,10 +1,15 @@
 package com.weather.vibe.feature.onboarding.presentation.welcome
 
 import app.cash.turbine.test
+import com.weather.vibe.core.permissions.notification.NotificationPermissionSupport
+import com.weather.vibe.domain.settings.usecase.EnableDefaultNotifications
 import com.weather.vibe.domain.settings.usecase.MarkWelcomeOnboardingSeen
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.NextClick
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.NotificationsPermissionResult
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.SkipClick
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.SkipNotificationsClick
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.NavigateToLocationOnboarding
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.RequestNotificationsPermission
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlide.READY
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlide.TALK
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlides
@@ -31,13 +36,23 @@ class WelcomeViewModelTest {
   @get:Rule
   val rule = MainDispatcherRule()
 
+  private val enableDefaultNotifications = mockk<EnableDefaultNotifications>()
   private val markWelcomeOnboardingSeen = mockk<MarkWelcomeOnboardingSeen>()
+  private val notificationPermissionSupport = mockk<NotificationPermissionSupport>()
   private val resources = mockk<WelcomeResources>(relaxed = true)
-  private val stateFactory = WelcomeStateFactory(resources = resources)
+  private val stateFactory = WelcomeStateFactory(
+    notificationPermission = notificationPermissionSupport,
+    resources = resources
+  )
 
   @Before
   fun setUp() {
-    every { resources.ctaFor(any()) } returns ""
+    every { resources.nextLabel() } returns ""
+    every { resources.enableNotificationsAndFinishLabel() } returns ""
+    every { resources.finishLabel() } returns ""
+    every { resources.skipNotificationsLabel() } returns "Maybe later"
+    every { notificationPermissionSupport.isSupported() } returns true
+    coJustRun { enableDefaultNotifications() }
     coJustRun { markWelcomeOnboardingSeen() }
   }
 
@@ -65,28 +80,19 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun `given last slide reached, when next clicked, then navigate to location event emitted`() = runTest {
+  fun `given last slide reached, when next clicked, then permission request event emitted`() =
+    runTest {
 
-    val viewModel = createViewModel()
+      val viewModel = createViewModel()
 
-    repeat(WelcomeSlides.LAST_INDEX) { viewModel.dispatch(NextClick) }
+      repeat(WelcomeSlides.LAST_INDEX) { viewModel.dispatch(NextClick) }
 
-    viewModel.event.test {
-      viewModel.dispatch(NextClick)
+      viewModel.event.test {
+        viewModel.dispatch(NextClick)
 
-      expectThat(awaitItem()).isA<NavigateToLocationOnboarding>()
+        expectThat(awaitItem()).isA<RequestNotificationsPermission>()
+      }
     }
-  }
-
-  @Test
-  fun `given last slide reached, when next clicked, then slide stays on ready`() = runTest {
-
-    val viewModel = createViewModel()
-
-    repeat(WelcomeSlides.LAST_INDEX + 1) { viewModel.dispatch(NextClick) }
-
-    expectThat(viewModel.state.value.slide).isEqualTo(READY)
-  }
 
   @Test
   fun `when skip clicked, then slide jumps to last index`() = runTest {
@@ -109,17 +115,92 @@ class WelcomeViewModelTest {
   }
 
   @Test
-  fun `given last slide reached, when next clicked, then welcome onboarding marked seen`() = runTest {
+  fun `when permission granted, then default notifications enabled`() = runTest {
 
     val viewModel = createViewModel()
 
-    repeat(WelcomeSlides.LAST_INDEX + 1) { viewModel.dispatch(NextClick) }
+    viewModel.dispatch(NotificationsPermissionResult(granted = true))
+
+    coVerify { enableDefaultNotifications() }
+  }
+
+  @Test
+  fun `when permission granted, then welcome onboarding marked seen`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(NotificationsPermissionResult(granted = true))
+
+    coVerify { markWelcomeOnboardingSeen() }
+  }
+
+  @Test
+  fun `when permission granted, then navigate to location event emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(NotificationsPermissionResult(granted = true))
+
+      expectThat(awaitItem()).isA<NavigateToLocationOnboarding>()
+    }
+  }
+
+  @Test
+  fun `when permission denied, then default notifications stay disabled`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(NotificationsPermissionResult(granted = false))
+
+    coVerify(exactly = 0) { enableDefaultNotifications() }
+  }
+
+  @Test
+  fun `when permission denied, then welcome onboarding marked seen`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(NotificationsPermissionResult(granted = false))
+
+    coVerify { markWelcomeOnboardingSeen() }
+  }
+
+  @Test
+  fun `when permission denied, then navigate to location event emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(NotificationsPermissionResult(granted = false))
+
+      expectThat(awaitItem()).isA<NavigateToLocationOnboarding>()
+    }
+  }
+
+  @Test
+  fun `when skip notifications clicked, then default notifications stay disabled`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(SkipNotificationsClick)
+
+    coVerify(exactly = 0) { enableDefaultNotifications() }
+  }
+
+  @Test
+  fun `when skip notifications clicked, then welcome onboarding marked seen`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.dispatch(SkipNotificationsClick)
 
     coVerify { markWelcomeOnboardingSeen() }
   }
 
   private fun createViewModel(): WelcomeViewModel =
     WelcomeViewModel(
+      enableDefaultNotifications = enableDefaultNotifications,
       markWelcomeOnboardingSeen = markWelcomeOnboardingSeen,
       stateFactory = stateFactory
     )

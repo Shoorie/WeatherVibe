@@ -18,8 +18,17 @@
     <string name="onboarding_location_indicator_a11y">Location indicator</string>
 
     <string name="welcome_skip">Skip</string>
-    <string name="welcome_cta_next">Next</string>
-    <string name="welcome_cta_finish">Set location</string>
+    <string name="welcome_action_next">Next</string>
+    <string name="welcome_action_enable_notifications">Enable notifications and start</string>
+    <string name="welcome_action_finish">Let\'s go</string>
+    <string name="welcome_action_skip_notifications">Maybe later</string>
+
+    <string name="welcome_notifications_card_brief_title">Morning brief</string>
+    <string name="welcome_notifications_card_brief_body">Today: 14°, light jacket — your day in one glance.</string>
+    <string name="welcome_notifications_card_alert_title">Storm alert</string>
+    <string name="welcome_notifications_card_alert_body">Heads up — thunderstorm rolling in around 17:00.</string>
+    <string name="welcome_notifications_card_mood_title">How was today?</string>
+    <string name="welcome_notifications_card_mood_body">Tap an emoji to log your mood — straight from notification.</string>
 
     <string name="welcome_talk_temperature">24°</string>
     <string name="welcome_talk_caption">sunny</string>

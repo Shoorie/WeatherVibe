@@ -2,6 +2,7 @@ package com.weather.vibe.feature.onboarding.preview.welcome.slide
 
 import com.weather.vibe.core.designsystem.theme.category.CategoryTagPalette
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.places.PlaceCardUiState
+import com.weather.vibe.feature.onboarding.ui.welcome.WelcomeEmojis
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
@@ -10,7 +11,7 @@ internal object PlacesSamples {
   fun places(): ImmutableList<PlaceCardUiState> = persistentListOf(
     PlaceCardUiState(
       city = "London",
-      emoji = "🌧️",
+      emoji = WelcomeEmojis.rain(),
       region = "United Kingdom",
       tagBackground = CategoryTagPalette.Sky,
       tagLabel = "Home",
@@ -18,7 +19,7 @@ internal object PlacesSamples {
     ),
     PlaceCardUiState(
       city = "Berlin",
-      emoji = "⛅",
+      emoji = WelcomeEmojis.partlyCloudy(),
       region = "Germany",
       tagBackground = CategoryTagPalette.Pink,
       tagLabel = "Work",
@@ -26,7 +27,7 @@ internal object PlacesSamples {
     ),
     PlaceCardUiState(
       city = "Lisbon",
-      emoji = "☀️",
+      emoji = WelcomeEmojis.sunny(),
       region = "Portugal",
       tagBackground = CategoryTagPalette.Green,
       tagLabel = "Holiday",
@@ -34,7 +35,7 @@ internal object PlacesSamples {
     ),
     PlaceCardUiState(
       city = "Paris",
-      emoji = "⛅",
+      emoji = WelcomeEmojis.partlyCloudy(),
       region = "France",
       tagBackground = CategoryTagPalette.Orange,
       tagLabel = "Trip",
@@ -42,7 +43,7 @@ internal object PlacesSamples {
     ),
     PlaceCardUiState(
       city = "Tokyo",
-      emoji = "🌤️",
+      emoji = WelcomeEmojis.mostlySunny(),
       region = "Japan",
       tagBackground = CategoryTagPalette.Violet,
       tagLabel = "Family",

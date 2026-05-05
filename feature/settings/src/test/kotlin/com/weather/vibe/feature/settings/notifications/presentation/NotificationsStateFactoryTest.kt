@@ -10,7 +10,6 @@ import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
-import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 
 internal class NotificationsStateFactoryTest {
@@ -24,27 +23,19 @@ internal class NotificationsStateFactoryTest {
   }
 
   @Test
-  fun `when initial state built, then alerts disabled`() {
+  fun `given weather alerts enabled settings, when state created, then weather alerts enabled`() {
 
-    val result = factory.initial()
+    val result = factory.create(settings = userSettings(weatherAlertsEnabled = true))
 
-    expectThat(result.alertsEnabled).isFalse()
+    expectThat(result.weatherAlertsEnabled).isTrue()
   }
 
   @Test
-  fun `when initial state built, then morning brief disabled`() {
+  fun `given pollen alerts enabled settings, when state created, then pollen alerts enabled`() {
 
-    val result = factory.initial()
+    val result = factory.create(settings = userSettings(pollenAlertsEnabled = true))
 
-    expectThat(result.morningBriefEnabled).isFalse()
-  }
-
-  @Test
-  fun `given alerts enabled settings, when state created, then alerts enabled`() {
-
-    val result = factory.create(settings = userSettings(alertsEnabled = true))
-
-    expectThat(result.alertsEnabled).isTrue()
+    expectThat(result.pollenAlertsEnabled).isTrue()
   }
 
   @Test
@@ -53,6 +44,14 @@ internal class NotificationsStateFactoryTest {
     val result = factory.create(settings = userSettings(morningBriefEnabled = true))
 
     expectThat(result.morningBriefEnabled).isTrue()
+  }
+
+  @Test
+  fun `given mood reminder enabled settings, when state created, then mood reminder enabled`() {
+
+    val result = factory.create(settings = userSettings(moodReminderEnabled = true))
+
+    expectThat(result.moodReminderEnabled).isTrue()
   }
 
   @Test

@@ -1,12 +1,17 @@
 package com.weather.vibe.feature.onboarding.presentation.welcome
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.domain.settings.usecase.EnableDefaultNotifications
 import com.weather.vibe.domain.settings.usecase.MarkWelcomeOnboardingSeen
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.NextClick
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.NotificationsPermissionResult
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.SkipClick
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.SkipNotificationsClick
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeAction.SlideChange
 import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.NavigateToLocationOnboarding
+import com.weather.vibe.feature.onboarding.presentation.welcome.WelcomeEvent.RequestNotificationsPermission
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlides.LAST_INDEX
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeUiState
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -23,6 +28,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class WelcomeViewModel(
+  private val enableDefaultNotifications: EnableDefaultNotifications,
   private val markWelcomeOnboardingSeen: MarkWelcomeOnboardingSeen,
   private val stateFactory: WelcomeStateFactory
 ) : ViewModel() {
@@ -33,14 +39,17 @@ internal class WelcomeViewModel(
   private val _event = Channel<WelcomeEvent>(capacity = BUFFERED)
   val event: Flow<WelcomeEvent> = _event.receiveAsFlow()
 
-  private val finishHandler = CoroutineExceptionHandler { _, _ ->
+  private val finishHandler = CoroutineExceptionHandler { _, throwable ->
+    Log.w(TAG, "Welcome onboarding completion failed; navigating anyway", throwable)
     send(NavigateToLocationOnboarding)
   }
 
   fun dispatch(action: WelcomeAction) {
     when (action) {
       is NextClick -> onNextClick()
+      is NotificationsPermissionResult -> onNotificationsPermissionResult(action)
       is SkipClick -> onSkipClick()
+      is SkipNotificationsClick -> onSkipNotificationsClick()
       is SlideChange -> onSlideChange(action)
     }
   }
@@ -53,7 +62,7 @@ internal class WelcomeViewModel(
   private fun onNextClick() {
     val current = _state.value.slideIndex
     when (current >= LAST_INDEX) {
-      true -> finish()
+      true -> requestPermissionOrFinish()
       false -> moveTo(current + 1)
     }
   }
@@ -62,12 +71,28 @@ internal class WelcomeViewModel(
     moveTo(LAST_INDEX)
   }
 
+  private fun onSkipNotificationsClick() {
+    finishOnboarding(enableDefaults = false)
+  }
+
+  private fun requestPermissionOrFinish() {
+    when (_state.value.canRequestNotificationsPermission) {
+      true -> send(RequestNotificationsPermission)
+      false -> finishOnboarding(enableDefaults = false)
+    }
+  }
+
+  private fun onNotificationsPermissionResult(action: NotificationsPermissionResult) {
+    finishOnboarding(enableDefaults = action.granted)
+  }
+
   private fun moveTo(slideIndex: Int) {
     _state.update { stateFactory.create(slideIndex) }
   }
 
-  private fun finish() {
+  private fun finishOnboarding(enableDefaults: Boolean) {
     viewModelScope.launch(finishHandler) {
+      if (enableDefaults) enableDefaultNotifications()
       markWelcomeOnboardingSeen()
       send(NavigateToLocationOnboarding)
     }
@@ -75,5 +100,9 @@ internal class WelcomeViewModel(
 
   private fun send(event: WelcomeEvent) {
     viewModelScope.launch { _event.send(event) }
+  }
+
+  private companion object {
+    const val TAG = "WelcomeViewModel"
   }
 }

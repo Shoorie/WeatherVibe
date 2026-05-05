@@ -50,6 +50,13 @@
           android:scheme="weathervibe" />
       </intent-filter>
     </activity>
+    <receiver
+      android:name="com.weather.vibe.scheduling.notification.MoodPickReceiver"
+      android:exported="false">
+      <intent-filter>
+        <action android:name="com.weather.vibe.notifications.MOOD_PICK" />
+      </intent-filter>
+    </receiver>
   </application>
 
   <uses-permission android:name="android.permission.INTERNET" />

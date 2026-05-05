@@ -4,8 +4,6 @@ import com.weather.vibe.domain.airquality.model.AqiLevel
 import com.weather.vibe.domain.airquality.model.PollenSpecies
 import com.weather.vibe.domain.weather.model.UvLevel
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.AIR_QUALITY_TITLE
-import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.CHANNEL_NAME
-import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.ERROR_BODY_PREFIX
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.HEAVY_RAIN_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POLLEN_TITLE
 import com.weather.vibe.notifications.fixture.AlertsResourcesFixtures.POOR_LEVEL_LABEL
@@ -21,8 +19,6 @@ import java.time.format.DateTimeFormatter
 internal fun fakeAlertsResources(): AlertsResources {
   val formatter = DateTimeFormatter.ofPattern("HH:mm")
   return mockk<AlertsResources>().apply {
-    every { channelName() } returns CHANNEL_NAME
-    every { channelDescription() } returns "$ERROR_BODY_PREFIX channel description"
     every { thunderstormTitle() } returns THUNDERSTORM_TITLE
     every { thunderstormBody(any()) } answers {
       "Storm at ${firstArg<java.time.LocalDateTime>().format(formatter)}"

@@ -38,9 +38,9 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.core.permissions.location.rememberLocationPermissionGranted
+import com.weather.vibe.core.permissions.location.rememberLocationPermissionRequester
 import com.weather.vibe.core.permissions.openAppDetailsSettings
-import com.weather.vibe.core.permissions.rememberLocationPermissionGranted
-import com.weather.vibe.core.permissions.rememberLocationPermissionRequester
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.onboarding.presentation.OnboardingEvent.NavigateToHome
 import com.weather.vibe.feature.onboarding.presentation.OnboardingEvent.NavigateToSearch

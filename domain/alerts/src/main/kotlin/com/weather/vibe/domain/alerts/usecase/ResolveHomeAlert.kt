@@ -11,15 +11,28 @@ class ResolveHomeAlert internal constructor(
 ) {
 
   operator fun invoke(
+    pollenAlertsEnabled: Boolean,
     readings: EnvironmentalReadings,
-    alertsEnabled: Boolean
-  ): WeatherAlert? {
+    weatherAlertsEnabled: Boolean
+  ): WeatherAlert? =
+    airQualityAlert(readings, weatherAlertsEnabled)
+      ?: pollenAlert(readings, pollenAlertsEnabled)
 
-    if (!alertsEnabled) return null
+  private fun airQualityAlert(
+    readings: EnvironmentalReadings,
+    weatherAlertsEnabled: Boolean
+  ): WeatherAlert? =
+    when (weatherAlertsEnabled) {
+      true -> readings.airQuality?.let(detectAqiAlert::invoke)
+      false -> null
+    }
 
-    val aqiAlert = readings.airQuality?.let(detectAqiAlert::invoke)
-    if (aqiAlert != null) return aqiAlert
-
-    return readings.pollen?.let(detectPollenAlert::invoke)
-  }
+  private fun pollenAlert(
+    readings: EnvironmentalReadings,
+    pollenAlertsEnabled: Boolean
+  ): WeatherAlert? =
+    when (pollenAlertsEnabled) {
+      true -> readings.pollen?.let(detectPollenAlert::invoke)
+      false -> null
+    }
 }

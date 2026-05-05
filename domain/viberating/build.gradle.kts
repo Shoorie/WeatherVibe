@@ -12,10 +12,13 @@ android {
 dependencies {
   implementation(projects.core.time)
   implementation(projects.domain.airquality)
+  implementation(projects.domain.location)
   implementation(projects.domain.weather)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)
 
-  testImplementation(projects.testing.viberatingFixtures)
+  testImplementation(projects.testing.locationFixtures)
   testImplementation(projects.testing.timeFixtures)
+  testImplementation(projects.testing.viberatingFixtures)
+  testImplementation(projects.testing.weatherFixtures)
 }

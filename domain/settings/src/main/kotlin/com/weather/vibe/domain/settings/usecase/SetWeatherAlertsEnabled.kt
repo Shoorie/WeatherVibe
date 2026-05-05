@@ -9,6 +9,6 @@ class SetWeatherAlertsEnabled internal constructor(
 ) {
 
   suspend operator fun invoke(enabled: Boolean) {
-    cache.update { it.withAlertsEnabled(enabled) }
+    cache.update { it.withWeatherAlertsEnabled(enabled) }
   }
 }

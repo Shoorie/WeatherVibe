@@ -27,7 +27,6 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
 
   fun initial(): ProfileUiState =
     ProfileUiState(
-      alertsEnabled = false,
       appearanceRow = null,
       editSheet = ProfileEditSheetUiState(
         isVisible = false,
@@ -38,11 +37,12 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
       locationsCount = INITIAL_LOCATIONS_COUNT,
       morningBriefEnabled = false,
       quickStats = createStats(
-        alertsEnabled = false,
         locationsCount = INITIAL_LOCATIONS_COUNT,
-        morningBriefEnabled = false
+        morningBriefEnabled = false,
+        weatherAlertsEnabled = false
       ),
-      vibeRow = createEmptyVibeRow()
+      vibeRow = createEmptyVibeRow(),
+      weatherAlertsEnabled = false
     )
 
   fun create(
@@ -53,13 +53,12 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     val settings = snapshot.settingsResult.getOrNull()
     val locationsCount = snapshot.favoritesCountResult.getOrDefault(state.locationsCount)
     val morningBriefEnabled = settings?.morningBriefEnabled ?: state.morningBriefEnabled
-    val alertsEnabled = settings?.alertsEnabled ?: state.alertsEnabled
+    val weatherAlertsEnabled = settings?.weatherAlertsEnabled ?: state.weatherAlertsEnabled
     val briefToneLabel = settings
       ?.let { resources.briefToneLabel(it.briefTone) }
       ?: state.header.briefToneLabel
 
     return state.copy(
-      alertsEnabled = alertsEnabled,
       appearanceRow = createAppearanceRow(snapshot.themeMode),
       header = createHeader(
         username = snapshot.profile.username,
@@ -68,11 +67,12 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
       locationsCount = locationsCount,
       morningBriefEnabled = morningBriefEnabled,
       quickStats = createStats(
-        alertsEnabled = alertsEnabled,
         locationsCount = locationsCount,
-        morningBriefEnabled = morningBriefEnabled
+        morningBriefEnabled = morningBriefEnabled,
+        weatherAlertsEnabled = weatherAlertsEnabled
       ),
-      vibeRow = createVibeRow(snapshot.vibeOverview)
+      vibeRow = createVibeRow(snapshot.vibeOverview),
+      weatherAlertsEnabled = weatherAlertsEnabled
     )
   }
 
@@ -127,9 +127,9 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
     }
 
   private fun createStats(
-    alertsEnabled: Boolean,
     locationsCount: Int,
-    morningBriefEnabled: Boolean
+    morningBriefEnabled: Boolean,
+    weatherAlertsEnabled: Boolean
   ): ImmutableList<ProfileStatUiState> =
     persistentListOf(
       ProfileStatUiState(
@@ -151,7 +151,7 @@ internal class ProfileStateFactory(private val resources: ProfileResources) {
         label = resources.alertsStatLabel(),
         onClickLabel = resources.alertsStatClickLabel(),
         type = ALERTS,
-        value = resources.statStatus(enabled = alertsEnabled)
+        value = resources.statStatus(enabled = weatherAlertsEnabled)
       )
     )
 

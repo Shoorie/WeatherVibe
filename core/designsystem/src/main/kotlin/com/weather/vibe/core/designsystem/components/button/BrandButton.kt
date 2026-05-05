@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.BrandContent
 import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.BrandContentPadding
-import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.BrandMinHeight
+import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.MinHeight
 import com.weather.vibe.core.designsystem.components.button.ButtonDefaults.brandButtonColors
 import com.weather.vibe.core.designsystem.theme.AppDimens.IconSize
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
@@ -46,7 +46,7 @@ fun BrandButton(
   Button(
     modifier = modifier
       .fillMaxWidth()
-      .defaultMinSize(minHeight = BrandMinHeight)
+      .defaultMinSize(minHeight = MinHeight)
       .semantics {
         if (!enabled && disabledStateDescription != null) {
           stateDescription = disabledStateDescription

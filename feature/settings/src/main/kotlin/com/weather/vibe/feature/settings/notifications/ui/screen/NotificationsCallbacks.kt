@@ -3,25 +3,31 @@ package com.weather.vibe.feature.settings.notifications.ui.screen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
-import com.weather.vibe.core.permissions.rememberNotificationToggleHandler
+import com.weather.vibe.core.permissions.notification.rememberNotificationToggleHandler
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction
-import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.AlertsToggle
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.BackClick
+import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.MoodReminderToggle
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.MorningBriefToggle
 import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.NotificationPermissionDenied
+import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.PollenAlertsToggle
+import com.weather.vibe.feature.settings.notifications.presentation.NotificationsAction.WeatherAlertsToggle
 
 @Immutable
 internal data class NotificationsCallbacks(
-  val onAlertsToggle: (Boolean) -> Unit,
   val onBackClick: () -> Unit,
-  val onMorningBriefToggle: (Boolean) -> Unit
+  val onMoodReminderToggle: (Boolean) -> Unit,
+  val onMorningBriefToggle: (Boolean) -> Unit,
+  val onPollenAlertsToggle: (Boolean) -> Unit,
+  val onWeatherAlertsToggle: (Boolean) -> Unit
 ) {
 
   companion object {
     val Noop: NotificationsCallbacks = NotificationsCallbacks(
-      onAlertsToggle = {},
       onBackClick = {},
-      onMorningBriefToggle = {}
+      onMoodReminderToggle = {},
+      onMorningBriefToggle = {},
+      onPollenAlertsToggle = {},
+      onWeatherAlertsToggle = {}
     )
   }
 }
@@ -32,12 +38,20 @@ internal fun rememberNotificationsCallbacks(
   notificationPermissionGranted: Boolean
 ): NotificationsCallbacks {
 
-  val onAlertsToggle = rememberNotificationToggleHandler(
+  val onWeatherAlertsToggle = rememberNotificationToggleHandler(
     permissionGranted = notificationPermissionGranted,
-    onEnable = { dispatch(AlertsToggle(enabled = true)) },
-    onDisable = { dispatch(AlertsToggle(enabled = false)) },
+    onEnable = { dispatch(WeatherAlertsToggle(enabled = true)) },
+    onDisable = { dispatch(WeatherAlertsToggle(enabled = false)) },
     onPermissionDenied = { dispatch(NotificationPermissionDenied) }
   )
+
+  val onPollenAlertsToggle = rememberNotificationToggleHandler(
+    permissionGranted = notificationPermissionGranted,
+    onEnable = { dispatch(PollenAlertsToggle(enabled = true)) },
+    onDisable = { dispatch(PollenAlertsToggle(enabled = false)) },
+    onPermissionDenied = { dispatch(NotificationPermissionDenied) }
+  )
+
   val onMorningBriefToggle = rememberNotificationToggleHandler(
     permissionGranted = notificationPermissionGranted,
     onEnable = { dispatch(MorningBriefToggle(enabled = true)) },
@@ -45,11 +59,26 @@ internal fun rememberNotificationsCallbacks(
     onPermissionDenied = { dispatch(NotificationPermissionDenied) }
   )
 
-  return remember(dispatch, onAlertsToggle, onMorningBriefToggle) {
+  val onMoodReminderToggle = rememberNotificationToggleHandler(
+    permissionGranted = notificationPermissionGranted,
+    onEnable = { dispatch(MoodReminderToggle(enabled = true)) },
+    onDisable = { dispatch(MoodReminderToggle(enabled = false)) },
+    onPermissionDenied = { dispatch(NotificationPermissionDenied) }
+  )
+
+  return remember(
+    dispatch,
+    onWeatherAlertsToggle,
+    onPollenAlertsToggle,
+    onMorningBriefToggle,
+    onMoodReminderToggle
+  ) {
     NotificationsCallbacks(
-      onAlertsToggle = onAlertsToggle,
       onBackClick = { dispatch(BackClick) },
-      onMorningBriefToggle = onMorningBriefToggle
+      onMoodReminderToggle = onMoodReminderToggle,
+      onMorningBriefToggle = onMorningBriefToggle,
+      onPollenAlertsToggle = onPollenAlertsToggle,
+      onWeatherAlertsToggle = onWeatherAlertsToggle
     )
   }
 }

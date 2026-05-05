@@ -2,6 +2,7 @@ package com.weather.vibe.scheduling
 
 import com.weather.vibe.domain.alerts.usecase.GetMorningBriefText
 import com.weather.vibe.notifications.notification.AlertNotification
+import com.weather.vibe.notifications.notification.NotificationChannelKind
 import com.weather.vibe.notifications.notification.AlertNotifier
 import com.weather.vibe.notifications.notification.brief.MorningBriefNotificationFactory
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.BRIEF_TEXT
@@ -69,7 +70,12 @@ class DeliverMorningBriefTest {
   private fun briefNotification(
     title: String = BRIEF_TITLE,
     body: String = BRIEF_TEXT
-  ): AlertNotification = AlertNotification(id = NOTIFICATION_ID, title = title, body = body)
+  ): AlertNotification = AlertNotification(
+    body = body,
+    id = NOTIFICATION_ID,
+    kind = NotificationChannelKind.MORNING_BRIEF,
+    title = title
+  )
 
   private companion object {
     const val BRIEF_TITLE = "Today's vibe"

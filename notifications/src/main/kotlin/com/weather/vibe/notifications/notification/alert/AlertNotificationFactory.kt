@@ -8,6 +8,8 @@ import com.weather.vibe.domain.alerts.model.WeatherAlert.PoorAirQuality
 import com.weather.vibe.domain.alerts.model.WeatherAlert.SharpTemperatureDrop
 import com.weather.vibe.domain.alerts.model.WeatherAlert.ThunderstormImminent
 import com.weather.vibe.notifications.notification.AlertNotification
+import com.weather.vibe.notifications.notification.NotificationChannelKind.POLLEN_ALERTS
+import com.weather.vibe.notifications.notification.NotificationChannelKind.WEATHER_ALERTS
 import com.weather.vibe.notifications.notification.NotificationIds.HEAVY_RAIN
 import com.weather.vibe.notifications.notification.NotificationIds.HIGH_POLLEN
 import com.weather.vibe.notifications.notification.NotificationIds.HIGH_UV_INDEX
@@ -35,52 +37,58 @@ class AlertNotificationFactory internal constructor(
 
   private fun thunderstormNotification(alert: ThunderstormImminent): AlertNotification =
     AlertNotification(
+      body = resources.thunderstormBody(alert.expectedAt),
       id = THUNDERSTORM,
-      title = resources.thunderstormTitle(),
-      body = resources.thunderstormBody(alert.expectedAt)
+      kind = WEATHER_ALERTS,
+      title = resources.thunderstormTitle()
     )
 
   private fun heavyRainNotification(alert: HeavyRainImminent): AlertNotification =
     AlertNotification(
-      id = HEAVY_RAIN,
-      title = resources.heavyRainTitle(),
       body = resources.heavyRainBody(
         expectedAt = alert.expectedAt,
         millimetres = alert.millimetres.roundToInt()
-      )
+      ),
+      id = HEAVY_RAIN,
+      kind = WEATHER_ALERTS,
+      title = resources.heavyRainTitle()
     )
 
   private fun temperatureDropNotification(alert: SharpTemperatureDrop): AlertNotification =
     AlertNotification(
-      id = TEMPERATURE_DROP,
-      title = resources.temperatureDropTitle(),
       body = resources.temperatureDropBody(
         expectedAt = alert.expectedAt,
         degrees = alert.degreesCelsius.roundToInt()
-      )
+      ),
+      id = TEMPERATURE_DROP,
+      kind = WEATHER_ALERTS,
+      title = resources.temperatureDropTitle()
     )
 
   private fun airQualityNotification(alert: PoorAirQuality): AlertNotification =
     AlertNotification(
-      id = POOR_AIR_QUALITY,
-      title = resources.airQualityTitle(),
       body = resources.airQualityBody(
         europeanAqi = alert.europeanAqi,
         levelLabel = resources.aqiLevelLabel(alert.level)
-      )
+      ),
+      id = POOR_AIR_QUALITY,
+      kind = WEATHER_ALERTS,
+      title = resources.airQualityTitle()
     )
 
   private fun pollenNotification(alert: HighPollen): AlertNotification =
     AlertNotification(
+      body = resources.pollenBody(alert.species),
       id = HIGH_POLLEN,
-      title = resources.pollenTitle(),
-      body = resources.pollenBody(alert.species)
+      kind = POLLEN_ALERTS,
+      title = resources.pollenTitle()
     )
 
   private fun uvNotification(alert: HighUvIndex): AlertNotification =
     AlertNotification(
+      body = resources.uvAlertBody(uvIndex = alert.uvIndex, level = alert.level),
       id = HIGH_UV_INDEX,
-      title = resources.uvAlertTitle(),
-      body = resources.uvAlertBody(uvIndex = alert.uvIndex, level = alert.level)
+      kind = WEATHER_ALERTS,
+      title = resources.uvAlertTitle()
     )
 }

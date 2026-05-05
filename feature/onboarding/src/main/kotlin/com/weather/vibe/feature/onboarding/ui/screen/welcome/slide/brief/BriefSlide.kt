@@ -5,11 +5,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.onboarding.preview.welcome.slide.BriefSamples
+import com.weather.vibe.feature.onboarding.ui.screen.welcome.SlideContentBottomInset
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.brief.BriefDefaults.ContentHorizontal
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.brief.BriefDefaults.ContentTopPadding
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.brief.BriefDefaults.HeaderToCardGap
@@ -24,8 +27,10 @@ internal fun BriefSlide(
   Box(modifier = modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .padding(horizontal = ContentHorizontal)
-        .padding(top = ContentTopPadding),
+        .padding(top = ContentTopPadding, bottom = SlideContentBottomInset),
       verticalArrangement = Arrangement.spacedBy(HeaderToCardGap)
     ) {
       BriefHeader()

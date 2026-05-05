@@ -7,12 +7,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.onboarding.preview.welcome.slide.PlacesSamples
+import com.weather.vibe.feature.onboarding.ui.screen.welcome.SlideContentBottomInset
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.places.PlacesDefaults.CARD_BASE_DELAY_MS
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.places.PlacesDefaults.CARD_SLIDE_RIGHT_DURATION_MS
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.places.PlacesDefaults.CARD_STAGGER_MS
@@ -32,7 +35,10 @@ internal fun PlacesSlide(
   Box(modifier = modifier.fillMaxSize()) {
     Column(
       modifier = Modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState())
         .padding(top = ContentTopPadding)
+        .padding(bottom = SlideContentBottomInset)
         .fillMaxWidth(),
       verticalArrangement = Arrangement.spacedBy(HeaderToListGap)
     ) {

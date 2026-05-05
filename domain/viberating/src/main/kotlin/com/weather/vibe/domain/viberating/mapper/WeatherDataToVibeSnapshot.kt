@@ -1,4 +1,4 @@
-package com.weather.vibe.feature.home.mapper
+package com.weather.vibe.domain.viberating.mapper
 
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 import com.weather.vibe.domain.weather.model.Condition
@@ -21,13 +21,13 @@ import com.weather.vibe.domain.weather.model.WeatherData
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class WeatherDataToVibeSnapshot {
+class WeatherDataToVibeSnapshot internal constructor() {
 
   fun map(weather: WeatherData): WeatherSnapshot =
     WeatherSnapshot(
       temperatureC = weather.currentTemperature,
       feelsLikeC = weather.apparentTemperature,
-      condition = mapCondition(weather.condition, weather.isDay),
+      condition = mapCondition(condition = weather.condition, isDay = weather.isDay),
       humidityPercent = weather.humidity,
       windKph = weather.windSpeed,
       pressureHpa = weather.surfacePressure.toInt(),

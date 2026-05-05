@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +18,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
+import com.weather.vibe.feature.onboarding.ui.screen.welcome.SlideContentBottomInset
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.talk.TalkDefaults.BODY_DELAY_MS
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.talk.TalkDefaults.BodyToCardGap
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.talk.TalkDefaults.CARD_DELAY_MS
@@ -48,8 +51,10 @@ internal fun TalkSlide(
 private fun TalkContent(isSettled: Boolean) {
   Column(
     modifier = Modifier
+      .fillMaxSize()
+      .verticalScroll(rememberScrollState())
       .padding(horizontal = ContentHorizontal)
-      .padding(top = ContentTopPadding),
+      .padding(top = ContentTopPadding, bottom = SlideContentBottomInset),
     verticalArrangement = Arrangement.spacedBy(HeadlineToBodyGap)
   ) {
     TalkHeadline()

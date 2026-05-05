@@ -8,6 +8,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.style.TextAlign
@@ -57,7 +59,8 @@ private fun HeadlineBrandLine() {
   Text(
     modifier = Modifier
       .staggeredFadeUp(delayMs = HEADLINE_DELAY_MS)
-      .fillMaxWidth(),
+      .fillMaxWidth()
+      .semantics { heading() },
     text = startHeadlineBrand(),
     style = typography.displaySmall
       .copy(fontWeight = Bold),

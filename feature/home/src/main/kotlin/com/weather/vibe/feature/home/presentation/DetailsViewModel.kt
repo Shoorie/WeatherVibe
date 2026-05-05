@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.UserSettings
+import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.feature.home.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error

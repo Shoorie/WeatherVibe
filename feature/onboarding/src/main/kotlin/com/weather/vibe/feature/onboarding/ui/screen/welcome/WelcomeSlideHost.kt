@@ -60,8 +60,9 @@ private fun RenderSlide(
     VIBE -> VibeSlide(isSettled = isSettled)
     PLACES -> PlacesSlide(places = state.places, isSettled = isSettled)
     READY -> ReadySlide(
+      cards = state.notificationCards,
       greetings = state.greetings,
-      promises = state.promises
+      isSettled = isSettled
     )
   }
 }

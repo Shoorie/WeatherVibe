@@ -100,7 +100,7 @@ class PersonalizationViewModelTest {
   }
 
   @Test
-  fun `when brief tone selected, then use case invoked`() = runTest {
+  fun `when brief tone selected, then brief tone saved`() = runTest {
 
     val viewModel = createViewModel()
 
@@ -111,7 +111,7 @@ class PersonalizationViewModelTest {
   }
 
   @Test
-  fun `when temperature toggled, then use case invoked`() = runTest {
+  fun `when temperature toggled, then temperature unit saved`() = runTest {
 
     val viewModel = createViewModel()
 

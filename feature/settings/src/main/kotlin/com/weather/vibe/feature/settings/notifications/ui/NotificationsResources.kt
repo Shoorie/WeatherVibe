@@ -13,9 +13,11 @@ internal class NotificationsResources(private val context: Context) {
     context.getString(R.string.notifications_error_default)
 
   object Emojis {
-    fun alerts(): String = "⚠️"
-    fun morningBrief(): String = "🌅"
     fun error(): String = "⚡"
+    fun moodReminder(): String = "🌙"
+    fun morningBrief(): String = "🌅"
+    fun pollenAlerts(): String = "🌿"
+    fun weatherAlerts(): String = "⚠️"
   }
 
   object Texts {
@@ -29,12 +31,20 @@ internal class NotificationsResources(private val context: Context) {
       stringResource(R.string.notifications_screen_subtitle)
 
     @Composable
-    fun alertsSection(): String =
-      stringResource(R.string.notifications_section_alerts)
+    fun weatherAlertsSection(): String =
+      stringResource(R.string.notifications_section_weather_alerts)
 
     @Composable
-    fun alertsSectionSubtitle(): String =
-      stringResource(R.string.notifications_section_alerts_subtitle)
+    fun weatherAlertsSectionSubtitle(): String =
+      stringResource(R.string.notifications_section_weather_alerts_subtitle)
+
+    @Composable
+    fun pollenAlertsSection(): String =
+      stringResource(R.string.notifications_section_pollen_alerts)
+
+    @Composable
+    fun pollenAlertsSectionSubtitle(): String =
+      stringResource(R.string.notifications_section_pollen_alerts_subtitle)
 
     @Composable
     fun morningBriefSection(): String =
@@ -43,6 +53,14 @@ internal class NotificationsResources(private val context: Context) {
     @Composable
     fun morningBriefSectionSubtitle(): String =
       stringResource(R.string.notifications_section_morning_brief_subtitle)
+
+    @Composable
+    fun moodReminderSection(): String =
+      stringResource(R.string.notifications_section_mood_reminder)
+
+    @Composable
+    fun moodReminderSectionSubtitle(): String =
+      stringResource(R.string.notifications_section_mood_reminder_subtitle)
 
     @Composable
     fun toggleOn(): String =

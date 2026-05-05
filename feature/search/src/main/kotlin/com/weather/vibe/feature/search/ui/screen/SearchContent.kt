@@ -5,7 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -23,10 +26,6 @@ import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
-import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
-import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
-import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
-import com.weather.vibe.feature.search.presentation.SearchAction.Retry
 import com.weather.vibe.feature.search.presentation.SearchMode
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Empty
@@ -68,16 +67,18 @@ internal fun SearchContent(
       )
     }
   ) {
+    val callbacks = remember(dispatch) { SearchCallbacks(dispatch) }
     Box(modifier = Modifier.fillMaxSize()) {
       Column(
         modifier = Modifier
-          .fillMaxSize()
+          .fillMaxWidth()
+          .verticalScroll(rememberScrollState())
           .padding(horizontal = Padding.Medium),
         verticalArrangement = Arrangement.spacedBy(Padding.Medium)
       ) {
         SearchField(
           query = state.query,
-          onQueryChange = { dispatch(QueryChange(it)) }
+          onQueryChange = callbacks.onQueryChange
         )
         if (mode == SearchMode.Favorites) {
           CapacityBanner(used = favoritesCount)
@@ -85,9 +86,9 @@ internal fun SearchContent(
         SearchStateContent(
           state = state,
           showHeart = mode == SearchMode.Favorites,
-          onLocationClick = { dispatch(LocationSelect(it)) },
-          onHeartClick = { dispatch(HeartClick(it)) },
-          onRetryClick = { dispatch(Retry) }
+          onLocationClick = callbacks.onLocationSelect,
+          onHeartClick = callbacks.onHeartClick,
+          onRetryClick = callbacks.onRetry
         )
       }
       SnackbarHost(

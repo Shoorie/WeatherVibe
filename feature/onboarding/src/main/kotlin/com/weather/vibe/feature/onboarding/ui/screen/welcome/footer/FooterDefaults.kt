@@ -8,11 +8,13 @@ internal object FooterDefaults {
   val FooterTopPadding = 20.dp
   val FooterBottomPadding = 28.dp
   val DotsToButton = 16.dp
+  val PrimaryToSecondaryGap = 4.dp
   val DotInactiveSize = 6.dp
   val DotActiveWidth = 22.dp
   val DotsGap = 6.dp
   val PrimaryButtonHeight = 56.dp
   val SkipMinTouchSize = 48.dp
+  val SecondaryCtaMinTouchSize = 48.dp
 
   const val INACTIVE_DOT_ALPHA = 0.28f
   const val FADE_MID_STOP = 0.5f

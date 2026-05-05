@@ -3,16 +3,20 @@ package com.weather.vibe.scheduling
 import com.weather.vibe.domain.settings.model.UserSettings
 
 internal data class NotificationPreferences(
-  val alertsEnabled: Boolean,
-  val morningBriefEnabled: Boolean
+  val moodReminderEnabled: Boolean,
+  val morningBriefEnabled: Boolean,
+  val pollenAlertsEnabled: Boolean,
+  val weatherAlertsEnabled: Boolean
 ) {
 
   companion object {
 
     fun from(settings: UserSettings): NotificationPreferences =
       NotificationPreferences(
-        alertsEnabled = settings.alertsEnabled,
-        morningBriefEnabled = settings.morningBriefEnabled
+        moodReminderEnabled = settings.moodReminderEnabled,
+        morningBriefEnabled = settings.morningBriefEnabled,
+        pollenAlertsEnabled = settings.pollenAlertsEnabled,
+        weatherAlertsEnabled = settings.weatherAlertsEnabled
       )
   }
 }

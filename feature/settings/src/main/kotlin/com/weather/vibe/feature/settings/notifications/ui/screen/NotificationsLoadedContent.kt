@@ -12,10 +12,14 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.settings.notifications.presentation.state.NotificationsUiState.Loaded
-import com.weather.vibe.feature.settings.notifications.ui.NotificationsKeys.KEY_ALERTS
+import com.weather.vibe.feature.settings.notifications.ui.NotificationsKeys.KEY_MOOD_REMINDER
 import com.weather.vibe.feature.settings.notifications.ui.NotificationsKeys.KEY_MORNING_BRIEF
-import com.weather.vibe.feature.settings.notifications.ui.component.alerts.AlertsSection
+import com.weather.vibe.feature.settings.notifications.ui.NotificationsKeys.KEY_POLLEN_ALERTS
+import com.weather.vibe.feature.settings.notifications.ui.NotificationsKeys.KEY_WEATHER_ALERTS
+import com.weather.vibe.feature.settings.notifications.ui.component.moodreminder.MoodReminderSection
 import com.weather.vibe.feature.settings.notifications.ui.component.morningbrief.MorningBriefSection
+import com.weather.vibe.feature.settings.notifications.ui.component.pollenalerts.PollenAlertsSection
+import com.weather.vibe.feature.settings.notifications.ui.component.weatheralerts.WeatherAlertsSection
 
 @Composable
 internal fun NotificationsLoadedContent(
@@ -45,10 +49,22 @@ internal fun NotificationsLoadedContent(
         onToggle = callbacks.onMorningBriefToggle
       )
     }
-    item(key = KEY_ALERTS) {
-      AlertsSection(
-        enabled = state.alertsEnabled && notificationPermissionGranted,
-        onToggle = callbacks.onAlertsToggle
+    item(key = KEY_WEATHER_ALERTS) {
+      WeatherAlertsSection(
+        enabled = state.weatherAlertsEnabled && notificationPermissionGranted,
+        onToggle = callbacks.onWeatherAlertsToggle
+      )
+    }
+    item(key = KEY_POLLEN_ALERTS) {
+      PollenAlertsSection(
+        enabled = state.pollenAlertsEnabled && notificationPermissionGranted,
+        onToggle = callbacks.onPollenAlertsToggle
+      )
+    }
+    item(key = KEY_MOOD_REMINDER) {
+      MoodReminderSection(
+        enabled = state.moodReminderEnabled && notificationPermissionGranted,
+        onToggle = callbacks.onMoodReminderToggle
       )
     }
   }
@@ -60,8 +76,10 @@ private fun Preview() {
   WeatherVibeTheme {
     NotificationsLoadedContent(
       state = Loaded(
-        alertsEnabled = true,
-        morningBriefEnabled = true
+        moodReminderEnabled = false,
+        morningBriefEnabled = true,
+        pollenAlertsEnabled = false,
+        weatherAlertsEnabled = true
       ),
       callbacks = NotificationsCallbacks.Noop,
       notificationPermissionGranted = true

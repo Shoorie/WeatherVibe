@@ -1,10 +1,12 @@
 package com.weather.vibe.feature.onboarding.presentation.welcome
 
 import com.weather.vibe.core.designsystem.theme.category.CategoryTagPalette
+import com.weather.vibe.core.permissions.notification.NotificationPermissionSupport
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeSlides
 import com.weather.vibe.feature.onboarding.presentation.welcome.state.WelcomeUiState
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.brief.BriefToneUiState
 import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.places.PlaceCardUiState
+import com.weather.vibe.feature.onboarding.ui.screen.welcome.slide.ready.ReadyNotificationCardUiState
 import com.weather.vibe.feature.onboarding.ui.welcome.WelcomeEmojis
 import com.weather.vibe.feature.onboarding.ui.welcome.WelcomeResources
 import kotlinx.collections.immutable.ImmutableList
@@ -12,26 +14,44 @@ import kotlinx.collections.immutable.persistentListOf
 import org.koin.core.annotation.Factory
 
 @Factory
-internal class WelcomeStateFactory(private val resources: WelcomeResources) {
+internal class WelcomeStateFactory(
+  private val notificationPermissionSupport: NotificationPermissionSupport,
+  private val resources: WelcomeResources
+) {
 
   fun create(slideIndex: Int): WelcomeUiState {
-
     val slide = WelcomeSlides.ALL[slideIndex]
     val isFinal = WelcomeSlides.isLast(slideIndex)
-
+    val canRequestPermission = notificationPermissionSupport.isSupported()
+    val skipNotificationsLabel = when {
+      isFinal && canRequestPermission -> resources.skipNotificationsLabel()
+      else -> null
+    }
     return WelcomeUiState(
       briefTones = briefTones(),
-      ctaLabel = resources.ctaFor(isFinal = isFinal),
+      canRequestNotificationsPermission = canRequestPermission,
       greetings = greetings(),
       isFinalSlide = isFinal,
+      notificationCards = notificationCards(),
       places = places(),
-      promises = promises(),
+      primaryActionLabel = primaryActionLabel(
+        canRequestPermission = canRequestPermission,
+        isFinal = isFinal
+      ),
+      skipNotificationsLabel = skipNotificationsLabel,
       skipVisible = !isFinal,
       slide = slide,
       slideIndex = slideIndex,
       totalSlides = WelcomeSlides.ALL.size
     )
   }
+
+  private fun primaryActionLabel(isFinal: Boolean, canRequestPermission: Boolean): String =
+    when {
+      !isFinal -> resources.nextLabel()
+      canRequestPermission -> resources.enableNotificationsAndFinishLabel()
+      else -> resources.finishLabel()
+    }
 
   private fun briefTones(): ImmutableList<BriefToneUiState> = persistentListOf(
     BriefToneUiState(
@@ -103,10 +123,24 @@ internal class WelcomeStateFactory(private val resources: WelcomeResources) {
       resources.helloItalian()
     )
 
-  private fun promises(): ImmutableList<String> =
-    persistentListOf(
-      resources.promiseBrief(),
-      resources.promisePlaces(),
-      resources.promiseMood()
+  private fun notificationCards(): ImmutableList<ReadyNotificationCardUiState> = persistentListOf(
+    ReadyNotificationCardUiState(
+      body = resources.notificationCardBriefBody(),
+      emoji = WelcomeEmojis.morningBrief(),
+      showBell = true,
+      title = resources.notificationCardBriefTitle()
+    ),
+    ReadyNotificationCardUiState(
+      body = resources.notificationCardAlertBody(),
+      emoji = WelcomeEmojis.storm(),
+      showBell = false,
+      title = resources.notificationCardAlertTitle()
+    ),
+    ReadyNotificationCardUiState(
+      body = resources.notificationCardMoodBody(),
+      emoji = WelcomeEmojis.moodReminder(),
+      showBell = false,
+      title = resources.notificationCardMoodTitle()
     )
+  )
 }

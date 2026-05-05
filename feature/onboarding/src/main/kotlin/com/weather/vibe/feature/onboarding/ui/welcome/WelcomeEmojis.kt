@@ -5,4 +5,7 @@ internal object WelcomeEmojis {
   fun partlyCloudy(): String = "⛅"
   fun sunny(): String = "☀️"
   fun mostlySunny(): String = "🌤️"
+  fun storm(): String = "⛈️"
+  fun morningBrief(): String = "🌅"
+  fun moodReminder(): String = "🌙"
 }

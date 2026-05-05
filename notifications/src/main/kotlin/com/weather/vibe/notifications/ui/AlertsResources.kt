@@ -27,12 +27,6 @@ internal class AlertsResources(
   private val timeFormatter: AlertsTimeFormatter
 ) {
 
-  fun channelName(): String =
-    context.getString(R.string.alerts_channel_name)
-
-  fun channelDescription(): String =
-    context.getString(R.string.alerts_channel_description)
-
   fun thunderstormTitle(): String =
     context.getString(R.string.alerts_thunderstorm_title)
 

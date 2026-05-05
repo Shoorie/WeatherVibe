@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="alerts_channel_name">Weather alerts</string>
-  <string name="alerts_channel_description">Proactive heads-up when the weather is about to turn.</string>
+  <string name="alerts_channel_weather_alerts_name">Weather alerts</string>
+  <string name="alerts_channel_weather_alerts_description">Proactive heads-up when the weather is about to turn.</string>
+  <string name="alerts_channel_pollen_alerts_name">Pollen alerts</string>
+  <string name="alerts_channel_pollen_alerts_description">Notifies when grass, tree or weed pollen runs high.</string>
+  <string name="alerts_channel_morning_brief_name">Morning brief</string>
+  <string name="alerts_channel_morning_brief_description">Daily 7:30 notification with today\'s weather vibe.</string>
+  <string name="alerts_channel_mood_reminder_name">Mood reminder</string>
+  <string name="alerts_channel_mood_reminder_description">Evening nudge to log your mood for the day.</string>
+  <string name="alerts_mood_reminder_title_anon">How was %2$s?</string>
+  <string name="alerts_mood_reminder_title_named">%1$s, how was your %3$s?</string>
+  <string name="alerts_mood_reminder_verb_masculine">went by</string>
+  <string name="alerts_mood_reminder_verb_feminine">went by</string>
+  <string name="alerts_mood_reminder_body">Tap an emoji to log how the day felt.</string>
+  <string name="alerts_mood_reminder_logged_title">Mood logged</string>
+  <string name="alerts_mood_reminder_logged_body">Thanks for sharing — see you tomorrow.</string>
+  <string name="alerts_mood_rating_1_a11y">Rough day</string>
+  <string name="alerts_mood_rating_2_a11y">Dreary day</string>
+  <string name="alerts_mood_rating_3_a11y">Okay day</string>
+  <string name="alerts_mood_rating_4_a11y">Pleasant day</string>
+  <string name="alerts_mood_rating_5_a11y">Radiant day</string>
   <string name="alerts_thunderstorm_title">Thunderstorm incoming</string>
   <string name="alerts_thunderstorm_body">Storm rolling in around %1$s — stay dry, charge your phone.</string>
   <string name="alerts_heavy_rain_title">Heavy rain ahead</string>

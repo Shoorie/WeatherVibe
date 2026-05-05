@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="mood_notification_padding">16dp</dimen>
+  <dimen name="mood_notification_collapsed_vertical_padding">10dp</dimen>
+  <dimen name="mood_notification_title_to_body_gap">2dp</dimen>
+  <dimen name="mood_notification_body_to_buttons_gap">14dp</dimen>
+  <dimen name="mood_notification_collapsed_buttons_gap">8dp</dimen>
+  <dimen name="mood_notification_title_text_size">15sp</dimen>
+  <dimen name="mood_notification_body_text_size">13sp</dimen>
+  <dimen name="mood_emoji_button_text_size">30sp</dimen>
+  <dimen name="mood_emoji_button_compact_text_size">24sp</dimen>
+  <dimen name="mood_emoji_button_padding">8dp</dimen>
+  <dimen name="mood_emoji_button_compact_padding">4dp</dimen>
+  <dimen name="mood_emoji_button_min_touch_size">48dp</dimen>
+</resources>

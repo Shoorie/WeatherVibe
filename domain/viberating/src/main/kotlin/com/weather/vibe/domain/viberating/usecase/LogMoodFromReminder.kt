@@ -17,6 +17,7 @@ class LogMoodFromReminder internal constructor(
 
     val coerced = rating.coerceIn(RATING_MIN, RATING_MAX)
     val now = timeProvider.now()
+
     val entry = RatingEntry(
       createdAtEpochMs = timeProvider.nowEpochMillis(),
       date = now.toLocalDate(),

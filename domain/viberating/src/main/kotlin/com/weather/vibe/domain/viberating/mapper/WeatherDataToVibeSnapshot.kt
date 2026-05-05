@@ -21,7 +21,7 @@ import com.weather.vibe.domain.weather.model.WeatherData
 import org.koin.core.annotation.Factory
 
 @Factory
-class WeatherDataToVibeSnapshot internal constructor() {
+class WeatherDataToVibeSnapshot {
 
   fun map(weather: WeatherData): WeatherSnapshot =
     WeatherSnapshot(

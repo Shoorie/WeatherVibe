@@ -10,6 +10,8 @@ android {
 }
 
 dependencies {
+
+  implementation(projects.core.permissions)
   implementation(projects.core.navigation)
   implementation(projects.domain.airquality)
   implementation(projects.domain.alerts)

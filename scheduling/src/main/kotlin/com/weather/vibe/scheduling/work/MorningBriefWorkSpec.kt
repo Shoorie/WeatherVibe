@@ -14,7 +14,7 @@ internal object MorningBriefWorkSpec {
   fun create(timeProvider: TimeProvider): OneTimeWorkSpec =
     OneTimeWorkSpec(
       backoff = BACKOFF,
-      nextDelay = { delayUntilNext(target = BRIEF_TIME, timeProvider = timeProvider) },
+      nextDelay = { delayUntilNext(BRIEF_TIME, timeProvider) },
       workerClass = MorningBriefWorker::class.java,
       workerName = WORKER_NAME
     )

@@ -10,14 +10,23 @@ internal class DailyWorkRescheduler(
 ) {
 
   fun rescheduleMorningBrief() {
-    scheduler.schedule(MorningBriefWorkSpec.create(timeProvider = timeProvider))
+    scheduler.schedule(
+      MorningBriefWorkSpec
+        .create(timeProvider = timeProvider)
+    )
   }
 
   fun rescheduleMoodReminder() {
-    scheduler.schedule(MoodReminderWorkSpec.create(timeProvider = timeProvider))
+    scheduler.schedule(
+      MoodReminderWorkSpec
+        .create(timeProvider = timeProvider)
+    )
   }
 
   fun reschedulePollenAlerts() {
-    scheduler.schedule(PollenAlertsWorkSpec.create(timeProvider = timeProvider))
+    scheduler.schedule(
+      PollenAlertsWorkSpec
+        .create(timeProvider = timeProvider)
+    )
   }
 }

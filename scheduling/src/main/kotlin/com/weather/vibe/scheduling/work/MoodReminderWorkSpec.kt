@@ -14,7 +14,7 @@ internal object MoodReminderWorkSpec {
   fun create(timeProvider: TimeProvider): OneTimeWorkSpec =
     OneTimeWorkSpec(
       backoff = BACKOFF,
-      nextDelay = { delayUntilNext(target = REMINDER_TIME, timeProvider = timeProvider) },
+      nextDelay = { delayUntilNext(REMINDER_TIME, timeProvider) },
       workerClass = MoodReminderWorker::class.java,
       workerName = WORKER_NAME
     )

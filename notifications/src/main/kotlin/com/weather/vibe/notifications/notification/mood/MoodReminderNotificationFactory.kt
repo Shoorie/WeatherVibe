@@ -66,11 +66,14 @@ class MoodReminderNotificationFactory internal constructor(
     title: String,
     includeBody: Boolean
   ): RemoteViews {
+
     val views = RemoteViews(context.packageName, layoutRes)
     views.setTextViewText(R.id.mood_title, title)
+
     if (includeBody) {
       views.setTextViewText(R.id.mood_body, resources.body())
     }
+
     EMOJI_BUTTON_IDS.forEachIndexed { index, viewId ->
       val rating = index + RATING_MIN
       views.setTextViewText(viewId, resources.emojiForRating(rating))

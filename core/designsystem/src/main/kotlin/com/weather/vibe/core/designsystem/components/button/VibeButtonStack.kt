@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.button.VibeButtonStackDefaults.PrimaryToSecondaryGap
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
@@ -27,7 +28,7 @@ fun VibeButtonStack(
   Column(
     modifier = modifier.fillMaxWidth(),
     horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(VibeButtonStackDefaults.PrimaryToSecondaryGap)
+    verticalArrangement = Arrangement.spacedBy(PrimaryToSecondaryGap)
   ) {
     VibePrimaryButton(
       text = primaryLabel,
@@ -36,7 +37,8 @@ fun VibeButtonStack(
     )
     if (secondaryLabel != null) {
       TextButton(
-        modifier = Modifier.minimumInteractiveComponentSize(),
+        modifier = Modifier
+          .minimumInteractiveComponentSize(),
         onClick = onSecondaryClick
       ) {
         Text(
@@ -47,10 +49,6 @@ fun VibeButtonStack(
       }
     }
   }
-}
-
-internal object VibeButtonStackDefaults {
-  val PrimaryToSecondaryGap = 4.dp
 }
 
 @PreviewLightDark

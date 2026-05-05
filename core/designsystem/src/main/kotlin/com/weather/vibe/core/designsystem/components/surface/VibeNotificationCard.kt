@@ -16,20 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontWeight.Companion.SemiBold
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.BODY_ALPHA
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.CardCornerRadius
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.CardPadding
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.EmojiSize
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.EmojiToTextGap
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.TitleToBodyGap
+import com.weather.vibe.core.designsystem.components.surface.VibeCardDefaults.WEIGHT_TEXT
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-
-private val CardCornerRadius = 20.dp
-private val CardPadding = 16.dp
-private val EmojiSize = 28.dp
-private val EmojiToTextGap = 14.dp
-private val TitleToBodyGap = 4.dp
-private const val BODY_ALPHA = 0.78f
-private const val WEIGHT_TEXT = 1f
 
 @Composable
 fun VibeNotificationCard(
@@ -39,14 +37,13 @@ fun VibeNotificationCard(
   body: String,
   trailing: (@Composable () -> Unit)? = null
 ) {
-  val cardA11y = "$title. $body"
   Row(
     modifier = modifier
       .fillMaxWidth()
       .clip(RoundedCornerShape(CardCornerRadius))
       .background(colors.popupSurface)
       .padding(CardPadding)
-      .semantics(mergeDescendants = true) { contentDescription = cardA11y },
+      .semantics(mergeDescendants = true) { contentDescription = "$title. $body" },
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.spacedBy(EmojiToTextGap)
   ) {
@@ -61,7 +58,7 @@ fun VibeNotificationCard(
     ) {
       Text(
         text = title,
-        style = typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+        style = typography.titleSmall.copy(fontWeight = SemiBold),
         color = colors.onSurface
       )
       Text(

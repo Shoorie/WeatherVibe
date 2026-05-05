@@ -41,7 +41,7 @@ class WelcomeViewModelTest {
   private val notificationPermissionSupport = mockk<NotificationPermissionSupport>()
   private val resources = mockk<WelcomeResources>(relaxed = true)
   private val stateFactory = WelcomeStateFactory(
-    notificationPermissionSupport = notificationPermissionSupport,
+    notificationPermission = notificationPermissionSupport,
     resources = resources
   )
 

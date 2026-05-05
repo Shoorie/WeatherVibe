@@ -29,7 +29,7 @@ class GatherPollenAlertsTest {
   private val detectPollenAlert = mockk<DetectPollenAlert>()
   private val getPollen = mockk<GetPollen>()
   private val observeCurrentLocation = mockk<ObserveCurrentLocation>()
-  private val gather = GatherPollenAlerts(
+  private val gatherPollenAlerts = GatherPollenAlerts(
     alertDeduplicator = deduplicator,
     detectPollenAlert = detectPollenAlert,
     getPollen = getPollen,
@@ -51,7 +51,7 @@ class GatherPollenAlertsTest {
   @Test
   fun `when high pollen detected, then pollen alert returned`() = runTest {
 
-    val alerts = gather()
+    val alerts = gatherPollenAlerts()
 
     expectThat(alerts).contains(HIGH_POLLEN)
   }
@@ -62,7 +62,7 @@ class GatherPollenAlertsTest {
     coEvery { getPollen(WARSAW.toCoordinates()) } returns success(CALM)
     every { detectPollenAlert(CALM) } returns null
 
-    val alerts = gather()
+    val alerts = gatherPollenAlerts()
 
     expectThat(alerts).isEmpty()
   }
@@ -73,7 +73,7 @@ class GatherPollenAlertsTest {
     coEvery { getPollen(WARSAW.toCoordinates()) } returns
       failure(IllegalStateException("offline"))
 
-    val alerts = gather()
+    val alerts = gatherPollenAlerts()
 
     expectThat(alerts).isEmpty()
   }
@@ -83,7 +83,7 @@ class GatherPollenAlertsTest {
 
     every { observeCurrentLocation() } returns flowOf(null)
 
-    val alerts = gather()
+    val alerts = gatherPollenAlerts()
 
     expectThat(alerts).isEmpty()
   }
@@ -91,9 +91,9 @@ class GatherPollenAlertsTest {
   @Test
   fun `given alert already notified, when gathered again, then empty list returned`() = runTest {
 
-    gather()
+    gatherPollenAlerts()
 
-    val secondCall = gather()
+    val secondCall = gatherPollenAlerts()
 
     expectThat(secondCall).isEmpty()
   }

@@ -104,14 +104,12 @@ internal fun NotificationsContent(
   ) {
     when (state) {
       is Loading -> NotificationsLoadingContent(modifier = Modifier.fillMaxSize())
-
       is Loaded -> NotificationsLoadedContent(
         modifier = Modifier.fillMaxSize(),
         state = state,
         callbacks = callbacks,
         notificationPermissionGranted = notificationPermissionGranted
       )
-
       is Error -> ErrorContent(
         modifier = Modifier.fillMaxSize(),
         emoji = Emojis.error(),

@@ -37,6 +37,7 @@ internal class NotificationScheduler(
   }
 
   private fun schedulePeriodic(spec: PeriodicWorkSpec) {
+
     val builder = PeriodicWorkRequest.Builder(
       spec.workerClass,
       spec.repeatInterval.toMillis(),

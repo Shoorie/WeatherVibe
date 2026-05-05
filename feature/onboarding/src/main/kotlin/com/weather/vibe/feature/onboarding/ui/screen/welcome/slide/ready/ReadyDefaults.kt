@@ -7,15 +7,7 @@ internal object ReadyDefaults {
   val HeadlineHorizontal = 28.dp
   val NotificationsHorizontalPadding = 24.dp
   val NotificationCardGap = 12.dp
-  val NotificationCardCornerRadius = 20.dp
-  val NotificationCardPadding = 16.dp
-  val NotificationCardEmojiSize = 28.dp
-  val NotificationCardTitleToBodyGap = 4.dp
-  val NotificationCardEmojiToTextGap = 14.dp
   val NotificationsBellSize = 18.dp
-  const val HELLO_TOP_FRACTION = 0.16f
-  const val HEADLINE_TOP_FRACTION = 0.26f
-  const val NOTIFICATIONS_TOP_FRACTION = 0.46f
   val HeadlineLeadToBrandGap = 4.dp
   val HeadlineToBodyGap = 14.dp
   const val HELLO_ROTATION_MS = 1800L

@@ -11,17 +11,19 @@ internal data class ReadyOrientationSpacing(
 
   companion object {
 
-    val Portrait: ReadyOrientationSpacing = ReadyOrientationSpacing(
-      headlineToCards = 80.dp,
-      helloToHeadline = 64.dp,
-      topInset = 110.dp
-    )
+    val Portrait: ReadyOrientationSpacing =
+      ReadyOrientationSpacing(
+        headlineToCards = 80.dp,
+        helloToHeadline = 64.dp,
+        topInset = 110.dp
+      )
 
-    val Landscape: ReadyOrientationSpacing = ReadyOrientationSpacing(
-      headlineToCards = 24.dp,
-      helloToHeadline = 16.dp,
-      topInset = 32.dp
-    )
+    val Landscape: ReadyOrientationSpacing =
+      ReadyOrientationSpacing(
+        headlineToCards = 24.dp,
+        helloToHeadline = 16.dp,
+        topInset = 32.dp
+      )
 
     fun forOrientation(isLandscape: Boolean): ReadyOrientationSpacing =
       if (isLandscape) Landscape else Portrait

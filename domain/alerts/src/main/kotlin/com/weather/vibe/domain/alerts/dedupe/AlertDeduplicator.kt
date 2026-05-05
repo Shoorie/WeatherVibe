@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.ConcurrentHashMap
 
 @Single
-class AlertDeduplicator internal constructor() {
+class AlertDeduplicator {
 
   private val lastNotified: MutableMap<String, LocalDateTime> = ConcurrentHashMap()
 

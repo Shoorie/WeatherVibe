@@ -29,8 +29,9 @@ internal class NotificationChannelRegistrar(
       description = context.getString(kind.descriptionRes)
     }
 
-  private fun importanceFor(kind: NotificationChannelKind): Int = when (kind) {
-    MORNING_BRIEF -> IMPORTANCE_DEFAULT
-    else -> IMPORTANCE_HIGH
-  }
+  private fun importanceFor(kind: NotificationChannelKind): Int =
+    when (kind) {
+      MORNING_BRIEF -> IMPORTANCE_DEFAULT
+      else -> IMPORTANCE_HIGH
+    }
 }

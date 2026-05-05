@@ -17,6 +17,6 @@ fun rememberNotificationPermissionGranted(): State<Boolean> {
   return rememberOnResumeValue { context.isNotificationPermissionGranted() }
 }
 
-internal fun Context.isNotificationPermissionGranted(): Boolean =
+fun Context.isNotificationPermissionGranted(): Boolean =
   SDK_INT < TIRAMISU ||
     ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) == PERMISSION_GRANTED

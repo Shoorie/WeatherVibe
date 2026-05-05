@@ -5,8 +5,8 @@ import com.weather.vibe.notifications.R
 
 enum class NotificationChannelKind(
   val channelId: String,
-  @StringRes val nameRes: Int,
-  @StringRes val descriptionRes: Int
+  @get:StringRes val nameRes: Int,
+  @get:StringRes val descriptionRes: Int
 ) {
   WEATHER_ALERTS(
     channelId = "weather_vibe_alerts",

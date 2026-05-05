@@ -4,6 +4,7 @@ import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
+import com.weather.vibe.domain.viberating.model.WeatherSnapshot.Companion.Unknown
 import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.usecase.GetWeather
@@ -18,8 +19,8 @@ class CaptureWeatherSnapshot internal constructor(
 ) {
 
   suspend operator fun invoke(): WeatherSnapshot {
-    val coordinates = currentCoordinates() ?: return WeatherSnapshot.Unknown
-    val weather = currentWeather(coordinates) ?: return WeatherSnapshot.Unknown
+    val coordinates = currentCoordinates() ?: return Unknown
+    val weather = currentWeather(coordinates) ?: return Unknown
     return weatherDataToVibeSnapshot.map(weather)
   }
 

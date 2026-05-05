@@ -4,11 +4,11 @@ import com.weather.vibe.domain.settings.cache.SettingsCache
 import org.koin.core.annotation.Factory
 
 @Factory
-class SetWeatherAlertsEnabled internal constructor(
+class SetMoodReminderEnabled internal constructor(
   private val cache: SettingsCache
 ) {
 
   suspend operator fun invoke(enabled: Boolean) {
-    cache.update { it.withWeatherAlertsEnabled(enabled) }
+    cache.update { it.withMoodReminderEnabled(enabled) }
   }
 }

@@ -5,14 +5,14 @@ import kotlinx.coroutines.flow.first
 import org.koin.core.annotation.Factory
 
 @Factory
-class AreAlertsEnabled internal constructor(
+class AreWeatherAlertsEnabled internal constructor(
   private val observeUserSettings: ObserveUserSettings
 ) {
 
   suspend operator fun invoke(): Boolean =
     observeUserSettings().first()
       .getOrNull()
-      ?.let(UserSettings::alertsEnabled)
+      ?.let(UserSettings::weatherAlertsEnabled)
       ?: DISABLED_BY_DEFAULT
 
   private companion object {

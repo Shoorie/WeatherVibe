@@ -2,33 +2,106 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>WeatherVibe — Privacy Policy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WeatherVibe — Privacy Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <style>
+    :root {
+      --bg-start: #1B1E3D;
+      --bg-end: #13142C;
+      --accent-lavender: #8B82F6;
+      --accent-indigo: #5B4FE5;
+      --text-primary: #F1F5F9;
+      --text-secondary: #A5A6CC;
+      --text-tertiary: #6E709D;
+      --glass-surface: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      max-width: 480px;
-      margin: 4rem auto;
-      padding: 0 1.5rem;
-      color: #1f2328;
-      line-height: 1.5;
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 { font-size: 1.5rem; }
-    a {
-      display: block;
-      padding: 0.75rem 1rem;
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--text-primary), var(--accent-lavender));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      margin: 0 0 1.75rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .lang-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
       margin: 0.5rem 0;
-      border: 1px solid #d0d7de;
-      border-radius: 8px;
+      background: var(--glass-surface);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
       text-decoration: none;
-      color: #0969da;
+      color: var(--text-primary);
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
     }
-    a:hover { background: #f6f8fa; }
+
+    .lang-link:hover {
+      background: rgba(139, 130, 246, 0.12);
+      border-color: var(--accent-lavender);
+      transform: translateY(-1px);
+    }
+
+    .lang-link .flag { font-size: 1.25rem; }
+
     footer {
-      margin-top: 2rem;
-      font-size: 0.875rem;
-      color: #656d76;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
     }
+
+    footer a {
+      color: var(--accent-lavender);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: #A29BFA; }
   </style>
   <script>
     (function () {
@@ -41,10 +114,20 @@
   </script>
 </head>
 <body>
-  <h1>WeatherVibe — Privacy Policy</h1>
-  <p>Choose your language:</p>
-  <a href="privacy-policy-en">🇬🇧 English version</a>
-  <a href="privacy-policy-pl">🇵🇱 Polska wersja</a>
-  <footer>Contact: weathervibe.support@gmail.com</footer>
+  <div class="card">
+    <h1>WeatherVibe</h1>
+    <p class="subtitle">Privacy Policy — choose your language</p>
+    <a class="lang-link" href="privacy-policy-en">
+      <span class="flag">🇬🇧</span>
+      <span>English version</span>
+    </a>
+    <a class="lang-link" href="privacy-policy-pl">
+      <span class="flag">🇵🇱</span>
+      <span>Polska wersja</span>
+    </a>
+    <footer>
+      Contact: <a href="mailto:weathervibe.support@gmail.com">weathervibe.support@gmail.com</a>
+    </footer>
+  </div>
 </body>
 </html>

@@ -1,3 +1,8 @@
-title: WeatherVibe
-description: WeatherVibe — privacy policy.
-theme: jekyll-theme-cayman
+title: WeatherVibe — Privacy Policy
+
+defaults:
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: default

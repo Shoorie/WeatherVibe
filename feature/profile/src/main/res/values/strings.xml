@@ -47,8 +47,10 @@
   <string name="profile_row_notifications_body">Morning brief and weather alerts</string>
   <string name="profile_row_privacy_title">Privacy policy</string>
   <string name="profile_row_privacy_body">How we handle your data</string>
-  <string name="profile_row_about_title">About</string>
-  <string name="profile_row_about_body">Version, open-source licenses, changelog</string>
+  <string name="profile_row_licenses_title">Open-source licenses</string>
+  <string name="profile_row_licenses_body">Libraries that power WeatherVibe</string>
+  <string name="profile_row_contact_title">Contact</string>
+  <string name="profile_row_contact_body">Send us a message or report a bug</string>
 
   <string name="profile_footer">Made with 💜 for your weather</string>
 
@@ -57,14 +59,11 @@
   <string name="profile_edit_sheet_field_label">Your name</string>
   <string name="profile_edit_sheet_save">Save</string>
 
-  <string name="profile_placeholder_personalization_title">Personalization</string>
-  <string name="profile_placeholder_personalization_body">Pick your brief tone, temperature unit, and hide music genres you don\'t vibe with. Coming soon as a dedicated screen.</string>
-  <string name="profile_placeholder_notifications_title">Notifications</string>
-  <string name="profile_placeholder_notifications_body">Decide whether the morning brief and weather alerts land on your lock screen. Coming soon.</string>
-  <string name="profile_placeholder_privacy_title">Privacy policy</string>
-  <string name="profile_placeholder_privacy_body">WeatherVibe keeps your data on the device. Full policy is on its way.</string>
-  <string name="profile_placeholder_privacy_subtitle">Your data stays yours</string>
-  <string name="profile_placeholder_about_title">About</string>
-  <string name="profile_placeholder_about_body">App version, open-source licenses, and changelog will live here.</string>
-  <string name="profile_placeholder_about_subtitle">Everything worth knowing about WeatherVibe</string>
+  <string name="profile_licenses_screen_title">Open-source licenses</string>
+  <string name="profile_licenses_screen_subtitle">Libraries that power WeatherVibe</string>
+
+  <string name="profile_contact_email" translatable="false">weathervibe.support@gmail.com</string>
+  <string name="profile_contact_subject">WeatherVibe — feedback</string>
+
+  <string name="profile_privacy_url">https://shoorie.github.io/WeatherVibe/privacy-policy-en</string>
 </resources>

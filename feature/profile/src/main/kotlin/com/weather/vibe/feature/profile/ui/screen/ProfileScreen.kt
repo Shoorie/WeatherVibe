@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.Lifecycle.State.STARTED
@@ -26,7 +27,8 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenContact
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLicenses
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
@@ -54,17 +56,17 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-  onOpenAbout: () -> Unit,
+  onOpenLicenses: () -> Unit,
   onOpenLocations: () -> Unit,
   onOpenNotifications: () -> Unit,
   onOpenPersonalization: () -> Unit,
-  onOpenPrivacy: () -> Unit,
   onOpenVibeHistory: () -> Unit
 ) {
 
   val viewModel: ProfileViewModel = koinViewModel()
   val state by viewModel.state.collectAsStateWithLifecycle()
   val callbacks = rememberProfileCallbacks(dispatch = viewModel::dispatch)
+  val context = LocalContext.current
 
   val lifecycleOwner = LocalLifecycleOwner.current
   LaunchedEffect(lifecycleOwner) {
@@ -73,8 +75,9 @@ fun ProfileScreen(
         when (event) {
           OpenPersonalization -> onOpenPersonalization()
           OpenNotifications -> onOpenNotifications()
-          OpenPrivacy -> onOpenPrivacy()
-          OpenAbout -> onOpenAbout()
+          OpenPrivacy -> launchPrivacyIntent(context)
+          OpenLicenses -> onOpenLicenses()
+          OpenContact -> launchContactIntent(context)
           OpenLocations -> onOpenLocations()
           OpenVibeHistory -> onOpenVibeHistory()
         }
@@ -143,7 +146,8 @@ internal fun ProfileContent(
     }
     notificationsItem(callbacks = callbacks)
     privacyItem(callbacks = callbacks)
-    aboutItem(callbacks = callbacks)
+    licensesItem(callbacks = callbacks)
+    contactItem(callbacks = callbacks)
     item(key = KEY_FOOTER) {
       ProfileFooter(modifier = Modifier.fillMaxWidth())
     }

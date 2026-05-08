@@ -1,0 +1,7 @@
+title: WeatherVibe
+description: WeatherVibe — privacy policy and project documentation.
+theme: jekyll-theme-cayman
+
+exclude:
+  - ai-rules
+  - README.md

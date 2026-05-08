@@ -47,8 +47,10 @@
   <string name="profile_row_notifications_body">Poranny brief i alerty pogodowe</string>
   <string name="profile_row_privacy_title">Polityka prywatności</string>
   <string name="profile_row_privacy_body">Jak dbamy o Twoje dane</string>
-  <string name="profile_row_about_title">O aplikacji</string>
-  <string name="profile_row_about_body">Wersja, licencje OSS, changelog</string>
+  <string name="profile_row_licenses_title">Licencje open source</string>
+  <string name="profile_row_licenses_body">Biblioteki, na których opiera się WeatherVibe</string>
+  <string name="profile_row_contact_title">Kontakt</string>
+  <string name="profile_row_contact_body">Napisz do nas lub zgłoś błąd</string>
 
   <string name="profile_footer">Zrobione z 💜 dla Twojej pogody</string>
 
@@ -57,14 +59,10 @@
   <string name="profile_edit_sheet_field_label">Twoje imię</string>
   <string name="profile_edit_sheet_save">Zapisz</string>
 
-  <string name="profile_placeholder_personalization_title">Personalizacja</string>
-  <string name="profile_placeholder_personalization_body">Wybierz ton briefu, jednostkę temperatury i ukryj gatunki muzyczne, których nie czujesz. Wkrótce jako osobny ekran.</string>
-  <string name="profile_placeholder_notifications_title">Powiadomienia</string>
-  <string name="profile_placeholder_notifications_body">Zdecyduj, czy poranny brief i alerty pogodowe mają trafiać na Twój ekran blokady. Wkrótce.</string>
-  <string name="profile_placeholder_privacy_title">Polityka prywatności</string>
-  <string name="profile_placeholder_privacy_body">WeatherVibe trzyma Twoje dane lokalnie, na urządzeniu. Pełna polityka w drodze.</string>
-  <string name="profile_placeholder_privacy_subtitle">Twoje dane są pod kontrolą</string>
-  <string name="profile_placeholder_about_title">O aplikacji</string>
-  <string name="profile_placeholder_about_body">Wersja aplikacji, licencje OSS i changelog zamieszkają tutaj.</string>
-  <string name="profile_placeholder_about_subtitle">Wszystko, co warto wiedzieć o WeatherVibe</string>
+  <string name="profile_licenses_screen_title">Licencje open source</string>
+  <string name="profile_licenses_screen_subtitle">Biblioteki, na których opiera się WeatherVibe</string>
+
+  <string name="profile_contact_subject">WeatherVibe — opinia</string>
+
+  <string name="profile_privacy_url">https://shoorie.github.io/WeatherVibe/privacy-policy-pl</string>
 </resources>

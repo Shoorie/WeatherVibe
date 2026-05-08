@@ -190,12 +190,28 @@ internal class ProfileResources(private val context: Context) {
       stringResource(R.string.profile_row_privacy_body)
 
     @Composable
-    fun aboutTitle(): String =
-      stringResource(R.string.profile_row_about_title)
+    fun licensesTitle(): String =
+      stringResource(R.string.profile_row_licenses_title)
 
     @Composable
-    fun aboutBody(): String =
-      stringResource(R.string.profile_row_about_body)
+    fun licensesBody(): String =
+      stringResource(R.string.profile_row_licenses_body)
+
+    @Composable
+    fun contactTitle(): String =
+      stringResource(R.string.profile_row_contact_title)
+
+    @Composable
+    fun contactBody(): String =
+      stringResource(R.string.profile_row_contact_body)
+
+    @Composable
+    fun licensesScreenTitle(): String =
+      stringResource(R.string.profile_licenses_screen_title)
+
+    @Composable
+    fun licensesScreenSubtitle(): String =
+      stringResource(R.string.profile_licenses_screen_subtitle)
 
     @Composable
     fun vibeStreakSeparator(): String =
@@ -220,46 +236,6 @@ internal class ProfileResources(private val context: Context) {
     @Composable
     fun editSheetSave(): String =
       stringResource(R.string.profile_edit_sheet_save)
-
-    @Composable
-    fun placeholderPersonalizationTitle(): String =
-      stringResource(R.string.profile_placeholder_personalization_title)
-
-    @Composable
-    fun placeholderPersonalizationBody(): String =
-      stringResource(R.string.profile_placeholder_personalization_body)
-
-    @Composable
-    fun placeholderNotificationsTitle(): String =
-      stringResource(R.string.profile_placeholder_notifications_title)
-
-    @Composable
-    fun placeholderNotificationsBody(): String =
-      stringResource(R.string.profile_placeholder_notifications_body)
-
-    @Composable
-    fun placeholderPrivacyTitle(): String =
-      stringResource(R.string.profile_placeholder_privacy_title)
-
-    @Composable
-    fun placeholderPrivacyBody(): String =
-      stringResource(R.string.profile_placeholder_privacy_body)
-
-    @Composable
-    fun placeholderPrivacySubtitle(): String =
-      stringResource(R.string.profile_placeholder_privacy_subtitle)
-
-    @Composable
-    fun placeholderAboutTitle(): String =
-      stringResource(R.string.profile_placeholder_about_title)
-
-    @Composable
-    fun placeholderAboutBody(): String =
-      stringResource(R.string.profile_placeholder_about_body)
-
-    @Composable
-    fun placeholderAboutSubtitle(): String =
-      stringResource(R.string.profile_placeholder_about_subtitle)
   }
 
   private companion object {

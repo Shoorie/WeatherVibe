@@ -42,6 +42,7 @@ uiautomator = "2.3.0"
 profileinstaller = "1.4.1"
 baselineprofile = "1.4.1"
 kover = "0.9.8"
+aboutlibraries = "14.2.0"
 
 [libraries]
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidxAnnotation" }
@@ -114,6 +115,9 @@ koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-wo
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinAnnotations" }
 koin-ksp-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinAnnotations" }
 
+aboutlibraries-core = { group = "com.mikepenz", name = "aboutlibraries-core", version.ref = "aboutlibraries" }
+aboutlibraries-compose-m3 = { group = "com.mikepenz", name = "aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -128,6 +132,7 @@ firebase-appdistribution = { id = "com.google.firebase.appdistribution", version
 baselineprofile = { id = "androidx.baselineprofile", version.ref = "baselineprofile" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+aboutlibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 
 # Plugins defined by this project
 weathervibe-android-application = { id = "weathervibe.android.application" }

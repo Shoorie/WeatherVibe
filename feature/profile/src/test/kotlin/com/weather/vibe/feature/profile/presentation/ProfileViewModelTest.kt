@@ -13,7 +13,8 @@ import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.viberating.model.VibeOverview
 import com.weather.vibe.domain.viberating.usecase.ObserveVibeOverview
-import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.ContactClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.LicensesClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameSubmit
@@ -24,7 +25,8 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.ThemeSelect
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
 import com.weather.vibe.feature.profile.presentation.ProfileAction.VibeRowClick
-import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenContact
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLicenses
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
@@ -285,13 +287,24 @@ class ProfileViewModelTest {
   }
 
   @Test
-  fun `when about clicked, then open about is emitted`() = runTest {
+  fun `when licenses clicked, then open licenses is emitted`() = runTest {
 
     val viewModel = createViewModel()
 
     viewModel.event.test {
-      viewModel.dispatch(AboutClick)
-      expectThat(awaitItem()).isA<OpenAbout>()
+      viewModel.dispatch(LicensesClick)
+      expectThat(awaitItem()).isA<OpenLicenses>()
+    }
+  }
+
+  @Test
+  fun `when contact clicked, then open contact is emitted`() = runTest {
+
+    val viewModel = createViewModel()
+
+    viewModel.event.test {
+      viewModel.dispatch(ContactClick)
+      expectThat(awaitItem()).isA<OpenContact>()
     }
   }
 

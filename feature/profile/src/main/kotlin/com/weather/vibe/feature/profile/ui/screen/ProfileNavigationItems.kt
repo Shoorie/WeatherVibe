@@ -2,16 +2,20 @@ package com.weather.vibe.feature.profile.ui.screen
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_ABOUT
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_CONTACT
+import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_LICENSES
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_NOTIFICATIONS
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_PERSONALIZATION
 import com.weather.vibe.feature.profile.ui.ProfileKeys.KEY_ROW_PRIVACY
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.aboutBody
-import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.aboutTitle
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.contactBody
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.contactTitle
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.licensesBody
+import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.licensesTitle
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.notificationsBody
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.notificationsTitle
 import com.weather.vibe.feature.profile.ui.ProfileResources.Texts.personalizationBody
@@ -53,13 +57,24 @@ internal fun LazyListScope.privacyItem(callbacks: ProfileCallbacks) {
   }
 }
 
-internal fun LazyListScope.aboutItem(callbacks: ProfileCallbacks) {
-  item(key = KEY_ROW_ABOUT) {
+internal fun LazyListScope.licensesItem(callbacks: ProfileCallbacks) {
+  item(key = KEY_ROW_LICENSES) {
     ProfileNavigationCard(
       icon = Icons.Default.Info,
-      title = aboutTitle(),
-      body = aboutBody(),
-      onClick = callbacks.onAboutClick
+      title = licensesTitle(),
+      body = licensesBody(),
+      onClick = callbacks.onLicensesClick
+    )
+  }
+}
+
+internal fun LazyListScope.contactItem(callbacks: ProfileCallbacks) {
+  item(key = KEY_ROW_CONTACT) {
+    ProfileNavigationCard(
+      icon = Icons.Default.Email,
+      title = contactTitle(),
+      body = contactBody(),
+      onClick = callbacks.onContactClick
     )
   }
 }

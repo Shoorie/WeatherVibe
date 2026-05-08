@@ -2,6 +2,7 @@ plugins {
   alias(libs.plugins.weathervibe.android.feature)
   alias(libs.plugins.weathervibe.android.kover)
   alias(libs.plugins.weathervibe.android.test)
+  alias(libs.plugins.aboutlibraries)
 }
 
 android {
@@ -18,6 +19,8 @@ dependencies {
   implementation(projects.domain.viberating)
   implementation(projects.domain.weather)
   implementation(libs.kotlinx.collections.immutable)
+  implementation(libs.aboutlibraries.core)
+  implementation(libs.aboutlibraries.compose.m3)
 
   testImplementation(projects.testing.coroutineRules)
   testImplementation(projects.testing.settingsFixtures)

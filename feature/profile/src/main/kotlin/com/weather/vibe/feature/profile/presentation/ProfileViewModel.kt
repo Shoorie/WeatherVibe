@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.appearance.model.ThemeMode
-import com.weather.vibe.feature.profile.presentation.ProfileAction.AboutClick
+import com.weather.vibe.feature.profile.presentation.ProfileAction.ContactClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameSubmit
+import com.weather.vibe.feature.profile.presentation.ProfileAction.LicensesClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.NotificationsClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PersonalizationClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.PrivacyClick
@@ -15,7 +16,8 @@ import com.weather.vibe.feature.profile.presentation.ProfileAction.StatClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.ThemeSelect
 import com.weather.vibe.feature.profile.presentation.ProfileAction.UsernameChanged
 import com.weather.vibe.feature.profile.presentation.ProfileAction.VibeRowClick
-import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenAbout
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenContact
+import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLicenses
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenLocations
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenNotifications
 import com.weather.vibe.feature.profile.presentation.ProfileEvent.OpenPersonalization
@@ -62,10 +64,11 @@ internal class ProfileViewModel(
 
   fun dispatch(action: ProfileAction) {
     when (action) {
-      is AboutClick -> onAboutClick()
+      is ContactClick -> onContactClick()
       is EditUsernameClick -> onEditUsernameClick()
       is EditUsernameDismiss -> onEditUsernameDismiss()
       is EditUsernameSubmit -> onEditUsernameSubmit()
+      is LicensesClick -> onLicensesClick()
       is UsernameChanged -> onUsernameChanged(action.value)
       is NotificationsClick -> onNotificationsClick()
       is PersonalizationClick -> onPersonalizationClick()
@@ -105,8 +108,12 @@ internal class ProfileViewModel(
     }
   }
 
-  private fun onAboutClick() {
-    send(OpenAbout)
+  private fun onContactClick() {
+    send(OpenContact)
+  }
+
+  private fun onLicensesClick() {
+    send(OpenLicenses)
   }
 
   private fun onNotificationsClick() {

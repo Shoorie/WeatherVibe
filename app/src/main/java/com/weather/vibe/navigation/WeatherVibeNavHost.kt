@@ -25,8 +25,7 @@ import com.weather.vibe.core.designsystem.components.navigation.VibeBottomBarScr
 import com.weather.vibe.core.designsystem.components.navigation.rememberVibeBottomBarScrollBehavior
 import com.weather.vibe.feature.locations.ui.screen.LocationsScreen
 import com.weather.vibe.feature.profile.ui.screen.ProfileScreen
-import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfileAboutScreen
-import com.weather.vibe.feature.profile.ui.screen.placeholder.ProfilePrivacyScreen
+import com.weather.vibe.feature.profile.ui.screen.licenses.LicensesScreen
 import com.weather.vibe.feature.settings.notifications.ui.screen.NotificationsScreen
 import com.weather.vibe.feature.settings.personalization.ui.screen.PersonalizationScreen
 import com.weather.vibe.feature.viberating.ui.history.VibeHistoryScreen
@@ -42,10 +41,9 @@ import com.weather.vibe.navigation.onboarding.WelcomeOnboardingEntry
 import com.weather.vibe.navigation.onboarding.WelcomeOnboardingRoute
 import com.weather.vibe.navigation.planner.ActivityPlannerEntry
 import com.weather.vibe.navigation.planner.ActivityPlannerRoute
-import com.weather.vibe.navigation.profile.ProfileAboutRoute
+import com.weather.vibe.navigation.profile.ProfileLicensesRoute
 import com.weather.vibe.navigation.profile.ProfileNotificationsRoute
 import com.weather.vibe.navigation.profile.ProfilePersonalizationRoute
-import com.weather.vibe.navigation.profile.ProfilePrivacyRoute
 import com.weather.vibe.navigation.profile.ProfileRoute
 import com.weather.vibe.navigation.search.SearchEntry
 import com.weather.vibe.navigation.search.SearchRoute
@@ -182,11 +180,10 @@ private fun profileEntry(
   when (key) {
     is ProfileRoute -> NavEntry(key) {
       ProfileScreen(
-        onOpenPersonalization = { backStack.add(ProfilePersonalizationRoute) },
-        onOpenNotifications = { backStack.add(ProfileNotificationsRoute) },
-        onOpenPrivacy = { backStack.add(ProfilePrivacyRoute) },
-        onOpenAbout = { backStack.add(ProfileAboutRoute) },
+        onOpenLicenses = { backStack.add(ProfileLicensesRoute) },
         onOpenLocations = { backStack.selectTab(LocationsRoute) },
+        onOpenNotifications = { backStack.add(ProfileNotificationsRoute) },
+        onOpenPersonalization = { backStack.add(ProfilePersonalizationRoute) },
         onOpenVibeHistory = { backStack.add(VibeHistoryRoute) }
       )
     }
@@ -205,13 +202,8 @@ private fun profileEntry(
         onNavigateBack = { backStack.removeLastOrNull() }
       )
     }
-    is ProfilePrivacyRoute -> NavEntry(key) {
-      ProfilePrivacyScreen(
-        onNavigateBack = { backStack.removeLastOrNull() }
-      )
-    }
-    is ProfileAboutRoute -> NavEntry(key) {
-      ProfileAboutScreen(
+    is ProfileLicensesRoute -> NavEntry(key) {
+      LicensesScreen(
         onNavigateBack = { backStack.removeLastOrNull() }
       )
     }

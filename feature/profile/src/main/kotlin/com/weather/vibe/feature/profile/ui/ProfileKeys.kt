@@ -8,6 +8,7 @@ internal object ProfileKeys {
   const val KEY_ROW_APPEARANCE = "row-appearance"
   const val KEY_ROW_NOTIFICATIONS = "row-notifications"
   const val KEY_ROW_PRIVACY = "row-privacy"
-  const val KEY_ROW_ABOUT = "row-about"
+  const val KEY_ROW_LICENSES = "row-licenses"
+  const val KEY_ROW_CONTACT = "row-contact"
   const val KEY_FOOTER = "footer"
 }

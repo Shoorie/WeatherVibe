@@ -3,7 +3,6 @@ package com.weather.vibe.data.settings.persistence.mapper
 import com.weather.vibe.data.settings.persistence.UserSettingsCacheData
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
-import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 import com.weather.vibe.testing.settings.fixture.GenreFixtures.JAZZ
@@ -34,13 +33,13 @@ class SettingsCacheMapperTest {
   }
 
   @Test
-  fun `given unknown persona, when mapped to domain, then brief tone falls back to witty and friendly`() {
+  fun `given unknown persona, when mapped to domain, then brief tone falls back to formal`() {
 
     val cacheData = userSettingsCacheData(persona = UNKNOWN_PERSONA)
 
     val result = mapper.toDomain(cacheData)
 
-    expectThat(result.briefTone).isEqualTo(WITTY_AND_FRIENDLY)
+    expectThat(result.briefTone).isEqualTo(FORMAL)
   }
 
   @Test

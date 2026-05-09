@@ -6,8 +6,9 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig.VALUE_SOURCE_DEFAUL
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig.VALUE_SOURCE_REMOTE
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig.VALUE_SOURCE_STATIC
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue
-import com.weather.vibe.core.remoteconfig.domain.flag.BooleanFeatureFlag
-import com.weather.vibe.core.remoteconfig.domain.flag.StringFeatureFlag
+import com.weather.vibe.core.remoteconfig.fixture.FeatureFlagFixtures.FLAG_KEY
+import com.weather.vibe.core.remoteconfig.fixture.FeatureFlagFixtures.booleanFlag
+import com.weather.vibe.core.remoteconfig.fixture.FeatureFlagFixtures.stringFlag
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
@@ -35,84 +36,78 @@ class DefaultFeatureFlagsTest {
   }
 
   @Test
-  fun `when bool requested with remote source, then return remote value`() {
-    every { remoteConfig.getValue(REMOTE_KEY) } returns valueWith(
+  fun `given remote source, when bool read, then return remote value`() {
+    every { remoteConfig.getValue(FLAG_KEY) } returns booleanValue(
       asBoolean = true,
       source = VALUE_SOURCE_REMOTE
     )
-    val flag = BooleanFeatureFlag(default = false, key = REMOTE_KEY)
 
-    val result = featureFlags.bool(flag)
+    val result = featureFlags.bool(booleanFlag(default = false))
 
     expectThat(result).isEqualTo(true)
   }
 
   @Test
-  fun `when bool requested with default source, then return remote default`() {
-    every { remoteConfig.getValue(REMOTE_KEY) } returns valueWith(
+  fun `given default source, when bool read, then return remote default`() {
+    every { remoteConfig.getValue(FLAG_KEY) } returns booleanValue(
       asBoolean = true,
       source = VALUE_SOURCE_DEFAULT
     )
-    val flag = BooleanFeatureFlag(default = false, key = REMOTE_KEY)
 
-    val result = featureFlags.bool(flag)
+    val result = featureFlags.bool(booleanFlag(default = false))
 
     expectThat(result).isEqualTo(true)
   }
 
   @Test
-  fun `when bool requested with static source, then return flag default`() {
-    every { remoteConfig.getValue(REMOTE_KEY) } returns valueWith(
+  fun `given static source, when bool read, then return flag default`() {
+    every { remoteConfig.getValue(FLAG_KEY) } returns booleanValue(
       asBoolean = false,
       source = VALUE_SOURCE_STATIC
     )
-    val flag = BooleanFeatureFlag(default = true, key = REMOTE_KEY)
 
-    val result = featureFlags.bool(flag)
+    val result = featureFlags.bool(booleanFlag(default = true))
 
     expectThat(result).isEqualTo(true)
   }
 
   @Test
-  fun `when string requested with remote source, then return remote value`() {
-    every { remoteConfig.getValue(REMOTE_KEY) } returns valueWith(
+  fun `given remote source, when string read, then return remote value`() {
+    every { remoteConfig.getValue(FLAG_KEY) } returns stringValue(
       asString = REMOTE_VALUE,
       source = VALUE_SOURCE_REMOTE
     )
-    val flag = StringFeatureFlag(default = "default", key = REMOTE_KEY)
 
-    val result = featureFlags.string(flag)
+    val result = featureFlags.string(stringFlag(default = "irrelevant"))
 
     expectThat(result).isEqualTo(REMOTE_VALUE)
   }
 
   @Test
-  fun `when string requested with static source, then return flag default`() {
-    every { remoteConfig.getValue(REMOTE_KEY) } returns valueWith(
+  fun `given static source, when string read, then return flag default`() {
+    every { remoteConfig.getValue(FLAG_KEY) } returns stringValue(
       asString = "",
       source = VALUE_SOURCE_STATIC
     )
-    val flag = StringFeatureFlag(default = REMOTE_VALUE, key = REMOTE_KEY)
 
-    val result = featureFlags.string(flag)
+    val result = featureFlags.string(stringFlag(default = REMOTE_VALUE))
 
     expectThat(result).isEqualTo(REMOTE_VALUE)
   }
 
-  private fun valueWith(asBoolean: Boolean, source: Int): FirebaseRemoteConfigValue =
+  private fun booleanValue(asBoolean: Boolean, source: Int): FirebaseRemoteConfigValue =
     mockk<FirebaseRemoteConfigValue>().apply {
       every { this@apply.source } returns source
       every { asBoolean() } returns asBoolean
     }
 
-  private fun valueWith(asString: String, source: Int): FirebaseRemoteConfigValue =
+  private fun stringValue(asString: String, source: Int): FirebaseRemoteConfigValue =
     mockk<FirebaseRemoteConfigValue>().apply {
       every { this@apply.source } returns source
       every { asString() } returns asString
     }
 
   private companion object {
-    const val REMOTE_KEY = "test_flag"
     const val REMOTE_VALUE = "expected_value"
   }
 }

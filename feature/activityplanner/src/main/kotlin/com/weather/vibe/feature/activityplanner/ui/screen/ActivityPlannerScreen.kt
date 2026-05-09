@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -79,17 +79,17 @@ internal fun ActivityPlannerContent(
       )
     }
   ) {
-    val adInset = rememberAdSlotBottomInset(AdPlacement.ActivityPlannerBottom)
+    val adSlotState = rememberAdSlotState(AdPlacement.ActivityPlannerBottom)
     Box(modifier = Modifier.fillMaxSize()) {
       ScreenBody(
-        modifier = Modifier.padding(bottom = adInset),
+        modifier = Modifier.padding(bottom = adSlotState.bottomInset),
         state = state,
         onActivitySelect = onActivitySelect,
         onRetryClick = onRetryClick
       )
       AdSlot(
         modifier = Modifier.align(Alignment.BottomCenter),
-        placement = AdPlacement.ActivityPlannerBottom
+        state = adSlotState
       )
     }
   }

@@ -25,7 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -97,16 +97,16 @@ internal fun VibeHistoryContent(
       )
     }
   ) {
-    val adInset = rememberAdSlotBottomInset(AdPlacement.VibeHistoryBottom)
+    val adSlotState = rememberAdSlotState(AdPlacement.VibeHistoryBottom)
     Box(modifier = Modifier.fillMaxSize()) {
       VibeHistoryScrollContent(
         state = state,
-        bottomInset = adInset,
+        bottomInset = adSlotState.bottomInset,
         callbacks = callbacks
       )
       AdSlot(
         modifier = Modifier.align(Alignment.BottomCenter),
-        placement = AdPlacement.VibeHistoryBottom
+        state = adSlotState
       )
     }
   }

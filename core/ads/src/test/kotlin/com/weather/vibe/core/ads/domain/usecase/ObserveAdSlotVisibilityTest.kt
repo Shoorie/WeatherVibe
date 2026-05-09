@@ -3,8 +3,10 @@ package com.weather.vibe.core.ads.domain.usecase
 import app.cash.turbine.test
 import com.weather.vibe.core.ads.consent.ConsentManager
 import com.weather.vibe.core.ads.domain.AdPlacement
-import com.weather.vibe.core.ads.domain.config.AdPlacementConfig
-import com.weather.vibe.core.ads.domain.config.AdsConfig
+import com.weather.vibe.core.ads.fixture.AdsConfigFixtures
+import com.weather.vibe.core.ads.fixture.AdsConfigFixtures.FULLY_ENABLED
+import com.weather.vibe.core.ads.fixture.AdsConfigFixtures.adsConfig
+import com.weather.vibe.core.ads.fixture.AdsConfigFixtures.configWith
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
@@ -28,6 +30,7 @@ class ObserveAdSlotVisibilityTest {
   @Before
   fun setUp() {
     every { consentManager.canRequestAds } returns flowOf(true)
+    every { observeAdsConfig() } returns flowOf(FULLY_ENABLED)
   }
 
   @After
@@ -36,10 +39,8 @@ class ObserveAdSlotVisibilityTest {
   }
 
   @Test
-  fun `when global enabled and placement enabled and consent granted, then emit true`() =
+  fun `given ads enabled and consent granted, when visibility observed, then emit true`() =
     runTest {
-      stubConfig(globalEnabled = true, placementEnabled = true)
-
       observeAdSlotVisibility(AdPlacement.HomeBottom).test {
         expectThat(awaitItem()).isEqualTo(true)
         awaitComplete()
@@ -47,8 +48,8 @@ class ObserveAdSlotVisibilityTest {
     }
 
   @Test
-  fun `when global disabled, then emit false`() = runTest {
-    stubConfig(globalEnabled = false, placementEnabled = true)
+  fun `given global ads disabled, when visibility observed, then emit false`() = runTest {
+    every { observeAdsConfig() } returns flowOf(adsConfig(globalEnabled = false))
 
     observeAdSlotVisibility(AdPlacement.HomeBottom).test {
       expectThat(awaitItem()).isEqualTo(false)
@@ -57,8 +58,10 @@ class ObserveAdSlotVisibilityTest {
   }
 
   @Test
-  fun `when placement disabled, then emit false`() = runTest {
-    stubConfig(globalEnabled = true, placementEnabled = false)
+  fun `given placement disabled, when visibility observed, then emit false`() = runTest {
+    every { observeAdsConfig() } returns flowOf(
+      configWith(placement = AdPlacement.HomeBottom, enabled = AdsConfigFixtures.PLACEMENT_DISABLED)
+    )
 
     observeAdSlotVisibility(AdPlacement.HomeBottom).test {
       expectThat(awaitItem()).isEqualTo(false)
@@ -67,8 +70,8 @@ class ObserveAdSlotVisibilityTest {
   }
 
   @Test
-  fun `when placement missing in config, then emit false`() = runTest {
-    every { observeAdsConfig() } returns flowOf(AdsConfig(globalEnabled = true))
+  fun `given placement missing in config, when visibility observed, then emit false`() = runTest {
+    every { observeAdsConfig() } returns flowOf(adsConfig(globalEnabled = true))
 
     observeAdSlotVisibility(AdPlacement.HomeBottom).test {
       expectThat(awaitItem()).isEqualTo(false)
@@ -77,24 +80,12 @@ class ObserveAdSlotVisibilityTest {
   }
 
   @Test
-  fun `when consent not granted, then emit false`() = runTest {
-    stubConfig(globalEnabled = true, placementEnabled = true)
+  fun `given consent not granted, when visibility observed, then emit false`() = runTest {
     every { consentManager.canRequestAds } returns flowOf(false)
 
     observeAdSlotVisibility(AdPlacement.HomeBottom).test {
       expectThat(awaitItem()).isEqualTo(false)
       awaitComplete()
     }
-  }
-
-  private fun stubConfig(globalEnabled: Boolean, placementEnabled: Boolean) {
-    every { observeAdsConfig() } returns flowOf(
-      AdsConfig(
-        globalEnabled = globalEnabled,
-        placements = mapOf(
-          AdPlacement.HomeBottom.key to AdPlacementConfig(enabled = placementEnabled)
-        )
-      )
-    )
   }
 }

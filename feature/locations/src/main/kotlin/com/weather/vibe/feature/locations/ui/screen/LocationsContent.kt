@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -148,10 +148,10 @@ private fun LocationsScaffoldBody(
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
-  val adInset = rememberAdSlotBottomInset(AdPlacement.LocationsBottom)
+  val adSlotState = rememberAdSlotState(AdPlacement.LocationsBottom)
   Box(modifier = Modifier.fillMaxSize()) {
     LocationsBody(
-      bottomInset = adInset,
+      bottomInset = adSlotState.bottomInset,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -159,19 +159,19 @@ private fun LocationsScaffoldBody(
     AddLocationFab(
       modifier = Modifier
         .align(Alignment.BottomEnd)
-        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adInset),
+        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adSlotState.bottomInset),
       enabled = state !is Loaded || state.canAddMoreFavorites,
       onClick = { dispatch(AddLocationClick) }
     )
     SnackbarHost(
       modifier = Modifier
         .align(Alignment.BottomCenter)
-        .padding(bottom = adInset),
+        .padding(bottom = adSlotState.bottomInset),
       hostState = snackbarHostState
     )
     AdSlot(
       modifier = Modifier.align(Alignment.BottomCenter),
-      placement = AdPlacement.LocationsBottom
+      state = adSlotState
     )
   }
 }

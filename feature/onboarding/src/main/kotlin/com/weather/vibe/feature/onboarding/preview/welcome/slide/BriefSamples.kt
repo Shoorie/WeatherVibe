@@ -8,12 +8,12 @@ internal object BriefSamples {
 
   fun tones(): ImmutableList<BriefToneUiState> = persistentListOf(
     BriefToneUiState(
-      label = "Witty",
-      quote = "24° and sunny. A perfect day to leave the jacket at home."
-    ),
-    BriefToneUiState(
       label = "Formal",
       quote = "Temperature 24°C, sunny, west wind 6 km/h."
+    ),
+    BriefToneUiState(
+      label = "Witty",
+      quote = "24° and sunny. A perfect day to leave the jacket at home."
     ),
     BriefToneUiState(
       label = "Humorous",

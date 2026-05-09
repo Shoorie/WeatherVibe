@@ -57,12 +57,12 @@ internal class WelcomeStateFactory(
 
   private fun briefTones(): ImmutableList<BriefToneUiState> = persistentListOf(
     BriefToneUiState(
-      label = resources.briefToneWitty(),
-      quote = resources.briefQuoteWitty()
-    ),
-    BriefToneUiState(
       label = resources.briefToneFormal(),
       quote = resources.briefQuoteFormal()
+    ),
+    BriefToneUiState(
+      label = resources.briefToneWitty(),
+      quote = resources.briefQuoteWitty()
     ),
     BriefToneUiState(
       label = resources.briefToneHumorous(),

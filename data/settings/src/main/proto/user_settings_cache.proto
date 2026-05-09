@@ -13,4 +13,6 @@ message UserSettingsCacheData {
   bool welcome_onboarding_seen = 7;
   bool pollen_alerts_enabled = 8;
   bool mood_reminder_enabled = 9;
+  bool widget_promo_eligible = 10;
+  bool widget_promo_seen = 11;
 }

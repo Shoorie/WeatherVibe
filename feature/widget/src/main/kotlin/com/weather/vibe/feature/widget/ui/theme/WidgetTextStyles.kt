@@ -36,13 +36,15 @@ internal object WidgetTextStyles {
 
   val mood: TextStyle = TextStyle(
     color = onBackgroundSubtle,
-    fontSize = 11.sp
+    fontSize = 11.sp,
+    textAlign = TextAlign.Center
   )
 
   val temperature: TextStyle = TextStyle(
-    color = onBackgroundMuted,
-    fontSize = 12.sp,
-    fontWeight = FontWeight.Medium
+    color = onBackground,
+    fontSize = 22.sp,
+    fontWeight = FontWeight.Bold,
+    textAlign = TextAlign.Center
   )
 
   val messageEmoji: TextStyle = TextStyle(

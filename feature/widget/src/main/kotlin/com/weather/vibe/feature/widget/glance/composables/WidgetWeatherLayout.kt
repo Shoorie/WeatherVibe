@@ -24,22 +24,14 @@ internal fun WidgetWeatherLayout(state: Weather) {
       locationName = state.locationName,
       fetchedAtLabel = state.fetchedAtLabel
     )
-    WidgetConditionIcon(
+    WidgetWeatherShowcase(
       modifier = GlanceModifier.defaultWeight(),
-      emoji = state.conditionEmoji
-    )
-    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingSmall))
-    Text(
-      modifier = GlanceModifier.fillMaxWidth(),
-      text = state.conditionLabel,
-      style = WidgetTextStyles.conditionLabel,
-      maxLines = 1
-    )
-    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingMedium))
-    WidgetWeatherFooter(
-      mood = state.mood,
+      conditionEmoji = state.conditionEmoji,
+      conditionLabel = state.conditionLabel,
       temperature = state.temperature
     )
+    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingMedium))
+    WidgetWeatherFooter(mood = state.mood)
   }
 }
 
@@ -67,39 +59,45 @@ private fun WidgetWeatherHeader(
 }
 
 @Composable
-private fun WidgetConditionIcon(
-  emoji: String,
+private fun WidgetWeatherShowcase(
+  conditionEmoji: String,
+  conditionLabel: String,
+  temperature: String,
   modifier: GlanceModifier = GlanceModifier
 ) {
-  Box(
+  Column(
     modifier = modifier.fillMaxWidth(),
-    contentAlignment = Alignment.Center
-  ) {
-    Text(
-      text = emoji,
-      style = WidgetTextStyles.conditionEmoji
-    )
-  }
-}
-
-@Composable
-private fun WidgetWeatherFooter(
-  mood: String,
-  temperature: String
-) {
-  Row(
-    modifier = GlanceModifier.fillMaxWidth(),
+    horizontalAlignment = Alignment.CenterHorizontally,
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
-      modifier = GlanceModifier.defaultWeight(),
-      text = mood,
-      style = WidgetTextStyles.mood,
+      text = conditionEmoji,
+      style = WidgetTextStyles.conditionEmoji,
       maxLines = 1
     )
     Text(
       text = temperature,
       style = WidgetTextStyles.temperature,
+      maxLines = 1
+    )
+    Spacer(modifier = GlanceModifier.height(WidgetDimens.spacingSmall))
+    Text(
+      text = conditionLabel,
+      style = WidgetTextStyles.conditionLabel,
+      maxLines = 1
+    )
+  }
+}
+
+@Composable
+private fun WidgetWeatherFooter(mood: String) {
+  Box(
+    modifier = GlanceModifier.fillMaxWidth(),
+    contentAlignment = Alignment.Center
+  ) {
+    Text(
+      text = mood,
+      style = WidgetTextStyles.mood,
       maxLines = 1
     )
   }

@@ -8,11 +8,9 @@
   <string name="alerts_channel_morning_brief_description">Daily 7:30 notification with today\'s weather vibe.</string>
   <string name="alerts_channel_mood_reminder_name">Mood reminder</string>
   <string name="alerts_channel_mood_reminder_description">Evening nudge to log your mood for the day.</string>
-  <string name="alerts_mood_reminder_title_anon">How was %2$s?</string>
-  <string name="alerts_mood_reminder_title_named">%1$s, how was your %3$s?</string>
-  <string name="alerts_mood_reminder_verb_masculine">went by</string>
-  <string name="alerts_mood_reminder_verb_feminine">went by</string>
-  <string name="alerts_mood_reminder_body">Tap an emoji to log how the day felt.</string>
+  <string name="alerts_mood_reminder_title_anon">How is your %1$s going?</string>
+  <string name="alerts_mood_reminder_title_named">%1$s, how is your %2$s going?</string>
+  <string name="alerts_mood_reminder_body">Tap an emoji to log how the day feels.</string>
   <string name="alerts_mood_reminder_logged_title">Mood logged</string>
   <string name="alerts_mood_reminder_logged_body">Thanks for sharing — see you tomorrow.</string>
   <string name="alerts_mood_rating_1_a11y">Rough day</string>

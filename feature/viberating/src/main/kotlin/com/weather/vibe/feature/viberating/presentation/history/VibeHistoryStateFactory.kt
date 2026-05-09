@@ -32,7 +32,8 @@ internal class VibeHistoryStateFactory {
 
   fun create(
     entriesByDate: Map<LocalDate, List<RatingEntry>>,
-    stats: VibeStats,
+    allTimeStats: VibeStats,
+    monthStats: VibeStats,
     viewMonth: YearMonth,
     currentMonth: YearMonth,
     today: LocalDate,
@@ -49,12 +50,12 @@ internal class VibeHistoryStateFactory {
     return VibeHistoryUiState(
       viewMonth = viewMonth,
       canNavigateNext = viewMonth < currentMonth,
-      averageDisplay = averageDisplay(stats = stats),
-      totalEntries = stats.totalEntries,
+      averageDisplay = averageDisplay(stats = monthStats),
+      totalEntries = monthStats.totalEntries,
       cells = cells,
       selectedDayDetail = selectedDate
         ?.let { date -> dayDetail(date = date, entries = entriesByDate[date].orEmpty()) },
-      patterns = patternsSection(stats = stats)
+      patterns = patternsSection(stats = allTimeStats)
     )
   }
 

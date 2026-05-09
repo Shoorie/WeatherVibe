@@ -6,6 +6,7 @@ import com.weather.vibe.domain.viberating.model.ConditionAverage
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.VibeStats
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryStateFactory.Companion.PATTERNS_UNLOCK_THRESHOLD
+import com.weather.vibe.feature.viberating.presentation.history.state.AverageRatingDisplay
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Day
 import com.weather.vibe.feature.viberating.presentation.history.state.CalendarCellUiState.Empty
 import com.weather.vibe.feature.viberating.presentation.history.state.PatternsSectionUiState
@@ -32,7 +33,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -47,7 +49,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -65,7 +68,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(entry)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -84,7 +88,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(morning, evening)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -103,7 +108,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(morning, evening)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -119,7 +125,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -135,7 +142,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -151,7 +159,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = MARCH_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -166,7 +175,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -181,7 +191,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -200,7 +211,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(morning, evening)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -220,7 +232,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(earlier, later)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -244,7 +257,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(entry)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -263,7 +277,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = mapOf(APRIL_15 to listOf(entry)),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -280,7 +295,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = VibeStats.EMPTY,
+      allTimeStats = VibeStats.EMPTY,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -305,7 +321,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = stats,
+      allTimeStats = stats,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -324,7 +341,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = stats,
+      allTimeStats = stats,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -348,7 +366,8 @@ class VibeHistoryStateFactoryTest {
 
     val state = factory.create(
       entriesByDate = emptyMap(),
-      stats = stats,
+      allTimeStats = stats,
+      monthStats = VibeStats.EMPTY,
       viewMonth = APRIL_2026,
       currentMonth = APRIL_2026,
       today = APRIL_15,
@@ -358,6 +377,89 @@ class VibeHistoryStateFactoryTest {
     expectThat(state.patterns).isA<PatternsSectionUiState.Unlocked>()
       .get { ranking.map { it.progressFraction } }
       .containsExactly(1f, 0.5f)
+  }
+
+  @Test
+  fun `when monthly average differs from all-time average, then displayed average reflects the viewed month`() {
+
+    val monthStats = VibeStats(
+      averageRating = 4.5,
+      totalEntries = 8,
+      uniqueDayCount = 6,
+      favoriteCondition = SUNNY,
+      conditionAverages = listOf(
+        ConditionAverage(condition = SUNNY, averageRating = 4.5, entryCount = 8)
+      )
+    )
+    val allTimeStats = VibeStats(
+      averageRating = 2.0,
+      totalEntries = 120,
+      uniqueDayCount = 70,
+      favoriteCondition = SUNNY,
+      conditionAverages = listOf(
+        ConditionAverage(condition = SUNNY, averageRating = 2.0, entryCount = 120)
+      )
+    )
+
+    val state = factory.create(
+      entriesByDate = emptyMap(),
+      allTimeStats = allTimeStats,
+      monthStats = monthStats,
+      viewMonth = APRIL_2026,
+      currentMonth = APRIL_2026,
+      today = APRIL_15,
+      selectedDate = null
+    )
+
+    expectThat(state.averageDisplay).isA<AverageRatingDisplay.Available>()
+      .get { value }.isEqualTo(4.5)
+    expectThat(state.totalEntries).isEqualTo(8)
+  }
+
+  @Test
+  fun `given the viewed month has no ratings, then the displayed average is empty`() {
+
+    val allTimeStats = unlockedStats(totalEntries = PATTERNS_UNLOCK_THRESHOLD)
+
+    val state = factory.create(
+      entriesByDate = emptyMap(),
+      allTimeStats = allTimeStats,
+      monthStats = VibeStats.EMPTY,
+      viewMonth = MARCH_2026,
+      currentMonth = APRIL_2026,
+      today = APRIL_15,
+      selectedDate = null
+    )
+
+    expectThat(state.averageDisplay).isEqualTo(AverageRatingDisplay.Empty)
+    expectThat(state.totalEntries).isEqualTo(0)
+  }
+
+  @Test
+  fun `given the viewed month has few entries but all-time has enough, then patterns stay unlocked`() {
+
+    val monthStats = VibeStats(
+      averageRating = 4.0,
+      totalEntries = 2,
+      uniqueDayCount = 2,
+      favoriteCondition = SUNNY,
+      conditionAverages = listOf(
+        ConditionAverage(condition = SUNNY, averageRating = 4.0, entryCount = 2)
+      )
+    )
+    val allTimeStats = unlockedStats(totalEntries = PATTERNS_UNLOCK_THRESHOLD)
+
+    val state = factory.create(
+      entriesByDate = emptyMap(),
+      allTimeStats = allTimeStats,
+      monthStats = monthStats,
+      viewMonth = APRIL_2026,
+      currentMonth = APRIL_2026,
+      today = APRIL_15,
+      selectedDate = null
+    )
+
+    expectThat(state.patterns).isA<PatternsSectionUiState.Unlocked>()
   }
 
   private fun unlockedStats(

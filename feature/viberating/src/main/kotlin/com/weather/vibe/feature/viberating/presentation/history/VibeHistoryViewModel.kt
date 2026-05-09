@@ -58,10 +58,12 @@ internal class VibeHistoryViewModel(
       viewMonthFlow,
       selectedDateFlow
     ) { entriesAndStats, month, selected ->
-      val (entries, stats) = entriesAndStats
+      val (entries, allTimeStats) = entriesAndStats
+      val monthStats = computeVibeStats(entries.filter { YearMonth.from(it.date) == month })
       stateFactory.create(
         entriesByDate = entries.groupBy(RatingEntry::date),
-        stats = stats,
+        allTimeStats = allTimeStats,
+        monthStats = monthStats,
         viewMonth = month,
         currentMonth = currentMonth,
         today = today,

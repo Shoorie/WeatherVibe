@@ -2,7 +2,7 @@ package com.weather.vibe.data.settings.persistence.mapper
 
 import com.weather.vibe.data.settings.persistence.UserSettingsCacheData
 import com.weather.vibe.domain.settings.model.BriefTone
-import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
+import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.TemperatureUnit
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.UserSettings
@@ -45,7 +45,7 @@ internal class SettingsCacheMapper {
   private fun String.toBriefTone(): BriefTone =
     BriefTone.entries
       .firstOrNull { it.name == this }
-      ?: WITTY_AND_FRIENDLY
+      ?: FORMAL
 
   private fun String.toTemperatureUnit(): TemperatureUnit =
     TemperatureUnit.entries

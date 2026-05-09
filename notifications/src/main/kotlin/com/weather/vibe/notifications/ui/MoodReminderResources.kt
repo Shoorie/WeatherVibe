@@ -4,9 +4,6 @@ import android.content.Context
 import com.weather.vibe.notifications.R
 import org.koin.core.annotation.Factory
 import java.time.DayOfWeek
-import java.time.DayOfWeek.SATURDAY
-import java.time.DayOfWeek.SUNDAY
-import java.time.DayOfWeek.WEDNESDAY
 import java.time.format.TextStyle.FULL_STANDALONE
 import java.util.Locale
 
@@ -16,19 +13,16 @@ class MoodReminderResources internal constructor(private val context: Context) {
   fun greetingTitle(username: String?, dayOfWeek: DayOfWeek): String {
 
     val dayName = dayOfWeek.getDisplayName(FULL_STANDALONE, Locale.getDefault())
-    val verb = pastVerbForDay(dayOfWeek)
 
     return when {
       username.isNullOrBlank() -> context.getString(
         R.string.alerts_mood_reminder_title_anon,
-        verb,
         dayName
       )
 
       else -> context.getString(
         R.string.alerts_mood_reminder_title_named,
         username,
-        verb,
         dayName
       )
     }
@@ -45,12 +39,6 @@ class MoodReminderResources internal constructor(private val context: Context) {
 
   fun emojiForRating(rating: Int): String =
     EMOJIS[rating.coerceIn(MIN_RATING, MAX_RATING) - MIN_RATING]
-
-  private fun pastVerbForDay(dayOfWeek: DayOfWeek): String =
-    when (dayOfWeek) {
-      WEDNESDAY, SATURDAY, SUNDAY -> context.getString(R.string.alerts_mood_reminder_verb_feminine)
-      else -> context.getString(R.string.alerts_mood_reminder_verb_masculine)
-    }
 
   private companion object {
     const val MIN_RATING = 1

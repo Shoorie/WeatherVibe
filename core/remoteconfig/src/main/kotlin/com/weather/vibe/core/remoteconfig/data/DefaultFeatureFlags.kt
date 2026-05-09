@@ -18,9 +18,11 @@ internal class DefaultFeatureFlags(
   private val remoteConfig: FirebaseRemoteConfig
 ) : FeatureFlags {
 
-  private val _updates = MutableSharedFlow<Unit>(replay = 1)
+  private val _updates =
+    MutableSharedFlow<Unit>(replay = 1)
 
-  override val updates: Flow<Unit> = _updates.asSharedFlow()
+  override val updates: Flow<Unit> =
+    _updates.asSharedFlow()
 
   init {
     configureFetchSettings()
@@ -53,6 +55,8 @@ internal class DefaultFeatureFlags(
   }
 
   private fun fetchAndActivate() {
-    remoteConfig.fetchAndActivate().addOnCompleteListener { _updates.tryEmit(Unit) }
+    remoteConfig
+      .fetchAndActivate()
+      .addOnCompleteListener { _updates.tryEmit(Unit) }
   }
 }

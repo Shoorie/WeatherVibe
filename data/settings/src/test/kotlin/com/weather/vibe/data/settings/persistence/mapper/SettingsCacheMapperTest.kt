@@ -26,11 +26,11 @@ class SettingsCacheMapperTest {
   private val mapper = SettingsCacheMapper()
 
   @Test
-  fun `given default cache data, when mapped to domain, then brief tone falls back to witty and friendly`() {
+  fun `given default cache data, when mapped to domain, then brief tone falls back to formal`() {
 
     val result = mapper.toDomain(UserSettingsCacheData.getDefaultInstance())
 
-    expectThat(result.briefTone).isEqualTo(WITTY_AND_FRIENDLY)
+    expectThat(result.briefTone).isEqualTo(FORMAL)
   }
 
   @Test

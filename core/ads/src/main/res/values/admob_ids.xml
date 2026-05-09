@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="admob_app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+  <string name="admob_home_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_locations_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_activity_planner_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_search_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_viberating_history_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_weather_details_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+</resources>

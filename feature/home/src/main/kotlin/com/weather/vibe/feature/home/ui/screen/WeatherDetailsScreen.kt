@@ -1,13 +1,19 @@
 package com.weather.vibe.feature.home.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.ads.domain.AdPlacement
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -56,16 +62,26 @@ internal fun WeatherDetailsContent(
       )
     }
   ) {
-    when (state) {
-      is Loading -> LoadingIndicator(modifier = Modifier.fillMaxSize())
-      is Error -> HomeErrorContent(
-        modifier = Modifier.fillMaxSize(),
-        error = state.message,
-        onRetry = onNavigateBack
-      )
-      is Loaded -> WeatherDetailsLoadedContent(
-        modifier = Modifier.fillMaxSize(),
-        state = state
+    val adInset = rememberAdSlotBottomInset(AdPlacement.WeatherDetailsBottom)
+    Box(modifier = Modifier.fillMaxSize()) {
+      val contentModifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = adInset)
+      when (state) {
+        is Loading -> LoadingIndicator(modifier = contentModifier)
+        is Error -> HomeErrorContent(
+          modifier = contentModifier,
+          error = state.message,
+          onRetry = onNavigateBack
+        )
+        is Loaded -> WeatherDetailsLoadedContent(
+          modifier = contentModifier,
+          state = state
+        )
+      }
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        placement = AdPlacement.WeatherDetailsBottom
       )
     }
   }

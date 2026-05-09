@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,6 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.ads.domain.AdPlacement
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -67,6 +72,7 @@ internal fun SearchContent(
     }
   ) {
     val callbacks = remember(dispatch) { SearchCallbacks(dispatch) }
+    val adInset = rememberAdSlotBottomInset(AdPlacement.SearchBottom)
     Box(modifier = Modifier.fillMaxSize()) {
       Column(
         modifier = Modifier
@@ -89,10 +95,17 @@ internal fun SearchContent(
           onHeartClick = callbacks.onHeartClick,
           onRetryClick = callbacks.onRetry
         )
+        Spacer(Modifier.height(adInset))
       }
       SnackbarHost(
-        modifier = Modifier.align(Alignment.BottomCenter),
+        modifier = Modifier
+          .align(Alignment.BottomCenter)
+          .padding(bottom = adInset),
         hostState = snackbarHostState
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        placement = AdPlacement.SearchBottom
       )
     }
   }

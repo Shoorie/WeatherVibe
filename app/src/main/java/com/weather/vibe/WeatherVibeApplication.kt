@@ -3,6 +3,8 @@ package com.weather.vibe
 import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
+import com.weather.vibe.core.ads.data.AdMobInitializer
+import com.weather.vibe.core.remoteconfig.domain.FeatureFlags
 import com.weather.vibe.core.tracing.TraceSections.KOIN_INITIALIZATION
 import com.weather.vibe.core.tracing.traceSection
 import com.weather.vibe.di.WeatherVibeApp
@@ -31,6 +33,8 @@ class WeatherVibeApplication : Application(), Configuration.Provider {
         androidContext(this@WeatherVibeApplication)
       }
     }
+    get<FeatureFlags>()
+    get<AdMobInitializer>().start()
     get<WidgetRefreshCoordinator>().start()
     get<SchedulingCoordinator>().start()
   }

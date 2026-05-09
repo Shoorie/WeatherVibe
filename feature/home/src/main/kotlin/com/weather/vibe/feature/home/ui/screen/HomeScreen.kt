@@ -9,10 +9,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.ads.domain.AdPlacement
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
@@ -111,6 +115,7 @@ internal fun HomeContent(
   onShareClick: () -> Unit,
   onGenreRemoveClick: (String) -> Unit
 ) {
+  val adInset = rememberAdSlotBottomInset(AdPlacement.HomeBottom)
   Box(
     modifier = modifier
       .fillMaxSize()
@@ -123,6 +128,7 @@ internal fun HomeContent(
         onRetry = onRefresh
       )
       is Loaded -> WeatherContent(
+        bottomInset = adInset,
         state = state,
         onNavigateToActivityPlanner = onNavigateToActivityPlanner,
         onNavigateToDetails = onNavigateToDetails,
@@ -135,6 +141,10 @@ internal fun HomeContent(
         onGenreRemoveClick = onGenreRemoveClick
       )
     }
+    AdSlot(
+      modifier = Modifier.align(Alignment.BottomCenter),
+      placement = AdPlacement.HomeBottom
+    )
   }
 }
 

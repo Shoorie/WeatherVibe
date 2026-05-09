@@ -17,6 +17,9 @@ local.properties
 *.jks
 *.keystore
 
+# AdMob real IDs (release-only — never committed)
+/app/src/release/res/values/admob_ids.xml
+
 # Generated
 release-notes.txt
 

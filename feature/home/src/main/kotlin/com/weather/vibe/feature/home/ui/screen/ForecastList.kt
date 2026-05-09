@@ -14,6 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraLarge
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Large
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
@@ -49,6 +51,7 @@ import com.weather.vibe.feature.viberating.ui.rating.RatingCardHost
 @Composable
 internal fun ForecastList(
   modifier: Modifier = Modifier,
+  bottomInset: Dp = 0.dp,
   state: Loaded,
   onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
@@ -63,10 +66,10 @@ internal fun ForecastList(
 
   val canShare = state.aiSuggestion.briefing is BriefingUiState.Loaded
   val horizontalPadding = remember { Modifier.padding(horizontal = Medium) }
-  val listContentPadding = remember {
+  val listContentPadding = remember(bottomInset) {
     PaddingValues(
       top = Medium,
-      bottom = ExtraLarge
+      bottom = ExtraLarge + bottomInset
     )
   }
 

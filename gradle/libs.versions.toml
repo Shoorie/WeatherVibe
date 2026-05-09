@@ -35,7 +35,10 @@ koin = "4.2.1"
 koinAnnotations = "2.3.1"
 googleServices = "4.4.4"
 playServicesLocation = "21.3.0"
+playServicesAds = "23.6.0"
 firebaseAppDistribution = "5.2.1"
+firebaseBom = "33.7.0"
+userMessagingPlatform = "3.0.0"
 detekt = "1.23.8"
 benchmarkMacroJunit4 = "1.4.1"
 uiautomator = "2.3.0"
@@ -98,6 +101,14 @@ androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchm
 androidx-test-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
 google-play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+google-play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+google-user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }
+
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 
 # Gradle plugin artifacts (for build-logic compileOnly)
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }

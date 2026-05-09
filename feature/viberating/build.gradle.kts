@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.ads)
   implementation(projects.core.time)
   implementation(projects.domain.airquality)
   implementation(projects.domain.viberating)

@@ -1,14 +1,21 @@
 package com.weather.vibe.feature.activityplanner.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.ads.domain.AdPlacement
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -72,11 +79,19 @@ internal fun ActivityPlannerContent(
       )
     }
   ) {
-    ScreenBody(
-      state = state,
-      onActivitySelect = onActivitySelect,
-      onRetryClick = onRetryClick
-    )
+    val adInset = rememberAdSlotBottomInset(AdPlacement.ActivityPlannerBottom)
+    Box(modifier = Modifier.fillMaxSize()) {
+      ScreenBody(
+        modifier = Modifier.padding(bottom = adInset),
+        state = state,
+        onActivitySelect = onActivitySelect,
+        onRetryClick = onRetryClick
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        placement = AdPlacement.ActivityPlannerBottom
+      )
+    }
   }
 }
 

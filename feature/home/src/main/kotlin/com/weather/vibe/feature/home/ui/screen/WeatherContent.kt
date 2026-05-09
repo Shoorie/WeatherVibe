@@ -10,6 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
@@ -22,6 +24,7 @@ import com.weather.vibe.feature.home.ui.screen.callbacks.MoodSheetCallbacks
 @Composable
 internal fun WeatherContent(
   modifier: Modifier = Modifier,
+  bottomInset: Dp = 0.dp,
   state: Loaded,
   onNavigateToActivityPlanner: () -> Unit,
   onNavigateToDetails: () -> Unit,
@@ -42,6 +45,7 @@ internal fun WeatherContent(
 
   ForecastList(
     modifier = modifier,
+    bottomInset = bottomInset,
     state = state,
     onNavigateToActivityPlanner = onNavigateToActivityPlanner,
     onNavigateToDetails = onNavigateToDetails,

@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.viberating.ui.history
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,13 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.weather.vibe.core.ads.domain.AdPlacement
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.rememberAdSlotBottomInset
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -90,13 +97,25 @@ internal fun VibeHistoryContent(
       )
     }
   ) {
-    VibeHistoryScrollContent(state = state, callbacks = callbacks)
+    val adInset = rememberAdSlotBottomInset(AdPlacement.VibeHistoryBottom)
+    Box(modifier = Modifier.fillMaxSize()) {
+      VibeHistoryScrollContent(
+        state = state,
+        bottomInset = adInset,
+        callbacks = callbacks
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        placement = AdPlacement.VibeHistoryBottom
+      )
+    }
   }
 }
 
 @Composable
 private fun VibeHistoryScrollContent(
   state: VibeHistoryUiState,
+  bottomInset: Dp = 0.dp,
   callbacks: VibeHistoryCallbacks
 ) {
   Column(
@@ -104,7 +123,7 @@ private fun VibeHistoryScrollContent(
       .fillMaxSize()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)
-      .padding(bottom = ScrollContentBottomPadding)
+      .padding(bottom = ScrollContentBottomPadding + bottomInset)
   ) {
     VibeHistoryStats(
       averageDisplay = state.averageDisplay,

@@ -12,6 +12,7 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.NavKey
+import com.weather.vibe.core.ads.ui.ConsentManagerHost
 import com.weather.vibe.navigation.WeatherVibeNavHost
 import com.weather.vibe.navigation.deeplink.DeepLinkRouteResolver
 import com.weather.vibe.navigation.splash.SplashBackdrop
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       WeatherVibeAppTheme {
+        ConsentManagerHost()
         val value by startRoute.collectAsState()
         when (value) {
           null -> SplashBackdrop()

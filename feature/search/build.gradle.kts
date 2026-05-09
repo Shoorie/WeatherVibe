@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.ads)
   implementation(projects.domain.location)
   implementation(projects.domain.settings)
   implementation(projects.domain.weather)

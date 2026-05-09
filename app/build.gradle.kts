@@ -82,11 +82,13 @@ ksp {
 }
 
 dependencies {
+  implementation(projects.core.ads)
   implementation(projects.core.ai)
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
   implementation(projects.core.navigation)
   implementation(projects.core.permissions)
+  implementation(projects.core.remoteconfig)
   implementation(projects.core.sharing)
   implementation(projects.core.time)
   implementation(projects.core.tracing)
@@ -139,6 +141,9 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
   implementation(libs.koin.androidx.workmanager)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.analytics.ktx)
 
   implementation(libs.androidx.profileinstaller)
   baselineProfile(projects.benchmark)

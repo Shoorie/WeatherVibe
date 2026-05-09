@@ -24,7 +24,7 @@ import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Small
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.WidgetPromo
+import com.weather.vibe.feature.home.ui.HomeWidgetPromoTexts
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,9 +51,9 @@ internal fun WidgetPromoSheet(
       WidgetPromoMiniPreview()
       WidgetPromoHeader()
       VibeButtonStack(
-        primaryLabel = WidgetPromo.primaryAction(),
+        primaryLabel = HomeWidgetPromoTexts.primaryAction(),
         onPrimaryClick = onAddClick,
-        secondaryLabel = WidgetPromo.secondaryAction(),
+        secondaryLabel = HomeWidgetPromoTexts.secondaryAction(),
         onSecondaryClick = onDismiss
       )
     }
@@ -69,7 +69,7 @@ private fun WidgetPromoHeader() {
   ) {
     Text(
       modifier = Modifier.semantics { heading() },
-      text = WidgetPromo.title(),
+      text = HomeWidgetPromoTexts.title(),
       style = typography.titleLarge,
       color = colors.onSurface,
       fontWeight = FontWeight.Bold,
@@ -77,7 +77,7 @@ private fun WidgetPromoHeader() {
     )
     Text(
       modifier = Modifier.padding(horizontal = Small),
-      text = WidgetPromo.subtitle(),
+      text = HomeWidgetPromoTexts.subtitle(),
       style = typography.bodyMedium,
       color = colors.onSurfaceVariant,
       textAlign = TextAlign.Center

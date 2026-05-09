@@ -68,7 +68,7 @@ internal class WeatherSuggestionEntityMapper {
         "${entry.rating}:${entry.note?.hashCode() ?: 0}"
       }
       .hashCode()
-    
+
     return "d$sortedHash"
   }
 

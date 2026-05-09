@@ -12,33 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
-import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.feature.home.ui.HomeResources.WidgetPromo
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewConditionFontSize
+import com.weather.vibe.feature.home.ui.HomeWidgetPromoTexts
 import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewCornerRadius
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewEmojiSize
 import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewHeight
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewLocationFontSize
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewMetaFontSize
 import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewMinWidth
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewMoodFontSize
 import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewPadding
-import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoDefaults.PreviewTemperatureFontSize
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -53,7 +42,7 @@ internal fun WidgetPromoMiniPreview(modifier: Modifier = Modifier) {
       .clip(RoundedCornerShape(PreviewCornerRadius))
       .background(colors.cardContainer)
       .padding(PreviewPadding)
-      .semantics(mergeDescendants = true) {}
+      .semantics(mergeDescendants = true) { invisibleToUser() }
   ) {
     PreviewHeader(styles = styles)
     Box(
@@ -63,7 +52,7 @@ internal fun WidgetPromoMiniPreview(modifier: Modifier = Modifier) {
       contentAlignment = Alignment.Center
     ) {
       Text(
-        text = WidgetPromo.previewEmoji(),
+        text = HomeWidgetPromoTexts.previewEmoji(),
         style = EmojiTextStyle
       )
     }
@@ -79,13 +68,13 @@ private fun PreviewHeader(styles: WidgetPromoTextStyles) {
     verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
-      text = WidgetPromo.previewLocation(),
+      text = HomeWidgetPromoTexts.previewLocation(),
       style = styles.location,
       color = colors.onSurface,
       fontWeight = FontWeight.SemiBold
     )
     Text(
-      text = WidgetPromo.previewFetchedAt(),
+      text = HomeWidgetPromoTexts.previewFetchedAt(),
       style = styles.meta,
       color = colors.onSurfaceVariant
     )
@@ -101,19 +90,19 @@ private fun PreviewFooter(styles: WidgetPromoTextStyles) {
   ) {
     Column {
       Text(
-        text = WidgetPromo.previewCondition(),
+        text = HomeWidgetPromoTexts.previewCondition(),
         style = styles.condition,
         color = colors.onSurface,
         fontWeight = FontWeight.SemiBold
       )
       Text(
-        text = WidgetPromo.previewMood(),
+        text = HomeWidgetPromoTexts.previewMood(),
         style = styles.mood,
         color = colors.onSurfaceVariant
       )
     }
     Text(
-      text = WidgetPromo.previewTemperature(),
+      text = HomeWidgetPromoTexts.previewTemperature(),
       style = styles.temperature,
       color = colors.onSurface,
       fontWeight = FontWeight.Bold

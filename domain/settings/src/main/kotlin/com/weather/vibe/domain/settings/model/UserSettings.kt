@@ -11,7 +11,9 @@ data class UserSettings(
   val pollenAlertsEnabled: Boolean,
   val temperatureUnit: TemperatureUnit,
   val weatherAlertsEnabled: Boolean,
-  val welcomeOnboardingSeen: Boolean
+  val welcomeOnboardingSeen: Boolean,
+  val widgetPromoEligible: Boolean,
+  val widgetPromoSeen: Boolean
 ) {
 
   fun withBriefTone(tone: BriefTone): UserSettings =
@@ -40,6 +42,12 @@ data class UserSettings(
 
   fun withWelcomeOnboardingSeen(): UserSettings =
     copy(welcomeOnboardingSeen = true)
+
+  fun withWidgetPromoEligible(): UserSettings =
+    copy(widgetPromoEligible = true)
+
+  fun withWidgetPromoSeen(): UserSettings =
+    copy(widgetPromoSeen = true)
 
   fun hasBriefToneChanged(previous: UserSettings?): Boolean =
     previous != null && briefTone != previous.briefTone

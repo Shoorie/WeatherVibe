@@ -132,4 +132,15 @@
   <string name="home_activity_planner_title">Zaplanuj aktywność</string>
   <string name="home_activity_planner_subtitle">Zobacz najlepsze okna dla biegania, spaceru lub roweru</string>
   <string name="home_activity_planner_content_description">Otwórz planer aktywności</string>
+
+  <string name="widget_promo_title">Pogoda zawsze pod ręką</string>
+  <string name="widget_promo_subtitle">Dodaj widget WeatherVibe na ekran główny i sprawdzaj pogodę bez otwierania aplikacji.</string>
+  <string name="widget_promo_preview_location">Twoja lokalizacja</string>
+  <string name="widget_promo_preview_condition">Słonecznie</string>
+  <string name="widget_promo_preview_mood">Przyjemny vibe</string>
+  <string name="widget_promo_preview_temperature">23°</string>
+  <string name="widget_promo_preview_emoji">☀️</string>
+  <string name="widget_promo_preview_fetched_at">właśnie teraz</string>
+  <string name="widget_promo_primary_action">Dodaj widget</string>
+  <string name="widget_promo_secondary_action">Może później</string>
 </resources>

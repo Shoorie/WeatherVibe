@@ -18,7 +18,9 @@ object UserSettingsFixtures {
     pollenAlertsEnabled: Boolean = false,
     temperatureUnit: TemperatureUnit = CELSIUS,
     weatherAlertsEnabled: Boolean = false,
-    welcomeOnboardingSeen: Boolean = false
+    welcomeOnboardingSeen: Boolean = false,
+    widgetPromoEligible: Boolean = false,
+    widgetPromoSeen: Boolean = false
   ): UserSettings = UserSettings(
     briefTone = briefTone,
     excludedGenres = excludedGenres,
@@ -27,6 +29,8 @@ object UserSettingsFixtures {
     pollenAlertsEnabled = pollenAlertsEnabled,
     temperatureUnit = temperatureUnit,
     weatherAlertsEnabled = weatherAlertsEnabled,
-    welcomeOnboardingSeen = welcomeOnboardingSeen
+    welcomeOnboardingSeen = welcomeOnboardingSeen,
+    widgetPromoEligible = widgetPromoEligible,
+    widgetPromoSeen = widgetPromoSeen
   )
 }

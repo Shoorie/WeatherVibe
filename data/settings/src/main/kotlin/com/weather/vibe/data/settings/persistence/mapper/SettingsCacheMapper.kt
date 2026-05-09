@@ -20,7 +20,9 @@ internal class SettingsCacheMapper {
       pollenAlertsEnabled = cacheData.pollenAlertsEnabled,
       temperatureUnit = cacheData.temperatureUnit.toTemperatureUnit(),
       weatherAlertsEnabled = cacheData.weatherAlertsEnabled,
-      welcomeOnboardingSeen = cacheData.welcomeOnboardingSeen
+      welcomeOnboardingSeen = cacheData.welcomeOnboardingSeen,
+      widgetPromoEligible = cacheData.widgetPromoEligible,
+      widgetPromoSeen = cacheData.widgetPromoSeen
     )
 
   fun toCache(
@@ -36,6 +38,8 @@ internal class SettingsCacheMapper {
       .setTemperatureUnit(settings.temperatureUnit.name)
       .setWeatherAlertsEnabled(settings.weatherAlertsEnabled)
       .setWelcomeOnboardingSeen(settings.welcomeOnboardingSeen)
+      .setWidgetPromoEligible(settings.widgetPromoEligible)
+      .setWidgetPromoSeen(settings.widgetPromoSeen)
       .build()
 
   private fun String.toBriefTone(): BriefTone =

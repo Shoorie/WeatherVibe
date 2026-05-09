@@ -133,4 +133,15 @@
   <string name="home_activity_planner_title">Plan your activity</string>
   <string name="home_activity_planner_subtitle">See today\'s best windows for running, walking or cycling</string>
   <string name="home_activity_planner_content_description">Open activity planner</string>
+
+  <string name="widget_promo_title">Weather always at hand</string>
+  <string name="widget_promo_subtitle">Add the WeatherVibe widget to your home screen and check the weather without opening the app.</string>
+  <string name="widget_promo_preview_location">Your place</string>
+  <string name="widget_promo_preview_condition">Sunny</string>
+  <string name="widget_promo_preview_mood">Pleasant vibe</string>
+  <string name="widget_promo_preview_temperature">23°</string>
+  <string name="widget_promo_preview_emoji">☀️</string>
+  <string name="widget_promo_preview_fetched_at">just now</string>
+  <string name="widget_promo_primary_action">Add widget</string>
+  <string name="widget_promo_secondary_action">Maybe later</string>
 </resources>

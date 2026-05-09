@@ -28,6 +28,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 import com.weather.vibe.feature.home.preview.HomePreview
 import com.weather.vibe.feature.home.ui.component.share.PosterCaptureHost
+import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoHost
 import com.weather.vibe.feature.home.ui.screen.callbacks.HomeCallbacks
 import org.koin.androidx.compose.koinViewModel
 
@@ -39,6 +40,9 @@ fun HomeScreen(
   onNavigateToSettings: () -> Unit = {},
   onNavigateToVibeHistory: () -> Unit = {},
   onContentReady: () -> Unit = {},
+  onPinWidget: () -> Unit = {},
+  isWidgetAlreadyPinned: () -> Boolean = { false },
+  pinWidgetSupported: Boolean = false,
   selectedLocation: Location
 ) {
 
@@ -84,6 +88,13 @@ fun HomeScreen(
       pendingPoster = null
     }
   }
+
+  WidgetPromoHost(
+    isHomeContentReady = state is Loaded,
+    pinWidgetSupported = pinWidgetSupported,
+    isWidgetAlreadyPinned = isWidgetAlreadyPinned,
+    onPinWidget = onPinWidget
+  )
 }
 
 @Composable

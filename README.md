@@ -12,12 +12,16 @@
 *Built to demonstrate strict architectural discipline and the power of AI-assisted development.*
 
 <p align="center">
-  <img src="art/screen1.png" width="33%" />
-  <img src="art/screen2.png" width="33%" />
-  <img src="art/screen3.png" width="33%" />
-  <img src="art/screen4.png" width="33%" />
-  <img src="art/screen5.png" width="33%" />
-  <img src="art/screen6.png" width="33%" />
+  <img src="art/screen1.png" width="20%" />
+  <img src="art/screen2.png" width="20%" />
+  <img src="art/screen3.png" width="20%" />
+  <img src="art/screen4.png" width="20%" />
+  <img src="art/screen5.png" width="20%" />
+  <img src="art/screen6.png" width="20%" />
+  <img src="art/screen7.png" width="20%" />
+  <img src="art/screen8.png" width="20%" />
+  <img src="art/screen9.png" width="20%" />
+  <img src="art/screen10.png" width="20%" />
 </p>
 
 </div>
@@ -170,6 +174,7 @@ from [claude-code-kit](https://github.com/Shoorie/claude-code-kit). The `.claude
 gitignored — skills are installed locally.
 
 After cloning, run:
+
 ```bash
 ~/claude-code-kit/install.sh
 ```

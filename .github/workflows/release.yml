@@ -42,6 +42,13 @@ jobs:
         with:
           service-account-json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
 
+      - name: Inject AdMob IDs
+        env:
+          ADMOB_IDS_XML: ${{ secrets.ADMOB_IDS_XML }}
+        run: |
+          mkdir -p app/src/release/res/values
+          printf '%s' "$ADMOB_IDS_XML" > app/src/release/res/values/admob_ids.xml
+
       - name: Build release APK
         env:
           VERSION_NAME: ${{ steps.version.outputs.name }}

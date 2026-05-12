@@ -4,6 +4,8 @@ object EnvKeys {
 
   const val ANTHROPIC_API_KEY = "ANTHROPIC_API_KEY"
 
+  const val ADMOB_TEST_DEVICE_IDS = "ADMOB_TEST_DEVICE_IDS"
+
   const val KEYSTORE_PATH = "KEYSTORE_PATH"
   const val KEYSTORE_PASSWORD = "KEYSTORE_PASSWORD"
   const val KEY_ALIAS = "KEY_ALIAS"

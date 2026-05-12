@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,12 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.domain.ads.placement.AdPlacement.SearchBottom
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
@@ -67,6 +73,8 @@ internal fun SearchContent(
     }
   ) {
     val callbacks = remember(dispatch) { SearchCallbacks(dispatch) }
+    val adSlotState = rememberAdSlotUiState(SearchBottom)
+    val adBottomInset = adSlotBottomInset(adSlotState)
     Box(modifier = Modifier.fillMaxSize()) {
       Column(
         modifier = Modifier
@@ -89,10 +97,17 @@ internal fun SearchContent(
           onHeartClick = callbacks.onHeartClick,
           onRetryClick = callbacks.onRetry
         )
+        Spacer(Modifier.height(adBottomInset))
       }
       SnackbarHost(
-        modifier = Modifier.align(Alignment.BottomCenter),
+        modifier = Modifier
+          .align(Alignment.BottomCenter)
+          .padding(bottom = adBottomInset),
         hostState = snackbarHostState
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        state = adSlotState
       )
     }
   }

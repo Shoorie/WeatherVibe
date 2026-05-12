@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.ads)
+  implementation(projects.domain.ads)
   implementation(projects.core.sharing)
   implementation(projects.core.time)
   implementation(projects.domain.airquality)

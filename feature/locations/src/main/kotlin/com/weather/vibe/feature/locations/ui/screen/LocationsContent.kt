@@ -23,7 +23,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -31,6 +35,7 @@ import com.weather.vibe.core.designsystem.components.message.VibeMessage
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.domain.ads.placement.AdPlacement.LocationsBottom
 import com.weather.vibe.feature.locations.presentation.LocationsAction
 import com.weather.vibe.feature.locations.presentation.LocationsAction.AddLocationClick
 import com.weather.vibe.feature.locations.presentation.LocationsAction.ExitCompareMode
@@ -103,27 +108,13 @@ internal fun LocationsContent(
       )
     }
   ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-      LocationsBody(
-        state = state,
-        onRenameRequest = { renameTarget = it },
-        dispatch = dispatch
-      )
-      AddLocationFab(
-        modifier = Modifier
-          .align(Alignment.BottomEnd)
-          .padding(
-            end = Medium,
-            bottom = FabBottomOffset + fabLift
-          ),
-        enabled = state !is Loaded || state.canAddMoreFavorites,
-        onClick = { dispatch(AddLocationClick) }
-      )
-      SnackbarHost(
-        modifier = Modifier.align(Alignment.BottomCenter),
-        hostState = snackbarHostState
-      )
-    }
+    LocationsScaffoldBody(
+      state = state,
+      snackbarHostState = snackbarHostState,
+      fabLift = fabLift,
+      onRenameRequest = { renameTarget = it },
+      dispatch = dispatch
+    )
   }
   renameTarget?.let { card ->
     LocationFavoriteLabelSheet(
@@ -151,8 +142,47 @@ private fun headerSubtitleFor(state: LocationsUiState): String? =
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+private fun LocationsScaffoldBody(
+  state: LocationsUiState,
+  snackbarHostState: SnackbarHostState,
+  fabLift: Dp,
+  onRenameRequest: (LocationCardUiState) -> Unit,
+  dispatch: (LocationsAction) -> Unit
+) {
+  val adSlotState = rememberAdSlotUiState(LocationsBottom)
+  val adBottomInset = adSlotBottomInset(adSlotState)
+  Box(modifier = Modifier.fillMaxSize()) {
+    LocationsBody(
+      bottomInset = adBottomInset,
+      state = state,
+      onRenameRequest = onRenameRequest,
+      dispatch = dispatch
+    )
+    AddLocationFab(
+      modifier = Modifier
+        .align(Alignment.BottomEnd)
+        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adBottomInset),
+      enabled = state.isAddFavoriteEnabled,
+      onClick = { dispatch(AddLocationClick) }
+    )
+    SnackbarHost(
+      modifier = Modifier
+        .align(Alignment.BottomCenter)
+        .padding(bottom = adBottomInset),
+      hostState = snackbarHostState
+    )
+    AdSlot(
+      modifier = Modifier.align(Alignment.BottomCenter),
+      state = adSlotState
+    )
+  }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 private fun LocationsBody(
   modifier: Modifier = Modifier,
+  bottomInset: Dp = 0.dp,
   state: LocationsUiState,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -162,6 +192,7 @@ private fun LocationsBody(
     is Error -> LocationsError(modifier = modifier, message = state.message)
     is Loaded -> LocationsLoaded(
       modifier = modifier,
+      bottomInset = bottomInset,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -191,6 +222,7 @@ private fun LocationsError(
 @Composable
 private fun LocationsLoaded(
   modifier: Modifier = Modifier,
+  bottomInset: Dp = 0.dp,
   state: Loaded,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -201,6 +233,7 @@ private fun LocationsLoaded(
     onRefresh = { dispatch(PullToRefresh) }
   ) {
     LocationsList(
+      bottomInset = bottomInset,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -216,6 +249,7 @@ private fun LocationsLoaded(
 
 @Composable
 private fun LocationsList(
+  bottomInset: Dp = 0.dp,
   state: Loaded,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -244,7 +278,7 @@ private fun LocationsList(
       start = Medium,
       end = Medium,
       top = Medium,
-      bottom = ListBottomPadding
+      bottom = ListBottomPadding + bottomInset
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {

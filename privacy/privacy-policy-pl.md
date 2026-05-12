@@ -4,14 +4,19 @@
 # Polityka prywatności WeatherVibe
 
 **Data wejścia w życie:** 8 maja 2026 r.
-**Ostatnia aktualizacja:** 8 maja 2026 r.
+**Ostatnia aktualizacja:** 9 maja 2026 r.
 
 Niniejsza polityka prywatności opisuje, w jaki sposób aplikacja mobilna **WeatherVibe** ("
 Aplikacja") obsługuje dane użytkowników. Twórca aplikacji ("my", "nasz") szanuje Twoją prywatność i
 ogranicza przetwarzanie danych do minimum niezbędnego do działania funkcji pogodowych.
 
-W skrócie: **nie posiadamy własnych serwerów, nie zbieramy danych analitycznych, nie sprzedajemy
-informacji o użytkownikach i nie wyświetlamy reklam.**
+W skrócie: **nie posiadamy własnych serwerów, Twoje dane osobowe (imię, ulubione lokalizacje,
+historia ocen nastroju) pozostają wyłącznie na Twoim urządzeniu i nie są przez nas sprzedawane.**
+
+Aplikacja korzysta z **Google AdMob** do wyświetlania reklam, **Firebase Remote Config** do
+zdalnego sterowania funkcjami oraz **Firebase Analytics** do mierzenia podstawowych statystyk
+użycia. Te usługi działają w oparciu o zgodę zgodnie z RODO — pierwszą decyzję podejmiesz przy
+pierwszym uruchomieniu aplikacji w UE/EOG, a w każdej chwili możesz ją zmienić.
 
 ---
 
@@ -36,8 +41,8 @@ prognozę pogody dla Twojego aktualnego położenia.
 - **Nie zapisujemy historii lokalizacji.** W bazie lokalnej urządzenia przechowujemy jedynie
   współrzędne lokalizacji, które **sam(a) ręcznie dodasz** do listy ulubionych, aby ich pogodę można
   było wyświetlić ponownie bez ponownego wyszukiwania.
-- Lokalizacja **nie jest udostępniana** żadnym podmiotom poza dostawcami pogody wymienionymi w
-  sekcji 3.
+- Lokalizacja **nie jest udostępniana** sieciom reklamowym ani narzędziom analitycznym. Trafia
+  wyłącznie do dostawców pogody wymienionych w sekcji 3.
 
 ### 2.2. Powiadomienia
 
@@ -60,23 +65,44 @@ W Aplikacji możesz wprowadzić:
 Wszystkie powyższe dane są przechowywane **wyłącznie na Twoim urządzeniu** w bazie Room oraz Proto
 DataStore. Nie są wysyłane na żadne serwery, z wyjątkiem przypadków opisanych w sekcji 3.
 
-### 2.4. Dane techniczne
+### 2.4. Dane techniczne i analityczne (Firebase Analytics)
 
-Aplikacja **nie korzysta** z narzędzi analitycznych takich jak Firebase Analytics, Google Analytics,
-Crashlytics, Mixpanel ani podobnych. Nie zbieramy informacji o:
+Aplikacja korzysta z **Firebase Analytics** firmy Google w celu mierzenia podstawowych metryk użycia
+(np. liczba uruchomień aplikacji, awarie, wersja systemu). Firebase Analytics zbiera m.in.:
 
-- modelu urządzenia,
-- wersji systemu,
-- crashach,
-- czasie spędzonym w aplikacji,
-- klikniętych ekranach.
+- **identyfikator instancji aplikacji** (Firebase installation ID),
+- **identyfikator reklamowy Android (AAID)** — jeżeli wyraziłeś(-aś) zgodę i nie zresetowałeś(-aś)
+  go w ustawieniach systemowych,
+- model i język urządzenia, wersję systemu Android, kraj (na podstawie adresu IP),
+- zdarzenia systemowe (uruchomienie aplikacji, czas trwania sesji, awarie).
+
+Dane są wysyłane do Google na adresy `app-measurement.com`, `*.google-analytics.com`. Nie
+przekazujemy Firebase Analytics Twojej nazwy użytkownika, listy ulubionych lokalizacji, ocen
+nastroju ani treści generowanych przez AI.
+
+Możesz w każdej chwili zresetować lub usunąć identyfikator reklamowy w ustawieniach systemu Android
+→ Prywatność → Reklamy.
+
+### 2.5. Zarządzanie zgodą reklamową (UMP)
+
+Jeżeli korzystasz z aplikacji w **Unii Europejskiej, Wielkiej Brytanii lub Szwajcarii**, przy
+pierwszym uruchomieniu aplikacja wyświetla formularz zgody zarządzany przez **Google User Messaging
+Platform (UMP)**. Formularz pozwala:
+
+- wyrazić zgodę na spersonalizowane reklamy oraz powiązane przetwarzanie danych przez Google AdMob,
+- ograniczyć się do **niespersonalizowanych reklam (NPA)**,
+- odmówić zgody (wówczas reklamy nie zostaną wyświetlone).
+
+Decyzję możesz zmienić w dowolnym momencie z poziomu ekranu **Profil → Ustawienia prywatności**.
+Decyzja jest przechowywana lokalnie przez UMP SDK; dopóki istnieje, formularz nie pojawia się
+ponownie.
 
 ---
 
 ## 3. Komu udostępniamy dane
 
 Aplikacja korzysta z następujących usług zewnętrznych. Każda z nich otrzymuje wyłącznie minimalny
-zakres danych niezbędny do realizacji funkcji.
+zakres danych niezbędny do realizacji swojej funkcji.
 
 ### 3.1. Open-Meteo (dostawca prognoz pogody)
 
@@ -107,9 +133,39 @@ identyfikatora urządzenia ani żadnych innych danych pozwalających na bezpośr
 Zgodnie z polityką Anthropic, treści przesłane do API komercyjnego nie są wykorzystywane do
 trenowania modeli.
 
-### 3.3. Brak innych odbiorców
+### 3.3. Google AdMob (reklamy)
 
-Nie udostępniamy danych żadnym sieciom reklamowym, brokerom danych, narzędziom analitycznym ani
+- **Cel:** wyświetlanie banerów reklamowych na wybranych ekranach (Strona główna, Lista lokalizacji,
+  Planer aktywności).
+- **Wysyłane dane:** identyfikator reklamowy Android (AAID), przybliżona lokalizacja na podstawie
+  adresu IP, dane techniczne urządzenia (model, system, język), kontekst aplikacji, status zgody
+  zebrany przez UMP (zob. 2.5).
+- **Zakres przetwarzania zależy od zgody:**
+    - **Zgoda na reklamy spersonalizowane** — Google AdMob może profilować Cię na podstawie
+      zachowań w innych aplikacjach i witrynach.
+    - **Brak zgody (NPA)** — wyświetlane są wyłącznie reklamy niespersonalizowane na podstawie
+      kontekstu aplikacji oraz przybliżonej lokalizacji.
+    - **Odmowa zgody** — reklamy nie są wyświetlane.
+- **Adresy:** `googleads.g.doubleclick.net`, `pagead2.googlesyndication.com`,
+  `csi.gstatic.com`, `fundingchoicesmessages.google.com`.
+- **Polityka prywatności dostawcy:** https://policies.google.com/privacy
+- **Jak Google używa danych z aplikacji:** https://policies.google.com/technologies/partner-sites
+
+### 3.4. Firebase (Google) — Remote Config oraz Analytics
+
+- **Cel:**
+    - **Remote Config** — zdalne włączanie/wyłączanie funkcji aplikacji (np. dostępność reklam na
+      poszczególnych ekranach) bez konieczności wydawania nowej wersji.
+    - **Analytics** — zob. sekcja 2.4.
+- **Wysyłane dane:** identyfikator instancji Firebase, dane techniczne urządzenia, AAID (jeśli
+  wyrażono zgodę), zdarzenia systemowe.
+- **Adresy:** `firebaseremoteconfig.googleapis.com`, `firebaseinstallations.googleapis.com`,
+  `app-measurement.com`, `*.google-analytics.com`.
+- **Polityka prywatności dostawcy:** https://firebase.google.com/support/privacy
+
+### 3.5. Pozostali odbiorcy
+
+Poza usługami opisanymi w sekcjach 3.1–3.4 nie udostępniamy danych żadnym brokerom danych ani
 serwisom społecznościowym.
 
 ---
@@ -117,8 +173,12 @@ serwisom społecznościowym.
 ## 4. Przechowywanie danych
 
 - Dane wymienione w sekcji 2.3 są przechowywane **wyłącznie lokalnie** na Twoim urządzeniu.
-- Nie posiadamy serwera bazodanowego ani konta w chmurze, na którym przechowywane byłyby Twoje dane.
-- Odinstalowanie aplikacji powoduje **trwałe usunięcie** wszystkich danych z urządzenia.
+- Nie posiadamy serwera bazodanowego ani konta w chmurze, na którym przechowywane byłyby Twoje dane
+  osobowe.
+- Identyfikatory techniczne wykorzystywane przez Firebase Analytics oraz AdMob są przetwarzane przez
+  Google zgodnie z ich politykami prywatności.
+- Odinstalowanie aplikacji powoduje **trwałe usunięcie** wszystkich danych z urządzenia, w tym
+  identyfikatorów Firebase oraz lokalnych decyzji UMP.
 - Możesz w każdej chwili wyczyścić dane aplikacji przez Ustawienia systemu Android → Aplikacje →
   WeatherVibe → Przechowywanie → Wyczyść dane.
 
@@ -129,15 +189,25 @@ serwisom społecznościowym.
 Lokalne dane (preferencje, historia ocen nastroju, ulubione lokalizacje, cache pogody) przechowywane
 są **bezterminowo** lub do momentu, w którym sam(a) je usuniesz albo odinstalujesz aplikację.
 
+Dane przetwarzane przez Google (AdMob, Firebase Analytics, Remote Config) są przechowywane zgodnie z
+politykami Google — domyślnie do 14 miesięcy dla zdarzeń Analytics.
+
 ---
 
 ## 6. Twoje prawa (RODO)
 
-Ponieważ wszystkie dane osobowe pozostają na Twoim urządzeniu, masz nad nimi pełną kontrolę. Możesz:
+Ponieważ wszystkie dane osobowe wprowadzone w aplikacji pozostają na Twoim urządzeniu, masz nad nimi
+pełną kontrolę. Możesz:
 
 - **przeglądać** je w odpowiednich ekranach aplikacji (profil, lokalizacje, historia vibe),
 - **modyfikować** je w aplikacji,
-- **usunąć** je przez wyczyszczenie danych aplikacji lub jej odinstalowanie.
+- **usunąć** je przez wyczyszczenie danych aplikacji lub jej odinstalowanie,
+- **zmienić zgodę reklamową** w panelu UMP (Profil → Ustawienia prywatności),
+- **zresetować identyfikator reklamowy AAID** w ustawieniach systemu Android,
+- **wyłączyć personalizację reklam Google** na poziomie konta Google: https://myadcenter.google.com.
+
+W odniesieniu do danych przetwarzanych przez Google możesz również skorzystać z mechanizmów
+przewidzianych przez Google (export, usunięcie) na stronie https://myaccount.google.com.
 
 Jeśli masz pytania dotyczące przetwarzania danych lub chcesz skorzystać z innych praw wynikających z
 RODO (m.in. prawo do informacji, sprzeciwu, ograniczenia przetwarzania), skontaktuj się z nami: *
@@ -151,14 +221,17 @@ nadzorczego — w Polsce jest nim **Prezes Urzędu Ochrony Danych Osobowych** (h
 ## 7. Dzieci
 
 Aplikacja nie jest skierowana do dzieci poniżej 13. roku życia i nie zbiera świadomie żadnych danych
-od dzieci. Jeśli jesteś rodzicem lub opiekunem i sądzisz, że Twoje dziecko podało nam dane,
-skontaktuj się z nami — usuniemy je niezwłocznie.
+od dzieci. Reklamy AdMob są skonfigurowane z parametrem `tagForUnderAgeOfConsent = false`, co
+oznacza, że nie kierujemy treści do osób, dla których obowiązują dodatkowe restrykcje wiekowe. Jeśli
+jesteś rodzicem lub opiekunem i sądzisz, że Twoje dziecko korzystało z aplikacji, skontaktuj się z
+nami — pomożemy usunąć powiązane identyfikatory.
 
 ---
 
 ## 8. Bezpieczeństwo
 
-- Komunikacja z usługami zewnętrznymi (Open-Meteo, Anthropic) odbywa się wyłącznie po **HTTPS**.
+- Komunikacja z usługami zewnętrznymi (Open-Meteo, Anthropic, Google AdMob, Firebase) odbywa się
+  wyłącznie po **HTTPS**.
 - Lokalne dane są chronione izolacją procesów Androida (sandbox).
 - Nie wymagamy od Ciebie tworzenia konta ani podawania hasła.
 

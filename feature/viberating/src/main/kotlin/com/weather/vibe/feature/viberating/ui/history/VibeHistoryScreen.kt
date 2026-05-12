@@ -1,6 +1,7 @@
 package com.weather.vibe.feature.viberating.ui.history
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,18 +13,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.domain.ads.placement.AdPlacement.VibeHistoryBottom
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.BackClick
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DayDetailDismissed
 import com.weather.vibe.feature.viberating.presentation.history.VibeHistoryAction.DaySelected
@@ -90,13 +98,25 @@ internal fun VibeHistoryContent(
       )
     }
   ) {
-    VibeHistoryScrollContent(state = state, callbacks = callbacks)
+    val adSlotState = rememberAdSlotUiState(VibeHistoryBottom)
+    Box(modifier = Modifier.fillMaxSize()) {
+      VibeHistoryScrollContent(
+        state = state,
+        bottomInset = adSlotBottomInset(adSlotState),
+        callbacks = callbacks
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        state = adSlotState
+      )
+    }
   }
 }
 
 @Composable
 private fun VibeHistoryScrollContent(
   state: VibeHistoryUiState,
+  bottomInset: Dp = 0.dp,
   callbacks: VibeHistoryCallbacks
 ) {
   Column(
@@ -104,7 +124,7 @@ private fun VibeHistoryScrollContent(
       .fillMaxSize()
       .verticalScroll(rememberScrollState())
       .padding(horizontal = Padding.Medium)
-      .padding(bottom = ScrollContentBottomPadding)
+      .padding(bottom = ScrollContentBottomPadding + bottomInset)
   ) {
     VibeHistoryStats(
       averageDisplay = state.averageDisplay,
@@ -137,6 +157,7 @@ private fun PatternsSection(state: PatternsSectionUiState) {
       entriesSoFar = state.entriesSoFar,
       unlockThreshold = state.unlockThreshold
     )
+
     is PatternsSectionUiState.Unlocked -> ConditionRankingCard(
       ranking = state.ranking,
       basedOnEntries = state.basedOnEntries

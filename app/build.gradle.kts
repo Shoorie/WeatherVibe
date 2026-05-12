@@ -82,6 +82,7 @@ ksp {
 }
 
 dependencies {
+  implementation(projects.core.ads)
   implementation(projects.core.ai)
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
@@ -106,6 +107,10 @@ dependencies {
   implementation(projects.data.viberating)
   implementation(projects.domain.appearance)
   implementation(projects.data.appearance)
+  implementation(projects.domain.ads)
+  implementation(projects.data.ads)
+  implementation(projects.domain.remoteconfig)
+  implementation(projects.data.remoteconfig)
   implementation(projects.data.airquality)
   implementation(projects.domain.widget)
   implementation(projects.data.widget)
@@ -139,6 +144,9 @@ dependencies {
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)
   implementation(libs.koin.androidx.workmanager)
+
+  implementation(platform(libs.firebase.bom))
+  implementation(libs.firebase.analytics.ktx)
 
   implementation(libs.androidx.profileinstaller)
   baselineProfile(projects.benchmark)

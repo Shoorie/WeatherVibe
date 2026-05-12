@@ -1,19 +1,27 @@
 package com.weather.vibe.feature.activityplanner.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.ads.ui.AdSlot
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
 import com.weather.vibe.domain.activityplanner.model.ActivityType
+import com.weather.vibe.domain.ads.placement.AdPlacement.ActivityPlannerBottom
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerEvent.NavigateBack
 import com.weather.vibe.feature.activityplanner.presentation.ActivityPlannerViewModel
@@ -72,11 +80,19 @@ internal fun ActivityPlannerContent(
       )
     }
   ) {
-    ScreenBody(
-      state = state,
-      onActivitySelect = onActivitySelect,
-      onRetryClick = onRetryClick
-    )
+    val adSlotState = rememberAdSlotUiState(ActivityPlannerBottom)
+    Box(modifier = Modifier.fillMaxSize()) {
+      ScreenBody(
+        modifier = Modifier.padding(bottom = adSlotBottomInset(adSlotState)),
+        state = state,
+        onActivitySelect = onActivitySelect,
+        onRetryClick = onRetryClick
+      )
+      AdSlot(
+        modifier = Modifier.align(Alignment.BottomCenter),
+        state = adSlotState
+      )
+    }
   }
 }
 
@@ -94,6 +110,7 @@ private fun ScreenBody(
       state = state,
       onActivitySelect = onActivitySelect
     )
+
     is Error -> ActivityPlannerErrorState(
       modifier = modifier,
       message = state.message,

@@ -23,9 +23,10 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotState
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.domain.ads.placement.AdPlacement.VibeHistoryBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -97,11 +98,11 @@ internal fun VibeHistoryContent(
       )
     }
   ) {
-    val adSlotState = rememberAdSlotState(AdPlacement.VibeHistoryBottom)
+    val adSlotState = rememberAdSlotUiState(VibeHistoryBottom)
     Box(modifier = Modifier.fillMaxSize()) {
       VibeHistoryScrollContent(
         state = state,
-        bottomInset = adSlotState.bottomInset,
+        bottomInset = adSlotBottomInset(adSlotState),
         callbacks = callbacks
       )
       AdSlot(
@@ -156,6 +157,7 @@ private fun PatternsSection(state: PatternsSectionUiState) {
       entriesSoFar = state.entriesSoFar,
       unlockThreshold = state.unlockThreshold
     )
+
     is PatternsSectionUiState.Unlocked -> ConditionRankingCard(
       ranking = state.ranking,
       basedOnEntries = state.basedOnEntries

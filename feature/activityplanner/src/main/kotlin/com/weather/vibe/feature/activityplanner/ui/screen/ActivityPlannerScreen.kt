@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotState
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.domain.ads.placement.AdPlacement.ActivityPlannerBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -79,10 +80,10 @@ internal fun ActivityPlannerContent(
       )
     }
   ) {
-    val adSlotState = rememberAdSlotState(AdPlacement.ActivityPlannerBottom)
+    val adSlotState = rememberAdSlotUiState(ActivityPlannerBottom)
     Box(modifier = Modifier.fillMaxSize()) {
       ScreenBody(
-        modifier = Modifier.padding(bottom = adSlotState.bottomInset),
+        modifier = Modifier.padding(bottom = adSlotBottomInset(adSlotState)),
         state = state,
         onActivitySelect = onActivitySelect,
         onRetryClick = onRetryClick
@@ -109,6 +110,7 @@ private fun ScreenBody(
       state = state,
       onActivitySelect = onActivitySelect
     )
+
     is Error -> ActivityPlannerErrorState(
       modifier = modifier,
       message = state.message,

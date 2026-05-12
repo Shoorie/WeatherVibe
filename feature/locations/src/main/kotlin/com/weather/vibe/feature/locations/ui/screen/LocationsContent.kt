@@ -25,9 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotState
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.domain.ads.placement.AdPlacement.LocationsBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -148,10 +149,11 @@ private fun LocationsScaffoldBody(
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
-  val adSlotState = rememberAdSlotState(AdPlacement.LocationsBottom)
+  val adSlotState = rememberAdSlotUiState(LocationsBottom)
+  val adBottomInset = adSlotBottomInset(adSlotState)
   Box(modifier = Modifier.fillMaxSize()) {
     LocationsBody(
-      bottomInset = adSlotState.bottomInset,
+      bottomInset = adBottomInset,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -159,14 +161,14 @@ private fun LocationsScaffoldBody(
     AddLocationFab(
       modifier = Modifier
         .align(Alignment.BottomEnd)
-        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adSlotState.bottomInset),
-      enabled = state !is Loaded || state.canAddMoreFavorites,
+        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adBottomInset),
+      enabled = state.isAddFavoriteEnabled,
       onClick = { dispatch(AddLocationClick) }
     )
     SnackbarHost(
       modifier = Modifier
         .align(Alignment.BottomCenter)
-        .padding(bottom = adSlotState.bottomInset),
+        .padding(bottom = adBottomInset),
       hostState = snackbarHostState
     )
     AdSlot(

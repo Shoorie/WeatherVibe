@@ -10,6 +10,7 @@ android {
 
 dependencies {
   implementation(projects.core.ads)
+  implementation(projects.domain.ads)
   implementation(projects.core.time)
   implementation(projects.domain.activityplanner)
   implementation(projects.domain.location)

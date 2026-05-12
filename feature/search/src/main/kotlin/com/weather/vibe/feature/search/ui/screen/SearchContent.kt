@@ -18,9 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotState
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.domain.ads.placement.AdPlacement.SearchBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -72,7 +73,8 @@ internal fun SearchContent(
     }
   ) {
     val callbacks = remember(dispatch) { SearchCallbacks(dispatch) }
-    val adSlotState = rememberAdSlotState(AdPlacement.SearchBottom)
+    val adSlotState = rememberAdSlotUiState(SearchBottom)
+    val adBottomInset = adSlotBottomInset(adSlotState)
     Box(modifier = Modifier.fillMaxSize()) {
       Column(
         modifier = Modifier
@@ -95,12 +97,12 @@ internal fun SearchContent(
           onHeartClick = callbacks.onHeartClick,
           onRetryClick = callbacks.onRetry
         )
-        Spacer(Modifier.height(adSlotState.bottomInset))
+        Spacer(Modifier.height(adBottomInset))
       }
       SnackbarHost(
         modifier = Modifier
           .align(Alignment.BottomCenter)
-          .padding(bottom = adSlotState.bottomInset),
+          .padding(bottom = adBottomInset),
         hostState = snackbarHostState
       )
       AdSlot(

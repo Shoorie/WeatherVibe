@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.weather.vibe.core.ads.domain.AdPlacement
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.rememberAdSlotState
+import com.weather.vibe.core.ads.ui.adSlotBottomInset
+import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.domain.ads.placement.AdPlacement.WeatherDetailsBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -62,11 +63,12 @@ internal fun WeatherDetailsContent(
       )
     }
   ) {
-    val adSlotState = rememberAdSlotState(AdPlacement.WeatherDetailsBottom)
+    val adSlotState = rememberAdSlotUiState(WeatherDetailsBottom)
+    val adBottomInset = adSlotBottomInset(adSlotState)
     Box(modifier = Modifier.fillMaxSize()) {
       val contentModifier = Modifier
         .fillMaxSize()
-        .padding(bottom = adSlotState.bottomInset)
+        .padding(bottom = adBottomInset)
       when (state) {
         is Loading -> LoadingIndicator(modifier = contentModifier)
         is Error -> HomeErrorContent(

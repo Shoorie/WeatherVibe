@@ -14,8 +14,12 @@ import kotlinx.collections.immutable.toPersistentSet
 
 internal sealed interface LocationsUiState {
 
+  val isAddFavoriteEnabled: Boolean
+
   @Immutable
-  data object Loading : LocationsUiState
+  data object Loading : LocationsUiState {
+    override val isAddFavoriteEnabled: Boolean = true
+  }
 
   @Immutable
   data class Loaded(
@@ -33,6 +37,9 @@ internal sealed interface LocationsUiState {
     @Stable
     val canAddMoreFavorites: Boolean
       get() = cards.size < MAX_FAVORITES
+
+    override val isAddFavoriteEnabled: Boolean
+      get() = canAddMoreFavorites
 
     @Stable
     val headerSubtitle: LocationsHeaderSubtitle
@@ -90,5 +97,7 @@ internal sealed interface LocationsUiState {
   }
 
   @Immutable
-  data class Error(val message: String) : LocationsUiState
+  data class Error(val message: String) : LocationsUiState {
+    override val isAddFavoriteEnabled: Boolean = true
+  }
 }

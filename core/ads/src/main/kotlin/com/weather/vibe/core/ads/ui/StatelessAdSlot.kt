@@ -9,20 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.weather.vibe.core.ads.R
 import com.weather.vibe.core.ads.ui.AdsDefaults.BannerHeight
+import com.weather.vibe.core.ads.ui.AdsResources.Texts.previewPlaceholder
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 
 @Composable
-internal fun StatelessAdSlot(adUnitId: String, modifier: Modifier = Modifier) {
+internal fun StatelessAdSlot(
+  modifier: Modifier = Modifier,
+  adUnitId: String
+) {
   if (LocalInspectionMode.current) {
     AdSlotPreviewPlaceholder(modifier = modifier)
     return
@@ -53,7 +55,7 @@ private fun AdSlotPreviewPlaceholder(modifier: Modifier = Modifier) {
     Text(
       color = colors.onSurfaceVariant,
       style = typography.labelMedium,
-      text = stringResource(R.string.ads_preview_placeholder)
+      text = previewPlaceholder()
     )
   }
 }

@@ -14,12 +14,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.ads.ui.AdSlot
 import com.weather.vibe.core.ads.ui.adSlotBottomInset
 import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
-import com.weather.vibe.domain.ads.placement.AdPlacement.WeatherDetailsBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.domain.ads.placement.AdPlacement.WeatherDetailsBottom
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.DetailsViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState

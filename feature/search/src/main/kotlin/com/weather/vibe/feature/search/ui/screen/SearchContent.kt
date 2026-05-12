@@ -21,13 +21,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.ads.ui.AdSlot
 import com.weather.vibe.core.ads.ui.adSlotBottomInset
 import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
-import com.weather.vibe.domain.ads.placement.AdPlacement.SearchBottom
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.rememberAppBackgroundBrush
+import com.weather.vibe.domain.ads.placement.AdPlacement.SearchBottom
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
 import com.weather.vibe.feature.search.presentation.SearchAction
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick

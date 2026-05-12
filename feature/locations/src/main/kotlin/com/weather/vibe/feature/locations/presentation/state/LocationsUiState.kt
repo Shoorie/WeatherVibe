@@ -18,7 +18,7 @@ internal sealed interface LocationsUiState {
 
   @Immutable
   data object Loading : LocationsUiState {
-    override val isAddFavoriteEnabled: Boolean = true
+    override val isAddFavoriteEnabled: Boolean = false
   }
 
   @Immutable
@@ -98,6 +98,6 @@ internal sealed interface LocationsUiState {
 
   @Immutable
   data class Error(val message: String) : LocationsUiState {
-    override val isAddFavoriteEnabled: Boolean = true
+    override val isAddFavoriteEnabled: Boolean = false
   }
 }

@@ -17,10 +17,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.ads.ui.AdSlot
 import com.weather.vibe.core.ads.ui.adSlotBottomInset
 import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
-import com.weather.vibe.domain.ads.placement.AdPlacement.HomeBottom
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
+import com.weather.vibe.domain.ads.placement.AdPlacement.HomeBottom
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured

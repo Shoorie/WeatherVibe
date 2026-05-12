@@ -4,9 +4,9 @@ import android.app.Application
 import android.util.Log
 import androidx.work.Configuration
 import com.weather.vibe.core.tracing.TraceSections.KOIN_INITIALIZATION
+import com.weather.vibe.core.tracing.traceSection
 import com.weather.vibe.data.ads.initializer.AdMobInitializer
 import com.weather.vibe.data.remoteconfig.initializer.RemoteConfigInitializer
-import com.weather.vibe.core.tracing.traceSection
 import com.weather.vibe.di.WeatherVibeApp
 import com.weather.vibe.feature.widget.work.WidgetRefreshCoordinator
 import com.weather.vibe.scheduling.SchedulingCoordinator

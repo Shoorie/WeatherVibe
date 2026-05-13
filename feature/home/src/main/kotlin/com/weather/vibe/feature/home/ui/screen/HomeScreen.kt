@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.weather.vibe.core.ads.ui.AdSlot
 import com.weather.vibe.core.ads.ui.adSlotBottomInset
-import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
@@ -116,7 +116,7 @@ internal fun HomeContent(
   onShareClick: () -> Unit,
   onGenreRemoveClick: (String) -> Unit
 ) {
-  val adSlotState = rememberAdSlotUiState(HomeBottom)
+  val adSlotState = rememberAdSlotState(HomeBottom)
   val adBottomInset = adSlotBottomInset(adSlotState)
   Box(
     modifier = modifier

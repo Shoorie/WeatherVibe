@@ -20,7 +20,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.ads.ui.AdSlot
 import com.weather.vibe.core.ads.ui.adSlotBottomInset
-import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding
@@ -73,7 +73,7 @@ internal fun SearchContent(
     }
   ) {
     val callbacks = remember(dispatch) { SearchCallbacks(dispatch) }
-    val adSlotState = rememberAdSlotUiState(SearchBottom)
+    val adSlotState = rememberAdSlotState(SearchBottom)
     val adBottomInset = adSlotBottomInset(adSlotState)
     Box(modifier = Modifier.fillMaxSize()) {
       Column(

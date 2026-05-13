@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.weather.vibe.core.ads.ui.AdSlot
-import com.weather.vibe.core.ads.ui.adSlotBottomInset
-import com.weather.vibe.core.ads.ui.rememberAdSlotUiState
+import com.weather.vibe.core.ads.ui.AdSlotState
+import com.weather.vibe.core.ads.ui.rememberAdSlotState
 import com.weather.vibe.core.designsystem.components.header.VibeScreenHeader
 import com.weather.vibe.core.designsystem.components.header.VibeScreenScaffold
 import com.weather.vibe.core.designsystem.components.loading.LoadingIndicator
@@ -57,6 +57,7 @@ import com.weather.vibe.feature.locations.ui.LocationsDefaults.ListBottomPadding
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.ReorderAutoScrollSpeed
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.ReorderEdgeZone
 import com.weather.vibe.feature.locations.ui.LocationsDefaults.SnackbarPushOffset
+import com.weather.vibe.feature.locations.ui.LocationsKeys.AD_FOOTER
 import com.weather.vibe.feature.locations.ui.LocationsKeys.EMPTY
 import com.weather.vibe.feature.locations.ui.LocationsKeys.card
 import com.weather.vibe.feature.locations.ui.LocationsResources.Texts.headerSubtitle
@@ -149,11 +150,10 @@ private fun LocationsScaffoldBody(
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
 ) {
-  val adSlotState = rememberAdSlotUiState(LocationsBottom)
-  val adBottomInset = adSlotBottomInset(adSlotState)
+  val adSlotState = rememberAdSlotState(LocationsBottom)
   Box(modifier = Modifier.fillMaxSize()) {
     LocationsBody(
-      bottomInset = adBottomInset,
+      adSlotState = adSlotState,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -161,19 +161,13 @@ private fun LocationsScaffoldBody(
     AddLocationFab(
       modifier = Modifier
         .align(Alignment.BottomEnd)
-        .padding(end = Medium, bottom = FabBottomOffset + fabLift + adBottomInset),
+        .padding(end = Medium, bottom = FabBottomOffset + fabLift),
       enabled = state.isAddFavoriteEnabled,
       onClick = { dispatch(AddLocationClick) }
     )
     SnackbarHost(
-      modifier = Modifier
-        .align(Alignment.BottomCenter)
-        .padding(bottom = adBottomInset),
-      hostState = snackbarHostState
-    )
-    AdSlot(
       modifier = Modifier.align(Alignment.BottomCenter),
-      state = adSlotState
+      hostState = snackbarHostState
     )
   }
 }
@@ -182,7 +176,7 @@ private fun LocationsScaffoldBody(
 @Composable
 private fun LocationsBody(
   modifier: Modifier = Modifier,
-  bottomInset: Dp = 0.dp,
+  adSlotState: AdSlotState,
   state: LocationsUiState,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -192,7 +186,7 @@ private fun LocationsBody(
     is Error -> LocationsError(modifier = modifier, message = state.message)
     is Loaded -> LocationsLoaded(
       modifier = modifier,
-      bottomInset = bottomInset,
+      adSlotState = adSlotState,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -222,7 +216,7 @@ private fun LocationsError(
 @Composable
 private fun LocationsLoaded(
   modifier: Modifier = Modifier,
-  bottomInset: Dp = 0.dp,
+  adSlotState: AdSlotState,
   state: Loaded,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -233,7 +227,7 @@ private fun LocationsLoaded(
     onRefresh = { dispatch(PullToRefresh) }
   ) {
     LocationsList(
-      bottomInset = bottomInset,
+      adSlotState = adSlotState,
       state = state,
       onRenameRequest = onRenameRequest,
       dispatch = dispatch
@@ -249,7 +243,7 @@ private fun LocationsLoaded(
 
 @Composable
 private fun LocationsList(
-  bottomInset: Dp = 0.dp,
+  adSlotState: AdSlotState,
   state: Loaded,
   onRenameRequest: (LocationCardUiState) -> Unit,
   dispatch: (LocationsAction) -> Unit
@@ -278,7 +272,7 @@ private fun LocationsList(
       start = Medium,
       end = Medium,
       top = Medium,
-      bottom = ListBottomPadding + bottomInset
+      bottom = ListBottomPadding
     ),
     verticalArrangement = Arrangement.spacedBy(Medium)
   ) {
@@ -300,6 +294,9 @@ private fun LocationsList(
         onRename = { onRenameRequest(card) },
         onDelete = { dispatch(RemoveLocationFavoriteClick(favoriteId = card.favoriteId)) }
       )
+    }
+    item(key = AD_FOOTER) {
+      AdSlot(state = adSlotState)
     }
   }
 }

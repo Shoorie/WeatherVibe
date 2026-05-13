@@ -1,6 +1,7 @@
 package com.weather.vibe.core.ads.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -17,35 +18,35 @@ import org.koin.compose.koinInject
 @Composable
 fun AdSlot(
   modifier: Modifier = Modifier,
-  state: AdSlotUiState
+  state: AdSlotState
 ) {
-
-  if (!state.isVisible) return
-
+  if (!state.configVisible) {
+    LaunchedEffect(state) { state.isLoaded = false }
+    return
+  }
   StatelessAdSlot(
     modifier = modifier,
-    adUnitId = state.adUnitId
+    adUnitId = state.adUnitId,
+    isLoaded = state.isLoaded,
+    onAdFailed = { state.isLoaded = false },
+    onAdLoaded = { state.isLoaded = true }
   )
 }
 
 @Composable
-fun rememberAdSlotUiState(placement: AdPlacement): AdSlotUiState {
+fun rememberAdSlotState(placement: AdPlacement): AdSlotState {
 
-  if (LocalInspectionMode.current) return AdSlotUiState.Hidden
+  if (LocalInspectionMode.current) return AdSlotState.Hidden
 
   val observeVisibility = koinInject<ObserveAdSlotVisibility>()
   val adUnitIdProvider = koinInject<AdUnitIdProvider>()
   val visibilityFlow = remember(placement) { observeVisibility(placement) }
-  val isVisible by visibilityFlow.collectAsStateWithLifecycle(initialValue = false)
-
-  return remember(isVisible, placement) {
-    AdSlotUiState(
-      adUnitId = adUnitIdProvider.idFor(placement),
-      isVisible = isVisible
-    )
-  }
+  val configVisible by visibilityFlow.collectAsStateWithLifecycle(initialValue = false)
+  val state = remember(placement) { AdSlotState(adUnitId = adUnitIdProvider.idFor(placement)) }
+  state.configVisible = configVisible
+  return state
 }
 
 @Composable
-fun adSlotBottomInset(state: AdSlotUiState): Dp =
-  if (state.isVisible) BannerHeight else 0.dp
+fun adSlotBottomInset(state: AdSlotState): Dp =
+  if (state.isShown) BannerHeight else 0.dp

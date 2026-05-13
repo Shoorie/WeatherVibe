@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.dp
 internal object VibeDefaults {
 
   val ContentHorizontal = 24.dp
-  val ContentTopPadding = 100.dp
+  val ContentTopPadding = 110.dp
   val HeaderToBodyGap = 8.dp
   val BodyToCardGap = 16.dp
   val CardRadius = 22.dp

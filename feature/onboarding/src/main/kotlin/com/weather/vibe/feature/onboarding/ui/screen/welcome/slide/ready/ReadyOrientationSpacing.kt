@@ -13,9 +13,9 @@ internal data class ReadyOrientationSpacing(
 
     val Portrait: ReadyOrientationSpacing =
       ReadyOrientationSpacing(
-        headlineToCards = 80.dp,
-        helloToHeadline = 64.dp,
-        topInset = 110.dp
+        headlineToCards = 24.dp,
+        helloToHeadline = 40.dp,
+        topInset = 80.dp
       )
 
     val Landscape: ReadyOrientationSpacing =

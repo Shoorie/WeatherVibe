@@ -8,12 +8,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.weather.vibe.core.ads.ui.AdsDefaults.BannerHeight
 import com.weather.vibe.core.ads.ui.AdsResources.Texts.previewPlaceholder
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
@@ -23,24 +22,37 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 @Composable
 internal fun StatelessAdSlot(
   modifier: Modifier = Modifier,
-  adUnitId: String
+  adUnitId: String,
+  isLoaded: Boolean,
+  onAdFailed: () -> Unit,
+  onAdLoaded: () -> Unit
 ) {
+
   if (LocalInspectionMode.current) {
     AdSlotPreviewPlaceholder(modifier = modifier)
     return
   }
-  AndroidView(
+
+  Box(
     modifier = modifier
       .fillMaxWidth()
-      .height(BannerHeight),
-    factory = { context ->
-      AdView(context).apply {
-        setAdUnitId(adUnitId)
-        setAdSize(AdSize.BANNER)
-        loadAd(AdRequest.Builder().build())
+      .height(if (isLoaded) BannerHeight else 0.dp)
+      .clipToBounds()
+  ) {
+    AndroidView(
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(BannerHeight),
+      factory = { context ->
+        createAdView(
+          adUnitId = adUnitId,
+          context = context,
+          onAdFailed = onAdFailed,
+          onAdLoaded = onAdLoaded
+        )
       }
-    }
-  )
+    )
+  }
 }
 
 @Composable
@@ -64,6 +76,11 @@ private fun AdSlotPreviewPlaceholder(modifier: Modifier = Modifier) {
 @Composable
 private fun Preview() {
   WeatherVibeTheme {
-    StatelessAdSlot(adUnitId = "preview")
+    StatelessAdSlot(
+      adUnitId = "preview",
+      isLoaded = false,
+      onAdFailed = {},
+      onAdLoaded = {}
+    )
   }
 }

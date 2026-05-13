@@ -2,9 +2,9 @@ package com.weather.vibe.feature.locations.ui
 
 internal object LocationsKeys {
 
-  const val HEADER: String = "locations_header"
-  const val EMPTY: String = "locations_empty"
-  private const val CARD_PREFIX: String = "location_card_"
+  const val EMPTY = "locations_empty"
+  const val AD_FOOTER = "locations_ad_footer"
+  private const val CARD_PREFIX = "location_card_"
 
   fun card(favoriteId: Long): String =
     "$CARD_PREFIX$favoriteId"

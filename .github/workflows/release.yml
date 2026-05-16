@@ -79,6 +79,16 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT_FILE: ${{ steps.firebase.outputs.credentials-path }}
         run: ./gradlew appDistributionUploadRelease
 
+      - name: Notify Slack
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "🚀 *WeatherVibe ${{ github.ref_name }}* is now available on Firebase App Distribution\n📄 <https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }}|Release notes>"
+            }
+
       - name: Publish to Google Play
         uses: r0adkll/upload-google-play@v1
         with:

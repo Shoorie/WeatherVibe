@@ -66,6 +66,11 @@ android {
     }
   }
 
+  lint {
+    sarifReport = true
+    checkDependencies = true
+  }
+
   firebaseAppDistributionDefault {
     artifactType = "APK"
     groups = "testers"

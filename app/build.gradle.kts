@@ -1,6 +1,5 @@
 import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
 import com.weather.vibe.EnvKeys.FIREBASE_SERVICE_ACCOUNT_FILE
-import com.weather.vibe.EnvKeys.GITHUB_RUN_NUMBER
 import com.weather.vibe.EnvKeys.KEYSTORE_PASSWORD
 import com.weather.vibe.EnvKeys.KEYSTORE_PATH
 import com.weather.vibe.EnvKeys.KEY_ALIAS
@@ -11,6 +10,7 @@ import com.weather.vibe.LocalPropertyKeys.SIGNING_KEY_PASSWORD
 import com.weather.vibe.LocalPropertyKeys.SIGNING_STORE_FILE
 import com.weather.vibe.LocalPropertyKeys.SIGNING_STORE_PASSWORD
 import com.weather.vibe.localProperties
+import com.weather.vibe.versionCodeFrom
 
 plugins {
   alias(libs.plugins.weathervibe.android.application)
@@ -27,8 +27,10 @@ android {
 
   defaultConfig {
     applicationId = "com.weather.vibe"
-    versionCode = System.getenv(GITHUB_RUN_NUMBER)?.toIntOrNull() ?: 1
-    versionName = System.getenv(VERSION_NAME) ?: "1.0.0-dev"
+
+    val appVersionName = System.getenv(VERSION_NAME) ?: "1.0.0-dev"
+    versionName = appVersionName
+    versionCode = versionCodeFrom(versionName = appVersionName)
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }

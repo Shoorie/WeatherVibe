@@ -64,6 +64,14 @@ jobs:
             app/build/outputs/apk/release/*.apk
             app/build/outputs/bundle/release/*.aab
 
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.txt
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
       - name: Distribute to Firebase
         env:
           VERSION_NAME: ${{ steps.version.outputs.name }}
@@ -78,13 +86,5 @@ jobs:
           packageName: com.weather.vibe
           releaseFiles: app/build/outputs/bundle/release/*.aab
           whatsNewDirectory: distribution/whatsnew
-          track: internal
+          tracks: internal
           status: completed
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          body_path: release-notes.txt
-          files: |
-            app/build/outputs/apk/release/*.apk
-            app/build/outputs/bundle/release/*.aab

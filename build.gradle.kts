@@ -1,4 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+
 plugins {
   alias(libs.plugins.android.application) apply false
   alias(libs.plugins.android.library) apply false
@@ -13,10 +16,22 @@ plugins {
   alias(libs.plugins.kover)
 }
 
+val detektReportMerge by tasks.registering(ReportMergeTask::class) {
+  output.set(rootProject.layout.buildDirectory.file("reports/detekt/merged.sarif"))
+}
+
 subprojects {
   afterEvaluate {
     if (plugins.hasPlugin("org.jetbrains.kotlinx.kover")) {
       rootProject.dependencies.add("kover", this)
+    }
+
+    tasks.withType<Detekt>().configureEach {
+      finalizedBy(detektReportMerge)
+    }
+
+    detektReportMerge.configure {
+      input.from(tasks.withType<Detekt>().map { it.sarifReportFile })
     }
   }
 }

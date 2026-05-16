@@ -44,7 +44,7 @@ class DetektPlugin : Plugin<Project> {
         html.required.set(true)
         xml.required.set(true)
         txt.required.set(false)
-        sarif.required.set(false)
+        sarif.required.set(true)
         md.required.set(false)
       }
     }

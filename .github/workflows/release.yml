@@ -12,6 +12,8 @@ jobs:
   release:
     name: Build & Distribute
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -49,16 +51,18 @@ jobs:
           mkdir -p app/src/release/res/values
           printf '%s' "$ADMOB_IDS_XML" > app/src/release/res/values/admob_ids.xml
 
-      - name: Build release APK
+      - name: Build release APK and AAB
         env:
           VERSION_NAME: ${{ steps.version.outputs.name }}
           KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease bundleRelease
 
       - uses: actions/upload-artifact@v4
         with:
-          name: release-apk-${{ steps.version.outputs.name }}
-          path: app/build/outputs/apk/release/*.apk
+          name: release-artifacts-${{ steps.version.outputs.name }}
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
 
       - name: Distribute to Firebase
         env:
@@ -66,3 +70,21 @@ jobs:
           KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
           FIREBASE_SERVICE_ACCOUNT_FILE: ${{ steps.firebase.outputs.credentials-path }}
         run: ./gradlew appDistributionUploadRelease
+
+      - name: Publish to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.weather.vibe
+          releaseFiles: app/build/outputs/bundle/release/*.aab
+          whatsNewDirectory: distribution/whatsnew
+          track: internal
+          status: completed
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.txt
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab

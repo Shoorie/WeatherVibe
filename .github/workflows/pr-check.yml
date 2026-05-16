@@ -12,17 +12,49 @@ env:
   ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
 jobs:
-  check:
-    name: ${{ matrix.task }}
+  build:
+    name: assembleDebug
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        task: [ assembleDebug, lint, detekt ]
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-android
-      - run: ./gradlew ${{ matrix.task }}
+      - run: ./gradlew assembleDebug
+
+  detekt:
+    name: detekt
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-android
+      - run: ./gradlew detekt
+
+      - name: Upload detekt SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: build/reports/detekt/merged.sarif
+          category: detekt
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-android
+      - run: ./gradlew :app:lint
+
+      - name: Upload lint SARIF
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: app/build/reports/lint-results-debug.sarif
+          category: android-lint
 
   test:
     name: Test & Coverage
@@ -33,7 +65,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-android
-      - run: ./gradlew test koverXmlReport koverHtmlReport
+      - run: ./gradlew test koverXmlReport
 
       - name: Restore coverage baseline
         if: always()

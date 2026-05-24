@@ -1,17 +1,11 @@
 name: 'Prepare release context'
 description: >-
-  Common preflight every release workflow needs before doing anything
-  unique to itself. Exposes the application version and the changelog as
-  outputs so downstream steps stay focused on what is unique to each
-  workflow.
-
-inputs:
-  token:
-    description: >-
-      Token used by the checkout step to fetch the repository. Must come
-      from a GitHub Actions secret with permission to push tags and
-      version bump commits back to the source branch.
-    required: true
+  Common preflight every release workflow needs after the repository is
+  already checked out. Reads the application version and builds the
+  changelog so downstream steps stay focused on what is unique to each
+  workflow. The repository checkout itself must be done by the caller
+  with the right token and fetch-depth, because composite actions
+  cannot bootstrap their own checkout on a clean workspace.
 
 outputs:
   version-name:
@@ -35,12 +29,6 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ inputs.token }}
-
     - name: Read application version
       id: version
       uses: ./.github/actions/read-version

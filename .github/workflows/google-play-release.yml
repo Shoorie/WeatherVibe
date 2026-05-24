@@ -31,11 +31,15 @@ jobs:
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PAT }}
+
       - name: Prepare release context
         id: ctx
         uses: ./.github/actions/prepare-release-context
-        with:
-          token: ${{ secrets.PAT }}
 
       - name: Set up Android tooling
         uses: ./.github/actions/setup-android

@@ -1,0 +1,58 @@
+name: 'Generate release changelog'
+description: >-
+  Builds a Markdown changelog of commits since the previous matching tag
+  and returns both the full body and a length-capped short body that fits
+  Firebase App Distribution release notes and Slack messages.
+
+inputs:
+  tag-pattern:
+    description: >-
+      Pattern used to discover the previous tag — the changelog covers all
+      commits between that tag and HEAD. Defaults to "v*", matching the
+      standard release tag naming.
+    required: false
+    default: 'v*'
+  max-short-length:
+    description: >-
+      Maximum length, in characters, of the short changelog. Defaults to
+      15000 to fit inside Firebase App Distribution release notes, whose
+      hard limit is 16384 bytes. Lower this value when the consumer has
+      a stricter limit (e.g. Slack visual readability).
+    required: false
+    default: '15000'
+  release-version:
+    description: >-
+      Release version label used inside the "more commits in the v… GitHub
+      Release" footer appended when the short changelog had to be truncated.
+    required: false
+    default: ''
+
+outputs:
+  changelog_full:
+    description: >-
+      Full changelog body, one commit per Markdown bullet. Suitable for
+      GitHub Release bodies, which accept very large payloads.
+    value: ${{ steps.build.outputs.changelog_full }}
+  changelog_short:
+    description: >-
+      Length-capped changelog ending on a complete commit line, with a
+      footer pointing readers to the GitHub Release for the rest. Suitable
+      for Firebase App Distribution release notes and Slack messages.
+    value: ${{ steps.build.outputs.changelog_short }}
+  previous_tag:
+    description: >-
+      Tag used as the changelog baseline, or an empty string if no matching
+      tag was found in the repository.
+    value: ${{ steps.build.outputs.previous_tag }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Build the changelog from git history
+      id: build
+      shell: bash
+      env:
+        TAG_PATTERN: ${{ inputs.tag-pattern }}
+        MAX_SHORT_LENGTH: ${{ inputs.max-short-length }}
+        RELEASE_VERSION: ${{ inputs.release-version }}
+      run: bash ./scripts/ci/generate-changelog.sh

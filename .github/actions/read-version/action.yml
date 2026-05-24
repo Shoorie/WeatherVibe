@@ -1,0 +1,24 @@
+name: 'Read application version'
+description: >-
+  Reads the application version name from version.txt, validates the
+  format, and derives the integer version code that the app's gradle
+  build uses (major * 1_000_000 + minor * 1_000 + patch).
+
+outputs:
+  name:
+    description: >-
+      Application version in X.Y.Z form, for example 1.0.11.
+    value: ${{ steps.read.outputs.name }}
+  code:
+    description: >-
+      Integer version code derived from the version name, matching the
+      formula in build-logic Versioning.kt.
+    value: ${{ steps.read.outputs.code }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Read and validate the version file
+      id: read
+      shell: bash
+      run: bash ./scripts/ci/read-version.sh

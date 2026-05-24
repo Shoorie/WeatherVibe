@@ -1,0 +1,52 @@
+name: 'Prepare release context'
+description: >-
+  Common preflight every release workflow needs before doing anything
+  unique to itself. Exposes the application version and the changelog as
+  outputs so downstream steps stay focused on what is unique to each
+  workflow.
+
+inputs:
+  token:
+    description: >-
+      Token used by the checkout step to fetch the repository. Must come
+      from a GitHub Actions secret with permission to push tags and
+      version bump commits back to the source branch.
+    required: true
+
+outputs:
+  version-name:
+    description: 'Application version in X.Y.Z form, e.g. 1.0.11.'
+    value: ${{ steps.version.outputs.name }}
+  version-code:
+    description: 'Integer version code consumed by the app gradle build.'
+    value: ${{ steps.version.outputs.code }}
+  changelog-full:
+    description: 'Full changelog body suitable for GitHub Release bodies.'
+    value: ${{ steps.changelog.outputs.changelog_full }}
+  changelog-short:
+    description: >-
+      Length-capped changelog body suitable for Firebase App Distribution
+      release notes and Slack messages.
+    value: ${{ steps.changelog.outputs.changelog_short }}
+  previous-tag:
+    description: 'Tag used as the changelog baseline, empty if none found.'
+    value: ${{ steps.changelog.outputs.previous_tag }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ inputs.token }}
+
+    - name: Read application version
+      id: version
+      uses: ./.github/actions/read-version
+
+    - name: Generate changelog
+      id: changelog
+      uses: ./.github/actions/generate-changelog
+      with:
+        release-version: ${{ steps.version.outputs.name }}

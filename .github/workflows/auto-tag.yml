@@ -1,9 +1,10 @@
-name: Auto Tag
+name: Auto Tag (legacy)
 
+# Superseded by tag-release.sh invoked from firebase-qa-distribution.yml
+# and google-play-release.yml.
+# Kept for manual fallback only — invoke via the Actions UI.
 on:
-  push:
-    branches: [ main ]
-    paths: [ version.txt ]
+  workflow_dispatch:
 
 jobs:
   tag:

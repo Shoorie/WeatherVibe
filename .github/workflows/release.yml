@@ -1,8 +1,10 @@
-name: Release
+name: Release (legacy)
 
+# Superseded by firebase-qa-distribution.yml (push to release/*)
+# and google-play-release.yml (push to main).
+# Kept for manual fallback only — invoke via the Actions UI.
 on:
-  push:
-    tags: [ 'v*' ]
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}

@@ -1,0 +1,128 @@
+name: Firebase QA Distribution
+
+on:
+  push:
+    branches:
+      - 'release/*'
+    paths-ignore:
+      - version.txt
+
+concurrency:
+  group: firebase-qa-distribution-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+
+jobs:
+  distribute:
+    name: Build, distribute, tag, bump
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    steps:
+      - name: Prepare release context
+        id: ctx
+        uses: ./.github/actions/prepare-release-context
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Set up Android tooling
+        uses: ./.github/actions/setup-android
+
+      - name: Decode release keystore
+        id: keystore
+        uses: ./.github/actions/decode-keystore
+        with:
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - name: Materialise Firebase service account credentials
+        id: firebase
+        uses: ./.github/actions/setup-firebase
+        with:
+          service-account-json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+      - name: Inject AdMob IDs
+        env:
+          ADMOB_IDS_XML: ${{ secrets.ADMOB_IDS_XML }}
+        run: |
+          mkdir -p app/src/release/res/values
+          printf '%s' "$ADMOB_IDS_XML" > app/src/release/res/values/admob_ids.xml
+
+      - name: Write Firebase release notes
+        env:
+          NOTES: ${{ steps.ctx.outputs.changelog-short }}
+        run: printf '%s\n' "$NOTES" > release-notes.txt
+
+      - name: Build artifacts and upload release APK to Firebase
+        env:
+          VERSION_NAME: ${{ steps.ctx.outputs.version-name }}
+          KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
+          FIREBASE_SERVICE_ACCOUNT_FILE: ${{ steps.firebase.outputs.credentials-path }}
+        run: |
+          ./gradlew --stacktrace --parallel \
+            assembleDebug \
+            assembleRelease \
+            bundleRelease \
+            appDistributionUploadRelease
+
+      - name: Archive debug and release builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: weathervibe-v${{ steps.ctx.outputs.version-name }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
+      - name: Tag the release
+        id: tag
+        env:
+          VERSION: ${{ steps.ctx.outputs.version-name }}
+          CHANGELOG: ${{ steps.ctx.outputs.changelog-full }}
+        run: bash ./scripts/ci/tag-release.sh
+
+      - name: Create GitHub Release
+        if: steps.tag.outputs.created == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ctx.outputs.version-name }}
+          name: v${{ steps.ctx.outputs.version-name }}
+          body: ${{ steps.ctx.outputs.changelog-full }}
+          files: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
+      - name: Bump application version
+        uses: ./.github/actions/bump-version
+        with:
+          released-version: ${{ steps.ctx.outputs.version-name }}
+
+      - name: Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": ":android: WeatherVibe ${{ steps.ctx.outputs.version-name }} w Firebase App Distribution\n:spiral_note_pad: <${{ env.REPO_URL }}/releases/tag/v${{ steps.ctx.outputs.version-name }}|Release notes>"}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": ":android: :x: ${{ github.workflow }} nie powiódł się.\n<${{ env.REPO_URL }}/actions/runs/${{ github.run_id }}|Otwórz failed run>"}

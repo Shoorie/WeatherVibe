@@ -1,0 +1,119 @@
+name: Google Play Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - version.txt
+
+concurrency:
+  group: google-play-release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  GOOGLE_PLAY_PACKAGE: com.weather.vibe
+  GOOGLE_PLAY_TRACKS: internal
+  REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+
+jobs:
+  publish:
+    name: Build and publish to Google Play
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    steps:
+      - name: Prepare release context
+        id: ctx
+        uses: ./.github/actions/prepare-release-context
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Set up Android tooling
+        uses: ./.github/actions/setup-android
+
+      - name: Decode release keystore
+        id: keystore
+        uses: ./.github/actions/decode-keystore
+        with:
+          keystore-base64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - name: Inject AdMob IDs
+        env:
+          ADMOB_IDS_XML: ${{ secrets.ADMOB_IDS_XML }}
+        run: |
+          mkdir -p app/src/release/res/values
+          printf '%s' "$ADMOB_IDS_XML" > app/src/release/res/values/admob_ids.xml
+
+      - name: Build Google Play release artifacts
+        env:
+          VERSION_NAME: ${{ steps.ctx.outputs.version-name }}
+          KEYSTORE_PATH: ${{ steps.keystore.outputs.keystore-path }}
+        run: |
+          ./gradlew --stacktrace --parallel \
+            assembleRelease \
+            bundleRelease
+
+      - name: Archive production build
+        uses: actions/upload-artifact@v4
+        with:
+          name: weathervibe-production-v${{ steps.ctx.outputs.version-name }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
+      - name: Publish AAB to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ env.GOOGLE_PLAY_PACKAGE }}
+          releaseFiles: app/build/outputs/bundle/release/*.aab
+          whatsNewDirectory: distribution/whatsnew
+          tracks: ${{ env.GOOGLE_PLAY_TRACKS }}
+          status: completed
+
+      - name: Tag the release
+        id: tag
+        env:
+          VERSION: ${{ steps.ctx.outputs.version-name }}
+          CHANGELOG: ${{ steps.ctx.outputs.changelog-full }}
+        run: bash ./scripts/ci/tag-release.sh
+
+      - name: Create GitHub Release
+        if: steps.tag.outputs.created == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ctx.outputs.version-name }}
+          name: v${{ steps.ctx.outputs.version-name }}
+          body: ${{ steps.ctx.outputs.changelog-full }}
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/bundle/release/*.aab
+
+      - name: Notify Slack on success
+        if: success()
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": ":android: :google_play: WeatherVibe ${{ steps.ctx.outputs.version-name }} w Google Play (${{ env.GOOGLE_PLAY_TRACKS }})\n:spiral_note_pad: <${{ env.REPO_URL }}/releases/tag/v${{ steps.ctx.outputs.version-name }}|Release notes>"}
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {"text": ":android: :x: ${{ github.workflow }} nie powiódł się.\n<${{ env.REPO_URL }}/actions/runs/${{ github.run_id }}|Otwórz failed run>"}

@@ -1,0 +1,49 @@
+name: 'Bump application version'
+description: >-
+  Updates the patch segment of the application version in version.txt
+  and pushes the change back to the current branch. The integer version
+  code does not need to be bumped separately — the gradle build derives
+  it from the version name (see build-logic Versioning.kt).
+
+inputs:
+  released-version:
+    description: >-
+      Application version that has just been released. Used inside the bump
+      commit message, e.g. "Change version after v1.0.11 release ...".
+    required: true
+  git-user-name:
+    description: >-
+      Author name written into the bump commit. Defaults to the GitHub
+      Actions bot, which is the standard identity for workflow-authored
+      commits.
+    required: false
+    default: 'github-actions[bot]'
+  git-user-email:
+    description: >-
+      Author email written into the bump commit. Defaults to the GitHub
+      Actions bot noreply address.
+    required: false
+    default: '41898282+github-actions[bot]@users.noreply.github.com'
+
+outputs:
+  next-name:
+    description: >-
+      Application version that lives on the branch after the bump, for
+      example 1.0.12.
+    value: ${{ steps.bump.outputs.next-name }}
+  next-code:
+    description: >-
+      Version code that the gradle build will derive from the next name.
+    value: ${{ steps.bump.outputs.next-code }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Bump patch version and push to the release branch
+      id: bump
+      shell: bash
+      env:
+        RELEASED_VERSION: ${{ inputs.released-version }}
+        GIT_USER_NAME: ${{ inputs.git-user-name }}
+        GIT_USER_EMAIL: ${{ inputs.git-user-email }}
+      run: bash ./scripts/ci/bump-version.sh

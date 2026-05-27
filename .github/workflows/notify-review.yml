@@ -1,0 +1,60 @@
+name: Notify Slack on PR review request
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  notify:
+    name: slack review request
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      FALLBACK_TICKET_PREFIX: WV-
+      JIRA_BASE_URL: https://jira.shoorie.com/browse
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .github/reviewers.yml
+            scripts/ci/notify-review
+          sparse-checkout-cone-mode: false
+
+      - name: Resolve Slack mention from reviewers map
+        id: mention
+        continue-on-error: true
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: bash ./scripts/ci/notify-review/resolve-mention.sh
+
+      - name: Resolve ticket from PR title
+        id: ticket
+        continue-on-error: true
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: bash ./scripts/ci/notify-review/resolve-ticket.sh
+
+      - name: Resolve summary from PR body
+        id: summary
+        continue-on-error: true
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: bash ./scripts/ci/notify-review/resolve-summary.sh
+
+      - name: Send Slack notification
+        continue-on-error: true
+        uses: slackapi/slack-github-action@v2
+        with:
+          webhook: ${{ secrets.SLACK_REVIEW_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Hej team! ${{ steps.mention.outputs.value }} prosi o review: ${{ github.event.pull_request.html_url }}\n  • ${{ steps.summary.outputs.value }}\n  • ${{ steps.ticket.outputs.id }} | ${{ steps.ticket.outputs.url }}"
+            }

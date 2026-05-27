@@ -26,4 +26,4 @@ a missing or malformed input never blocks a PR.
 |--------|---------|
 | `notify-review/resolve-mention.sh` | Look up Slack member ID from `.github/reviewers.yml` for the PR author; falls back to plain `@login`. |
 | `notify-review/resolve-ticket.sh` | Extract the first ticket reference (`[A-Z]+-[0-9]+`) from the PR title; falls back to `${FALLBACK_TICKET_PREFIX}{pr-number}`. |
-| `notify-review/resolve-summary.sh` | Take the first non-empty paragraph of the PR body, truncate to 200 characters (multi-byte safe), JSON-escape for safe interpolation. |
+| `notify-review/escape-title.sh` | JSON-escape the PR title (`\` and `"`) so it can be safely interpolated into the Slack payload. |

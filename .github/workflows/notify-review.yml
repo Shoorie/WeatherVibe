@@ -40,13 +40,12 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: bash ./scripts/ci/notify-review/resolve-ticket.sh
 
-      - name: Resolve summary from PR body
-        id: summary
+      - name: Escape PR title for safe interpolation
+        id: title
         continue-on-error: true
         env:
-          PR_BODY: ${{ github.event.pull_request.body }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-        run: bash ./scripts/ci/notify-review/resolve-summary.sh
+        run: bash ./scripts/ci/notify-review/escape-title.sh
 
       - name: Send Slack notification
         continue-on-error: true
@@ -56,5 +55,5 @@ jobs:
           webhook-type: incoming-webhook
           payload: |
             {
-              "text": "Hej team! ${{ steps.mention.outputs.value }} prosi o review: ${{ github.event.pull_request.html_url }}\n  • ${{ steps.summary.outputs.value }}\n  • ${{ steps.ticket.outputs.id }} | ${{ steps.ticket.outputs.url }}"
+              "text": "Hej team! ${{ steps.mention.outputs.value }} prosi o review: ${{ github.event.pull_request.html_url }}\n  • ${{ steps.title.outputs.value }}\n  • <${{ steps.ticket.outputs.url }}|${{ steps.ticket.outputs.id }}>"
             }

@@ -108,7 +108,7 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v2
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_RELEASE_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             {"text": ":android: :google_play: WeatherVibe ${{ steps.ctx.outputs.version-name }} w Google Play (${{ env.GOOGLE_PLAY_TRACKS }})\n:spiral_note_pad: <${{ env.REPO_URL }}/releases/tag/v${{ steps.ctx.outputs.version-name }}|Release notes>"}
@@ -117,7 +117,7 @@ jobs:
         if: failure()
         uses: slackapi/slack-github-action@v2
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_RELEASE_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
             {"text": ":android: :x: ${{ github.workflow }} nie powiódł się.\n<${{ env.REPO_URL }}/actions/runs/${{ github.run_id }}|Otwórz failed run>"}

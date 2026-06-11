@@ -53,12 +53,21 @@ class PlaylistStateFactoryTest {
   }
 
   @Test
-  fun `when playlist created, then build spotify query from all genres`() {
+  fun `when playlist created, then build spotify app uri from all genres`() {
 
     val result = factory.create(SUGGESTION)
 
-    expectThat(result.spotifyQuery)
+    expectThat(result.spotifyAppUri)
       .isEqualTo("spotify:search:Indie Pop Electronic Jazz")
+  }
+
+  @Test
+  fun `when playlist created, then build spotify web url from all genres`() {
+
+    val result = factory.create(SUGGESTION)
+
+    expectThat(result.spotifyWebUrl)
+      .isEqualTo("https://open.spotify.com/search/Indie%20Pop%20Electronic%20Jazz")
   }
 
   @Test
@@ -75,7 +84,7 @@ class PlaylistStateFactoryTest {
 
     val result = factory.create(SINGLE_GENRE)
 
-    expectThat(result.spotifyQuery)
+    expectThat(result.spotifyAppUri)
       .isEqualTo("spotify:search:Indie Pop")
   }
 
@@ -93,7 +102,7 @@ class PlaylistStateFactoryTest {
 
     val result = factory.create(suggestion(genres = emptyList()))
 
-    expectThat(result.spotifyQuery)
+    expectThat(result.spotifyAppUri)
       .isEqualTo("spotify:search:")
   }
 

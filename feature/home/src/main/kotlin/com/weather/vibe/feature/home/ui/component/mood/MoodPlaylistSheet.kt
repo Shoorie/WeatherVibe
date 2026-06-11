@@ -34,7 +34,7 @@ internal fun MoodPlaylistSheet(
   modifier: Modifier = Modifier,
   onDismiss: () -> Unit,
   onGenreRemoveClick: (String) -> Unit,
-  onOpenSpotify: (String) -> Unit,
+  onOpenSpotify: (String, String) -> Unit,
   onOpenYtMusic: (String) -> Unit,
   sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
   state: PlaylistUiState
@@ -72,7 +72,7 @@ internal fun MoodPlaylistSheet(
 private fun MoodSheetContent(
   state: PlaylistUiState,
   onGenreRemoveClick: (String) -> Unit,
-  onOpenSpotify: (String) -> Unit,
+  onOpenSpotify: (String, String) -> Unit,
   onOpenYtMusic: (String) -> Unit
 ) {
   when (state) {
@@ -100,7 +100,7 @@ private fun Preview(
     MoodPlaylistSheet(
       onDismiss = {},
       onGenreRemoveClick = {},
-      onOpenSpotify = {},
+      onOpenSpotify = { _, _ -> },
       onOpenYtMusic = {},
       state = state
     )

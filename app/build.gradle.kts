@@ -91,6 +91,7 @@ ksp {
 dependencies {
   implementation(projects.core.ads)
   implementation(projects.core.ai)
+  implementation(projects.core.analytics)
   implementation(projects.core.network)
   implementation(projects.core.designsystem)
   implementation(projects.core.navigation)
@@ -108,6 +109,7 @@ dependencies {
   implementation(projects.domain.profile)
   implementation(projects.data.profile)
   implementation(projects.domain.alerts)
+  implementation(projects.data.alerts)
   implementation(projects.domain.airquality)
   implementation(projects.domain.vibe)
   implementation(projects.domain.viberating)

@@ -2,7 +2,7 @@ package com.weather.vibe.domain.alerts.usecase
 
 import com.weather.vibe.domain.alerts.model.WeatherAlert.HighUvIndex
 import com.weather.vibe.domain.weather.model.UvLevel
-import com.weather.vibe.domain.weather.model.UvLevel.HIGH
+import com.weather.vibe.domain.weather.model.UvLevel.VERY_HIGH
 import com.weather.vibe.domain.weather.model.WeatherData
 import org.koin.core.annotation.Factory
 import java.time.LocalDateTime
@@ -28,7 +28,7 @@ internal class DetectUvAlert {
     dayStart.withHour(PEAK_HOUR)
 
   private companion object {
-    val ALERT_THRESHOLD: UvLevel = HIGH
+    val ALERT_THRESHOLD: UvLevel = VERY_HIGH
     const val PEAK_HOUR = 13
   }
 }

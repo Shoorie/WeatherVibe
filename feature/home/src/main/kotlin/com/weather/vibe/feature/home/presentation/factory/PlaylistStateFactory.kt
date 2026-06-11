@@ -20,7 +20,8 @@ internal class PlaylistStateFactory(
         .toImmutableList(),
       mood = suggestion.mood,
       moodDescription = suggestion.moodDescription,
-      spotifyQuery = query.spotify,
+      spotifyAppUri = query.spotifyApp,
+      spotifyWebUrl = query.spotifyWeb,
       ytMusicUrl = query.ytMusic
     )
   }

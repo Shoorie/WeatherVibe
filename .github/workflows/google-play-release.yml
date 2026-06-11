@@ -37,6 +37,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT }}
 
+      - name: Trust workspace as a safe git directory
+        shell: bash
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
       - name: Prepare release context
         id: ctx
         uses: ./.github/actions/prepare-release-context

@@ -13,12 +13,21 @@ class BuildPlaylistQueryTest {
   private val buildPlaylistQuery = BuildPlaylistQuery()
 
   @Test
-  fun `when suggestion has multiple genres, then spotify query joins them with spaces`() {
+  fun `when suggestion has multiple genres, then spotify app uri joins them with spaces`() {
 
     val result = buildPlaylistQuery(SUGGESTION)
 
-    expectThat(result.spotify)
+    expectThat(result.spotifyApp)
       .isEqualTo("spotify:search:Indie Pop Electronic Jazz")
+  }
+
+  @Test
+  fun `when suggestion has multiple genres, then spotify web url encodes spaces`() {
+
+    val result = buildPlaylistQuery(SUGGESTION)
+
+    expectThat(result.spotifyWeb)
+      .isEqualTo("https://open.spotify.com/search/Indie%20Pop%20Electronic%20Jazz")
   }
 
   @Test
@@ -31,11 +40,11 @@ class BuildPlaylistQueryTest {
   }
 
   @Test
-  fun `when suggestion has single genre, then spotify query contains only that genre`() {
+  fun `when suggestion has single genre, then spotify app uri contains only that genre`() {
 
     val result = buildPlaylistQuery(SINGLE_GENRE)
 
-    expectThat(result.spotify)
+    expectThat(result.spotifyApp)
       .isEqualTo("spotify:search:Indie Pop")
   }
 
@@ -44,17 +53,26 @@ class BuildPlaylistQueryTest {
 
     val result = buildPlaylistQuery(WHITESPACE_GENRES)
 
-    expectThat(result.spotify)
+    expectThat(result.spotifyApp)
       .isEqualTo("spotify:search:Indie Pop Electronic Jazz")
   }
 
   @Test
-  fun `given empty genre list, when built, then spotify query is only scheme`() {
+  fun `given empty genre list, when built, then spotify app uri is only scheme`() {
 
     val result = buildPlaylistQuery(suggestion(genres = emptyList()))
 
-    expectThat(result.spotify)
+    expectThat(result.spotifyApp)
       .isEqualTo("spotify:search:")
+  }
+
+  @Test
+  fun `given empty genre list, when built, then spotify web url is only search url`() {
+
+    val result = buildPlaylistQuery(suggestion(genres = emptyList()))
+
+    expectThat(result.spotifyWeb)
+      .isEqualTo("https://open.spotify.com/search/")
   }
 
   @Test

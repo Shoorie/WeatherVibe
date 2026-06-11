@@ -1,8 +1,10 @@
 package com.weather.vibe.domain.alerts.dedupe
 
+import com.weather.vibe.domain.alerts.fake.FakeAlertNotificationLog
 import com.weather.vibe.domain.alerts.model.WeatherAlert
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.heavyRain
 import com.weather.vibe.testing.alerts.fixture.WeatherAlertFixtures.thunderstorm
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import strikt.api.expectThat
 import strikt.assertions.hasSize
@@ -13,10 +15,10 @@ import java.time.LocalDateTime
 
 class AlertDeduplicatorTest {
 
-  private val deduplicator = AlertDeduplicator()
+  private val deduplicator = AlertDeduplicator(FakeAlertNotificationLog())
 
   @Test
-  fun `when first call with alerts, then all returned`() {
+  fun `when first call with alerts, then all returned`() = runTest {
 
     val fresh = deduplicator.filterFresh(
       listOf(thunderstorm(expectedAt = AT_THREE), heavyRain(expectedAt = AT_FOUR))
@@ -26,7 +28,7 @@ class AlertDeduplicatorTest {
   }
 
   @Test
-  fun `given same alert already notified, when called again, then filtered out`() {
+  fun `given same alert already notified, when called again, then filtered out`() = runTest {
 
     deduplicator.filterFresh(listOf(thunderstorm(expectedAt = AT_THREE)))
 
@@ -36,7 +38,7 @@ class AlertDeduplicatorTest {
   }
 
   @Test
-  fun `given same type for different expected hour, when called, then returned as fresh`() {
+  fun `given same type for different expected hour, when called, then returned as fresh`() = runTest {
 
     deduplicator.filterFresh(listOf(thunderstorm(expectedAt = AT_THREE)))
 
@@ -48,7 +50,7 @@ class AlertDeduplicatorTest {
   }
 
   @Test
-  fun `given seconds differ inside same hour, when called, then treated as duplicate`() {
+  fun `given seconds differ inside same hour, when called, then treated as duplicate`() = runTest {
 
     deduplicator.filterFresh(listOf(thunderstorm(expectedAt = AT_THREE)))
 

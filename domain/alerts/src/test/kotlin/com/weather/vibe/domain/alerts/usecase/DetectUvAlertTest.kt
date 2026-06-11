@@ -1,7 +1,6 @@
 package com.weather.vibe.domain.alerts.usecase
 
 import com.weather.vibe.domain.weather.model.UvLevel.EXTREME
-import com.weather.vibe.domain.weather.model.UvLevel.HIGH
 import com.weather.vibe.domain.weather.model.UvLevel.VERY_HIGH
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.dailyWeather
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.weatherData
@@ -16,7 +15,7 @@ class DetectUvAlertTest {
   private val detect = DetectUvAlert()
 
   @Test
-  fun `when uv index below high threshold, then no alert returned`() {
+  fun `when uv index below very high threshold, then no alert returned`() {
 
     val weather = weatherData(dailyForecast = listOf(dailyWeather(uvIndexMax = MODERATE_UV)))
 
@@ -24,11 +23,11 @@ class DetectUvAlertTest {
   }
 
   @Test
-  fun `when uv index reaches high level, then alert carries high level`() {
+  fun `when uv index reaches high level, then no alert returned`() {
 
     val weather = weatherData(dailyForecast = listOf(dailyWeather(uvIndexMax = HIGH_UV)))
 
-    expectThat(detect(weather)).isNotNull().get { level }.isEqualTo(HIGH)
+    expectThat(detect(weather)).isNull()
   }
 
   @Test
@@ -50,9 +49,9 @@ class DetectUvAlertTest {
   @Test
   fun `when uv alert raised, then uv index rounded to nearest integer`() {
 
-    val weather = weatherData(dailyForecast = listOf(dailyWeather(uvIndexMax = HIGH_UV)))
+    val weather = weatherData(dailyForecast = listOf(dailyWeather(uvIndexMax = VERY_HIGH_UV)))
 
-    expectThat(detect(weather)).isNotNull().get { uvIndex }.isEqualTo(HIGH_UV.toInt())
+    expectThat(detect(weather)).isNotNull().get { uvIndex }.isEqualTo(VERY_HIGH_UV.toInt())
   }
 
   @Test

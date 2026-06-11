@@ -17,7 +17,8 @@ internal sealed interface PlaylistUiState {
     val genres: ImmutableList<GenreChipUiState>,
     val mood: String,
     val moodDescription: String,
-    val spotifyQuery: String,
+    val spotifyAppUri: String,
+    val spotifyWebUrl: String,
     val ytMusicUrl: String
   ) : PlaylistUiState
 

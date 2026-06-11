@@ -2,6 +2,7 @@ package com.weather.vibe.domain.alerts.usecase
 
 import com.weather.vibe.domain.airquality.usecase.GetPollen
 import com.weather.vibe.domain.alerts.dedupe.AlertDeduplicator
+import com.weather.vibe.domain.alerts.fake.FakeAlertNotificationLog
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.testing.airquality.fixture.PollenFixtures.CALM
@@ -25,7 +26,7 @@ import kotlin.Result.Companion.success
 
 class GatherPollenAlertsTest {
 
-  private val deduplicator = AlertDeduplicator()
+  private val deduplicator = AlertDeduplicator(FakeAlertNotificationLog())
   private val detectPollenAlert = mockk<DetectPollenAlert>()
   private val getPollen = mockk<GetPollen>()
   private val observeCurrentLocation = mockk<ObserveCurrentLocation>()

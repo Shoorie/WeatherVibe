@@ -1,5 +1,8 @@
 package com.weather.vibe.core.ads.ui
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,4 +52,8 @@ fun rememberAdSlotState(placement: AdPlacement): AdSlotState {
 
 @Composable
 fun adSlotBottomInset(state: AdSlotState): Dp =
-  if (state.isShown) BannerHeight else 0.dp
+  if (state.isShown) BannerHeight + navigationBarsHeight() else 0.dp
+
+@Composable
+private fun navigationBarsHeight(): Dp =
+  WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()

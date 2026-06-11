@@ -1,6 +1,7 @@
 package com.weather.vibe.domain.weather.model
 
 data class PlaylistQuery(
-  val spotify: String,
+  val spotifyApp: String,
+  val spotifyWeb: String,
   val ytMusic: String
 )

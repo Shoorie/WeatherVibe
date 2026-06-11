@@ -2,8 +2,11 @@ package com.weather.vibe.core.ads.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,6 +39,7 @@ internal fun StatelessAdSlot(
   Box(
     modifier = modifier
       .fillMaxWidth()
+      .then(if (isLoaded) Modifier.windowInsetsPadding(WindowInsets.navigationBars) else Modifier)
       .height(if (isLoaded) BannerHeight else 0.dp)
       .clipToBounds()
   ) {

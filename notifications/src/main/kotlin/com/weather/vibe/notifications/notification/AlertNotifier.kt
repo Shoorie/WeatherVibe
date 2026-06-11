@@ -13,6 +13,8 @@ import androidx.core.app.NotificationCompat.BigTextStyle
 import androidx.core.app.NotificationCompat.DecoratedCustomViewStyle
 import androidx.core.app.NotificationCompat.PRIORITY_HIGH
 import androidx.core.app.NotificationManagerCompat
+import com.weather.vibe.core.analytics.AnalyticsEvent.NotificationShown
+import com.weather.vibe.core.analytics.AnalyticsLogger
 import com.weather.vibe.core.navigation.deeplink.DeepLink.Home
 import com.weather.vibe.core.permissions.notification.isNotificationPermissionGranted
 import com.weather.vibe.notifications.R
@@ -21,6 +23,7 @@ import org.koin.core.annotation.Factory
 
 @Factory
 class AlertNotifier internal constructor(
+  private val analyticsLogger: AnalyticsLogger,
   private val context: Context,
   private val registrar: NotificationChannelRegistrar
 ) {
@@ -34,6 +37,7 @@ class AlertNotifier internal constructor(
     try {
       NotificationManagerCompat.from(context)
         .notify(notification.id, build(notification))
+      analyticsLogger.log(NotificationShown(kind = notification.kind.name))
     } catch (security: SecurityException) {
       Log.w(TAG, "Notification permission revoked between check and dispatch", security)
     }

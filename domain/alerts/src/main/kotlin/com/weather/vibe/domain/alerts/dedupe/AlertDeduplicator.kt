@@ -1,25 +1,27 @@
 package com.weather.vibe.domain.alerts.dedupe
 
+import com.weather.vibe.domain.alerts.cache.AlertNotificationLog
 import com.weather.vibe.domain.alerts.model.WeatherAlert
 import org.koin.core.annotation.Single
 import java.time.LocalDateTime
-import java.util.concurrent.ConcurrentHashMap
 
 @Single
-class AlertDeduplicator {
+class AlertDeduplicator internal constructor(
+  private val notificationLog: AlertNotificationLog
+) {
 
-  private val lastNotified: MutableMap<String, LocalDateTime> = ConcurrentHashMap()
+  suspend fun filterFresh(alerts: List<WeatherAlert>): List<WeatherAlert> {
+    val lastNotified = notificationLog.lastNotified()
+    val fresh = alerts.filter { it.isFreshAgainst(lastNotified) }
+    fresh.forEach { remember(it) }
+    return fresh
+  }
 
-  fun filterFresh(alerts: List<WeatherAlert>): List<WeatherAlert> =
-    alerts
-      .filter(::isFresh)
-      .onEach(::remember)
+  private fun WeatherAlert.isFreshAgainst(lastNotified: Map<String, LocalDateTime>): Boolean =
+    lastNotified[dedupeKey] != expectedAtRounded
 
-  private fun isFresh(alert: WeatherAlert): Boolean =
-    lastNotified[alert.dedupeKey] != alert.expectedAtRounded
-
-  private fun remember(alert: WeatherAlert) {
-    lastNotified[alert.dedupeKey] = alert.expectedAtRounded
+  private suspend fun remember(alert: WeatherAlert) {
+    notificationLog.record(alertKey = alert.dedupeKey, expectedAt = alert.expectedAtRounded)
   }
 
   private val WeatherAlert.dedupeKey: String

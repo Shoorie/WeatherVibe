@@ -2,6 +2,8 @@ package com.weather.vibe.feature.viberating.presentation.rating
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weather.vibe.core.analytics.AnalyticsEvent.MoodLogged
+import com.weather.vibe.core.analytics.AnalyticsLogger
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
@@ -39,6 +41,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class RatingCardViewModel(
+  private val analyticsLogger: AnalyticsLogger,
   private val observeTodayEntries: ObserveTodayEntries,
   private val saveRatingEntry: SaveRatingEntry,
   private val stateFactory: RatingCardStateFactory,
@@ -131,6 +134,7 @@ internal class RatingCardViewModel(
     }
     viewModelScope.launch(errorHandler) {
       saveRatingEntry(buildEntry(draft, weatherSnapshot))
+      analyticsLogger.log(MoodLogged)
       onSaveSucceeded()
     }
   }

@@ -18,7 +18,7 @@ internal fun MoodLoadedContent(
   modifier: Modifier = Modifier,
   state: Loaded,
   onGenreRemoveClick: (String) -> Unit,
-  onOpenSpotify: (String) -> Unit,
+  onOpenSpotify: (String, String) -> Unit,
   onOpenYtMusic: (String) -> Unit
 ) {
   Column(
@@ -34,7 +34,7 @@ internal fun MoodLoadedContent(
       onThumbsDown = onGenreRemoveClick
     )
     Column(verticalArrangement = Arrangement.spacedBy(Small)) {
-      SpotifyButton(onClick = { onOpenSpotify(state.spotifyQuery) })
+      SpotifyButton(onClick = { onOpenSpotify(state.spotifyAppUri, state.spotifyWebUrl) })
       YtMusicButton(onClick = { onOpenYtMusic(state.ytMusicUrl) })
     }
   }
@@ -48,7 +48,7 @@ private fun Preview() {
       modifier = Modifier.padding(Medium),
       state = HomePreviewData.loadedPlaylist,
       onGenreRemoveClick = {},
-      onOpenSpotify = {},
+      onOpenSpotify = { _, _ -> },
       onOpenYtMusic = {}
     )
   }

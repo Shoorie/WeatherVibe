@@ -2,6 +2,7 @@ package com.weather.vibe.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -128,6 +129,7 @@ private fun NavDisplay(
     backStack = backStack,
     modifier = Modifier
       .padding(innerPadding)
+      .consumeWindowInsets(innerPadding)
       .nestedScroll(scrollBehavior.nestedScrollConnection),
     onBack = { backStack.removeLastOrNull() },
     entryDecorators = listOf(

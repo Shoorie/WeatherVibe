@@ -14,7 +14,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import org.koin.core.annotation.Single
 
-@Single(binds = [AiService::class])
+@Single
 internal class AnthropicAiService(
   private val httpClient: HttpClient
 ) : AiService {

@@ -12,8 +12,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.weather.vibe.core.analytics.AnalyticsLogger
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
+import com.weather.vibe.feature.home.analytics.PlaylistAnalytics
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.preview.HomePreviewData.aiSuggestionSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.detailsSections
@@ -41,10 +41,10 @@ internal fun WeatherContent(
 
   var showMoodSheet by rememberSaveable { mutableStateOf(value = false) }
   val uriHandler = LocalUriHandler.current
-  val analyticsLogger = koinInject<AnalyticsLogger>()
-  val sheetCallbacks = remember(uriHandler, analyticsLogger) {
+  val playlistAnalytics = koinInject<PlaylistAnalytics>()
+  val sheetCallbacks = remember(uriHandler, playlistAnalytics) {
     MoodSheetCallbacks(
-      analyticsLogger = analyticsLogger,
+      playlistAnalytics = playlistAnalytics,
       uriHandler = uriHandler
     ) { showMoodSheet = it }
   }

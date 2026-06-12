@@ -2,14 +2,13 @@ package com.weather.vibe.feature.home.ui.screen.callbacks
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.platform.UriHandler
-import com.weather.vibe.core.analytics.AnalyticsEvent.PlaylistOpened
-import com.weather.vibe.core.analytics.AnalyticsLogger
-import com.weather.vibe.core.analytics.PlaylistProvider.SPOTIFY
-import com.weather.vibe.core.analytics.PlaylistProvider.YOUTUBE_MUSIC
+import com.weather.vibe.feature.home.analytics.PlaylistAnalytics
+import com.weather.vibe.feature.home.analytics.PlaylistProvider.SPOTIFY
+import com.weather.vibe.feature.home.analytics.PlaylistProvider.YOUTUBE_MUSIC
 
 @Stable
 internal class MoodSheetCallbacks(
-  private val analyticsLogger: AnalyticsLogger,
+  private val playlistAnalytics: PlaylistAnalytics,
   private val uriHandler: UriHandler,
   setVisible: (Boolean) -> Unit
 ) {
@@ -20,7 +19,7 @@ internal class MoodSheetCallbacks(
   val onOpenYtMusic: (String) -> Unit = { url -> openYtMusic(url) }
 
   private fun openSpotify(appUri: String, webUrl: String) {
-    analyticsLogger.log(PlaylistOpened(provider = SPOTIFY))
+    playlistAnalytics.onPlaylistOpened(provider = SPOTIFY)
     try {
       uriHandler.openUri(appUri)
     } catch (_: IllegalArgumentException) {
@@ -29,7 +28,7 @@ internal class MoodSheetCallbacks(
   }
 
   private fun openYtMusic(url: String) {
-    analyticsLogger.log(PlaylistOpened(provider = YOUTUBE_MUSIC))
+    playlistAnalytics.onPlaylistOpened(provider = YOUTUBE_MUSIC)
     openUriSafely(url)
   }
 

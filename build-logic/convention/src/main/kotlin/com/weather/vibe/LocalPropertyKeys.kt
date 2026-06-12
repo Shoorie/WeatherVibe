@@ -4,6 +4,8 @@ object LocalPropertyKeys {
 
   const val ANTHROPIC_API_KEY = "anthropic.api.key"
 
+  const val GEMINI_API_KEY = "gemini.api.key"
+
   const val ADMOB_TEST_DEVICE_IDS = "admob.test.device.ids"
 
   const val SIGNING_STORE_FILE = "signing.storeFile"

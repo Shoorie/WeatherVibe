@@ -14,4 +14,14 @@ internal class FirebaseAnalyticsLogger(
       event.params.forEach { (key, value) -> param(key, value) }
     }
   }
+
+  override fun logScreenView(screenName: String) {
+    firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+      param(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
+    }
+  }
+
+  override fun setUserProperty(property: AnalyticsUserProperty) {
+    firebaseAnalytics.setUserProperty(property.name, property.value)
+  }
 }

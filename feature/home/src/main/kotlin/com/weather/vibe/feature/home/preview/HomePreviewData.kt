@@ -296,7 +296,8 @@ internal object HomePreviewData {
       mood = "Cozy rainy afternoon",
       moodDescription = "Stay in, grab a warm drink, and let the music match the rain",
       spotifyAppUri = "spotify:search:lo-fi hip hop acoustic rainy day indie",
-      spotifyWebUrl = "https://open.spotify.com/search/lo-fi%20hip%20hop%20acoustic%20rainy%20day%20indie",
+      spotifyWebUrl =
+      "https://open.spotify.com/search/lo-fi%20hip%20hop%20acoustic%20rainy%20day%20indie",
       ytMusicUrl = "https://music.youtube.com/search?q=lo-fi+hip+hop"
     )
 

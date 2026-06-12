@@ -2,13 +2,12 @@ package com.weather.vibe.feature.viberating.presentation.rating
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weather.vibe.core.analytics.AnalyticsEvent.MoodLogged
-import com.weather.vibe.core.analytics.AnalyticsLogger
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.viberating.model.RatingEntry
 import com.weather.vibe.domain.viberating.model.WeatherSnapshot
 import com.weather.vibe.domain.viberating.usecase.ObserveTodayEntries
 import com.weather.vibe.domain.viberating.usecase.SaveRatingEntry
+import com.weather.vibe.feature.viberating.analytics.VibeRatingAnalytics
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.DismissErrorClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteCollapseClick
 import com.weather.vibe.feature.viberating.presentation.rating.RatingCardAction.NoteExpandClick
@@ -41,11 +40,11 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class RatingCardViewModel(
-  private val analyticsLogger: AnalyticsLogger,
   private val observeTodayEntries: ObserveTodayEntries,
   private val saveRatingEntry: SaveRatingEntry,
   private val stateFactory: RatingCardStateFactory,
-  private val timeProvider: TimeProvider
+  private val timeProvider: TimeProvider,
+  private val vibeRatingAnalytics: VibeRatingAnalytics
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<RatingCardUiState>(Loading)
@@ -134,7 +133,7 @@ internal class RatingCardViewModel(
     }
     viewModelScope.launch(errorHandler) {
       saveRatingEntry(buildEntry(draft, weatherSnapshot))
-      analyticsLogger.log(MoodLogged)
+      vibeRatingAnalytics.onRatingSaved()
       onSaveSucceeded()
     }
   }

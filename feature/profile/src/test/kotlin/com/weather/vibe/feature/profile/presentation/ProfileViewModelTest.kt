@@ -13,6 +13,7 @@ import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.viberating.model.VibeOverview
 import com.weather.vibe.domain.viberating.usecase.ObserveVibeOverview
+import com.weather.vibe.feature.profile.analytics.ProfileAnalytics
 import com.weather.vibe.feature.profile.presentation.ProfileAction.ContactClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.LicensesClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
@@ -80,6 +81,7 @@ class ProfileViewModelTest {
   private val observeThemeMode = mockk<ObserveThemeMode>()
   private val setThemeMode = mockk<SetThemeMode>()
   private val saveUsername = mockk<SaveUsername>()
+  private val analytics = mockk<ProfileAnalytics>(relaxed = true)
   private val stateFactory = ProfileStateFactory(resources = fakeProfileResources())
   private val useCases = ProfileUseCases(
     observeFavoritesCount = observeFavoritesCount,
@@ -386,5 +388,9 @@ class ProfileViewModelTest {
   }
 
   private fun createViewModel(): ProfileViewModel =
-    ProfileViewModel(stateFactory = stateFactory, useCases = useCases)
+    ProfileViewModel(
+      analytics = analytics,
+      stateFactory = stateFactory,
+      useCases = useCases
+    )
 }

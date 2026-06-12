@@ -4,4 +4,8 @@
     <key>ads_config</key>
     <value>{"globalEnabled":false,"placements":{}}</value>
   </entry>
+  <entry>
+    <key>ai_provider</key>
+    <value>gemini</value>
+  </entry>
 </defaultsMap>

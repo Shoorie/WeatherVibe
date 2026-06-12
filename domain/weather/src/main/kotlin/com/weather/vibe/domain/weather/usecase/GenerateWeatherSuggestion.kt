@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.koin.core.annotation.Factory
 import java.util.Locale
 import kotlin.Result.Companion.failure
@@ -24,6 +26,7 @@ class GenerateWeatherSuggestion internal constructor(
   private val addToGenreHistory: AddToGenreHistory,
   private val buildWeatherSuggestionPrompt: BuildWeatherSuggestionPrompt,
   private val cache: WeatherSuggestionCache,
+  private val generationLock: Mutex,
   private val observeUserSettings: ObserveUserSettings,
   private val repository: WeatherSuggestionRepository
 ) {
@@ -46,7 +49,7 @@ class GenerateWeatherSuggestion internal constructor(
         weatherKey = weatherKey,
         dispositionEntries = todayDispositionEntries,
         excludedGenres = excludedGenres
-      ) ?: fetchSuggestion(
+      ) ?: generateSuggestion(
         languageTag = languageTag,
         weatherData = weatherData,
         weatherKey = weatherKey,
@@ -73,6 +76,31 @@ class GenerateWeatherSuggestion internal constructor(
     )
       ?.takeIf { it.isValid(excludedGenres) }
       ?.suggestion
+
+  private suspend fun generateSuggestion(
+    languageTag: String,
+    weatherData: WeatherData,
+    weatherKey: WeatherKey,
+    dispositionEntries: List<UserDispositionEntry>,
+    tone: BriefTone,
+    excludedGenres: Set<String>
+  ): WeatherSuggestion =
+    generationLock.withLock {
+      cachedSuggestion(
+        languageTag = languageTag,
+        tone = tone,
+        weatherKey = weatherKey,
+        dispositionEntries = dispositionEntries,
+        excludedGenres = excludedGenres
+      ) ?: fetchSuggestion(
+        languageTag = languageTag,
+        weatherData = weatherData,
+        weatherKey = weatherKey,
+        dispositionEntries = dispositionEntries,
+        tone = tone,
+        excludedGenres = excludedGenres
+      )
+    }
 
   private suspend fun fetchSuggestion(
     languageTag: String,

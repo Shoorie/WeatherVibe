@@ -22,6 +22,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.weather.vibe.core.analytics.AnalyticsLogger
 import com.weather.vibe.core.designsystem.components.navigation.VibeBottomBarScrollBehavior
 import com.weather.vibe.core.designsystem.components.navigation.rememberVibeBottomBarScrollBehavior
 import com.weather.vibe.feature.locations.ui.screen.LocationsScreen
@@ -53,6 +54,7 @@ import com.weather.vibe.navigation.splash.SplashRoute
 import com.weather.vibe.navigation.viberating.VibeHistoryRoute
 import com.weather.vibe.navigation.weather.WeatherDetailsRoute
 import com.weather.vibe.navigation.weather.WeatherDetailsScreen
+import org.koin.compose.koinInject
 
 @Composable
 fun WeatherVibeNavHost(
@@ -64,6 +66,7 @@ fun WeatherVibeNavHost(
   val scrollBehavior = rememberVibeBottomBarScrollBehavior()
   val currentTopRoute by remember(backStack) { derivedStateOf { backStack.lastOrNull() } }
   var isHomeContentReady by remember { mutableStateOf(false) }
+  val analyticsLogger = koinInject<AnalyticsLogger>()
 
   val showBottomBar by remember {
     derivedStateOf {
@@ -74,6 +77,12 @@ fun WeatherVibeNavHost(
 
   LaunchedEffect(currentTopRoute) {
     scrollBehavior.show()
+  }
+
+  LaunchedEffect(currentTopRoute) {
+    currentTopRoute
+      ?.analyticsScreenName()
+      ?.let(analyticsLogger::logScreenView)
   }
 
   BottomBarScaffold(

@@ -1,4 +1,4 @@
-package com.weather.vibe.core.analytics
+package com.weather.vibe.feature.home.analytics
 
 enum class PlaylistProvider(val analyticsValue: String) {
   SPOTIFY("spotify"),

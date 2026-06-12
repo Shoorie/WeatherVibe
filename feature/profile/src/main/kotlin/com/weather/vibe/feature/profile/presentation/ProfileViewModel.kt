@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.appearance.model.ThemeMode
+import com.weather.vibe.feature.profile.analytics.ProfileAnalytics
 import com.weather.vibe.feature.profile.presentation.ProfileAction.ContactClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameClick
 import com.weather.vibe.feature.profile.presentation.ProfileAction.EditUsernameDismiss
@@ -44,6 +45,7 @@ import org.koin.android.annotation.KoinViewModel
 
 @KoinViewModel
 internal class ProfileViewModel(
+  private val analytics: ProfileAnalytics,
   private val stateFactory: ProfileStateFactory,
   private val useCases: ProfileUseCases
 ) : ViewModel() {
@@ -171,6 +173,7 @@ internal class ProfileViewModel(
   private fun persistUsername(username: String) {
     viewModelScope.launch(errorHandler) {
       useCases.saveUsername(username = username)
+      analytics.onUsernameSaved()
     }
   }
 

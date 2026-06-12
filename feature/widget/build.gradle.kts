@@ -9,6 +9,7 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.analytics)
   implementation(projects.core.navigation)
   implementation(projects.core.time)
   implementation(projects.core.workmanager)

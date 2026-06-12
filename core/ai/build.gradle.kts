@@ -20,6 +20,9 @@ android {
     val anthropicApiKey = System.getenv(EnvKeys.ANTHROPIC_API_KEY)
       ?: localProperties.getProperty(LocalPropertyKeys.ANTHROPIC_API_KEY, "")
 
+    val geminiApiKey = System.getenv(EnvKeys.GEMINI_API_KEY)
+      ?: localProperties.getProperty(LocalPropertyKeys.GEMINI_API_KEY, "")
+
     buildConfigField(
       type = "String",
       name = BuildConfigFields.ANTHROPIC_API_KEY,
@@ -30,6 +33,18 @@ android {
       type = "String",
       name = BuildConfigFields.ANTHROPIC_MODEL,
       value = "\"${libs.versions.anthropicModel.get()}\""
+    )
+
+    buildConfigField(
+      type = "String",
+      name = BuildConfigFields.GEMINI_API_KEY,
+      value = "\"$geminiApiKey\""
+    )
+
+    buildConfigField(
+      type = "String",
+      name = BuildConfigFields.GEMINI_MODEL,
+      value = "\"${libs.versions.geminiModel.get()}\""
     )
   }
 }

@@ -26,8 +26,9 @@ import com.weather.vibe.feature.search.presentation.state.withQuery
 import com.weather.vibe.feature.search.ui.SearchResources
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.BufferOverflow.DROP_LATEST
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.RENDEZVOUS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,8 +62,8 @@ internal class SearchViewModel(
   val isLocating: StateFlow<Boolean> = _isLocating.asStateFlow()
 
   private val _event = Channel<SearchEvent>(
-    capacity = Channel.RENDEZVOUS,
-    onBufferOverflow = BufferOverflow.DROP_LATEST
+    capacity = RENDEZVOUS,
+    onBufferOverflow = DROP_LATEST
   )
   val event: Flow<SearchEvent> = _event.receiveAsFlow()
 

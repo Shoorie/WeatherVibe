@@ -48,6 +48,7 @@ import com.weather.vibe.feature.search.ui.component.banner.LocationFavoritesCapa
 import com.weather.vibe.feature.search.ui.component.bar.SearchField
 import com.weather.vibe.feature.search.ui.component.list.RecentsSection
 import com.weather.vibe.feature.search.ui.component.list.ResultsSection
+import com.weather.vibe.feature.search.ui.component.list.UseMyLocationRow
 import com.weather.vibe.feature.search.ui.component.state.SearchEmptyState
 import com.weather.vibe.feature.search.ui.component.state.SearchErrorState
 import com.weather.vibe.feature.search.ui.component.state.SearchIdleState
@@ -59,6 +60,7 @@ internal fun SearchContent(
   state: SearchUiState,
   mode: SearchMode,
   favoritesCount: Int,
+  isLocating: Boolean,
   snackbarHostState: SnackbarHostState,
   dispatch: (SearchAction) -> Unit
 ) {
@@ -87,6 +89,12 @@ internal fun SearchContent(
           query = state.query,
           onQueryChange = callbacks.onQueryChange
         )
+        if (mode == SearchMode.Picker) {
+          UseMyLocationRow(
+            isLocating = isLocating,
+            onClick = callbacks.onUseMyLocation
+          )
+        }
         if (mode == SearchMode.Favorites) {
           CapacityBanner(used = favoritesCount)
         }
@@ -180,6 +188,7 @@ private fun Preview(
       state = state,
       mode = SearchMode.Favorites,
       favoritesCount = 3,
+      isLocating = false,
       snackbarHostState = remember { SnackbarHostState() },
       dispatch = {}
     )

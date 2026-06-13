@@ -7,6 +7,7 @@ import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy
 import com.weather.vibe.domain.location.usecase.AddLocationFavoriteWithWeather
 import com.weather.vibe.domain.location.usecase.GetRecentLocations
 import com.weather.vibe.domain.location.usecase.ObserveLocationFavorites
+import com.weather.vibe.domain.location.usecase.ObtainCurrentLocation
 import com.weather.vibe.domain.location.usecase.RemoveLocationFavorite
 import com.weather.vibe.domain.location.usecase.SaveRecentLocation
 import com.weather.vibe.domain.location.usecase.SearchLocation
@@ -63,6 +64,7 @@ class SearchViewModelTest {
   private val addFavorite = mockk<AddLocationFavoriteWithWeather>()
   private val getRecentLocations = mockk<GetRecentLocations>()
   private val observeFavorites = mockk<ObserveLocationFavorites>()
+  private val obtainCurrentLocation = mockk<ObtainCurrentLocation>()
   private val removeFavorite = mockk<RemoveLocationFavorite>()
   private val saveRecentLocation = mockk<SaveRecentLocation>()
   private val searchLocation = mockk<SearchLocation>()
@@ -363,6 +365,7 @@ class SearchViewModelTest {
         addFavorite = addFavorite,
         getRecentLocations = getRecentLocations,
         observeFavorites = observeFavorites,
+        obtainCurrentLocation = obtainCurrentLocation,
         removeFavorite = removeFavorite,
         saveRecentLocation = saveRecentLocation,
         searchLocation = searchLocation

@@ -6,4 +6,6 @@ internal sealed interface SearchEvent {
   data class NavigateBackWithResult(val location: Location) : SearchEvent
   data object NavigateBack : SearchEvent
   data object LimitReached : SearchEvent
+  data object OpenAppSettings : SearchEvent
+  data object RequestLocationPermission : SearchEvent
 }

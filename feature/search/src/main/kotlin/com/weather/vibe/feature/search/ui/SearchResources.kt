@@ -82,6 +82,10 @@ internal class SearchResources(private val context: Context) {
       stringResource(R.string.search_hint)
 
     @Composable
+    fun useMyLocation(): String =
+      stringResource(R.string.search_use_my_location)
+
+    @Composable
     fun favoritesCapacity(used: Int, limit: Int): String =
       stringResource(R.string.search_favorites_capacity, used, limit)
 

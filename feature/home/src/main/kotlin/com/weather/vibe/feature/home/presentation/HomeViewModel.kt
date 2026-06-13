@@ -202,6 +202,7 @@ internal class HomeViewModel(
     invalidateJob?.cancel()
     invalidateJob = viewModelScope.launch(errorHandler) {
       useCases.invalidateWeatherSuggestion(
+        locationId = weather.coordinates.id,
         todayDispositionEntries = currentDispositionEntries(),
         tone = settings.briefTone,
         weatherKey = weatherKey
@@ -370,10 +371,12 @@ internal class HomeViewModel(
 
   private fun regenerateSuggestion(tone: BriefTone) {
     val weatherKey = snapshot.value.weatherKey ?: return
+    val locationId = snapshot.value.weatherData?.coordinates?.id ?: return
     genreRejectionJob?.cancel()
     genreRejectionJob = viewModelScope.launch(errorHandler) {
       showPlaylistGenerating()
       useCases.invalidateWeatherSuggestion(
+        locationId = locationId,
         todayDispositionEntries = currentDispositionEntries(),
         tone = tone,
         weatherKey = weatherKey

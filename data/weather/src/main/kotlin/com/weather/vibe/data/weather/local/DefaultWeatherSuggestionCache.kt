@@ -21,11 +21,17 @@ internal class DefaultWeatherSuggestionCache(
   override suspend fun delete(
     dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
+    locationId: String,
     tone: BriefTone,
     weatherKey: WeatherKey
   ) {
     dao.delete(
-      keyHash = mapper.toLocalizedHash(weatherKey, languageTag, dispositionEntries),
+      keyHash = mapper.toLocalizedHash(
+        weatherKey = weatherKey,
+        languageTag = languageTag,
+        locationId = locationId,
+        dispositionEntries = dispositionEntries
+      ),
       tone = tone.name
     )
   }
@@ -33,11 +39,17 @@ internal class DefaultWeatherSuggestionCache(
   override suspend fun get(
     dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
+    locationId: String,
     tone: BriefTone,
     weatherKey: WeatherKey
   ): CachedWeatherSuggestion? {
     val entity = dao.get(
-      keyHash = mapper.toLocalizedHash(weatherKey, languageTag, dispositionEntries),
+      keyHash = mapper.toLocalizedHash(
+        weatherKey = weatherKey,
+        languageTag = languageTag,
+        locationId = locationId,
+        dispositionEntries = dispositionEntries
+      ),
       tone = tone.name
     ) ?: return null
     return mapper.toDomain(entity)
@@ -46,6 +58,7 @@ internal class DefaultWeatherSuggestionCache(
   override suspend fun save(
     dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
+    locationId: String,
     suggestion: WeatherSuggestion,
     tone: BriefTone,
     weatherKey: WeatherKey
@@ -60,7 +73,8 @@ internal class DefaultWeatherSuggestionCache(
       entity = mapper.toEntity(
         cached = cached,
         dispositionEntries = dispositionEntries,
-        languageTag = languageTag
+        languageTag = languageTag,
+        locationId = locationId
       )
     )
   }

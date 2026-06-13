@@ -22,6 +22,7 @@ object WeatherSuggestionFixtures {
 
   const val FETCHED_AT = 1_700_000_000_000L
   const val LANGUAGE_TAG = "en"
+  const val LOCATION_ID = "52.0,21.0"
 
   val DEFAULT_GENRES = listOf(GENRE_INDIE, GENRE_ELECTRONIC, GENRE_JAZZ)
   val DEFAULT_WEATHER_KEY: WeatherKey =

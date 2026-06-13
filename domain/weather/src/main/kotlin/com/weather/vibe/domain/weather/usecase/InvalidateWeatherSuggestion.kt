@@ -13,6 +13,7 @@ class InvalidateWeatherSuggestion internal constructor(
 ) {
 
   suspend operator fun invoke(
+    locationId: String,
     todayDispositionEntries: List<UserDispositionEntry>,
     tone: BriefTone,
     weatherKey: WeatherKey
@@ -20,6 +21,7 @@ class InvalidateWeatherSuggestion internal constructor(
     cache.delete(
       dispositionEntries = todayDispositionEntries,
       languageTag = Locale.getDefault().language,
+      locationId = locationId,
       tone = tone,
       weatherKey = weatherKey
     )

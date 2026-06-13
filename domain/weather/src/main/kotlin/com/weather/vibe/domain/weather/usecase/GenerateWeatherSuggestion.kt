@@ -1,5 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
+import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.usecase.AddToGenreHistory
@@ -28,7 +29,8 @@ class GenerateWeatherSuggestion internal constructor(
   private val cache: WeatherSuggestionCache,
   private val generationLock: Mutex,
   private val observeUserSettings: ObserveUserSettings,
-  private val repository: WeatherSuggestionRepository
+  private val repository: WeatherSuggestionRepository,
+  private val timeProvider: TimeProvider
 ) {
 
   operator fun invoke(
@@ -42,15 +44,18 @@ class GenerateWeatherSuggestion internal constructor(
       val tone = settings?.briefTone ?: WITTY_AND_FRIENDLY
       val excludedGenres = settings?.excludedGenres.orEmpty()
       val languageTag = Locale.getDefault().language
+      val locationId = weatherData.coordinates.id
 
       val suggestion = cachedSuggestion(
         languageTag = languageTag,
+        locationId = locationId,
         tone = tone,
         weatherKey = weatherKey,
         dispositionEntries = todayDispositionEntries,
         excludedGenres = excludedGenres
       ) ?: generateSuggestion(
         languageTag = languageTag,
+        locationId = locationId,
         weatherData = weatherData,
         weatherKey = weatherKey,
         dispositionEntries = todayDispositionEntries,
@@ -63,6 +68,7 @@ class GenerateWeatherSuggestion internal constructor(
 
   private suspend fun cachedSuggestion(
     languageTag: String,
+    locationId: String,
     tone: BriefTone,
     weatherKey: WeatherKey,
     dispositionEntries: List<UserDispositionEntry>,
@@ -71,6 +77,7 @@ class GenerateWeatherSuggestion internal constructor(
     cache.get(
       dispositionEntries = dispositionEntries,
       languageTag = languageTag,
+      locationId = locationId,
       tone = tone,
       weatherKey = weatherKey
     )
@@ -79,6 +86,7 @@ class GenerateWeatherSuggestion internal constructor(
 
   private suspend fun generateSuggestion(
     languageTag: String,
+    locationId: String,
     weatherData: WeatherData,
     weatherKey: WeatherKey,
     dispositionEntries: List<UserDispositionEntry>,
@@ -88,12 +96,14 @@ class GenerateWeatherSuggestion internal constructor(
     generationLock.withLock {
       cachedSuggestion(
         languageTag = languageTag,
+        locationId = locationId,
         tone = tone,
         weatherKey = weatherKey,
         dispositionEntries = dispositionEntries,
         excludedGenres = excludedGenres
       ) ?: fetchSuggestion(
         languageTag = languageTag,
+        locationId = locationId,
         weatherData = weatherData,
         weatherKey = weatherKey,
         dispositionEntries = dispositionEntries,
@@ -104,6 +114,7 @@ class GenerateWeatherSuggestion internal constructor(
 
   private suspend fun fetchSuggestion(
     languageTag: String,
+    locationId: String,
     weatherData: WeatherData,
     weatherKey: WeatherKey,
     dispositionEntries: List<UserDispositionEntry>,
@@ -112,7 +123,9 @@ class GenerateWeatherSuggestion internal constructor(
   ): WeatherSuggestion {
     val prompt = buildWeatherSuggestionPrompt(
       condition = weatherKey.condition,
+      currentDate = timeProvider.today(),
       excludedGenres = excludedGenres,
+      locationName = weatherData.coordinates.name,
       temperatureCelsius = weatherData.currentTemperature,
       timeOfDay = weatherKey.timeOfDay,
       todayDispositionEntries = dispositionEntries,
@@ -122,6 +135,7 @@ class GenerateWeatherSuggestion internal constructor(
     cache.save(
       dispositionEntries = dispositionEntries,
       languageTag = languageTag,
+      locationId = locationId,
       suggestion = suggestion,
       tone = tone,
       weatherKey = weatherKey

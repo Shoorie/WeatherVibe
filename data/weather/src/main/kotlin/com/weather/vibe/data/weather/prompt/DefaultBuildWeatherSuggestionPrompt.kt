@@ -12,9 +12,11 @@ import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.usecase.BuildWeatherSuggestionPrompt
 import org.koin.core.annotation.Factory
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Factory(binds = [BuildWeatherSuggestionPrompt::class])
@@ -24,7 +26,9 @@ internal class DefaultBuildWeatherSuggestionPrompt(
 
   override fun invoke(
     condition: SimplifiedCondition,
+    currentDate: LocalDate,
     excludedGenres: Set<String>,
+    locationName: String,
     temperatureCelsius: Double,
     timeOfDay: TimeOfDay,
     todayDispositionEntries: List<UserDispositionEntry>,
@@ -32,7 +36,9 @@ internal class DefaultBuildWeatherSuggestionPrompt(
   ): String =
     buildString {
       appendSection(string(R.string.prompt_role))
+      appendSection(contextSection(currentDate, locationName))
       appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
+      appendSection(string(R.string.prompt_grounding_instruction))
       dispositionSection(todayDispositionEntries)?.let { appendSection(it) }
       appendSection(toneSection(tone))
       appendSection(string(R.string.prompt_brief_instruction))
@@ -40,6 +46,13 @@ internal class DefaultBuildWeatherSuggestionPrompt(
       appendSection(musicSection(excludedGenres))
       appendSection(string(R.string.prompt_output_format))
     }
+
+  private fun contextSection(currentDate: LocalDate, locationName: String): String =
+    """
+      LOCATION & DATE:
+      - Place: $locationName
+      - Date: ${DATE_FORMATTER.format(currentDate)}
+    """.trimIndent()
 
   private fun weatherSection(
     condition: SimplifiedCondition,
@@ -102,5 +115,6 @@ internal class DefaultBuildWeatherSuggestionPrompt(
 
   private companion object {
     val TIME_FORMATTER: DateTimeFormatter = ofPattern("HH:mm")
+    val DATE_FORMATTER: DateTimeFormatter = ofPattern("d MMMM yyyy", Locale.ENGLISH)
   }
 }

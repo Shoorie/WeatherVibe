@@ -35,7 +35,8 @@ internal class WeatherSuggestionEntityMapper {
   fun toEntity(
     cached: CachedWeatherSuggestion,
     dispositionEntries: List<UserDispositionEntry>,
-    languageTag: String
+    languageTag: String,
+    locationId: String
   ): WeatherSuggestionEntity =
     WeatherSuggestionEntity(
       briefText = cached.suggestion.briefText,
@@ -48,15 +49,21 @@ internal class WeatherSuggestionEntityMapper {
       temperatureRange = cached.weatherKey.temperature.name,
       timeOfDay = cached.weatherKey.timeOfDay.name,
       tone = cached.tone.name,
-      weatherKeyHash = toLocalizedHash(cached.weatherKey, languageTag, dispositionEntries)
+      weatherKeyHash = toLocalizedHash(
+        weatherKey = cached.weatherKey,
+        languageTag = languageTag,
+        locationId = locationId,
+        dispositionEntries = dispositionEntries
+      )
     )
 
   fun toLocalizedHash(
     weatherKey: WeatherKey,
     languageTag: String,
+    locationId: String,
     dispositionEntries: List<UserDispositionEntry>
   ): String =
-    "${weatherKey.toHash()}_${languageTag}_${dispositionFingerprint(dispositionEntries)}"
+    "${weatherKey.toHash()}_${languageTag}_${locationId}_${dispositionFingerprint(dispositionEntries)}"
 
   private fun dispositionFingerprint(entries: List<UserDispositionEntry>): String {
 

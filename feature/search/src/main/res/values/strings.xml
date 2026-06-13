@@ -2,6 +2,7 @@
   <string name="search_screen_title">Add location</string>
   <string name="search_screen_subtitle">Find your next stop</string>
   <string name="search_hint">Search for a city&#8230;</string>
+  <string name="search_use_my_location">Use my location</string>
   <string name="search_clear_content_description">Clear search</string>
 
   <string name="search_section_recents_title">Recently searched</string>

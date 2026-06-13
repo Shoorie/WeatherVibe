@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class GeminiGenerationConfigDto(
-  val maxOutputTokens: Int
+  val maxOutputTokens: Int,
+  val thinkingConfig: GeminiThinkingConfigDto
 )

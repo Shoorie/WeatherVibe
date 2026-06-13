@@ -8,6 +8,7 @@ import com.weather.vibe.core.ai.gemini.dto.GeminiGenerationConfigDto
 import com.weather.vibe.core.ai.gemini.dto.GeminiPartDto
 import com.weather.vibe.core.ai.gemini.dto.GeminiRequestDto
 import com.weather.vibe.core.ai.gemini.dto.GeminiResponseDto
+import com.weather.vibe.core.ai.gemini.dto.GeminiThinkingConfigDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.header
@@ -29,7 +30,10 @@ internal class GeminiAiService(
       setBody(
         GeminiRequestDto(
           contents = listOf(GeminiContentDto(parts = listOf(GeminiPartDto(text = prompt)))),
-          generationConfig = GeminiGenerationConfigDto(maxOutputTokens = MAX_TOKENS)
+          generationConfig = GeminiGenerationConfigDto(
+            maxOutputTokens = MAX_TOKENS,
+            thinkingConfig = GeminiThinkingConfigDto(thinkingBudget = THINKING_DISABLED)
+          )
         )
       )
     }.body<GeminiResponseDto>()
@@ -45,5 +49,6 @@ internal class GeminiAiService(
     const val GENERATE_CONTENT_SUFFIX = ":generateContent"
     const val HEADER_API_KEY = "x-goog-api-key"
     const val MAX_TOKENS = 600
+    const val THINKING_DISABLED = 0
   }
 }

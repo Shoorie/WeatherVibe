@@ -2,6 +2,7 @@
 <resources>
 
     <string name="prompt_role">You write a short, casual weather brief in English for someone glancing at their phone.</string>
+    <string name="prompt_grounding_instruction">Ground the brief in the place, date and weather above. Do not invent a region, area or part of the country the place is not explicitly in. Do not speculate about other seasons or upcoming seasonal changes beyond what the weather data shows — comment only on the conditions given.</string>
     <string name="prompt_brief_instruction">Write 3–4 sentences, max 500 characters.</string>
     <string name="prompt_outfit_instruction">Suggest 2–3 garments or accessories for today. Max 6 words. No trailing period.</string>
     <string name="prompt_music_instruction">Pick 3 music genres that match today\'s mood and weather. Use real, searchable English genre names.</string>

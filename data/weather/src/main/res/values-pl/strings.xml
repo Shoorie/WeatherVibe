@@ -2,6 +2,7 @@
 <resources>
 
     <string name="prompt_role">Piszesz krótki komentarz o pogodzie po polsku.</string>
+    <string name="prompt_grounding_instruction">Oprzyj komentarz wyłącznie na miejscu, dacie i pogodzie powyżej. Nie zmyślaj regionu, obszaru ani części kraju, w której to miejsce nie leży. Nie spekuluj o innych porach roku ani nadchodzących zmianach sezonowych poza tym, co wynika z danych pogodowych — komentuj tylko podane warunki.</string>
     <string name="prompt_brief_instruction">3–4 zdania, maksymalnie 500 znaków.</string>
     <string name="prompt_outfit_instruction">2–3 elementy ubioru lub dodatków. Maksymalnie 6 słów. Bez kropki na końcu.</string>
     <string name="prompt_music_instruction">3 gatunki muzyczne, nazwy po angielsku.</string>

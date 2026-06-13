@@ -1,6 +1,7 @@
 package com.weather.vibe.data.weather.local.mapper
 
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.LANGUAGE_TAG
+import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.LOCATION_ID
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.cachedSuggestion
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.suggestion
 import org.junit.Test
@@ -21,7 +22,8 @@ class WeatherSuggestionEntityMapperTest {
       mapper.toEntity(
         cached = original,
         dispositionEntries = emptyList(),
-        languageTag = LANGUAGE_TAG
+        languageTag = LANGUAGE_TAG,
+        locationId = LOCATION_ID
       )
     )
 
@@ -37,7 +39,8 @@ class WeatherSuggestionEntityMapperTest {
       mapper.toEntity(
         cached = original,
         dispositionEntries = emptyList(),
-        languageTag = LANGUAGE_TAG
+        languageTag = LANGUAGE_TAG,
+        locationId = LOCATION_ID
       )
     )
 
@@ -52,7 +55,8 @@ class WeatherSuggestionEntityMapperTest {
     val entity = mapper.toEntity(
       cached = original,
       dispositionEntries = emptyList(),
-      languageTag = LANGUAGE_TAG
+      languageTag = LANGUAGE_TAG,
+      locationId = LOCATION_ID
     )
 
     expectThat(entity.outfitSuggestion).isEqualTo("")

@@ -9,12 +9,16 @@ import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVOR
 import com.weather.vibe.feature.search.presentation.SearchAction.BackClick
 import com.weather.vibe.feature.search.presentation.SearchAction.HeartClick
 import com.weather.vibe.feature.search.presentation.SearchAction.LocationSelect
+import com.weather.vibe.feature.search.presentation.SearchAction.PermissionResult
 import com.weather.vibe.feature.search.presentation.SearchAction.QueryChange
 import com.weather.vibe.feature.search.presentation.SearchAction.Retry
 import com.weather.vibe.feature.search.presentation.SearchAction.SetMode
+import com.weather.vibe.feature.search.presentation.SearchAction.UseMyLocationClick
 import com.weather.vibe.feature.search.presentation.SearchEvent.LimitReached
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
+import com.weather.vibe.feature.search.presentation.SearchEvent.OpenAppSettings
+import com.weather.vibe.feature.search.presentation.SearchEvent.RequestLocationPermission
 import com.weather.vibe.feature.search.presentation.state.SearchUiState
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Idle
 import com.weather.vibe.feature.search.presentation.state.SearchUiState.Searching
@@ -53,6 +57,9 @@ internal class SearchViewModel(
   private val _favoritesCount = MutableStateFlow(0)
   val favoritesCount: StateFlow<Int> = _favoritesCount.asStateFlow()
 
+  private val _isLocating = MutableStateFlow(false)
+  val isLocating: StateFlow<Boolean> = _isLocating.asStateFlow()
+
   private val _event = Channel<SearchEvent>(
     capacity = Channel.RENDEZVOUS,
     onBufferOverflow = BufferOverflow.DROP_LATEST
@@ -81,10 +88,51 @@ internal class SearchViewModel(
       is BackClick -> onBackClick()
       is HeartClick -> onHeartClick(action.id)
       is LocationSelect -> onLocationSelect(action.id)
+      is PermissionResult -> onPermissionResult(action)
       is QueryChange -> onQueryChange(action.query)
       is Retry -> onRetry()
       is SetMode -> onSetMode(action.mode)
+      is UseMyLocationClick -> onUseMyLocationClick()
     }
+  }
+
+  private fun onUseMyLocationClick() {
+    send(RequestLocationPermission)
+  }
+
+  private fun onPermissionResult(action: PermissionResult) {
+    when {
+      action.granted -> fetchCurrentLocation()
+      action.canAskAgain -> Unit
+      else -> send(OpenAppSettings)
+    }
+  }
+
+  private fun fetchCurrentLocation() {
+    _isLocating.update { true }
+    useCases.obtainCurrentLocation()
+      .onEach(::onCurrentLocationResult)
+      .launchIn(viewModelScope)
+  }
+
+  private fun onCurrentLocationResult(result: Result<Location>) {
+    result.fold(
+      onSuccess = ::onCurrentLocationResolved,
+      onFailure = { onCurrentLocationError() }
+    )
+  }
+
+  private fun onCurrentLocationResolved(location: Location) {
+    viewModelScope.launch(errorHandler) {
+      useCases.saveRecentLocation(location)
+      _isLocating.update { false }
+      send(NavigateBackWithResult(location))
+    }
+  }
+
+  private fun onCurrentLocationError() {
+    _isLocating.update { false }
+    showError()
   }
 
   private fun onSetMode(nextMode: SearchMode) {

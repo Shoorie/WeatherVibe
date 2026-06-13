@@ -6,14 +6,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.weather.vibe.core.permissions.location.rememberLocationPermissionRequester
+import com.weather.vibe.core.permissions.openAppDetailsSettings
 import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.policy.LocationFavoritesPolicy.MAX_FAVORITES
+import com.weather.vibe.feature.search.presentation.SearchAction.PermissionResult
 import com.weather.vibe.feature.search.presentation.SearchAction.SetMode
 import com.weather.vibe.feature.search.presentation.SearchEvent.LimitReached
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBack
 import com.weather.vibe.feature.search.presentation.SearchEvent.NavigateBackWithResult
+import com.weather.vibe.feature.search.presentation.SearchEvent.OpenAppSettings
+import com.weather.vibe.feature.search.presentation.SearchEvent.RequestLocationPermission
 import com.weather.vibe.feature.search.presentation.SearchMode
 import com.weather.vibe.feature.search.presentation.SearchViewModel
 import com.weather.vibe.feature.search.ui.SearchResources
@@ -28,12 +34,21 @@ fun SearchScreen(
   mode: SearchMode = SearchMode.Picker
 ) {
 
+  val context = LocalContext.current
   val viewModel: SearchViewModel = koinViewModel()
   val resources = koinInject<SearchResources>()
   val state by viewModel.state.collectAsStateWithLifecycle()
   val favoritesCount by viewModel.favoritesCount.collectAsStateWithLifecycle()
+  val isLocating by viewModel.isLocating.collectAsStateWithLifecycle()
   val snackbarHostState = remember { SnackbarHostState() }
   val keyboardController = LocalSoftwareKeyboardController.current
+
+  val requestLocationPermission = rememberLocationPermissionRequester(
+    onGranted = { viewModel.dispatch(PermissionResult(canAskAgain = true, granted = true)) },
+    onDenied = { canAskAgain ->
+      viewModel.dispatch(PermissionResult(canAskAgain = canAskAgain, granted = false))
+    }
+  )
 
   LaunchedEffect(mode) {
     viewModel.dispatch(SetMode(mode))
@@ -54,6 +69,8 @@ fun SearchScreen(
           message = resources.favoritesLimitReached(limit = MAX_FAVORITES),
           duration = Short
         )
+        is RequestLocationPermission -> requestLocationPermission()
+        is OpenAppSettings -> context.openAppDetailsSettings()
       }
     }
   }
@@ -62,6 +79,7 @@ fun SearchScreen(
     state = state,
     mode = mode,
     favoritesCount = favoritesCount,
+    isLocating = isLocating,
     snackbarHostState = snackbarHostState,
     dispatch = viewModel::dispatch
   )

@@ -5,8 +5,10 @@ import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
 import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
 import com.weather.vibe.domain.weather.model.UserDispositionEntry
+import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import com.weather.vibe.domain.weather.repository.WeatherSuggestionRepository
 import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
+import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.DEFAULT_WEATHER_KEY
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SUGGESTION
@@ -40,9 +42,12 @@ class GenerateWeatherSuggestionTest {
 
   private var cached: CachedWeatherSuggestion? = null
   private val cache = mockk<WeatherSuggestionCache> {
-    coEvery { get(any(), any(), any(), any()) } answers { cached }
-    coEvery { save(any(), any(), any(), any(), any()) } answers {
-      cached = cachedSuggestion(fetchedAt = System.currentTimeMillis(), suggestion = thirdArg())
+    coEvery { get(any(), any(), any(), any(), any()) } answers { cached }
+    coEvery { save(any(), any(), any(), any(), any(), any()) } answers {
+      cached = cachedSuggestion(
+        fetchedAt = System.currentTimeMillis(),
+        suggestion = arg<WeatherSuggestion>(3)
+      )
     }
   }
 
@@ -52,7 +57,8 @@ class GenerateWeatherSuggestionTest {
     cache = cache,
     generationLock = Mutex(),
     observeUserSettings = observeUserSettings,
-    repository = repository
+    repository = repository,
+    timeProvider = FakeTimeProvider()
   )
 
   @After
@@ -97,7 +103,7 @@ class GenerateWeatherSuggestionTest {
   private fun stubSettingsAndPrompt() {
     every { observeUserSettings() } returns flowOf(Result.success(userSettings()))
     every {
-      buildWeatherSuggestionPrompt(any(), any(), any(), any(), any(), any())
+      buildWeatherSuggestionPrompt(any(), any(), any(), any(), any(), any(), any(), any())
     } returns PROMPT
   }
 

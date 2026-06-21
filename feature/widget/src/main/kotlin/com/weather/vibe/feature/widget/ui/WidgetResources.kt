@@ -1,6 +1,12 @@
 package com.weather.vibe.feature.widget.ui
 
 import android.content.Context
+import com.weather.vibe.domain.vibe.model.VibeMood
+import com.weather.vibe.domain.vibe.model.VibeMood.DREARY
+import com.weather.vibe.domain.vibe.model.VibeMood.OKAY
+import com.weather.vibe.domain.vibe.model.VibeMood.PLEASANT
+import com.weather.vibe.domain.vibe.model.VibeMood.RADIANT
+import com.weather.vibe.domain.vibe.model.VibeMood.ROUGH
 import com.weather.vibe.domain.weather.model.WeatherCondition
 import com.weather.vibe.domain.weather.model.WeatherCondition.CLEAR_SKY
 import com.weather.vibe.domain.weather.model.WeatherCondition.DRIZZLE
@@ -49,7 +55,18 @@ internal class WidgetResources(private val context: Context) {
   fun conditionLabel(condition: WeatherCondition): String =
     context.getString(CONDITION_STRING_IDS.getValue(condition))
 
+  fun vibeMoodLabel(mood: VibeMood): String =
+    context.getString(VIBE_MOOD_STRING_IDS.getValue(mood))
+
   private companion object {
+
+    val VIBE_MOOD_STRING_IDS = mapOf(
+      ROUGH to R.string.widget_vibe_mood_rough,
+      DREARY to R.string.widget_vibe_mood_dreary,
+      OKAY to R.string.widget_vibe_mood_okay,
+      PLEASANT to R.string.widget_vibe_mood_pleasant,
+      RADIANT to R.string.widget_vibe_mood_radiant
+    )
 
     val CONDITION_STRING_IDS = mapOf(
       CLEAR_SKY to R.string.widget_condition_clear_sky,

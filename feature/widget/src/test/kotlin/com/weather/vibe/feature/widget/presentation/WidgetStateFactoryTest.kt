@@ -109,12 +109,12 @@ class WidgetStateFactoryTest {
   }
 
   @Test
-  fun `when weather state created, then mood comes from snapshot`() {
+  fun `given cached ai mood, when weather state created, then mood comes from snapshot`() {
 
     val state = factory.createWeather(SNAPSHOT)
 
     expectThat(state).isA<WidgetUiState.Weather>()
-      .get { mood }.isEqualTo(SNAPSHOT.mood)
+      .get { mood }.isEqualTo(SNAPSHOT.aiMood)
   }
 
   @Test

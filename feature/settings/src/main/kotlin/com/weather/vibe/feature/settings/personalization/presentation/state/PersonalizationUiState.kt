@@ -6,11 +6,18 @@ import kotlinx.collections.immutable.ImmutableList
 internal sealed interface PersonalizationUiState {
 
   @Immutable
+  data object Loading : PersonalizationUiState
+
+  @Immutable
   data class Loaded(
-    val briefToneOptions: ImmutableList<BriefToneOptionUiState>,
     val genreChips: ImmutableList<GenreChipUiState>,
     val hasExcludedGenres: Boolean,
-    val isCelsius: Boolean
+    val isCelsius: Boolean,
+    val isPremium: Boolean,
+    val narrator: NarratorUiState,
+    val premiumToneCount: Int,
+    val paywall: PaywallUiState?,
+    val personas: ImmutableList<PersonaUiState>
   ) : PersonalizationUiState
 
   @Immutable

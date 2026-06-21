@@ -24,4 +24,9 @@
   <string name="widget_condition_snow_showers">Przelotne opady śniegu</string>
   <string name="widget_condition_thunderstorm">Burza</string>
   <string name="widget_condition_unknown">Nieznane</string>
+  <string name="widget_vibe_mood_rough">Ciężki dzień</string>
+  <string name="widget_vibe_mood_dreary">Ponuro</string>
+  <string name="widget_vibe_mood_okay">W porządku</string>
+  <string name="widget_vibe_mood_pleasant">Przyjemny vibe</string>
+  <string name="widget_vibe_mood_radiant">Promiennie</string>
 </resources>

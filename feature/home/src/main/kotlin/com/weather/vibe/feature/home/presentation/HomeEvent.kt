@@ -5,4 +5,6 @@ import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 internal sealed interface HomeEvent {
 
   data class SharePoster(val state: SharePosterUiState) : HomeEvent
+
+  data object ShowPremiumUnavailable : HomeEvent
 }

@@ -36,7 +36,9 @@ internal fun WeatherContent(
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onShareClick: () -> Unit,
-  onGenreRemoveClick: (String) -> Unit
+  onGenreRemoveClick: (String) -> Unit,
+  onBriefLimitWatchAdEarned: () -> Unit,
+  onBriefLimitBuyPremium: () -> Unit
 ) {
 
   var showMoodSheet by rememberSaveable { mutableStateOf(value = false) }
@@ -61,7 +63,9 @@ internal fun WeatherContent(
     onRefresh = onRefresh,
     onRetrySuggestion = onRetrySuggestion,
     onMusicClick = sheetCallbacks.onShow,
-    onShareClick = onShareClick
+    onShareClick = onShareClick,
+    onBriefLimitWatchAdEarned = onBriefLimitWatchAdEarned,
+    onBriefLimitBuyPremium = onBriefLimitBuyPremium
   )
 
   if (showMoodSheet) {
@@ -94,7 +98,9 @@ private fun Preview() {
       onRefresh = {},
       onRetrySuggestion = {},
       onShareClick = {},
-      onGenreRemoveClick = {}
+      onGenreRemoveClick = {},
+      onBriefLimitWatchAdEarned = {},
+      onBriefLimitBuyPremium = {}
     )
   }
 }

@@ -6,16 +6,20 @@ import com.weather.vibe.core.sharing.ShareBitmapAsImage
 import com.weather.vibe.domain.airquality.model.EnvironmentalReadings
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.Coordinates
 import com.weather.vibe.domain.weather.model.UserDispositionEntry
+import com.weather.vibe.domain.weather.model.WeatherBriefResult
+import com.weather.vibe.domain.weather.model.WeatherBriefResult.LimitReached
+import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
 import com.weather.vibe.domain.weather.model.WeatherData
-import com.weather.vibe.domain.weather.model.WeatherKey
-import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.feature.home.presentation.HomeAction.BriefLimitBuyPremium
+import com.weather.vibe.feature.home.presentation.HomeAction.BriefLimitWatchAdEarned
 import com.weather.vibe.feature.home.presentation.HomeAction.GenreRemoveClick
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
@@ -76,7 +80,6 @@ internal class HomeViewModel(
   private var currentSettings: UserSettings? = null
   private var homeDataJob: Job? = null
   private var suggestionJob: Job? = null
-  private var invalidateJob: Job? = null
   private var genreRejectionJob: Job? = null
   private var dailyVibeJob: Job? = null
   private var posterShareJob: Job? = null
@@ -85,6 +88,8 @@ internal class HomeViewModel(
 
   fun dispatch(action: HomeAction) {
     when (action) {
+      is BriefLimitBuyPremium -> onBriefLimitBuyPremium()
+      is BriefLimitWatchAdEarned -> onBriefLimitWatchAdEarned()
       is GenreRemoveClick -> onGenreRemoveClick(action)
       is Initialize -> onInitialize(action)
       is PosterCaptured -> onPosterCaptured(action)
@@ -116,7 +121,6 @@ internal class HomeViewModel(
   private fun cancelDerivedJobs() {
     dailyVibeJob?.cancel()
     suggestionJob?.cancel()
-    invalidateJob?.cancel()
     genreRejectionJob?.cancel()
   }
 
@@ -172,8 +176,6 @@ internal class HomeViewModel(
 
     when (strategy) {
       RegenerateSuggestion -> onRegenerateSuggestion(weather, settings)
-      InvalidateAndRegenerate ->
-        onInvalidateAndRegenerateSuggestion(weather, settings, weatherKey)
       ReformatOnly -> onReformatOnly(weather, settings)
     }
     clearRefreshFlag()
@@ -188,28 +190,6 @@ internal class HomeViewModel(
   private fun onRegenerateSuggestion(weather: WeatherData, settings: UserSettings) {
     showWeatherLoaded(weather, settings)
     refreshWeatherSuggestion()
-  }
-
-  private fun onInvalidateAndRegenerateSuggestion(
-    weather: WeatherData,
-    settings: UserSettings,
-    weatherKey: WeatherKey
-  ) {
-
-    showWeatherLoaded(weather, settings)
-
-    suggestionJob?.cancel()
-    invalidateJob?.cancel()
-    invalidateJob = viewModelScope.launch(errorHandler) {
-      useCases.invalidateWeatherSuggestion(
-        locationId = weather.coordinates.id,
-        todayDispositionEntries = currentDispositionEntries(),
-        tone = settings.briefTone,
-        weatherKey = weatherKey
-      )
-      ensureActive()
-      refreshWeatherSuggestion()
-    }
   }
 
   private fun onReformatOnly(weather: WeatherData, settings: UserSettings) {
@@ -315,11 +295,18 @@ internal class HomeViewModel(
   private suspend fun currentDispositionEntries(): List<UserDispositionEntry> =
     useCases.observeTodayEntries().first().toDispositionEntries()
 
-  private fun onWeatherSuggestionResult(result: Result<WeatherSuggestion>) {
+  private fun onWeatherSuggestionResult(result: Result<WeatherBriefResult>) {
     result.fold(
-      onSuccess = ::onWeatherSuggestionSuccess,
+      onSuccess = ::onWeatherBriefResult,
       onFailure = { onWeatherSuggestionError() }
     )
+  }
+
+  private fun onWeatherBriefResult(result: WeatherBriefResult) {
+    when (result) {
+      is Ready -> onWeatherSuggestionSuccess(result.suggestion)
+      LimitReached -> onBriefLimitReached()
+    }
   }
 
   private fun onWeatherSuggestionSuccess(suggestion: WeatherSuggestion) {
@@ -327,9 +314,36 @@ internal class HomeViewModel(
       it.copy(weatherSuggestion = suggestion, rejectedGenres = emptySet())
     }
     showWeatherSuggestion(
-      briefing = factories.aiSuggestion.buildBriefing(suggestion),
+      briefing = factories.aiSuggestion.buildBriefing(suggestion, currentTone()),
       playlist = factories.aiSuggestion.buildPlaylist(suggestion)
     )
+  }
+
+  private fun onBriefLimitReached() {
+    val teaser = snapshot.value.weatherSuggestion
+    showWeatherSuggestion(
+      briefing = factories.aiSuggestion.buildLimit(teaser, currentTone()),
+      playlist = teaserPlaylist(teaser)
+    )
+  }
+
+  private fun teaserPlaylist(teaser: WeatherSuggestion?): PlaylistUiState =
+    teaser
+      ?.let(factories.aiSuggestion::buildPlaylist)
+      ?: PlaylistUiState.Error
+
+  private fun currentTone(): BriefTone =
+    currentSettings?.briefTone ?: WITTY_AND_FRIENDLY
+
+  private fun onBriefLimitWatchAdEarned() {
+    viewModelScope.launch(errorHandler) {
+      useCases.unlockToneTemporarily(currentTone())
+      refreshWeatherSuggestion()
+    }
+  }
+
+  private fun onBriefLimitBuyPremium() {
+    send(HomeEvent.ShowPremiumUnavailable)
   }
 
   private fun onWeatherSuggestionError() {

@@ -1,6 +1,8 @@
 package com.weather.vibe.feature.home.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
+import com.weather.vibe.feature.home.presentation.state.BriefingPersonaUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -30,6 +32,10 @@ internal class HomePreview :
     Loaded(
       aiSuggestion = aiSuggestionSection.copy(
         briefing = BriefingUiState.Loaded(
+          persona = BriefingPersonaUiState(
+            colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
+            emoji = "😊"
+          ),
           text = "A mild partly cloudy day with a light breeze — " +
             "great for a walk before the evening rain."
         )

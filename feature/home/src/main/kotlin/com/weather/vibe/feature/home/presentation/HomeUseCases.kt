@@ -2,6 +2,7 @@ package com.weather.vibe.feature.home.presentation
 
 import com.weather.vibe.domain.airquality.usecase.GetEnvironmentalReadings
 import com.weather.vibe.domain.alerts.usecase.ResolveHomeAlert
+import com.weather.vibe.domain.premium.usecase.UnlockToneTemporarily
 import com.weather.vibe.domain.settings.usecase.ExcludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.vibe.usecase.CalculateDailyVibe
@@ -27,5 +28,6 @@ internal data class HomeUseCases(
   val invalidateWeatherSuggestion: InvalidateWeatherSuggestion,
   val observeTodayEntries: ObserveTodayEntries,
   val observeUserSettings: ObserveUserSettings,
-  val resolveHomeAlert: ResolveHomeAlert
+  val resolveHomeAlert: ResolveHomeAlert,
+  val unlockToneTemporarily: UnlockToneTemporarily
 )

@@ -11,6 +11,7 @@ android {
 
 dependencies {
   implementation(projects.core.time)
+  implementation(projects.domain.premium)
   implementation(projects.domain.settings)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.koin.core)

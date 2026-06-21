@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.presentation
 
+import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.weather.usecase.BuildPlaylistQuery
 import com.weather.vibe.feature.home.presentation.factory.AiSuggestionSectionFactory
 import com.weather.vibe.feature.home.presentation.factory.PlaylistStateFactory
@@ -31,7 +32,7 @@ class AiSuggestionSectionFactoryTest {
   @Test
   fun `when briefing built, then text taken from suggestion`() {
 
-    val result = factory.buildBriefing(SUGGESTION)
+    val result = factory.buildBriefing(SUGGESTION, WITTY_AND_FRIENDLY)
 
     expectThat(result.text).isEqualTo("Beautiful sunny day, perfect for a walk!")
   }
@@ -39,7 +40,7 @@ class AiSuggestionSectionFactoryTest {
   @Test
   fun `when briefing built, then outfit taken from suggestion`() {
 
-    val result = factory.buildBriefing(SUGGESTION)
+    val result = factory.buildBriefing(SUGGESTION, WITTY_AND_FRIENDLY)
 
     expectThat(result.outfit).isEqualTo("T-shirt, sunglasses, light cap")
   }

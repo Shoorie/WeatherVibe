@@ -9,7 +9,10 @@ android {
 }
 
 dependencies {
+  implementation(projects.core.ads)
   implementation(projects.core.permissions)
+  implementation(projects.domain.ads)
+  implementation(projects.domain.premium)
   implementation(projects.domain.settings)
   implementation(libs.kotlinx.collections.immutable)
 

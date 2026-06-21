@@ -3,8 +3,13 @@ package com.weather.vibe.data.weather.prompt
 import android.content.Context
 import com.weather.vibe.data.weather.R
 import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.CINEMATIC
+import com.weather.vibe.domain.settings.model.BriefTone.COACH
+import com.weather.vibe.domain.settings.model.BriefTone.CYNIC
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
+import com.weather.vibe.domain.settings.model.BriefTone.RPG
+import com.weather.vibe.domain.settings.model.BriefTone.SCI_FI
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TimeOfDay
@@ -35,17 +40,24 @@ internal class DefaultBuildWeatherSuggestionPrompt(
     tone: BriefTone
   ): String =
     buildString {
-      appendSection(string(R.string.prompt_role))
+      appendSection(toneRoleSection(tone))
       appendSection(contextSection(currentDate, locationName))
       appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
-      appendSection(string(R.string.prompt_grounding_instruction))
       dispositionSection(todayDispositionEntries)?.let { appendSection(it) }
-      appendSection(toneSection(tone))
+      appendSection(string(R.string.prompt_grounding_instruction))
       appendSection(string(R.string.prompt_brief_instruction))
       appendSection(string(R.string.prompt_outfit_instruction))
       appendSection(musicSection(excludedGenres))
-      appendSection(string(R.string.prompt_output_format))
+      appendSection(outputFormatSection(tone))
     }
+
+  private fun toneRoleSection(tone: BriefTone): String =
+    """
+      ROLE & PERSONALITY:
+      ${string(R.string.prompt_role)}
+      CRITICAL — this persona overrides every formatting rule below:
+      ${string(tone.toToneDirectiveRes())}
+    """.trimIndent()
 
   private fun contextSection(currentDate: LocalDate, locationName: String): String =
     """
@@ -74,8 +86,9 @@ internal class DefaultBuildWeatherSuggestionPrompt(
     return "$intro\n\nTODAY'S ENTRIES (chronological):\n$lines"
   }
 
-  private fun toneSection(tone: BriefTone): String =
-    "TONE DIRECTIVE:\n${string(tone.toToneDirectiveRes())}"
+  private fun outputFormatSection(tone: BriefTone): String =
+    string(R.string.prompt_output_format)
+      .replace(TONE_REMINDER_PLACEHOLDER, string(tone.toToneDirectiveRes()))
 
   private fun musicSection(excludedGenres: Set<String>): String =
     buildString {
@@ -111,9 +124,15 @@ internal class DefaultBuildWeatherSuggestionPrompt(
     FORMAL -> R.string.prompt_tone_directive_formal
     HUMOROUS -> R.string.prompt_tone_directive_humorous
     WITTY_AND_FRIENDLY -> R.string.prompt_tone_directive_witty_friendly
+    COACH -> R.string.prompt_tone_directive_coach
+    SCI_FI -> R.string.prompt_tone_directive_sci_fi
+    RPG -> R.string.prompt_tone_directive_rpg
+    CINEMATIC -> R.string.prompt_tone_directive_cinematic
+    CYNIC -> R.string.prompt_tone_directive_cynic
   }
 
   private companion object {
+    const val TONE_REMINDER_PLACEHOLDER = "{tone_reminder}"
     val TIME_FORMATTER: DateTimeFormatter = ofPattern("HH:mm")
     val DATE_FORMATTER: DateTimeFormatter = ofPattern("d MMMM yyyy", Locale.ENGLISH)
   }

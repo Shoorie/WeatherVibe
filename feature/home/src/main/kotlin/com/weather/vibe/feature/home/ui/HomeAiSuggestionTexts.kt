@@ -31,6 +31,34 @@ internal object HomeAiSuggestionTexts {
     stringResource(R.string.ai_briefing_unavailable)
 
   @Composable
+  fun aiBriefingPersonaReads(): String =
+    stringResource(R.string.ai_briefing_persona_reads)
+
+  @Composable
+  fun aiBriefingOpenPersonalization(): String =
+    stringResource(R.string.ai_briefing_open_personalization)
+
+  @Composable
+  fun aiBriefingPremiumComingSoon(): String =
+    stringResource(R.string.ai_briefing_premium_coming_soon)
+
+  @Composable
+  fun aiBriefingLimitTitle(): String =
+    stringResource(R.string.ai_briefing_limit_title)
+
+  @Composable
+  fun aiBriefingLimitPremium(): String =
+    stringResource(R.string.ai_briefing_limit_premium)
+
+  @Composable
+  fun aiBriefingLimitWatch(): String =
+    stringResource(R.string.ai_briefing_limit_watch)
+
+  @Composable
+  fun aiBriefingLimitReset(): String =
+    stringResource(R.string.ai_briefing_limit_reset)
+
+  @Composable
   fun dailyVibeSectionLabel(): String =
     stringResource(R.string.daily_vibe_section_label)
 

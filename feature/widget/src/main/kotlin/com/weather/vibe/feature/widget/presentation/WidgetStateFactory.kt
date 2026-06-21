@@ -47,18 +47,20 @@ internal class WidgetStateFactory(
       )
     )
 
-  fun createWeather(snapshot: WidgetSnapshot): Weather =
-    Weather(
+  fun createWeather(snapshot: WidgetSnapshot): Weather {
+    val mood = snapshot.aiMood ?: resources.vibeMoodLabel(snapshot.vibeMood)
+    return Weather(
       conditionEmoji = snapshot.condition.emojiAt(snapshot.isDay),
       conditionLabel = resources.conditionLabel(snapshot.condition),
       contentDescription = resources.weatherContentDescription(
         snapshot.location.name,
-        snapshot.mood
+        mood
       ),
       fetchedAtLabel = formatTimestamp(snapshot.fetchedAtEpochMillis),
       locationId = snapshot.location.id,
       locationName = snapshot.location.name,
-      mood = snapshot.mood,
+      mood = mood,
       temperature = resources.temperature(snapshot.currentTemperature.roundToInt())
     )
+  }
 }

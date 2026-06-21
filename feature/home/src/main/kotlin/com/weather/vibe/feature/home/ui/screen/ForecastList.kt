@@ -61,7 +61,9 @@ internal fun ForecastList(
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onMusicClick: () -> Unit,
-  onShareClick: () -> Unit
+  onShareClick: () -> Unit,
+  onBriefLimitWatchAdEarned: () -> Unit,
+  onBriefLimitBuyPremium: () -> Unit
 ) {
 
   val canShare = state.aiSuggestion.briefing is BriefingUiState.Loaded
@@ -98,7 +100,9 @@ internal fun ForecastList(
         onNavigateToVibeHistory = onNavigateToVibeHistory,
         onRetrySuggestion = onRetrySuggestion,
         onMusicClick = onMusicClick,
-        onShareClick = onShareClick
+        onShareClick = onShareClick,
+        onBriefLimitWatchAdEarned = onBriefLimitWatchAdEarned,
+        onBriefLimitBuyPremium = onBriefLimitBuyPremium
       )
     }
   }
@@ -116,7 +120,9 @@ private fun LazyListScope.forecastItems(
   onNavigateToVibeHistory: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onMusicClick: () -> Unit,
-  onShareClick: () -> Unit
+  onShareClick: () -> Unit,
+  onBriefLimitWatchAdEarned: () -> Unit,
+  onBriefLimitBuyPremium: () -> Unit
 ) {
   item(key = HERO) {
     HomeHeroCard(
@@ -135,6 +141,17 @@ private fun LazyListScope.forecastItems(
       )
     }
   }
+  item(key = BRIEFING) {
+    WeatherBriefingCard(
+      modifier = horizontalPadding,
+      onCardClick = onNavigateToSettings,
+      onMusicClick = onMusicClick,
+      onRetryClick = onRetrySuggestion,
+      onBriefLimitWatchAdEarned = onBriefLimitWatchAdEarned,
+      onBriefLimitBuyPremium = onBriefLimitBuyPremium,
+      state = state.aiSuggestion.briefing
+    )
+  }
   if (state.dailyVibe != null) {
     item(key = DAILY_VIBE) {
       DailyVibeCard(
@@ -151,14 +168,6 @@ private fun LazyListScope.forecastItems(
       modifier = horizontalPadding,
       weatherSnapshot = weatherSnapshot,
       onNavigateToHistory = onNavigateToVibeHistory
-    )
-  }
-  item(key = BRIEFING) {
-    WeatherBriefingCard(
-      modifier = horizontalPadding,
-      onMusicClick = onMusicClick,
-      onRetryClick = onRetrySuggestion,
-      state = state.aiSuggestion.briefing
     )
   }
   item(key = HOURLY) {
@@ -205,7 +214,9 @@ private fun Preview() {
       onRefresh = {},
       onRetrySuggestion = {},
       onMusicClick = {},
-      onShareClick = {}
+      onShareClick = {},
+      onBriefLimitWatchAdEarned = {},
+      onBriefLimitBuyPremium = {}
     )
   }
 }

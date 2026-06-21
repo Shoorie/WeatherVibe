@@ -11,7 +11,9 @@ import com.weather.vibe.feature.home.presentation.factory.HomeStateFactory
 import com.weather.vibe.feature.home.presentation.factory.MetricsStateFactory
 import com.weather.vibe.feature.home.presentation.factory.PlaylistStateFactory
 import com.weather.vibe.feature.home.presentation.factory.SharePosterFactory
+import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 import com.weather.vibe.feature.home.presentation.fixture.MetricFixtures.METRICS_SECTIONS
+import com.weather.vibe.feature.home.presentation.state.BriefingPersonaUiState
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
@@ -78,7 +80,13 @@ class HomeStateFactoryTest {
   @Test
   fun `given loaded state with briefing, when temperatures reformatted, then preserve briefing`() {
 
-    val briefing = BriefingUiState.Loaded("Sunny!")
+    val briefing = BriefingUiState.Loaded(
+      persona = BriefingPersonaUiState(
+        colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
+        emoji = "😊"
+      ),
+      text = "Sunny!"
+    )
     val created = factory.create(
       data = WEATHER,
       metrics = METRICS,

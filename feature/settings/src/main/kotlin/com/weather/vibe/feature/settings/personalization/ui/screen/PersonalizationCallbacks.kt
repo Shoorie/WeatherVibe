@@ -6,24 +6,39 @@ import androidx.compose.runtime.remember
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BackClick
-import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BriefToneSelect
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BuyPremiumClick
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.GenreRemove
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.LockedPersonaClick
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.PaywallDismiss
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.PersonaSelect
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.TemperatureUnitToggle
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.ToneUnlockedViaAd
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.UpsellClick
 
 @Immutable
 internal data class PersonalizationCallbacks(
   val onBackClick: () -> Unit,
-  val onBriefToneSelect: (BriefTone) -> Unit,
+  val onBuyPremium: () -> Unit,
   val onGenreRemove: (String) -> Unit,
-  val onTemperatureToggle: () -> Unit
+  val onLockedPersonaClick: (BriefTone) -> Unit,
+  val onPaywallDismiss: () -> Unit,
+  val onPersonaSelect: (BriefTone) -> Unit,
+  val onTemperatureToggle: () -> Unit,
+  val onToneUnlockedViaAd: (BriefTone) -> Unit,
+  val onUpsellClick: () -> Unit
 ) {
 
   companion object {
     val Noop: PersonalizationCallbacks = PersonalizationCallbacks(
       onBackClick = {},
-      onBriefToneSelect = {},
+      onBuyPremium = {},
       onGenreRemove = {},
-      onTemperatureToggle = {}
+      onLockedPersonaClick = {},
+      onPaywallDismiss = {},
+      onPersonaSelect = {},
+      onTemperatureToggle = {},
+      onToneUnlockedViaAd = {},
+      onUpsellClick = {}
     )
   }
 }
@@ -35,8 +50,13 @@ internal fun rememberPersonalizationCallbacks(
   remember(dispatch) {
     PersonalizationCallbacks(
       onBackClick = { dispatch(BackClick) },
-      onBriefToneSelect = { tone -> dispatch(BriefToneSelect(tone = tone)) },
+      onBuyPremium = { dispatch(BuyPremiumClick) },
       onGenreRemove = { genre -> dispatch(GenreRemove(genre = genre)) },
-      onTemperatureToggle = { dispatch(TemperatureUnitToggle) }
+      onLockedPersonaClick = { tone -> dispatch(LockedPersonaClick(tone = tone)) },
+      onPaywallDismiss = { dispatch(PaywallDismiss) },
+      onPersonaSelect = { tone -> dispatch(PersonaSelect(tone = tone)) },
+      onTemperatureToggle = { dispatch(TemperatureUnitToggle) },
+      onToneUnlockedViaAd = { tone -> dispatch(ToneUnlockedViaAd(tone = tone)) },
+      onUpsellClick = { dispatch(UpsellClick) }
     )
   }

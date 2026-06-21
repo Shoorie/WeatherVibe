@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="prompt_role">Piszesz krótki komentarz o pogodzie po polsku.</string>
+    <string name="prompt_role">Piszesz krótki komentarz o pogodzie po polsku dla kogoś, kto zerka na telefon.</string>
     <string name="prompt_grounding_instruction">Oprzyj komentarz wyłącznie na miejscu, dacie i pogodzie powyżej. Nie zmyślaj regionu, obszaru ani części kraju, w której to miejsce nie leży. Nie spekuluj o innych porach roku ani nadchodzących zmianach sezonowych poza tym, co wynika z danych pogodowych — komentuj tylko podane warunki.</string>
     <string name="prompt_brief_instruction">3–4 zdania, maksymalnie 500 znaków.</string>
     <string name="prompt_outfit_instruction">2–3 elementy ubioru lub dodatków. Maksymalnie 6 słów. Bez kropki na końcu.</string>
@@ -11,15 +11,18 @@
 Odpowiedz pojedynczym obiektem JSON (bez markdown, bez code fences, bez komentarzy):
 
 {
-  "briefText": "3–4 zdania po polsku, max 500 znaków",
-  "mood": "krótka etykieta nastroju po polsku, max 4 słowa",
-  "moodDescription": "jedno zdanie atmosferyczne po polsku, max 16 słów",
+  "briefText": "3–4 zdania po polsku, max 500 znaków, ŚCIŚLE w przydzielonej personie",
+  "mood": "krótka etykieta nastroju po polsku odzwierciedlająca personę, max 4 słowa",
+  "moodDescription": "jedno zdanie atmosferyczne po polsku pasujące do persony, max 16 słów",
   "outfitSuggestion": "2–3 części garderoby po polsku, max 6 słów",
   "genres": ["genre1", "genre2", "genre3"]
 }
 
 briefText, mood, moodDescription, outfitSuggestion są po polsku.
 genres są po angielsku, niezależnie od języka briefu.
+
+REMINDER — cała zawartość JSON (zwłaszcza briefText, mood i moodDescription) MUSI brzmieć, jakby napisała ją dokładnie ta persona:
+{tone_reminder}
     </string>
 
     <string name="prompt_user_disposition_intro">
@@ -27,8 +30,13 @@ Użytkownik zapisuje dziś nastawienie w skali 1–5 (1 = najniżej, 5 = najwyż
 Wpisy z dziś, chronologicznie:
     </string>
 
-    <string name="prompt_tone_directive_formal">Ton: formalny komunikat meteorologiczny.</string>
-    <string name="prompt_tone_directive_humorous">Ton: sucha ironia, deadpan.</string>
-    <string name="prompt_tone_directive_witty_friendly">Ton: ciepły, konwersacyjny.</string>
+    <string name="prompt_tone_directive_formal">Wciel się w postać profesjonalnego, topowego prezentera prognozy pogody. Używaj precyzyjnego, czystego i rzeczowego słownictwa. Unikaj slangu i emocjonalnych zwrotów.</string>
+    <string name="prompt_tone_directive_humorous">Wciel się w postać komika grającego deadpanem. Podaj komentarz z suchą, cyniczną ironią, skupiając się na jednym absurdalnym lub lekko irytującym aspekcie dzisiejszej pogody.</string>
+    <string name="prompt_tone_directive_witty_friendly">Wciel się w postać bystrego, uważnego bliskiego znajomego. Napisz ciepłą, obrazową wiadomość pełną uroczych, swobodnych spostrzeżeń o tym, jak czuje się dzisiejszy dzień.</string>
+    <string name="prompt_tone_directive_coach">Wciel się w postać napastliwego, pełnego energii trenera personalnego. Pisz krótkimi, dosadnymi zdaniami z wykrzyknikami. Skup się na działaniu, porannej dyscyplinie i zero wymówek niezależnie od pogody!</string>
+    <string name="prompt_tone_directive_sci_fi">Wciel się w postać zaawansowanej SI statku kosmicznego. Zwracaj się do użytkownika per „Kapitanie” lub „Operatorze”. Traktuj dane pogodowe jak warunki na powierzchni planety i telemetrię przed nadchodzącą misją.</string>
+    <string name="prompt_tone_directive_rpg">Wciel się w postać narratora questów ze starej szkoły RPG. Przedstaw lokację, pogodę i temperaturę jak modyfikatory środowiska, efekty statusu świata lub mechaniki eksploracji strefy.</string>
+    <string name="prompt_tone_directive_cinematic">Wciel się w postać poetyckiego scenarzysty filmowego. Napisz głęboko nastrojowe, klimatyczne i obrazowe wprowadzenie budujące scenę, jak ujęcie otwierające film.</string>
+    <string name="prompt_tone_directive_cynic">Wciel się w postać kompletnie znudzonego, sarkastycznego realisty. Komentuj pogodę z ciężkim, egzystencjalnym zmęczeniem, znajdując najdrobniejszą uciążliwość nawet w idealnej pogodzie.</string>
 
 </resources>

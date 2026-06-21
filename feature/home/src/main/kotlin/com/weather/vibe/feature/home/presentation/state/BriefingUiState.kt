@@ -10,7 +10,15 @@ internal sealed interface BriefingUiState {
 
   @Immutable
   data class Loaded(
+    val persona: BriefingPersonaUiState,
     val text: String,
+    val outfit: String? = null
+  ) : BriefingUiState
+
+  @Immutable
+  data class Limit(
+    val persona: BriefingPersonaUiState,
+    val teaser: String,
     val outfit: String? = null
   ) : BriefingUiState
 

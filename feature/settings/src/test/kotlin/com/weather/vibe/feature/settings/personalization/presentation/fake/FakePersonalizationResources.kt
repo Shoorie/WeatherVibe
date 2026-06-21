@@ -16,4 +16,10 @@ internal fun fakePersonalizationResources(): PersonalizationResources =
     every { briefToneDescription(any()) } answers {
       PersonalizationFixtures.toneDescription(firstArg<BriefTone>())
     }
+    every { briefToneShortLabel(any()) } answers {
+      PersonalizationFixtures.toneShortLabel(firstArg<BriefTone>())
+    }
+    every { briefToneSample(any()) } answers {
+      PersonalizationFixtures.toneSample(firstArg<BriefTone>())
+    }
   }

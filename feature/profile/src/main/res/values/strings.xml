@@ -15,6 +15,11 @@
   <string name="profile_brief_tone_witty">Witty &amp; Friendly</string>
   <string name="profile_brief_tone_formal">Formal</string>
   <string name="profile_brief_tone_humorous">Humorous</string>
+  <string name="profile_brief_tone_coach">Coach</string>
+  <string name="profile_brief_tone_sci_fi">Sci-Fi</string>
+  <string name="profile_brief_tone_rpg">RPG</string>
+  <string name="profile_brief_tone_cinematic">Cinematic</string>
+  <string name="profile_brief_tone_cynic">Cynic</string>
 
   <string name="profile_stat_locations_label">Locations</string>
   <string name="profile_stat_locations_emoji">📍</string>

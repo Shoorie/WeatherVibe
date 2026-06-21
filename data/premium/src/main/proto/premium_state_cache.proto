@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.weather.vibe.data.premium.persistence";
+option java_multiple_files = true;
+
+message PremiumStateCacheData {
+  reserved 3, 4, 5;
+  reserved "free_brief_consumed_epoch_day", "bonus_briefs_epoch_day", "bonus_briefs_remaining";
+
+  bool is_premium = 1;
+  map<string, int64> unlocked_tones = 2;
+}

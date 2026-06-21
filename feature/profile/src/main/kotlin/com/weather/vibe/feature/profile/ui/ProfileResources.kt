@@ -11,8 +11,13 @@ import com.weather.vibe.domain.appearance.model.ThemeMode.AUTO
 import com.weather.vibe.domain.appearance.model.ThemeMode.DARK
 import com.weather.vibe.domain.appearance.model.ThemeMode.LIGHT
 import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.CINEMATIC
+import com.weather.vibe.domain.settings.model.BriefTone.COACH
+import com.weather.vibe.domain.settings.model.BriefTone.CYNIC
 import com.weather.vibe.domain.settings.model.BriefTone.FORMAL
 import com.weather.vibe.domain.settings.model.BriefTone.HUMOROUS
+import com.weather.vibe.domain.settings.model.BriefTone.RPG
+import com.weather.vibe.domain.settings.model.BriefTone.SCI_FI
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.feature.profile.R
 import org.koin.core.annotation.Factory
@@ -107,6 +112,11 @@ internal class ProfileResources(private val context: Context) {
     WITTY_AND_FRIENDLY -> R.string.profile_brief_tone_witty
     FORMAL -> R.string.profile_brief_tone_formal
     HUMOROUS -> R.string.profile_brief_tone_humorous
+    COACH -> R.string.profile_brief_tone_coach
+    SCI_FI -> R.string.profile_brief_tone_sci_fi
+    RPG -> R.string.profile_brief_tone_rpg
+    CINEMATIC -> R.string.profile_brief_tone_cinematic
+    CYNIC -> R.string.profile_brief_tone_cynic
   }
 
   @StringRes

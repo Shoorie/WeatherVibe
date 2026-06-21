@@ -1,5 +1,6 @@
 package com.weather.vibe.feature.home.presentation.state
 
+import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 import com.weather.vibe.feature.home.presentation.fixture.MetricFixtures.METRICS_SECTIONS
 import com.weather.vibe.feature.home.preview.HomePreviewData.forecastSection
 import com.weather.vibe.feature.home.preview.HomePreviewData.loadedPlaylist
@@ -10,10 +11,15 @@ import strikt.assertions.isEqualTo
 
 class HomeUiStateUpdatesTest {
 
+  private val persona = BriefingPersonaUiState(
+    colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
+    emoji = "😊"
+  )
+
   @Test
   fun `given loaded state, when suggestion applied, then update briefing`() {
 
-    val briefing = BriefingUiState.Loaded("Sunny day!")
+    val briefing = BriefingUiState.Loaded(persona = persona, text = "Sunny day!")
 
     val result = loadedState().withSuggestion(
       briefing = briefing,
@@ -40,7 +46,7 @@ class HomeUiStateUpdatesTest {
   fun `given loading state, when suggestion applied, then return unchanged`() {
 
     val result = HomeUiState.Loading.withSuggestion(
-      briefing = BriefingUiState.Loaded("text"),
+      briefing = BriefingUiState.Loaded(persona = persona, text = "text"),
       playlist = PlaylistUiState.Loading
     )
 
@@ -51,7 +57,7 @@ class HomeUiStateUpdatesTest {
   fun `given error state, when suggestion applied, then return unchanged`() {
 
     val result = HomeUiState.Error("Something went wrong").withSuggestion(
-      briefing = BriefingUiState.Loaded("text"),
+      briefing = BriefingUiState.Loaded(persona = persona, text = "text"),
       playlist = PlaylistUiState.Loading
     )
 

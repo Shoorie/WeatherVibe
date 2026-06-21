@@ -3,7 +3,6 @@ package com.weather.vibe.domain.weather.usecase
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy
-import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import org.koin.core.annotation.Factory
@@ -18,7 +17,7 @@ class DetermineWeatherRefreshStrategy {
     currentSettings: UserSettings
   ): WeatherRefreshStrategy = when {
     currentWeatherKey != previousWeatherKey -> RegenerateSuggestion
-    currentSettings.hasBriefToneChanged(previousSettings) -> InvalidateAndRegenerate
+    currentSettings.hasBriefToneChanged(previousSettings) -> RegenerateSuggestion
     else -> ReformatOnly
   }
 }

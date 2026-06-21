@@ -5,17 +5,25 @@ import androidx.lifecycle.viewModelScope
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BackClick
-import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BriefToneSelect
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.BuyPremiumClick
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.GenreRemove
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.LockedPersonaClick
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.PaywallDismiss
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.PersonaSelect
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.TemperatureUnitToggle
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.ToneUnlockedViaAd
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationAction.UpsellClick
 import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationEvent.NavigateBack
+import com.weather.vibe.feature.settings.personalization.presentation.PersonalizationEvent.ShowPremiumUnavailable
 import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState
+import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState.Loading
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,11 +37,13 @@ internal class PersonalizationViewModel(
   private val useCases: PersonalizationUseCases
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow<PersonalizationUiState>(stateFactory.initial())
+  private val _state = MutableStateFlow<PersonalizationUiState>(Loading)
   val state: StateFlow<PersonalizationUiState> = _state.asStateFlow()
 
   private val _event = Channel<PersonalizationEvent>()
   val event: Flow<PersonalizationEvent> = _event.receiveAsFlow()
+
+  private val paywallTone = MutableStateFlow<BriefTone?>(null)
 
   private val availableTones: List<BriefTone> =
     useCases.getAvailableBriefTones()
@@ -41,17 +51,51 @@ internal class PersonalizationViewModel(
   private val errorHandler = CoroutineExceptionHandler { _, _ -> showError() }
 
   init {
-    useCases.observeUserSettings()
-      .onEach(::onSettingsResult)
+    combine(
+      useCases.observeUserSettings(),
+      useCases.observePremiumStatus(),
+      useCases.observeLockedTones(),
+      paywallTone
+    ) { settings, premium, locked, paywall ->
+      buildState(settings, premium, locked, paywall)
+    }
+      .onEach { state -> _state.update { state } }
       .launchIn(viewModelScope)
   }
 
   fun dispatch(action: PersonalizationAction) {
     when (action) {
       is BackClick -> onBackClick()
-      is BriefToneSelect -> onBriefToneSelect(action)
+      is BuyPremiumClick -> onBuyPremiumClick()
       is GenreRemove -> onGenreRemove(action)
+      is LockedPersonaClick -> onLockedPersonaClick(action)
+      is PaywallDismiss -> onPaywallDismiss()
+      is PersonaSelect -> onPersonaSelect(action)
       is TemperatureUnitToggle -> onTemperatureUnitToggle()
+      is ToneUnlockedViaAd -> onToneUnlockedViaAd(action)
+      is UpsellClick -> onUpsellClick()
+    }
+  }
+
+  private fun buildState(
+    settings: Result<UserSettings>,
+    premium: Result<Boolean>,
+    locked: Result<Set<BriefTone>>,
+    paywall: BriefTone?
+  ): PersonalizationUiState {
+    val loadedSettings = settings.getOrNull()
+    val isPremium = premium.getOrNull()
+    val lockedTones = locked.getOrNull()
+    return if (loadedSettings == null || isPremium == null || lockedTones == null) {
+      stateFactory.createError()
+    } else {
+      stateFactory.create(
+        availableTones = availableTones,
+        isPremium = isPremium,
+        lockedTones = lockedTones,
+        paywallTone = paywall,
+        settings = loadedSettings
+      )
     }
   }
 
@@ -59,10 +103,34 @@ internal class PersonalizationViewModel(
     send(NavigateBack)
   }
 
-  private fun onBriefToneSelect(action: BriefToneSelect) {
+  private fun onPersonaSelect(action: PersonaSelect) {
     viewModelScope.launch(errorHandler) {
       useCases.selectBriefTone(action.tone)
     }
+  }
+
+  private fun onLockedPersonaClick(action: LockedPersonaClick) {
+    paywallTone.update { action.tone }
+  }
+
+  private fun onUpsellClick() {
+    send(ShowPremiumUnavailable)
+  }
+
+  private fun onPaywallDismiss() {
+    paywallTone.update { null }
+  }
+
+  private fun onToneUnlockedViaAd(action: ToneUnlockedViaAd) {
+    viewModelScope.launch(errorHandler) {
+      useCases.unlockToneTemporarily(action.tone)
+    }
+    paywallTone.update { null }
+  }
+
+  private fun onBuyPremiumClick() {
+    paywallTone.update { null }
+    send(ShowPremiumUnavailable)
   }
 
   private fun onGenreRemove(action: GenreRemove) {
@@ -75,17 +143,6 @@ internal class PersonalizationViewModel(
     viewModelScope.launch(errorHandler) {
       useCases.toggleTemperatureUnit()
     }
-  }
-
-  private fun onSettingsResult(result: Result<UserSettings>) {
-    result.fold(
-      onSuccess = ::showLoadedSettings,
-      onFailure = { showError() }
-    )
-  }
-
-  private fun showLoadedSettings(settings: UserSettings) {
-    _state.update { stateFactory.create(availableTones = availableTones, settings = settings) }
   }
 
   private fun showError() {

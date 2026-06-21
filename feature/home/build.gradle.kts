@@ -17,6 +17,7 @@ dependencies {
   implementation(projects.domain.airquality)
   implementation(projects.domain.alerts)
   implementation(projects.domain.location)
+  implementation(projects.domain.premium)
   implementation(projects.domain.settings)
   implementation(projects.domain.vibe)
   implementation(projects.domain.viberating)

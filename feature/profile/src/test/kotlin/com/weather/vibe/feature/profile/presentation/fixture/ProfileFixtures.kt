@@ -93,5 +93,6 @@ internal object ProfileFixtures {
     WITTY_AND_FRIENDLY -> TONE_LABEL_WITTY
     FORMAL -> TONE_LABEL_FORMAL
     HUMOROUS -> TONE_LABEL_HUMOROUS
+    else -> tone.name
   }
 }

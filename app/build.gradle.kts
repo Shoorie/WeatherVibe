@@ -118,6 +118,8 @@ dependencies {
   implementation(projects.data.appearance)
   implementation(projects.domain.ads)
   implementation(projects.data.ads)
+  implementation(projects.domain.premium)
+  implementation(projects.data.premium)
   implementation(projects.domain.remoteconfig)
   implementation(projects.data.remoteconfig)
   implementation(projects.data.airquality)

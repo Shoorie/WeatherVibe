@@ -15,6 +15,11 @@
   <string name="profile_brief_tone_witty">Dowcipny</string>
   <string name="profile_brief_tone_formal">Formalny</string>
   <string name="profile_brief_tone_humorous">Humorystyczny</string>
+  <string name="profile_brief_tone_coach">Trener</string>
+  <string name="profile_brief_tone_sci_fi">Sci-Fi</string>
+  <string name="profile_brief_tone_rpg">RPG</string>
+  <string name="profile_brief_tone_cinematic">Filmowy</string>
+  <string name="profile_brief_tone_cynic">Cynik</string>
 
   <string name="profile_stat_locations_label">Lokalizacje</string>
   <string name="profile_stat_locations_emoji">📍</string>

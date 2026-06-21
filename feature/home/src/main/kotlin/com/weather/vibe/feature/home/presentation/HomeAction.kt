@@ -5,6 +5,10 @@ import com.weather.vibe.domain.location.model.Location
 
 internal sealed interface HomeAction {
 
+  data object BriefLimitBuyPremium : HomeAction
+
+  data object BriefLimitWatchAdEarned : HomeAction
+
   data class GenreRemoveClick(val genre: String) : HomeAction
 
   data class Initialize(val location: Location) : HomeAction

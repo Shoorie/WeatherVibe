@@ -1,15 +1,18 @@
 package com.weather.vibe.feature.settings.personalization.presentation
 
+import com.weather.vibe.domain.settings.model.BriefTone
+import com.weather.vibe.domain.settings.model.BriefTone.COACH
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.model.TemperatureUnit.CELSIUS
 import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
+import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.feature.settings.personalization.presentation.fake.fakePersonalizationResources
 import com.weather.vibe.feature.settings.personalization.presentation.fixture.PersonalizationFixtures
 import com.weather.vibe.feature.settings.personalization.presentation.fixture.PersonalizationFixtures.AVAILABLE_TONES
 import com.weather.vibe.feature.settings.personalization.presentation.fixture.PersonalizationFixtures.GENRE_JAZZ
 import com.weather.vibe.feature.settings.personalization.presentation.fixture.PersonalizationFixtures.GENRE_METAL
-import com.weather.vibe.feature.settings.personalization.presentation.fixture.PersonalizationFixtures.TONE_LABEL_WITTY
 import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState
+import com.weather.vibe.feature.settings.personalization.presentation.state.PersonalizationUiState.Loaded
 import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
 import io.mockk.unmockkAll
 import org.junit.After
@@ -18,9 +21,10 @@ import strikt.api.expectThat
 import strikt.assertions.containsExactly
 import strikt.assertions.hasSize
 import strikt.assertions.isA
-import strikt.assertions.isEmpty
 import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
+import strikt.assertions.isNotNull
+import strikt.assertions.isNull
 import strikt.assertions.isTrue
 
 internal class PersonalizationStateFactoryTest {
@@ -34,79 +38,76 @@ internal class PersonalizationStateFactoryTest {
   }
 
   @Test
-  fun `when initial state built, then brief tone options empty`() {
+  fun `when state created, then narrator reflects selected tone`() {
 
-    val result = factory.initial()
+    val result = created(settings = userSettings(briefTone = WITTY_AND_FRIENDLY))
 
-    expectThat(result.briefToneOptions).isEmpty()
+    expectThat(result.narrator.name)
+      .isEqualTo(PersonalizationFixtures.toneLabel(WITTY_AND_FRIENDLY))
   }
 
   @Test
-  fun `when initial state built, then genre chips empty`() {
+  fun `when state created, then personas reflect available tones`() {
 
-    val result = factory.initial()
+    val result = created()
 
-    expectThat(result.genreChips).isEmpty()
+    expectThat(result.personas).hasSize(AVAILABLE_TONES.size)
   }
 
   @Test
-  fun `when initial state built, then has excluded genres false`() {
+  fun `when state created, then selected persona flagged`() {
 
-    val result = factory.initial()
+    val result = created(settings = userSettings(briefTone = WITTY_AND_FRIENDLY))
 
-    expectThat(result.hasExcludedGenres).isFalse()
-  }
-
-  @Test
-  fun `when initial state built, then unit defaults to celsius`() {
-
-    val result = factory.initial()
-
-    expectThat(result.isCelsius).isTrue()
-  }
-
-  @Test
-  fun `when state created, then selected tone flagged in options`() {
-
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(briefTone = WITTY_AND_FRIENDLY)
-    )
-
-    val selected = result.briefToneOptions.single { it.isSelected }
+    val selected = result.personas.single { it.isSelected }
     expectThat(selected.tone).isEqualTo(WITTY_AND_FRIENDLY)
   }
 
   @Test
-  fun `when state created, then options reflect available tones`() {
+  fun `given locked tone, when state created, then persona marked locked`() {
 
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings()
-    )
+    val result = created(isPremium = false, lockedTones = setOf(COACH))
 
-    expectThat(result.briefToneOptions).hasSize(AVAILABLE_TONES.size)
+    val coach = result.personas.single { it.tone == COACH }
+    expectThat(coach.isLocked).isTrue()
   }
 
   @Test
-  fun `when state created, then label uses resource mapping`() {
+  fun `given premium user, when state created, then no persona locked`() {
 
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(briefTone = WITTY_AND_FRIENDLY)
-    )
+    val result = created(isPremium = true, lockedTones = emptySet())
 
-    val wittyOption = result.briefToneOptions.single { it.tone == WITTY_AND_FRIENDLY }
-    expectThat(wittyOption.label).isEqualTo(TONE_LABEL_WITTY)
+    expectThat(result.personas.none { it.isLocked }).isTrue()
+  }
+
+  @Test
+  fun `when state created, then premium tone count matches premium tones`() {
+
+    val result = created()
+
+    expectThat(result.premiumToneCount).isEqualTo(AVAILABLE_TONES.count { it.isPremium })
+  }
+
+  @Test
+  fun `given paywall tone, when state created, then paywall carries that tone`() {
+
+    val result = created(paywallTone = COACH)
+
+    expectThat(result.paywall).isNotNull().get { tone }.isEqualTo(COACH)
+  }
+
+  @Test
+  fun `given no paywall tone, when state created, then paywall null`() {
+
+    val result = created(paywallTone = null)
+
+    expectThat(result.paywall).isNull()
   }
 
   @Test
   fun `given celsius unit, when state created, then isCelsius true`() {
 
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(temperatureUnit = CELSIUS)
-    )
+    val result = created(settings = userSettings(temperatureUnit = CELSIUS))
 
     expectThat(result.isCelsius).isTrue()
   }
@@ -114,10 +115,7 @@ internal class PersonalizationStateFactoryTest {
   @Test
   fun `given fahrenheit unit, when state created, then isCelsius false`() {
 
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(temperatureUnit = FAHRENHEIT)
-    )
+    val result = created(settings = userSettings(temperatureUnit = FAHRENHEIT))
 
     expectThat(result.isCelsius).isFalse()
   }
@@ -125,37 +123,12 @@ internal class PersonalizationStateFactoryTest {
   @Test
   fun `given excluded genres, when state created, then chips match sorted names`() {
 
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(
-        excludedGenres = setOf(GENRE_METAL, GENRE_JAZZ)
-      )
+    val result = created(
+      settings = userSettings(excludedGenres = setOf(GENRE_METAL, GENRE_JAZZ))
     )
 
     expectThat(result.genreChips.map { it.name })
       .containsExactly(GENRE_JAZZ, GENRE_METAL)
-  }
-
-  @Test
-  fun `given excluded genres, when state created, then has excluded genres true`() {
-
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(excludedGenres = setOf(GENRE_JAZZ))
-    )
-
-    expectThat(result.hasExcludedGenres).isTrue()
-  }
-
-  @Test
-  fun `given no excluded genres, when state created, then has excluded genres false`() {
-
-    val result = factory.create(
-      availableTones = AVAILABLE_TONES,
-      settings = userSettings(excludedGenres = emptySet())
-    )
-
-    expectThat(result.hasExcludedGenres).isFalse()
   }
 
   @Test
@@ -166,4 +139,19 @@ internal class PersonalizationStateFactoryTest {
     expectThat(result).isA<PersonalizationUiState.Error>()
       .get { message }.isEqualTo(PersonalizationFixtures.DEFAULT_ERROR)
   }
+
+  private fun created(
+    availableTones: List<BriefTone> = AVAILABLE_TONES,
+    isPremium: Boolean = false,
+    lockedTones: Set<BriefTone> = emptySet(),
+    paywallTone: BriefTone? = null,
+    settings: UserSettings = userSettings()
+  ): Loaded =
+    factory.create(
+      availableTones = availableTones,
+      isPremium = isPremium,
+      lockedTones = lockedTones,
+      paywallTone = paywallTone,
+      settings = settings
+    )
 }

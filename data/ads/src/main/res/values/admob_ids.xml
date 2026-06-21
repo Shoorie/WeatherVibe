@@ -7,4 +7,6 @@
   <string name="admob_search_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
   <string name="admob_viberating_history_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
   <string name="admob_weather_details_bottom_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+  <string name="admob_tone_unlock_rewarded_id" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
+  <string name="admob_brief_refresh_rewarded_id" translatable="false">ca-app-pub-3940256099942544/5224354917</string>
 </resources>

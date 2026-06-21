@@ -14,6 +14,7 @@ message WidgetSnapshotEntry {
   int64 fetched_at_epoch_millis = 4;
   string mood = 5;
   bool is_day = 6;
+  string vibe_mood = 7;
 }
 
 message WidgetLocationEntry {

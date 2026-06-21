@@ -1,5 +1,8 @@
 package com.weather.vibe.feature.settings.personalization.presentation
 
+import com.weather.vibe.domain.premium.usecase.ObserveLockedTones
+import com.weather.vibe.domain.premium.usecase.ObservePremiumStatus
+import com.weather.vibe.domain.premium.usecase.UnlockToneTemporarily
 import com.weather.vibe.domain.settings.usecase.GetAvailableBriefTones
 import com.weather.vibe.domain.settings.usecase.IncludeGenre
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
@@ -11,7 +14,10 @@ import org.koin.core.annotation.Factory
 internal data class PersonalizationUseCases(
   val getAvailableBriefTones: GetAvailableBriefTones,
   val includeGenre: IncludeGenre,
+  val observeLockedTones: ObserveLockedTones,
+  val observePremiumStatus: ObservePremiumStatus,
   val observeUserSettings: ObserveUserSettings,
   val selectBriefTone: SelectBriefTone,
-  val toggleTemperatureUnit: ToggleTemperatureUnit
+  val toggleTemperatureUnit: ToggleTemperatureUnit,
+  val unlockToneTemporarily: UnlockToneTemporarily
 )

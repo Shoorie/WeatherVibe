@@ -1,0 +1,17 @@
+plugins {
+  alias(libs.plugins.weathervibe.android.library)
+  alias(libs.plugins.weathervibe.android.koin)
+  alias(libs.plugins.weathervibe.android.kover)
+  alias(libs.plugins.weathervibe.android.test)
+}
+
+android {
+  namespace = "com.weather.vibe.domain.premium"
+}
+
+dependencies {
+  implementation(projects.domain.settings)
+  implementation(projects.core.time)
+  implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.koin.core)
+}

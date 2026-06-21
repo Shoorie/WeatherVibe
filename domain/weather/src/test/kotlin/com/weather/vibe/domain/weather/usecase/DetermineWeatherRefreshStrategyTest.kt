@@ -7,7 +7,6 @@ import com.weather.vibe.domain.settings.model.TemperatureUnit.FAHRENHEIT
 import com.weather.vibe.domain.weather.model.SimplifiedCondition.RAINY
 import com.weather.vibe.domain.weather.model.TemperatureRange.COLD
 import com.weather.vibe.domain.weather.model.TimeOfDay.NIGHT
-import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.InvalidateAndRegenerate
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.ReformatOnly
 import com.weather.vibe.domain.weather.model.WeatherRefreshStrategy.RegenerateSuggestion
 import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.DEFAULT_SETTINGS
@@ -51,7 +50,7 @@ class DetermineWeatherRefreshStrategyTest {
   }
 
   @Test
-  fun `given same key and changed tone, when determined, then invalidate and regenerate`() {
+  fun `given same key and changed tone, when determined, then regenerate suggestion`() {
 
     val result = determineStrategy(
       previousWeatherKey = WEATHER_KEY,
@@ -60,7 +59,7 @@ class DetermineWeatherRefreshStrategyTest {
       currentSettings = userSettings(briefTone = HUMOROUS)
     )
 
-    expectThat(result).isEqualTo(InvalidateAndRegenerate)
+    expectThat(result).isEqualTo(RegenerateSuggestion)
   }
 
   @Test

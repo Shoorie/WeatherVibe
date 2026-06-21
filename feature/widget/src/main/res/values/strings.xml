@@ -24,4 +24,9 @@
   <string name="widget_condition_snow_showers">Snow Showers</string>
   <string name="widget_condition_thunderstorm">Thunderstorm</string>
   <string name="widget_condition_unknown">Unknown</string>
+  <string name="widget_vibe_mood_rough">Rough day</string>
+  <string name="widget_vibe_mood_dreary">Dreary</string>
+  <string name="widget_vibe_mood_okay">Okay vibe</string>
+  <string name="widget_vibe_mood_pleasant">Pleasant vibe</string>
+  <string name="widget_vibe_mood_radiant">Radiant</string>
 </resources>

@@ -3,6 +3,8 @@ package com.weather.vibe.feature.home.ui.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,6 +27,7 @@ import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.feature.home.presentation.HomeAction.Initialize
 import com.weather.vibe.feature.home.presentation.HomeAction.PosterCaptured
 import com.weather.vibe.feature.home.presentation.HomeEvent.SharePoster
+import com.weather.vibe.feature.home.presentation.HomeEvent.ShowPremiumUnavailable
 import com.weather.vibe.feature.home.presentation.HomeViewModel
 import com.weather.vibe.feature.home.presentation.state.HomeUiState
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Error
@@ -32,6 +35,7 @@ import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.HomeUiState.Loading
 import com.weather.vibe.feature.home.presentation.state.SharePosterUiState
 import com.weather.vibe.feature.home.preview.HomePreview
+import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingPremiumComingSoon
 import com.weather.vibe.feature.home.ui.component.share.PosterCaptureHost
 import com.weather.vibe.feature.home.ui.component.widgetpromo.WidgetPromoHost
 import com.weather.vibe.feature.home.ui.screen.callbacks.HomeCallbacks
@@ -55,6 +59,8 @@ fun HomeScreen(
   val state by viewModel.state.collectAsStateWithLifecycle()
   var pendingPoster by remember { mutableStateOf<SharePosterUiState?>(null) }
   val callbacks = remember(viewModel) { HomeCallbacks(viewModel) }
+  val snackbarHostState = remember { SnackbarHostState() }
+  val premiumMessage = aiBriefingPremiumComingSoon()
 
   LaunchedEffect(selectedLocation) {
     viewModel.dispatch(Initialize(selectedLocation))
@@ -70,12 +76,14 @@ fun HomeScreen(
     viewModel.event.collect { event ->
       when (event) {
         is SharePoster -> pendingPoster = event.state
+        is ShowPremiumUnavailable -> snackbarHostState.showSnackbar(premiumMessage)
       }
     }
   }
 
   HomeContent(
     state = state,
+    snackbarHostState = snackbarHostState,
     onNavigateToActivityPlanner = onNavigateToActivityPlanner,
     onNavigateToDetails = onNavigateToDetails,
     onNavigateToSearch = onNavigateToSearch,
@@ -84,7 +92,9 @@ fun HomeScreen(
     onRefresh = callbacks.onRefresh,
     onRetrySuggestion = callbacks.onRetrySuggestion,
     onShareClick = callbacks.onShareClick,
-    onGenreRemoveClick = callbacks.onGenreRemoveClick
+    onGenreRemoveClick = callbacks.onGenreRemoveClick,
+    onBriefLimitWatchAdEarned = callbacks.onBriefLimitWatchAdEarned,
+    onBriefLimitBuyPremium = callbacks.onBriefLimitBuyPremium
   )
 
   pendingPoster?.let { poster ->
@@ -114,7 +124,10 @@ internal fun HomeContent(
   onRefresh: () -> Unit,
   onRetrySuggestion: () -> Unit,
   onShareClick: () -> Unit,
-  onGenreRemoveClick: (String) -> Unit
+  onGenreRemoveClick: (String) -> Unit,
+  onBriefLimitWatchAdEarned: () -> Unit,
+  onBriefLimitBuyPremium: () -> Unit,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ) {
   val adSlotState = rememberAdSlotState(HomeBottom)
   val adBottomInset = adSlotBottomInset(adSlotState)
@@ -140,12 +153,18 @@ internal fun HomeContent(
         onRefresh = onRefresh,
         onRetrySuggestion = onRetrySuggestion,
         onShareClick = onShareClick,
-        onGenreRemoveClick = onGenreRemoveClick
+        onGenreRemoveClick = onGenreRemoveClick,
+        onBriefLimitWatchAdEarned = onBriefLimitWatchAdEarned,
+        onBriefLimitBuyPremium = onBriefLimitBuyPremium
       )
     }
     AdSlot(
       modifier = Modifier.align(Alignment.BottomCenter),
       state = adSlotState
+    )
+    SnackbarHost(
+      hostState = snackbarHostState,
+      modifier = Modifier.align(Alignment.BottomCenter)
     )
   }
 }
@@ -167,7 +186,9 @@ private fun Preview(
       onRefresh = {},
       onRetrySuggestion = {},
       onShareClick = {},
-      onGenreRemoveClick = {}
+      onGenreRemoveClick = {},
+      onBriefLimitWatchAdEarned = {},
+      onBriefLimitBuyPremium = {}
     )
   }
 }

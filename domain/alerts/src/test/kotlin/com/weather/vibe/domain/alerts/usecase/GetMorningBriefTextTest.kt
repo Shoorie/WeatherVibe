@@ -3,6 +3,7 @@ package com.weather.vibe.domain.alerts.usecase
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.settings.usecase.IsMorningBriefEnabled
+import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
 import com.weather.vibe.domain.weather.usecase.GetWeather
@@ -53,7 +54,7 @@ class GetMorningBriefTextTest {
         weatherData = WEATHER,
         weatherKey = WEATHER_KEY
       )
-    } returns flowOf(success(SUGGESTION))
+    } returns flowOf(success(Ready(SUGGESTION)))
   }
 
   @After

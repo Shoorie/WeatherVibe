@@ -1,28 +1,22 @@
 package com.weather.vibe.domain.weather.usecase
 
-import com.weather.vibe.domain.settings.usecase.AddToGenreHistory
-import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
-import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
-import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
+import com.weather.vibe.domain.premium.usecase.CanGenerateBrief
 import com.weather.vibe.domain.weather.model.UserDispositionEntry
+import com.weather.vibe.domain.weather.model.WeatherBriefResult
+import com.weather.vibe.domain.weather.model.WeatherBriefResult.LimitReached
+import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
-import com.weather.vibe.domain.weather.repository.WeatherSuggestionRepository
-import com.weather.vibe.testing.settings.fixture.UserSettingsFixtures.userSettings
-import com.weather.vibe.testing.time.fixture.FakeTimeProvider
 import com.weather.vibe.testing.weather.fixture.WeatherDataFixtures.WEATHER
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.DEFAULT_WEATHER_KEY
 import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.SUGGESTION
-import com.weather.vibe.testing.weather.fixture.WeatherSuggestionFixtures.cachedSuggestion
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runCurrent
@@ -30,35 +24,23 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Test
 import strikt.api.expectThat
+import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GenerateWeatherSuggestionTest {
 
-  private val addToGenreHistory = mockk<AddToGenreHistory>(relaxed = true)
-  private val buildWeatherSuggestionPrompt = mockk<BuildWeatherSuggestionPrompt>()
-  private val observeUserSettings = mockk<ObserveUserSettings>()
-  private val repository = mockk<WeatherSuggestionRepository>()
+  private val canGenerateBrief = mockk<CanGenerateBrief>()
+  private val fetchWeatherSuggestion = mockk<FetchWeatherSuggestion>()
+  private val getCachedWeatherSuggestion = mockk<GetCachedWeatherSuggestion>()
 
-  private var cached: CachedWeatherSuggestion? = null
-  private val cache = mockk<WeatherSuggestionCache> {
-    coEvery { get(any(), any(), any(), any(), any()) } answers { cached }
-    coEvery { save(any(), any(), any(), any(), any(), any()) } answers {
-      cached = cachedSuggestion(
-        fetchedAt = System.currentTimeMillis(),
-        suggestion = arg<WeatherSuggestion>(3)
-      )
-    }
-  }
+  private var cached: WeatherSuggestion? = null
 
   private val generateWeatherSuggestion = GenerateWeatherSuggestion(
-    addToGenreHistory = addToGenreHistory,
-    buildWeatherSuggestionPrompt = buildWeatherSuggestionPrompt,
-    cache = cache,
+    canGenerateBrief = canGenerateBrief,
+    fetchWeatherSuggestion = fetchWeatherSuggestion,
     generationLock = Mutex(),
-    observeUserSettings = observeUserSettings,
-    repository = repository,
-    timeProvider = FakeTimeProvider()
+    getCachedWeatherSuggestion = getCachedWeatherSuggestion
   )
 
   @After
@@ -69,10 +51,11 @@ class GenerateWeatherSuggestionTest {
   @Test
   fun `given two concurrent requests for same inputs, when generated, then suggestion is fetched once`() = runTest {
 
-    stubSettingsAndPrompt()
+    stubReadyToGenerate()
     val gate = CompletableDeferred<Unit>()
-    coEvery { repository.getSuggestionBasedOn(any()) } coAnswers {
+    coEvery { fetchWeatherSuggestion(any(), any(), any()) } coAnswers {
       gate.await()
+      cached = SUGGESTION
       SUGGESTION
     }
 
@@ -83,29 +66,46 @@ class GenerateWeatherSuggestionTest {
     gate.complete(Unit)
     advanceUntilIdle()
 
-    expectThat(first.await().getOrNull()).isEqualTo(SUGGESTION)
-    expectThat(second.await().getOrNull()).isEqualTo(SUGGESTION)
-    coVerify(exactly = 1) { repository.getSuggestionBasedOn(any()) }
+    expectThat(first.await().suggestion()).isEqualTo(SUGGESTION)
+    expectThat(second.await().suggestion()).isEqualTo(SUGGESTION)
+    coVerify(exactly = 1) { fetchWeatherSuggestion(any(), any(), any()) }
   }
 
   @Test
-  fun `given a valid cached suggestion, when requested, then repository is not called`() = runTest {
+  fun `given a valid cached suggestion, when requested, then nothing is fetched`() = runTest {
 
-    stubSettingsAndPrompt()
-    cached = cachedSuggestion(fetchedAt = System.currentTimeMillis())
+    stubReadyToGenerate()
+    cached = SUGGESTION
 
     val result = suggestionFor().first()
 
-    expectThat(result.getOrNull()).isEqualTo(SUGGESTION)
-    coVerify(exactly = 0) { repository.getSuggestionBasedOn(any()) }
+    expectThat(result.suggestion()).isEqualTo(SUGGESTION)
+    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any(), any()) }
   }
 
-  private fun stubSettingsAndPrompt() {
-    every { observeUserSettings() } returns flowOf(Result.success(userSettings()))
-    every {
-      buildWeatherSuggestionPrompt(any(), any(), any(), any(), any(), any(), any(), any())
-    } returns PROMPT
+  @Test
+  fun `given selected tone not accessible and no cache, when requested, then limit reached`() = runTest {
+
+    stubReadyToGenerate()
+    coEvery { canGenerateBrief() } returns false
+
+    val result = suggestionFor().first()
+
+    expectThat(result.getOrThrow()).isA<LimitReached>()
+    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any(), any()) }
   }
+
+  private fun stubReadyToGenerate() {
+    coEvery { getCachedWeatherSuggestion(any(), any(), any()) } answers { cached }
+    coEvery { canGenerateBrief() } returns true
+    coEvery { fetchWeatherSuggestion(any(), any(), any()) } coAnswers {
+      cached = SUGGESTION
+      SUGGESTION
+    }
+  }
+
+  private fun Result<WeatherBriefResult>.suggestion(): WeatherSuggestion? =
+    (getOrNull() as? Ready)?.suggestion
 
   private fun suggestionFor() =
     generateWeatherSuggestion(
@@ -115,7 +115,6 @@ class GenerateWeatherSuggestionTest {
     )
 
   private companion object {
-    const val PROMPT = "weather prompt"
     val NO_ENTRIES = emptyList<UserDispositionEntry>()
   }
 }

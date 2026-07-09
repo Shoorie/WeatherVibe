@@ -29,7 +29,7 @@ fi
 intro=$(printf ':warning: *Merge `%s` do `%s` zatrzymał się na konfliktach*\n\n%s' \
     "$SOURCE_BRANCH" "$TARGET_BRANCH" "$ask_line")
 files=$(printf '*Pliki w konflikcie:*\n```\n%s\n```' "$(tr ' ' '\n' <<< "$CONFLICT_FILES")")
-hint=$(printf 'Branch `%s` czeka wypushowany: zmerguj do niego `origin/%s`, rozwiąż konflikty i wystaw PR do `%s`.' \
+hint=$(printf '*Co dalej:*\n1. `git checkout %s`\n2. Zmerguj `origin/%s` i rozwiąż konflikty\n3. Wystaw PR do `%s`' \
     "$MERGE_BRANCH" "$SOURCE_BRANCH" "$TARGET_BRANCH")
 footer="<$RUN_URL|Zobacz przebieg> • Release Merge Forward"
 

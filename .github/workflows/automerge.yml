@@ -1,0 +1,43 @@
+name: Automerge
+
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - opened
+      - edited
+      - reopened
+      - synchronize
+  check_suite:
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    name: Automerge pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # MERGE_METHOD must stay "merge": rebase and squash rewrite commit
+      # SHAs, so the next forward merge no longer sees the branches as
+      # related and the same conflicts come back on every hop.
+      #
+      # MERGE_READY_STATE must stay "clean": we have no required status
+      # checks, so while PR Check is still running GitHub reports the PR
+      # as "unstable" and anything broader would merge it before the
+      # checks finish. The check_suite trigger retries once they complete.
+      - name: Automerge pull request
+        uses: pascalgn/automerge-action@v0.16.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: merge
+          MERGE_DELETE_BRANCH: true
+          MERGE_READY_STATE: clean
+          MERGE_RETRIES: 4
+          MERGE_RETRY_SLEEP: 2000

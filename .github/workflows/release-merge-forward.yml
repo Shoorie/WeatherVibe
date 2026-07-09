@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.PAT }}
 
       - name: Resolve target branch
         id: target
@@ -64,7 +64,7 @@ jobs:
       - name: Open merge pull request
         if: steps.merge.outputs.status == 'merged'
         env:
-          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT }}
           TARGET_BRANCH: ${{ steps.target.outputs.target-branch }}
           MERGE_BRANCH: ${{ steps.target.outputs.merge-branch }}
           AUTOMERGE: ${{ inputs.automerge }}

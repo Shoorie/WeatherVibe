@@ -62,8 +62,10 @@ internal class WeatherSuggestionEntityMapper {
     languageTag: String,
     locationId: String,
     dispositionEntries: List<UserDispositionEntry>
-  ): String =
-    "${weatherKey.toHash()}_${languageTag}_${locationId}_${dispositionFingerprint(dispositionEntries)}"
+  ): String {
+    val disposition = dispositionFingerprint(dispositionEntries)
+    return "${weatherKey.toHash()}_${languageTag}_${locationId}_$disposition"
+  }
 
   private fun dispositionFingerprint(entries: List<UserDispositionEntry>): String {
 

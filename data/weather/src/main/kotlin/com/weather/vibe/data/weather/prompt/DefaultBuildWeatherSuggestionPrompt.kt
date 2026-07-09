@@ -9,6 +9,7 @@ import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TimeOfDay
 import com.weather.vibe.domain.weather.model.UserDispositionEntry
+import com.weather.vibe.domain.weather.model.WeatherSuggestionPromptInput
 import com.weather.vibe.domain.weather.usecase.BuildWeatherSuggestionPrompt
 import org.koin.core.annotation.Factory
 import java.time.Instant
@@ -24,26 +25,17 @@ internal class DefaultBuildWeatherSuggestionPrompt(
   private val context: Context
 ) : BuildWeatherSuggestionPrompt {
 
-  override fun invoke(
-    condition: SimplifiedCondition,
-    currentDate: LocalDate,
-    excludedGenres: Set<String>,
-    locationName: String,
-    temperatureCelsius: Double,
-    timeOfDay: TimeOfDay,
-    todayDispositionEntries: List<UserDispositionEntry>,
-    tone: BriefTone
-  ): String =
+  override fun invoke(input: WeatherSuggestionPromptInput): String =
     buildString {
       appendSection(string(R.string.prompt_role))
-      appendSection(contextSection(currentDate, locationName))
-      appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
+      appendSection(contextSection(input.currentDate, input.locationName))
+      appendSection(weatherSection(input.condition, input.temperatureCelsius, input.timeOfDay))
       appendSection(string(R.string.prompt_grounding_instruction))
-      dispositionSection(todayDispositionEntries)?.let { appendSection(it) }
-      appendSection(toneSection(tone))
+      dispositionSection(input.todayDispositionEntries)?.let { appendSection(it) }
+      appendSection(toneSection(input.tone))
       appendSection(string(R.string.prompt_brief_instruction))
       appendSection(string(R.string.prompt_outfit_instruction))
-      appendSection(musicSection(excludedGenres))
+      appendSection(musicSection(input.excludedGenres))
       appendSection(string(R.string.prompt_output_format))
     }
 

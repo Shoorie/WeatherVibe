@@ -103,7 +103,7 @@ class GenerateWeatherSuggestionTest {
   private fun stubSettingsAndPrompt() {
     every { observeUserSettings() } returns flowOf(Result.success(userSettings()))
     every {
-      buildWeatherSuggestionPrompt(any(), any(), any(), any(), any(), any(), any(), any())
+      buildWeatherSuggestionPrompt(any())
     } returns PROMPT
   }
 

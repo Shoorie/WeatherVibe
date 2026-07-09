@@ -1,5 +1,8 @@
 name: Automerge
 
+# check_suite would be the natural completion signal, but GitHub does not
+# emit it for suites created by Actions itself, so the merge would never
+# fire. workflow_run is delivered as expected (see the pascalgn README).
 on:
   pull_request:
     types:
@@ -9,7 +12,9 @@ on:
       - edited
       - reopened
       - synchronize
-  check_suite:
+  workflow_run:
+    workflows:
+      - PR Check
     types:
       - completed
 
@@ -30,7 +35,11 @@ jobs:
       # MERGE_READY_STATE must stay "clean": we have no required status
       # checks, so while PR Check is still running GitHub reports the PR
       # as "unstable" and anything broader would merge it before the
-      # checks finish. The check_suite trigger retries once they complete.
+      # checks finish. The workflow_run trigger retries once they complete.
+      #
+      # The retries bridge the window right after PR Check finishes, when
+      # GitHub is still recomputing the PR state and briefly reports it
+      # as "unstable".
       - name: Automerge pull request
         uses: pascalgn/automerge-action@v0.16.4
         env:
@@ -39,5 +48,5 @@ jobs:
           MERGE_METHOD: merge
           MERGE_DELETE_BRANCH: true
           MERGE_READY_STATE: clean
-          MERGE_RETRIES: 4
-          MERGE_RETRY_SLEEP: 2000
+          MERGE_RETRIES: 6
+          MERGE_RETRY_SLEEP: 10000

@@ -10,7 +10,6 @@ import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.model.UserSettings
 import com.weather.vibe.domain.viberating.mapper.WeatherDataToVibeSnapshot
 import com.weather.vibe.domain.weather.model.Coordinates
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherBriefResult
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.LimitReached
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
@@ -52,7 +51,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -283,17 +281,12 @@ internal class HomeViewModel(
 
     suggestionJob?.cancel()
     suggestionJob = viewModelScope.launch(errorHandler) {
-      val entries = currentDispositionEntries()
       useCases.generateWeatherSuggestion(
-        todayDispositionEntries = entries,
         weatherData = weatherData,
         weatherKey = weatherKey
       ).collect(::onWeatherSuggestionResult)
     }
   }
-
-  private suspend fun currentDispositionEntries(): List<UserDispositionEntry> =
-    useCases.observeTodayEntries().first().toDispositionEntries()
 
   private fun onWeatherSuggestionResult(result: Result<WeatherBriefResult>) {
     result.fold(
@@ -391,7 +384,6 @@ internal class HomeViewModel(
       showPlaylistGenerating()
       useCases.invalidateWeatherSuggestion(
         locationId = locationId,
-        todayDispositionEntries = currentDispositionEntries(),
         tone = tone,
         weatherKey = weatherKey
       )

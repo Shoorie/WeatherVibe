@@ -3,6 +3,7 @@ package com.weather.vibe.feature.home.ui.component.briefing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,45 +22,43 @@ import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
 import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 import com.weather.vibe.core.designsystem.theme.persona.PersonaPalette
 import com.weather.vibe.feature.home.presentation.state.BriefingPersonaUiState
-import com.weather.vibe.feature.home.presentation.state.BriefingUiState
-import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Limit
-import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingPersonaReads
 import com.weather.vibe.feature.home.ui.component.briefing.BriefingDefaults.PersonaBadgeCornerRadius
 import com.weather.vibe.feature.home.ui.component.briefing.BriefingDefaults.PersonaBadgeFillAlpha
 import com.weather.vibe.feature.home.ui.component.briefing.BriefingDefaults.PersonaBadgeSize
 
 @Composable
-internal fun BriefingPersonaHeader(state: BriefingUiState) {
-  val persona = state.personaOrNull() ?: return
+internal fun BriefingPersonaHeader(
+  modifier: Modifier = Modifier,
+  persona: BriefingPersonaUiState
+) {
   val accent = PersonaPalette.colorsFor(persona.colorKey).accent
-  Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(Small),
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    Box(
-      modifier = Modifier
-        .size(PersonaBadgeSize)
-        .clip(RoundedCornerShape(PersonaBadgeCornerRadius))
-        .background(accent.copy(alpha = PersonaBadgeFillAlpha)),
-      contentAlignment = Alignment.Center
+  Column(modifier = modifier.fillMaxWidth()) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.spacedBy(Small),
+      verticalAlignment = Alignment.CenterVertically
     ) {
-      Text(text = persona.emoji, style = typography.titleMedium)
+      Box(
+        modifier = Modifier
+          .size(PersonaBadgeSize)
+          .clip(RoundedCornerShape(PersonaBadgeCornerRadius))
+          .background(accent.copy(alpha = PersonaBadgeFillAlpha)),
+        contentAlignment = Alignment.Center
+      ) {
+        Text(
+          text = persona.colorKey.emoji,
+          style = typography.titleMedium
+        )
+      }
+      Text(
+        text = aiBriefingPersonaReads(),
+        style = typography.labelMedium,
+        color = accent
+      )
     }
-    Text(
-      text = aiBriefingPersonaReads(),
-      style = typography.labelMedium,
-      color = accent
-    )
+    Spacer(modifier = Modifier.height(Small))
   }
-  Spacer(modifier = Modifier.height(Small))
-}
-
-private fun BriefingUiState.personaOrNull(): BriefingPersonaUiState? = when (this) {
-  is Loaded -> persona
-  is Limit -> persona
-  else -> null
 }
 
 @PreviewLightDark
@@ -67,13 +66,7 @@ private fun BriefingUiState.personaOrNull(): BriefingPersonaUiState? = when (thi
 private fun Preview() {
   WeatherVibeTheme {
     BriefingPersonaHeader(
-      state = Loaded(
-        persona = BriefingPersonaUiState(
-          colorKey = PersonaColorKey.COACH,
-          emoji = "🏋️"
-        ),
-        text = "Sample"
-      )
+      persona = BriefingPersonaUiState(colorKey = PersonaColorKey.COACH)
     )
   }
 }

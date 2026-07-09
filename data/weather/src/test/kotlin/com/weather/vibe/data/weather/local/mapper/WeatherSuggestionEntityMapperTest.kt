@@ -21,7 +21,6 @@ class WeatherSuggestionEntityMapperTest {
     val roundTripped = mapper.toDomain(
       mapper.toEntity(
         cached = original,
-        dispositionEntries = emptyList(),
         languageTag = LANGUAGE_TAG,
         locationId = LOCATION_ID
       )
@@ -38,7 +37,6 @@ class WeatherSuggestionEntityMapperTest {
     val roundTripped = mapper.toDomain(
       mapper.toEntity(
         cached = original,
-        dispositionEntries = emptyList(),
         languageTag = LANGUAGE_TAG,
         locationId = LOCATION_ID
       )
@@ -54,7 +52,6 @@ class WeatherSuggestionEntityMapperTest {
 
     val entity = mapper.toEntity(
       cached = original,
-      dispositionEntries = emptyList(),
       languageTag = LANGUAGE_TAG,
       locationId = LOCATION_ID
     )

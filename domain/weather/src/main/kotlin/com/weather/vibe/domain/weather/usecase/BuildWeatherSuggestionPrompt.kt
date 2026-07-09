@@ -3,7 +3,6 @@ package com.weather.vibe.domain.weather.usecase
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TimeOfDay
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import java.time.LocalDate
 
 interface BuildWeatherSuggestionPrompt {
@@ -15,7 +14,6 @@ interface BuildWeatherSuggestionPrompt {
     locationName: String,
     temperatureCelsius: Double,
     timeOfDay: TimeOfDay,
-    todayDispositionEntries: List<UserDispositionEntry>,
     tone: BriefTone
   ): String
 }

@@ -37,14 +37,14 @@ class UnlockToneTemporarilyTest {
   fun `when tone unlocked, then tone accessible right after unlock`() = runTest {
     unlockToneTemporarily(COACH)
 
-    expectThat(cache.current.accessibleUnlockedTones(nowEpochMillis = NOW)).contains(COACH)
+    expectThat(cache.current.accessibleUnlockedTones(now = NOW)).contains(COACH)
   }
 
   @Test
   fun `when tone unlocked, then access expires after one day`() = runTest {
     unlockToneTemporarily(COACH)
 
-    val accessible = cache.current.accessibleUnlockedTones(nowEpochMillis = NOW + DAY_MILLIS)
+    val accessible = cache.current.accessibleUnlockedTones(now = NOW + DAY_MILLIS)
 
     expectThat(accessible.isEmpty()).isTrue()
   }

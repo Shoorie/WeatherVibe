@@ -57,10 +57,28 @@ internal class PersonalizationViewModel(
       useCases.observeLockedTones(),
       paywallTone
     ) { settings, premium, locked, paywall ->
-      buildState(settings, premium, locked, paywall)
+      toUiState(settings, premium, locked, paywall)
     }
       .onEach { state -> _state.update { state } }
       .launchIn(viewModelScope)
+  }
+
+  private fun toUiState(
+    settings: Result<UserSettings>,
+    premium: Result<Boolean>,
+    locked: Result<Set<BriefTone>>,
+    paywall: BriefTone?
+  ): PersonalizationUiState {
+    val loadedSettings = settings.getOrNull() ?: return stateFactory.createError()
+    val isPremium = premium.getOrNull() ?: return stateFactory.createError()
+    val lockedTones = locked.getOrNull() ?: return stateFactory.createError()
+    return stateFactory.create(
+      availableTones = availableTones,
+      isPremium = isPremium,
+      lockedTones = lockedTones,
+      paywallTone = paywall,
+      settings = loadedSettings
+    )
   }
 
   fun dispatch(action: PersonalizationAction) {
@@ -74,28 +92,6 @@ internal class PersonalizationViewModel(
       is TemperatureUnitToggle -> onTemperatureUnitToggle()
       is ToneUnlockedViaAd -> onToneUnlockedViaAd(action)
       is UpsellClick -> onUpsellClick()
-    }
-  }
-
-  private fun buildState(
-    settings: Result<UserSettings>,
-    premium: Result<Boolean>,
-    locked: Result<Set<BriefTone>>,
-    paywall: BriefTone?
-  ): PersonalizationUiState {
-    val loadedSettings = settings.getOrNull()
-    val isPremium = premium.getOrNull()
-    val lockedTones = locked.getOrNull()
-    return if (loadedSettings == null || isPremium == null || lockedTones == null) {
-      stateFactory.createError()
-    } else {
-      stateFactory.create(
-        availableTones = availableTones,
-        isPremium = isPremium,
-        lockedTones = lockedTones,
-        paywallTone = paywall,
-        settings = loadedSettings
-      )
     }
   }
 
@@ -122,10 +118,11 @@ internal class PersonalizationViewModel(
   }
 
   private fun onToneUnlockedViaAd(action: ToneUnlockedViaAd) {
+    paywallTone.update { null }
     viewModelScope.launch(errorHandler) {
       useCases.unlockToneTemporarily(action.tone)
+      useCases.selectBriefTone(action.tone)
     }
-    paywallTone.update { null }
   }
 
   private fun onBuyPremiumClick() {

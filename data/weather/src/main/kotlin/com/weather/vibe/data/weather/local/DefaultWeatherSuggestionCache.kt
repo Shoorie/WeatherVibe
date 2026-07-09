@@ -6,7 +6,6 @@ import com.weather.vibe.data.weather.local.mapper.WeatherSuggestionEntityMapper
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
 import com.weather.vibe.domain.weather.model.CachedWeatherSuggestion
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
 import org.koin.core.annotation.Single
@@ -19,7 +18,6 @@ internal class DefaultWeatherSuggestionCache(
 ) : WeatherSuggestionCache {
 
   override suspend fun delete(
-    dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
     locationId: String,
     tone: BriefTone,
@@ -29,15 +27,13 @@ internal class DefaultWeatherSuggestionCache(
       keyHash = mapper.toLocalizedHash(
         weatherKey = weatherKey,
         languageTag = languageTag,
-        locationId = locationId,
-        dispositionEntries = dispositionEntries
+        locationId = locationId
       ),
       tone = tone.name
     )
   }
 
   override suspend fun get(
-    dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
     locationId: String,
     tone: BriefTone,
@@ -47,8 +43,7 @@ internal class DefaultWeatherSuggestionCache(
       keyHash = mapper.toLocalizedHash(
         weatherKey = weatherKey,
         languageTag = languageTag,
-        locationId = locationId,
-        dispositionEntries = dispositionEntries
+        locationId = locationId
       ),
       tone = tone.name
     ) ?: return null
@@ -56,7 +51,6 @@ internal class DefaultWeatherSuggestionCache(
   }
 
   override suspend fun save(
-    dispositionEntries: List<UserDispositionEntry>,
     languageTag: String,
     locationId: String,
     suggestion: WeatherSuggestion,
@@ -72,7 +66,6 @@ internal class DefaultWeatherSuggestionCache(
     dao.upsert(
       entity = mapper.toEntity(
         cached = cached,
-        dispositionEntries = dispositionEntries,
         languageTag = languageTag,
         locationId = locationId
       )

@@ -50,7 +50,6 @@ class GetMorningBriefTextTest {
     every { getCurrentWeatherKey(WEATHER) } returns WEATHER_KEY
     every {
       generateWeatherSuggestion(
-        todayDispositionEntries = emptyList(),
         weatherData = WEATHER,
         weatherKey = WEATHER_KEY
       )
@@ -98,7 +97,6 @@ class GetMorningBriefTextTest {
 
     every {
       generateWeatherSuggestion(
-        todayDispositionEntries = emptyList(),
         weatherData = WEATHER,
         weatherKey = WEATHER_KEY
       )

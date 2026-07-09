@@ -1,7 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
 import com.weather.vibe.domain.premium.usecase.CanGenerateBrief
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherBriefResult
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.LimitReached
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
@@ -26,56 +25,49 @@ class GenerateWeatherSuggestion internal constructor(
 ) {
 
   operator fun invoke(
-    todayDispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): Flow<Result<WeatherBriefResult>> =
     flow {
-      val brief = resolveBrief(todayDispositionEntries, weatherData, weatherKey)
+      val brief = resolveBrief(weatherData, weatherKey)
       emit(success(brief))
     }.catch { emit(failure(it)) }
 
   private suspend fun resolveBrief(
-    dispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): WeatherBriefResult {
-    cachedSuggestion(dispositionEntries, weatherData, weatherKey)?.let { return Ready(it) }
-    return generateBrief(dispositionEntries, weatherData, weatherKey)
+    cachedSuggestion(weatherData, weatherKey)?.let { return Ready(it) }
+    return generateBrief(weatherData, weatherKey)
   }
 
   private suspend fun cachedSuggestion(
-    dispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): WeatherSuggestion? =
     getCachedWeatherSuggestion(
-      todayDispositionEntries = dispositionEntries,
       weatherData = weatherData,
       weatherKey = weatherKey
     )
 
   private suspend fun generateBrief(
-    dispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): WeatherBriefResult =
     generationLock.withLock {
-      val cached = cachedSuggestion(dispositionEntries, weatherData, weatherKey)
+      val cached = cachedSuggestion(weatherData, weatherKey)
       when {
         cached != null -> Ready(cached)
         !canGenerateBrief() -> LimitReached
-        else -> Ready(fetchBrief(dispositionEntries, weatherData, weatherKey))
+        else -> Ready(fetchBrief(weatherData, weatherKey))
       }
     }
 
   private suspend fun fetchBrief(
-    dispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): WeatherSuggestion =
     fetchWeatherSuggestion(
-      todayDispositionEntries = dispositionEntries,
       weatherData = weatherData,
       weatherKey = weatherKey
     )

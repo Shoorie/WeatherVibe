@@ -58,7 +58,7 @@ class ObserveLockedTonesTest {
 
   @Test
   fun `given premium tone temporarily unlocked, then that tone is not locked`() = runTest {
-    cache.update { it.withToneUnlocked(COACH, untilEpochMillis = LATER) }
+    cache.update { it.withToneUnlocked(COACH, until = LATER) }
 
     val locked = observeLockedTones().first().getOrThrow()
 

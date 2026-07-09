@@ -4,8 +4,8 @@ import com.weather.vibe.domain.location.model.Location
 import com.weather.vibe.domain.location.model.toCoordinates
 import com.weather.vibe.domain.location.usecase.ObserveCurrentLocation
 import com.weather.vibe.domain.settings.usecase.IsMorningBriefEnabled
-import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
 import com.weather.vibe.domain.weather.model.WeatherData
+import com.weather.vibe.domain.weather.model.briefTextOrNull
 import com.weather.vibe.domain.weather.usecase.GenerateWeatherSuggestion
 import com.weather.vibe.domain.weather.usecase.GetCurrentWeatherKey
 import com.weather.vibe.domain.weather.usecase.GetWeather
@@ -38,11 +38,10 @@ class GetMorningBriefText internal constructor(
 
   private suspend fun briefFor(weather: WeatherData): String? =
     generateWeatherSuggestion(
-      todayDispositionEntries = emptyList(),
       weatherData = weather,
       weatherKey = getCurrentWeatherKey(weather)
     )
       .first()
       .getOrThrow()
-      .let { result -> (result as? Ready)?.suggestion?.briefText }
+      .briefTextOrNull()
 }

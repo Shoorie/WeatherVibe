@@ -1,7 +1,6 @@
 package com.weather.vibe.domain.weather.usecase
 
 import com.weather.vibe.domain.premium.usecase.CanGenerateBrief
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherBriefResult
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.LimitReached
 import com.weather.vibe.domain.weather.model.WeatherBriefResult.Ready
@@ -53,7 +52,7 @@ class GenerateWeatherSuggestionTest {
 
     stubReadyToGenerate()
     val gate = CompletableDeferred<Unit>()
-    coEvery { fetchWeatherSuggestion(any(), any(), any()) } coAnswers {
+    coEvery { fetchWeatherSuggestion(any(), any()) } coAnswers {
       gate.await()
       cached = SUGGESTION
       SUGGESTION
@@ -68,7 +67,7 @@ class GenerateWeatherSuggestionTest {
 
     expectThat(first.await().suggestion()).isEqualTo(SUGGESTION)
     expectThat(second.await().suggestion()).isEqualTo(SUGGESTION)
-    coVerify(exactly = 1) { fetchWeatherSuggestion(any(), any(), any()) }
+    coVerify(exactly = 1) { fetchWeatherSuggestion(any(), any()) }
   }
 
   @Test
@@ -80,7 +79,7 @@ class GenerateWeatherSuggestionTest {
     val result = suggestionFor().first()
 
     expectThat(result.suggestion()).isEqualTo(SUGGESTION)
-    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any(), any()) }
+    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any()) }
   }
 
   @Test
@@ -92,13 +91,13 @@ class GenerateWeatherSuggestionTest {
     val result = suggestionFor().first()
 
     expectThat(result.getOrThrow()).isA<LimitReached>()
-    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any(), any()) }
+    coVerify(exactly = 0) { fetchWeatherSuggestion(any(), any()) }
   }
 
   private fun stubReadyToGenerate() {
-    coEvery { getCachedWeatherSuggestion(any(), any(), any()) } answers { cached }
+    coEvery { getCachedWeatherSuggestion(any(), any()) } answers { cached }
     coEvery { canGenerateBrief() } returns true
-    coEvery { fetchWeatherSuggestion(any(), any(), any()) } coAnswers {
+    coEvery { fetchWeatherSuggestion(any(), any()) } coAnswers {
       cached = SUGGESTION
       SUGGESTION
     }
@@ -109,12 +108,7 @@ class GenerateWeatherSuggestionTest {
 
   private fun suggestionFor() =
     generateWeatherSuggestion(
-      todayDispositionEntries = NO_ENTRIES,
       weatherData = WEATHER,
       weatherKey = DEFAULT_WEATHER_KEY
     )
-
-  private companion object {
-    val NO_ENTRIES = emptyList<UserDispositionEntry>()
-  }
 }

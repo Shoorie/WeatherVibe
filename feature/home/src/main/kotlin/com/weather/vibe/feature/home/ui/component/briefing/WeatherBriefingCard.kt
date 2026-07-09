@@ -33,6 +33,7 @@ import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Error
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Limit
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loaded
 import com.weather.vibe.feature.home.presentation.state.BriefingUiState.Loading
+import com.weather.vibe.feature.home.presentation.state.persona
 import com.weather.vibe.feature.home.preview.WeatherBriefingCardPreview
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingLabel
 import com.weather.vibe.feature.home.ui.HomeAiSuggestionTexts.aiBriefingOpenPersonalization
@@ -58,7 +59,7 @@ internal fun WeatherBriefingCard(
       onClickLabel = aiBriefingOpenPersonalization()
     ) {
       Column(modifier = Modifier.fillMaxWidth()) {
-        BriefingPersonaHeader(state = state)
+        state.persona?.let { persona -> BriefingPersonaHeader(persona = persona) }
         when (state) {
           is Loaded -> BriefingLoadedBody(state = state, onMusicClick = onMusicClick)
           is Limit -> BriefingLimitContent(

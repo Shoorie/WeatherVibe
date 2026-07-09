@@ -152,6 +152,15 @@ private fun LazyListScope.forecastItems(
       state = state.aiSuggestion.briefing
     )
   }
+  item(key = HOURLY) {
+    HourlyForecastRow(state = state.forecast.hourlyForecast)
+  }
+  item(key = DAILY) {
+    DailyForecastList(
+      modifier = horizontalPadding,
+      state = state.forecast.dailyForecast
+    )
+  }
   if (state.dailyVibe != null) {
     item(key = DAILY_VIBE) {
       DailyVibeCard(
@@ -170,19 +179,10 @@ private fun LazyListScope.forecastItems(
       onNavigateToHistory = onNavigateToVibeHistory
     )
   }
-  item(key = HOURLY) {
-    HourlyForecastRow(state = state.forecast.hourlyForecast)
-  }
   item(key = ACTIVITY_PLANNER) {
     ActivityPlannerTeaserCard(
       modifier = horizontalPadding,
       onClick = onNavigateToActivityPlanner
-    )
-  }
-  item(key = DAILY) {
-    DailyForecastList(
-      modifier = horizontalPadding,
-      state = state.forecast.dailyForecast
     )
   }
   item(key = DETAILS) {

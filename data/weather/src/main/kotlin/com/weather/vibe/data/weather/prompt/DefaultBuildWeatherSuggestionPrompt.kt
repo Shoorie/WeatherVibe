@@ -13,12 +13,9 @@ import com.weather.vibe.domain.settings.model.BriefTone.SCI_FI
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.weather.model.SimplifiedCondition
 import com.weather.vibe.domain.weather.model.TimeOfDay
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.usecase.BuildWeatherSuggestionPrompt
 import org.koin.core.annotation.Factory
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Locale
@@ -36,14 +33,12 @@ internal class DefaultBuildWeatherSuggestionPrompt(
     locationName: String,
     temperatureCelsius: Double,
     timeOfDay: TimeOfDay,
-    todayDispositionEntries: List<UserDispositionEntry>,
     tone: BriefTone
   ): String =
     buildString {
       appendSection(toneRoleSection(tone))
       appendSection(contextSection(currentDate, locationName))
       appendSection(weatherSection(condition, temperatureCelsius, timeOfDay))
-      dispositionSection(todayDispositionEntries)?.let { appendSection(it) }
       appendSection(string(R.string.prompt_grounding_instruction))
       appendSection(string(R.string.prompt_brief_instruction))
       appendSection(string(R.string.prompt_outfit_instruction))
@@ -78,14 +73,6 @@ internal class DefaultBuildWeatherSuggestionPrompt(
       - Time of day: ${timeOfDay.label}
     """.trimIndent()
 
-  private fun dispositionSection(entries: List<UserDispositionEntry>): String? {
-    if (entries.isEmpty()) return null
-    val intro = string(R.string.prompt_user_disposition_intro)
-    val sorted = entries.sortedBy { it.recordedAtEpochMillis }
-    val lines = sorted.joinToString(separator = "\n") { it.toLine() }
-    return "$intro\n\nTODAY'S ENTRIES (chronological):\n$lines"
-  }
-
   private fun outputFormatSection(tone: BriefTone): String =
     string(R.string.prompt_output_format)
       .replace(TONE_REMINDER_PLACEHOLDER, string(tone.toToneDirectiveRes()))
@@ -106,18 +93,6 @@ internal class DefaultBuildWeatherSuggestionPrompt(
     append("\n\n")
   }
 
-  private fun UserDispositionEntry.toLine(): String {
-    val time = TIME_FORMATTER.format(
-      Instant
-        .ofEpochMilli(recordedAtEpochMillis)
-        .atZone(ZoneId.systemDefault())
-    )
-    val noteSegment = note?.takeIf { it.isNotBlank() }
-      ?.let { ", note: \"${it.replace("\"", "'")}\"" }
-      .orEmpty()
-    return "- $time — $rating/5$noteSegment"
-  }
-
   private fun string(resId: Int): String = context.getString(resId)
 
   private fun BriefTone.toToneDirectiveRes(): Int = when (this) {
@@ -133,7 +108,6 @@ internal class DefaultBuildWeatherSuggestionPrompt(
 
   private companion object {
     const val TONE_REMINDER_PLACEHOLDER = "{tone_reminder}"
-    val TIME_FORMATTER: DateTimeFormatter = ofPattern("HH:mm")
     val DATE_FORMATTER: DateTimeFormatter = ofPattern("d MMMM yyyy", Locale.ENGLISH)
   }
 }

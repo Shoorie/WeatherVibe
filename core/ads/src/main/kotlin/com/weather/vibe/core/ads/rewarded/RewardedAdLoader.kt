@@ -1,14 +1,11 @@
 package com.weather.vibe.core.ads.rewarded
 
 import android.app.Activity
-import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.FullScreenContentCallback
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.weather.vibe.domain.ads.rewarded.RewardedAdOutcome
-import com.weather.vibe.domain.ads.rewarded.RewardedAdOutcome.DISMISSED
 import com.weather.vibe.domain.ads.rewarded.RewardedAdOutcome.EARNED
 import com.weather.vibe.domain.ads.rewarded.RewardedAdOutcome.FAILED
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -20,34 +17,39 @@ internal suspend fun showRewardedAd(
 ): RewardedAdOutcome =
   suspendCancellableCoroutine { continuation ->
 
-    fun finish(outcome: RewardedAdOutcome) {
+    fun settle(outcome: RewardedAdOutcome) {
       if (continuation.isActive) continuation.resume(outcome)
     }
 
-    RewardedAd.load(
-      activity,
-      adUnitId,
-      AdRequest.Builder().build(),
-      object : RewardedAdLoadCallback() {
-
-        override fun onAdFailedToLoad(error: LoadAdError) {
-          finish(FAILED)
-        }
-
-        override fun onAdLoaded(ad: RewardedAd) {
-          var rewardEarned = false
-          ad.fullScreenContentCallback = object : FullScreenContentCallback() {
-
-            override fun onAdDismissedFullScreenContent() {
-              finish(if (rewardEarned) EARNED else DISMISSED)
-            }
-
-            override fun onAdFailedToShowFullScreenContent(error: AdError) {
-              finish(FAILED)
-            }
-          }
-          ad.show(activity) { rewardEarned = true }
-        }
-      }
+    loadRewardedAd(
+      activity = activity,
+      adUnitId = adUnitId,
+      onFailed = { settle(FAILED) },
+      onLoaded = { ad -> ad.presentFullScreen(activity = activity, onOutcome = ::settle) }
     )
   }
+
+private fun loadRewardedAd(
+  activity: Activity,
+  adUnitId: String,
+  onFailed: () -> Unit,
+  onLoaded: (RewardedAd) -> Unit
+) {
+  RewardedAd.load(
+    activity,
+    adUnitId,
+    AdRequest.Builder().build(),
+    object : RewardedAdLoadCallback() {
+      override fun onAdFailedToLoad(error: LoadAdError) = onFailed()
+      override fun onAdLoaded(ad: RewardedAd) = onLoaded(ad)
+    }
+  )
+}
+
+private fun RewardedAd.presentFullScreen(
+  activity: Activity,
+  onOutcome: (RewardedAdOutcome) -> Unit
+) {
+  fullScreenContentCallback = RewardedDismissalCallback(onOutcome = onOutcome)
+  show(activity) { onOutcome(EARNED) }
+}

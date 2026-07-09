@@ -7,7 +7,6 @@ import com.weather.vibe.domain.settings.model.BriefTone
 @Immutable
 internal data class PersonaUiState(
   val colorKey: PersonaColorKey,
-  val emoji: String,
   val isLocked: Boolean,
   val isPremium: Boolean,
   val isSelected: Boolean,

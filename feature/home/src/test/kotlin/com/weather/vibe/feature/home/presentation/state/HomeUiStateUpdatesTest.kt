@@ -11,10 +11,7 @@ import strikt.assertions.isEqualTo
 
 class HomeUiStateUpdatesTest {
 
-  private val persona = BriefingPersonaUiState(
-    colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-    emoji = "😊"
-  )
+  private val persona = BriefingPersonaUiState(colorKey = PersonaColorKey.WITTY_AND_FRIENDLY)
 
   @Test
   fun `given loaded state, when suggestion applied, then update briefing`() {

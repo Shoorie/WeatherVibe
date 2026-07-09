@@ -6,10 +6,10 @@
   <string name="ai_briefing_persona_reads">czyta dzisiejszą pogodę</string>
   <string name="ai_briefing_open_personalization">Otwórz personalizację narratora</string>
   <string name="ai_briefing_premium_coming_soon">Zakup Premium już wkrótce</string>
-  <string name="ai_briefing_limit_title">Zużyłeś darmowy briefing na dziś</string>
+  <string name="ai_briefing_limit_title">Ten głos jest premium</string>
   <string name="ai_briefing_limit_premium">Premium</string>
-  <string name="ai_briefing_limit_watch">Wideo → świeży</string>
-  <string name="ai_briefing_limit_reset">Darmowy briefing wraca jutro o 6:00</string>
+  <string name="ai_briefing_limit_watch">Obejrzyj wideo</string>
+  <string name="ai_briefing_limit_reset">Krótkie wideo odblokowuje ten głos na 24 godziny</string>
   <string name="ai_briefing_outfit_label">Co założyć:</string>
   <string name="atmosphere_section_subtitle">Ciśnienie, wilgotność i punkt rosy</string>
   <string name="atmosphere_section_title">Atmosfera</string>

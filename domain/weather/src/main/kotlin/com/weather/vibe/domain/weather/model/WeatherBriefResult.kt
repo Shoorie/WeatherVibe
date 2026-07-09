@@ -6,3 +6,8 @@ sealed interface WeatherBriefResult {
 
   data object LimitReached : WeatherBriefResult
 }
+
+fun WeatherBriefResult.briefTextOrNull(): String? = when (this) {
+  is WeatherBriefResult.Ready -> suggestion.briefText
+  WeatherBriefResult.LimitReached -> null
+}

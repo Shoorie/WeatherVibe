@@ -45,12 +45,16 @@ import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResou
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.narratorSampleFooter
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.BubbleCorner
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.BubbleMinHeight
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.EyebrowAlpha
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.HeroCorner
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.HeroEmojiBox
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.HeroEmojiCorner
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.HeroPlayButton
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.HeroPlayIcon
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PremiumStarIcon
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.ScrimSoftAlpha
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.ScrimStrongAlpha
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.SubtitleAlpha
 
 @Composable
 internal fun NarratorHero(
@@ -83,7 +87,7 @@ private fun NarratorHeader(isPremium: Boolean) {
     Text(
       text = narratorEyebrow().uppercase(),
       style = typography.labelSmall,
-      color = Color.White.copy(alpha = 0.78f)
+      color = Color.White.copy(alpha = EyebrowAlpha)
     )
     NarratorBadge(isPremium = isPremium)
   }
@@ -94,7 +98,7 @@ private fun NarratorBadge(isPremium: Boolean) {
   Row(
     modifier = Modifier
       .clip(CircleShape)
-      .background(Color.White.copy(alpha = 0.22f))
+      .background(Color.White.copy(alpha = ScrimStrongAlpha))
       .padding(horizontal = Small, vertical = ExtraSmall),
     horizontalArrangement = Arrangement.spacedBy(ExtraSmall),
     verticalAlignment = Alignment.CenterVertically
@@ -126,10 +130,13 @@ private fun NarratorIdentity(narrator: NarratorUiState) {
       modifier = Modifier
         .size(HeroEmojiBox)
         .clip(RoundedCornerShape(HeroEmojiCorner))
-        .background(Color.White.copy(alpha = 0.20f)),
+        .background(Color.White.copy(alpha = ScrimSoftAlpha)),
       contentAlignment = Alignment.Center
     ) {
-      Text(text = narrator.emoji, style = typography.headlineMedium)
+      Text(
+        text = narrator.colorKey.emoji,
+        style = typography.headlineMedium
+      )
     }
     Column {
       Text(
@@ -142,7 +149,7 @@ private fun NarratorIdentity(narrator: NarratorUiState) {
       Text(
         text = narrator.subtitle,
         style = typography.bodySmall,
-        color = Color.White.copy(alpha = 0.82f)
+        color = Color.White.copy(alpha = SubtitleAlpha)
       )
     }
   }
@@ -209,7 +216,6 @@ private fun Preview() {
       modifier = Modifier.padding(Medium),
       narrator = NarratorUiState(
         colorKey = PersonaColorKey.CINEMATIC,
-        emoji = "🎬",
         isPremium = true,
         name = "Cinematic",
         sample = "Today's weather has the vibe of a good thriller's opening scene.",

@@ -53,45 +53,36 @@ internal class PersonalizationStateFactory(
   fun createError(): Error =
     Error(message = resources.defaultError())
 
-  private fun narratorOf(tone: BriefTone): NarratorUiState {
-    val colorKey = tone.toColorKey()
-    return NarratorUiState(
-      colorKey = colorKey,
-      emoji = colorKey.emoji,
+  private fun narratorOf(tone: BriefTone): NarratorUiState =
+    NarratorUiState(
+      colorKey = tone.toColorKey(),
       isPremium = tone.isPremium,
       name = resources.briefToneLabel(tone),
       sample = resources.briefToneSample(tone),
       subtitle = resources.briefToneDescription(tone)
     )
-  }
 
   private fun personaOf(
     tone: BriefTone,
     selected: BriefTone,
     locked: Boolean
-  ): PersonaUiState {
-    val colorKey = tone.toColorKey()
-    return PersonaUiState(
-      colorKey = colorKey,
-      emoji = colorKey.emoji,
+  ): PersonaUiState =
+    PersonaUiState(
+      colorKey = tone.toColorKey(),
       isLocked = locked,
       isPremium = tone.isPremium,
       isSelected = tone == selected,
       label = resources.briefToneShortLabel(tone),
       tone = tone
     )
-  }
 
-  private fun paywallOf(tone: BriefTone): PaywallUiState {
-    val colorKey = tone.toColorKey()
-    return PaywallUiState(
-      colorKey = colorKey,
-      emoji = colorKey.emoji,
+  private fun paywallOf(tone: BriefTone): PaywallUiState =
+    PaywallUiState(
+      colorKey = tone.toColorKey(),
       name = resources.briefToneLabel(tone),
       sample = resources.briefToneSample(tone),
       tone = tone
     )
-  }
 
   private fun createExcludedGenreChips(
     excluded: Set<String>

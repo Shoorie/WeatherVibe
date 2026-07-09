@@ -5,6 +5,5 @@ import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 
 @Immutable
 internal data class BriefingPersonaUiState(
-  val colorKey: PersonaColorKey,
-  val emoji: String
+  val colorKey: PersonaColorKey
 )

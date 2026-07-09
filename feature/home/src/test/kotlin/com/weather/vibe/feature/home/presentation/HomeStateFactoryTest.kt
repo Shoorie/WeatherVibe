@@ -81,10 +81,7 @@ class HomeStateFactoryTest {
   fun `given loaded state with briefing, when temperatures reformatted, then preserve briefing`() {
 
     val briefing = BriefingUiState.Loaded(
-      persona = BriefingPersonaUiState(
-        colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-        emoji = "😊"
-      ),
+      persona = BriefingPersonaUiState(colorKey = PersonaColorKey.WITTY_AND_FRIENDLY),
       text = "Sunny!"
     )
     val created = factory.create(

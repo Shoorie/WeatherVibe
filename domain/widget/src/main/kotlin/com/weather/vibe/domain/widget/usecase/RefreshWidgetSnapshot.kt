@@ -39,7 +39,6 @@ class RefreshWidgetSnapshot internal constructor(
 
   private suspend fun cachedMood(weather: WeatherData): String? =
     getCachedWeatherSuggestion(
-      todayDispositionEntries = emptyList(),
       weatherData = weather,
       weatherKey = getCurrentWeatherKey(weather)
     )?.mood

@@ -32,10 +32,7 @@ internal class HomePreview :
     Loaded(
       aiSuggestion = aiSuggestionSection.copy(
         briefing = BriefingUiState.Loaded(
-          persona = BriefingPersonaUiState(
-            colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-            emoji = "😊"
-          ),
+          persona = BriefingPersonaUiState(colorKey = PersonaColorKey.WITTY_AND_FRIENDLY),
           text = "A mild partly cloudy day with a light breeze — " +
             "great for a walk before the evening rain."
         )

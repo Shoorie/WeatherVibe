@@ -7,16 +7,16 @@ data class PremiumState(
   val unlockedTones: Map<BriefTone, Long>
 ) {
 
-  fun accessibleUnlockedTones(nowEpochMillis: Long): Set<BriefTone> =
+  fun accessibleUnlockedTones(now: Long): Set<BriefTone> =
     unlockedTones
-      .filterValues { expiry -> expiry > nowEpochMillis }
+      .filterValues { unlockedUntil -> unlockedUntil > now }
       .keys
 
   fun withPremium(active: Boolean): PremiumState =
     copy(isPremium = active)
 
-  fun withToneUnlocked(tone: BriefTone, untilEpochMillis: Long): PremiumState =
-    copy(unlockedTones = unlockedTones + (tone to untilEpochMillis))
+  fun withToneUnlocked(tone: BriefTone, until: Long): PremiumState =
+    copy(unlockedTones = unlockedTones + (tone to until))
 
   companion object {
     val NONE = PremiumState(

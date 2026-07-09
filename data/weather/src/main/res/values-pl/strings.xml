@@ -25,11 +25,6 @@ REMINDER — cała zawartość JSON (zwłaszcza briefText, mood i moodDescriptio
 {tone_reminder}
     </string>
 
-    <string name="prompt_user_disposition_intro">
-Użytkownik zapisuje dziś nastawienie w skali 1–5 (1 = najniżej, 5 = najwyżej), każdy wpis opcjonalnie z krótką notatką.
-Wpisy z dziś, chronologicznie:
-    </string>
-
     <string name="prompt_tone_directive_formal">Wciel się w postać profesjonalnego, topowego prezentera prognozy pogody. Używaj precyzyjnego, czystego i rzeczowego słownictwa. Unikaj slangu i emocjonalnych zwrotów.</string>
     <string name="prompt_tone_directive_humorous">Wciel się w postać komika grającego deadpanem. Podaj komentarz z suchą, cyniczną ironią, skupiając się na jednym absurdalnym lub lekko irytującym aspekcie dzisiejszej pogody.</string>
     <string name="prompt_tone_directive_witty_friendly">Wciel się w postać bystrego, uważnego bliskiego znajomego. Napisz ciepłą, obrazową wiadomość pełną uroczych, swobodnych spostrzeżeń o tym, jak czuje się dzisiejszy dzień.</string>

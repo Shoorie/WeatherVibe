@@ -5,7 +5,6 @@ import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.usecase.AddToGenreHistory
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import com.weather.vibe.domain.weather.cache.WeatherSuggestionCache
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
@@ -25,7 +24,6 @@ class FetchWeatherSuggestion internal constructor(
 ) {
 
   suspend operator fun invoke(
-    todayDispositionEntries: List<UserDispositionEntry>,
     weatherData: WeatherData,
     weatherKey: WeatherKey
   ): WeatherSuggestion {
@@ -42,12 +40,10 @@ class FetchWeatherSuggestion internal constructor(
       locationName = weatherData.coordinates.name,
       temperatureCelsius = weatherData.currentTemperature,
       timeOfDay = weatherKey.timeOfDay,
-      todayDispositionEntries = todayDispositionEntries,
       tone = tone
     )
     val suggestion = repository.getSuggestionBasedOn(prompt)
     cache.save(
-      dispositionEntries = todayDispositionEntries,
       languageTag = languageTag,
       locationId = locationId,
       suggestion = suggestion,

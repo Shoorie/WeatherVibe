@@ -16,12 +16,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -44,7 +46,6 @@ import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 import com.weather.vibe.core.designsystem.theme.persona.PersonaColors
 import com.weather.vibe.core.designsystem.theme.persona.PersonaPalette
 import com.weather.vibe.domain.ads.placement.AdPlacement.ToneUnlockRewarded
-import com.weather.vibe.domain.ads.rewarded.RewardedAdOutcome.EARNED
 import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.settings.personalization.presentation.state.PaywallUiState
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.paywallMaybeLater
@@ -56,12 +57,16 @@ import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResou
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.ActionIcon
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.BubbleCorner
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.BubbleMinHeight
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.LockedAlpha
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PaywallActionIcon
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PaywallCorner
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PaywallEmojiBox
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PremiumStarIcon
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PremiumSubtitleAlpha
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.ScrimSoftAlpha
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.ScrimStrongAlpha
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.TightSpacing
-import kotlinx.coroutines.launch
+import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.WatchSpinnerStroke
 
 @Composable
 internal fun PaywallSheet(
@@ -72,6 +77,8 @@ internal fun PaywallSheet(
   paywall: PaywallUiState
 ) {
   val personaColors = PersonaPalette.colorsFor(paywall.colorKey)
+  val controller = rememberRewardedAdController()
+  val scope = rememberCoroutineScope()
   Column(
     modifier = modifier
       .fillMaxWidth()
@@ -79,11 +86,15 @@ internal fun PaywallSheet(
     verticalArrangement = Arrangement.spacedBy(Small)
   ) {
     PaywallHeader(colors = personaColors, paywall = paywall)
-    PaywallPremiumButton(onBuyPremium = onBuyPremium)
+    PaywallPremiumButton(
+      enabled = !controller.isWatching,
+      onBuyPremium = onBuyPremium
+    )
     PaywallWatchVideoButton(
       accent = personaColors.accent,
+      isLoading = controller.isWatching,
       name = paywall.name,
-      onUnlockedViaAd = onUnlockedViaAd
+      onWatch = { controller.rewardOnWatch(scope, ToneUnlockRewarded, onUnlockedViaAd) }
     )
     Text(
       text = paywallMaybeLater(),
@@ -121,16 +132,19 @@ private fun PaywallHeader(
         modifier = Modifier
           .size(PaywallEmojiBox)
           .clip(RoundedCornerShape(BubbleCorner))
-          .background(Color.White.copy(alpha = 0.20f)),
+          .background(Color.White.copy(alpha = ScrimSoftAlpha)),
         contentAlignment = Alignment.Center
       ) {
-        Text(text = paywall.emoji, style = typography.headlineMedium)
+        Text(
+          text = paywall.colorKey.emoji,
+          style = typography.headlineMedium
+        )
       }
       Column(verticalArrangement = Arrangement.spacedBy(ExtraSmall)) {
         Row(
           modifier = Modifier
             .clip(CircleShape)
-            .background(Color.White.copy(alpha = 0.22f))
+            .background(Color.White.copy(alpha = ScrimStrongAlpha))
             .padding(horizontal = Small, vertical = TightSpacing),
           horizontalArrangement = Arrangement.spacedBy(ExtraSmall),
           verticalAlignment = Alignment.CenterVertically
@@ -147,7 +161,11 @@ private fun PaywallHeader(
             color = Color.White
           )
         }
-        Text(text = paywall.name, style = typography.titleLarge, color = Color.White)
+        Text(
+          text = paywall.name,
+          style = typography.titleLarge,
+          color = Color.White
+        )
       }
     }
     Text(
@@ -165,13 +183,17 @@ private fun PaywallHeader(
 }
 
 @Composable
-private fun PaywallPremiumButton(onBuyPremium: () -> Unit) {
+private fun PaywallPremiumButton(
+  enabled: Boolean,
+  onBuyPremium: () -> Unit
+) {
   Column(
     modifier = Modifier
       .fillMaxWidth()
       .clip(shapes.card)
       .background(PersonaPalette.premiumBrush())
-      .clickable(role = Role.Button, onClick = onBuyPremium)
+      .alpha(if (enabled) 1f else LockedAlpha)
+      .clickable(enabled = enabled, role = Role.Button, onClick = onBuyPremium)
       .padding(Medium),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(TightSpacing)
@@ -186,12 +208,16 @@ private fun PaywallPremiumButton(onBuyPremium: () -> Unit) {
         tint = Color.White,
         modifier = Modifier.size(ActionIcon)
       )
-      Text(text = paywallUnlockPremium(), style = typography.titleSmall, color = Color.White)
+      Text(
+        text = paywallUnlockPremium(),
+        style = typography.titleSmall,
+        color = Color.White
+      )
     }
     Text(
       text = paywallPremiumSubtitle(),
       style = typography.bodySmall,
-      color = Color.White.copy(alpha = 0.92f),
+      color = Color.White.copy(alpha = PremiumSubtitleAlpha),
       textAlign = TextAlign.Center
     )
   }
@@ -200,22 +226,17 @@ private fun PaywallPremiumButton(onBuyPremium: () -> Unit) {
 @Composable
 private fun PaywallWatchVideoButton(
   accent: Color,
+  isLoading: Boolean,
   name: String,
-  onUnlockedViaAd: () -> Unit
+  onWatch: () -> Unit
 ) {
-  val controller = rememberRewardedAdController()
-  val scope = rememberCoroutineScope()
   Row(
     modifier = Modifier
       .fillMaxWidth()
       .clip(shapes.card)
       .background(colors.rowSurface)
       .border(Stroke.Border, colors.outlineVariant, shapes.card)
-      .clickable(role = Role.Button) {
-        scope.launch {
-          if (controller.show(ToneUnlockRewarded) == EARNED) onUnlockedViaAd()
-        }
-      }
+      .clickable(enabled = !isLoading, role = Role.Button, onClick = onWatch)
       .padding(Medium),
     horizontalArrangement = Arrangement.spacedBy(Medium),
     verticalAlignment = Alignment.CenterVertically
@@ -227,15 +248,27 @@ private fun PaywallWatchVideoButton(
         .background(accent),
       contentAlignment = Alignment.Center
     ) {
-      Icon(
-        imageVector = Icons.Filled.PlayArrow,
-        contentDescription = null,
-        tint = Color.White,
-        modifier = Modifier.size(ActionIcon)
-      )
+      if (isLoading) {
+        CircularProgressIndicator(
+          modifier = Modifier.size(ActionIcon),
+          color = Color.White,
+          strokeWidth = WatchSpinnerStroke
+        )
+      } else {
+        Icon(
+          imageVector = Icons.Filled.PlayArrow,
+          contentDescription = null,
+          tint = Color.White,
+          modifier = Modifier.size(ActionIcon)
+        )
+      }
     }
     Column {
-      Text(text = paywallWatchVideo(), style = typography.titleSmall, color = colors.onSurface)
+      Text(
+        text = paywallWatchVideo(),
+        style = typography.titleSmall,
+        color = colors.onSurface
+      )
       Text(
         text = paywallWatchVideoSubtitle(name),
         style = typography.bodySmall,
@@ -255,7 +288,6 @@ private fun Preview() {
       onUnlockedViaAd = {},
       paywall = PaywallUiState(
         colorKey = PersonaColorKey.COACH,
-        emoji = "🏋️",
         name = "Coach",
         sample = "You're in solid shape today. Light wind, perfect for an outdoor workout.",
         tone = BriefTone.COACH

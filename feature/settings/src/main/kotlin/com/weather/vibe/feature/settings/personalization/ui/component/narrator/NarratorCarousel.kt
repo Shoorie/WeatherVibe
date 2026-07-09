@@ -17,19 +17,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.ExtraSmall
 import com.weather.vibe.core.designsystem.theme.AppDimens.Padding.Medium
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.colors
 import com.weather.vibe.core.designsystem.theme.WeatherVibeTheme.typography
-import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
-import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.feature.settings.personalization.presentation.state.PersonaUiState
+import com.weather.vibe.feature.settings.personalization.preview.NarratorCarouselPreviewProvider
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.narratorChange
 import com.weather.vibe.feature.settings.personalization.ui.PersonalizationResources.Texts.narratorPremiumCount
 import com.weather.vibe.feature.settings.personalization.ui.component.narrator.NarratorDefaults.PremiumStarIcon
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 internal fun NarratorCarousel(
@@ -87,30 +86,14 @@ internal fun NarratorCarousel(
 
 @PreviewLightDark
 @Composable
-private fun Preview() {
+private fun Preview(
+  @PreviewParameter(NarratorCarouselPreviewProvider::class)
+  personas: ImmutableList<PersonaUiState>
+) {
   WeatherVibeTheme {
     NarratorCarousel(
       onPersonaClick = {},
-      personas = persistentListOf(
-        PersonaUiState(
-          colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-          emoji = "😊",
-          isLocked = false,
-          isPremium = false,
-          isSelected = true,
-          label = "Witty",
-          tone = BriefTone.WITTY_AND_FRIENDLY
-        ),
-        PersonaUiState(
-          colorKey = PersonaColorKey.COACH,
-          emoji = "🏋️",
-          isLocked = true,
-          isPremium = true,
-          isSelected = false,
-          label = "Coach",
-          tone = BriefTone.COACH
-        )
-      ),
+      personas = personas,
       premiumToneCount = 5,
       showPremiumCount = true
     )

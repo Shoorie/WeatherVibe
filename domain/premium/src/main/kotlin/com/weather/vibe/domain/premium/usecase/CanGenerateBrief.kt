@@ -2,6 +2,8 @@ package com.weather.vibe.domain.premium.usecase
 
 import com.weather.vibe.core.time.TimeProvider
 import com.weather.vibe.domain.premium.cache.PremiumStateCache
+import com.weather.vibe.domain.premium.model.PremiumState
+import com.weather.vibe.domain.settings.model.BriefTone
 import com.weather.vibe.domain.settings.model.BriefTone.WITTY_AND_FRIENDLY
 import com.weather.vibe.domain.settings.usecase.ObserveUserSettings
 import kotlinx.coroutines.flow.first
@@ -15,10 +17,16 @@ class CanGenerateBrief internal constructor(
 ) {
 
   suspend operator fun invoke(): Boolean {
-    val state = premiumStateCache.observe().first()
-    if (state.isPremium) return true
-    val tone = observeUserSettings().first().getOrNull()?.briefTone ?: WITTY_AND_FRIENDLY
-    if (!tone.isPremium) return true
-    return tone in state.accessibleUnlockedTones(timeProvider.nowEpochMillis())
+    val premium = premiumStateCache.observe().first()
+    return premium.grantsAccessTo(selectedTone())
+  }
+
+  private suspend fun selectedTone(): BriefTone =
+    observeUserSettings().first().getOrNull()?.briefTone ?: WITTY_AND_FRIENDLY
+
+  private fun PremiumState.grantsAccessTo(tone: BriefTone): Boolean = when {
+    isPremium -> true
+    !tone.isPremium -> true
+    else -> tone in accessibleUnlockedTones(timeProvider.nowEpochMillis())
   }
 }

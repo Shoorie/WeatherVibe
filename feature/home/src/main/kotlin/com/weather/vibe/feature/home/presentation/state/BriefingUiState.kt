@@ -25,3 +25,10 @@ internal sealed interface BriefingUiState {
   @Immutable
   data object Loading : BriefingUiState
 }
+
+internal val BriefingUiState.persona: BriefingPersonaUiState?
+  get() = when (this) {
+    is BriefingUiState.Loaded -> persona
+    is BriefingUiState.Limit -> persona
+    is BriefingUiState.Error, BriefingUiState.Loading -> null
+  }

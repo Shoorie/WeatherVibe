@@ -19,6 +19,11 @@ internal object NarratorDefaults {
   val DialRingStroke = 2.5.dp
 
   const val LockedAlpha = 0.45f
+  const val EyebrowAlpha = 0.78f
+  const val SubtitleAlpha = 0.82f
+  const val ScrimStrongAlpha = 0.22f
+  const val ScrimSoftAlpha = 0.20f
+  const val PremiumSubtitleAlpha = 0.92f
 
   val PremiumStarIcon = 12.dp
   val ActionIcon = 16.dp
@@ -27,4 +32,5 @@ internal object NarratorDefaults {
   val PaywallCorner = 24.dp
   val PaywallEmojiBox = 60.dp
   val PaywallActionIcon = 34.dp
+  val WatchSpinnerStroke = 2.dp
 }

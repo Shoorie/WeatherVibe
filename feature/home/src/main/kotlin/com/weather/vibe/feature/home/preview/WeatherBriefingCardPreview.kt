@@ -13,7 +13,7 @@ internal class WeatherBriefingCardPreview :
   PreviewParameterProvider<BriefingUiState> {
 
   private val persona =
-    BriefingPersonaUiState(colorKey = PersonaColorKey.COACH, emoji = "🏋️")
+    BriefingPersonaUiState(colorKey = PersonaColorKey.COACH)
 
   private val sample =
     "Expect a mild and partly cloudy day with a light breeze — " +

@@ -14,7 +14,6 @@ internal object PersonalizationPreviewData {
   val narrator: NarratorUiState =
     NarratorUiState(
       colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-      emoji = "😊",
       isPremium = false,
       name = "Witty & friendly",
       sample = "Hey! A bit cloudy today, around 10°C, but you won't catch any rain.",
@@ -25,20 +24,17 @@ internal object PersonalizationPreviewData {
     persistentListOf(
       persona(
         colorKey = PersonaColorKey.WITTY_AND_FRIENDLY,
-        emoji = "😊",
         isSelected = true,
         label = "Witty",
         tone = BriefTone.WITTY_AND_FRIENDLY
       ),
       persona(
         colorKey = PersonaColorKey.FORMAL,
-        emoji = "📋",
         label = "Formal",
         tone = BriefTone.FORMAL
       ),
       persona(
         colorKey = PersonaColorKey.COACH,
-        emoji = "🏋️",
         isLocked = true,
         isPremium = true,
         label = "Coach",
@@ -46,7 +42,6 @@ internal object PersonalizationPreviewData {
       ),
       persona(
         colorKey = PersonaColorKey.CINEMATIC,
-        emoji = "🎬",
         isLocked = true,
         isPremium = true,
         label = "Cinematic",
@@ -74,7 +69,6 @@ internal object PersonalizationPreviewData {
 
   private fun persona(
     colorKey: PersonaColorKey,
-    emoji: String,
     isLocked: Boolean = false,
     isPremium: Boolean = false,
     isSelected: Boolean = false,
@@ -83,7 +77,6 @@ internal object PersonalizationPreviewData {
   ): PersonaUiState =
     PersonaUiState(
       colorKey = colorKey,
-      emoji = emoji,
       isLocked = isLocked,
       isPremium = isPremium,
       isSelected = isSelected,

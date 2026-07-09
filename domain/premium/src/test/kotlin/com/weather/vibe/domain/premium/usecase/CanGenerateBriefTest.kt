@@ -66,7 +66,7 @@ class CanGenerateBriefTest {
 
   @Test
   fun `given premium tone unlocked, then brief can be generated`() = runTest {
-    cache.update { it.withToneUnlocked(COACH, untilEpochMillis = LATER) }
+    cache.update { it.withToneUnlocked(COACH, until = LATER) }
     selectTone(COACH)
 
     expectThat(canGenerateBrief()).isTrue()

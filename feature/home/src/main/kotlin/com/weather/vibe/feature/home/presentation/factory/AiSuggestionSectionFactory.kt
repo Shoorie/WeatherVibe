@@ -42,10 +42,8 @@ internal class AiSuggestionSectionFactory(
       summary = resources.dailyVibeSummary(vibe.score, vibe.mood)
     )
 
-  private fun personaOf(tone: BriefTone): BriefingPersonaUiState {
-    val colorKey = tone.toColorKey()
-    return BriefingPersonaUiState(colorKey = colorKey, emoji = colorKey.emoji)
-  }
+  private fun personaOf(tone: BriefTone): BriefingPersonaUiState =
+    BriefingPersonaUiState(colorKey = tone.toColorKey())
 
   private fun BriefTone.toColorKey(): PersonaColorKey = when (this) {
     BriefTone.WITTY_AND_FRIENDLY -> PersonaColorKey.WITTY_AND_FRIENDLY

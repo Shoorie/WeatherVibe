@@ -53,7 +53,7 @@ class RefreshWidgetSnapshotTest {
   fun setUp() {
     every { getWeather(any()) } returns flowOf(success(WEATHER))
     every { getCurrentWeatherKey(WEATHER) } returns WEATHER_KEY
-    coEvery { getCachedWeatherSuggestion(any(), any(), any()) } returns SUGGESTION
+    coEvery { getCachedWeatherSuggestion(any(), any()) } returns SUGGESTION
     every { calculateDailyVibe(any(), any()) } returns success(DailyVibe(score = 80, mood = PLEASANT))
     every { timeProvider.nowEpochMillis() } returns FETCHED_AT_EPOCH_MILLIS
   }
@@ -92,7 +92,7 @@ class RefreshWidgetSnapshotTest {
   @Test
   fun `given no cached brief, when refreshed, then saved snapshot has deterministic vibe and no ai mood`() = runTest {
 
-    coEvery { getCachedWeatherSuggestion(any(), any(), any()) } returns null
+    coEvery { getCachedWeatherSuggestion(any(), any()) } returns null
 
     refresh(WARSAW)
 

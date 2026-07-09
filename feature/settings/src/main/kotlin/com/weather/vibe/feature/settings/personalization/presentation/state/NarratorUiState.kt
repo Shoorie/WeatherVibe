@@ -6,7 +6,6 @@ import com.weather.vibe.core.designsystem.theme.persona.PersonaColorKey
 @Immutable
 internal data class NarratorUiState(
   val colorKey: PersonaColorKey,
-  val emoji: String,
   val isPremium: Boolean,
   val name: String,
   val sample: String,

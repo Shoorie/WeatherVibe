@@ -95,7 +95,7 @@ private fun PersonaCircle(
     contentAlignment = Alignment.Center
   ) {
     Text(
-      text = persona.emoji,
+      text = persona.colorKey.emoji,
       style = typography.titleLarge,
       modifier = Modifier.alpha(if (persona.isLocked) LockedAlpha else 1f)
     )
@@ -159,7 +159,6 @@ private fun Preview() {
       onClick = {},
       persona = PersonaUiState(
         colorKey = PersonaColorKey.COACH,
-        emoji = "🏋️",
         isLocked = true,
         isPremium = true,
         isSelected = false,

@@ -25,12 +25,6 @@ REMINDER — the entire JSON content (especially briefText, mood and moodDescrip
 {tone_reminder}
     </string>
 
-    <string name="prompt_user_disposition_intro">
-The user logs how they feel today on a 1–5 scale (1 = lowest, 5 = highest), each rating optionally with a short note.
-Today\'s entries are listed below in chronological order.
-Use them to shade the brief.
-    </string>
-
     <string name="prompt_tone_directive_formal">Adopt the persona of a professional, elite broadcast meteorologist. Use precise, clean and clinical vocabulary. Avoid any slang or emotional expressions.</string>
     <string name="prompt_tone_directive_humorous">Adopt the persona of a deadpan comedian. Deliver the brief with dry, cynical irony, focusing on one absurd or slightly annoying aspect of today\'s weather.</string>
     <string name="prompt_tone_directive_witty_friendly">Adopt the persona of a clever, highly observant close friend. Write a warm, vivid text message packed with charming, casual observations about how the day feels.</string>

@@ -7,7 +7,6 @@ import com.weather.vibe.domain.settings.model.BriefTone
 @Immutable
 internal data class PaywallUiState(
   val colorKey: PersonaColorKey,
-  val emoji: String,
   val name: String,
   val sample: String,
   val tone: BriefTone

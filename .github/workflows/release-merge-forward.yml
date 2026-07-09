@@ -37,7 +37,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -66,20 +66,49 @@ jobs:
           AUTO_RESOLVED: ${{ steps.merge.outputs.auto-resolved }}
         run: bash ./scripts/ci/merge-release/open-pull-request.sh
 
+      - name: Resolve Slack mention for the workflow actor
+        id: mention
+        if: steps.merge.outputs.status == 'conflict'
+        continue-on-error: true
+        env:
+          PR_AUTHOR: ${{ github.actor }}
+        run: bash ./scripts/ci/notify-review/resolve-mention.sh
+
       - name: Notify Slack about conflicts
         if: steps.merge.outputs.status == 'conflict'
-        uses: slackapi/slack-github-action@v2
+        uses: slackapi/slack-github-action@v3
         with:
           webhook: ${{ secrets.SLACK_REVIEW_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: |-
-              Hej team! :warning: Merge `${{ env.SOURCE_BRANCH }}` do `${{ steps.target.outputs.target-branch }}` zatrzymał się na konfliktach: ${{ steps.merge.outputs.conflict-files }}
-              Trzeba je rozwiązać ręcznie:
-              ```
-              git fetch origin
-              git checkout ${{ steps.target.outputs.merge-branch }}
-              git merge origin/${{ env.SOURCE_BRANCH }}
-              git push origin ${{ steps.target.outputs.merge-branch }}
-              ```
-              Na koniec wystaw PR do `${{ steps.target.outputs.target-branch }}`.
+            text: >-
+              Merge ${{ env.SOURCE_BRANCH }} do ${{ steps.target.outputs.target-branch }}
+              zatrzymał się na konfliktach
+            blocks:
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: |-
+                    :warning: *Merge `${{ env.SOURCE_BRANCH }}` do `${{ steps.target.outputs.target-branch }}` zatrzymał się na konfliktach*
+                    ${{ steps.mention.outputs.value }}, rzucisz na to okiem?
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: |-
+                    *Pliki w konflikcie:* `${{ steps.merge.outputs.conflict-files }}`
+              - type: section
+                text:
+                  type: mrkdwn
+                  text: |-
+                    *Jak rozwiązać:*
+                    ```
+                    git fetch origin
+                    git checkout ${{ steps.target.outputs.merge-branch }}
+                    git merge origin/${{ env.SOURCE_BRANCH }}
+                    git push origin ${{ steps.target.outputs.merge-branch }}
+                    ```
+                    Po pushu wystaw PR do `${{ steps.target.outputs.target-branch }}`.
+              - type: context
+                elements:
+                  - type: mrkdwn
+                    text: "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Zobacz przebieg> • Release Merge Forward"

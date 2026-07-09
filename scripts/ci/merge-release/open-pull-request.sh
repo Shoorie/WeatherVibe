@@ -60,20 +60,21 @@ automerge_label() {
 
 pull_request_body() {
     cat <<EOF
-Automated merge of \`$SOURCE_BRANCH\` into \`$TARGET_BRANCH\`.
+Carries \`$SOURCE_BRANCH\` forward into \`$TARGET_BRANCH\`.
 
-Jira: $(jira_links)
+**Jira:** $(jira_links)
 $(resolution_note)
 
-Merge with a merge commit, not squash, so the shared branch history is
-preserved and the same conflicts do not come back on the next merge.
+> [!IMPORTANT]
+> Merge with a **merge commit**, not squash. Squash drops the shared
+> branch history and the same conflicts come back on the next merge.
 EOF
 }
 
 jira_links() {
     local ticket links=""
     for ticket in "${LINKED_TICKETS[@]}"; do
-        links="${links:+$links, }[$ticket]($JIRA_BASE_URL/$ticket)"
+        links="${links:+$links · }[$ticket]($JIRA_BASE_URL/$ticket)"
     done
     echo "$links"
 }
@@ -81,7 +82,15 @@ jira_links() {
 resolution_note() {
     [[ -n "${AUTO_RESOLVED:-}" ]] || return 0
     echo
-    echo "Conflicts resolved automatically, keeping the \`$TARGET_BRANCH\` side of: ${AUTO_RESOLVED// /, }"
+    echo "**Conflicts resolved automatically** (the \`$TARGET_BRANCH\` side wins): $(resolved_paths_list)"
+}
+
+resolved_paths_list() {
+    local path formatted=""
+    for path in $AUTO_RESOLVED; do
+        formatted="${formatted:+$formatted, }\`$path\`"
+    done
+    echo "$formatted"
 }
 
 main

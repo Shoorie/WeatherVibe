@@ -74,41 +74,20 @@ jobs:
           PR_AUTHOR: ${{ github.actor }}
         run: bash ./scripts/ci/notify-review/resolve-mention.sh
 
+      - name: Build conflict notification
+        if: steps.merge.outputs.status == 'conflict'
+        env:
+          TARGET_BRANCH: ${{ steps.target.outputs.target-branch }}
+          MERGE_BRANCH: ${{ steps.target.outputs.merge-branch }}
+          CONFLICT_FILES: ${{ steps.merge.outputs.conflict-files }}
+          MENTION: ${{ steps.mention.outputs.value }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: bash ./scripts/ci/merge-release/build-conflict-notification.sh
+
       - name: Notify Slack about conflicts
         if: steps.merge.outputs.status == 'conflict'
         uses: slackapi/slack-github-action@v3
         with:
           webhook: ${{ secrets.SLACK_REVIEW_WEBHOOK_URL }}
           webhook-type: incoming-webhook
-          payload: |
-            text: >-
-              Merge ${{ env.SOURCE_BRANCH }} do ${{ steps.target.outputs.target-branch }}
-              zatrzymał się na konfliktach
-            blocks:
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: |-
-                    :warning: *Merge `${{ env.SOURCE_BRANCH }}` do `${{ steps.target.outputs.target-branch }}` zatrzymał się na konfliktach*
-                    ${{ steps.mention.outputs.value }}, rzucisz na to okiem?
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: |-
-                    *Pliki w konflikcie:* `${{ steps.merge.outputs.conflict-files }}`
-              - type: section
-                text:
-                  type: mrkdwn
-                  text: |-
-                    *Jak rozwiązać:*
-                    ```
-                    git fetch origin
-                    git checkout ${{ steps.target.outputs.merge-branch }}
-                    git merge origin/${{ env.SOURCE_BRANCH }}
-                    git push origin ${{ steps.target.outputs.merge-branch }}
-                    ```
-                    Po pushu wystaw PR do `${{ steps.target.outputs.target-branch }}`.
-              - type: context
-                elements:
-                  - type: mrkdwn
-                    text: "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|Zobacz przebieg> • Release Merge Forward"
+          payload-file-path: conflict-notification.json

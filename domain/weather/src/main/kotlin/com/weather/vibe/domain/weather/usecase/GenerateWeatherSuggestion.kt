@@ -10,6 +10,7 @@ import com.weather.vibe.domain.weather.model.UserDispositionEntry
 import com.weather.vibe.domain.weather.model.WeatherData
 import com.weather.vibe.domain.weather.model.WeatherKey
 import com.weather.vibe.domain.weather.model.WeatherSuggestion
+import com.weather.vibe.domain.weather.model.WeatherSuggestionPromptInput
 import com.weather.vibe.domain.weather.repository.WeatherSuggestionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -122,14 +123,16 @@ class GenerateWeatherSuggestion internal constructor(
     excludedGenres: Set<String>
   ): WeatherSuggestion {
     val prompt = buildWeatherSuggestionPrompt(
-      condition = weatherKey.condition,
-      currentDate = timeProvider.today(),
-      excludedGenres = excludedGenres,
-      locationName = weatherData.coordinates.name,
-      temperatureCelsius = weatherData.currentTemperature,
-      timeOfDay = weatherKey.timeOfDay,
-      todayDispositionEntries = dispositionEntries,
-      tone = tone
+      WeatherSuggestionPromptInput(
+        condition = weatherKey.condition,
+        currentDate = timeProvider.today(),
+        excludedGenres = excludedGenres,
+        locationName = weatherData.coordinates.name,
+        temperatureCelsius = weatherData.currentTemperature,
+        timeOfDay = weatherKey.timeOfDay,
+        todayDispositionEntries = dispositionEntries,
+        tone = tone
+      )
     )
     val suggestion = repository.getSuggestionBasedOn(prompt)
     cache.save(

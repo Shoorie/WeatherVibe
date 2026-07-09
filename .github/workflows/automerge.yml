@@ -1,0 +1,62 @@
+name: Automerge
+
+# Merges a pull request that carries the `automerge` label once it is fully
+# green. Release Merge Forward puts that label on its release-to-release PRs,
+# so a clean hop lands on the release branch without anyone clicking merge.
+#
+# What happens, from the pull request's point of view:
+#   - It is opened (or the label is added). PR Check starts, so GitHub reports
+#     the PR as "unstable" and this action leaves it untouched.
+#   - Every check passes. The PR turns "clean", the action merges it with a
+#     merge commit and deletes the head branch.
+#   - A check fails. The PR stays "unstable" and just sits there unmerged.
+#
+# The `workflow_run: PR Check completed` trigger is what wakes the action up
+# once the checks finish. GitHub does not emit `check_suite` for suites created
+# by Actions itself, so that event would never fire here. Background and
+# rationale live in docs/release-merge-forward.md.
+on:
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - opened
+      - edited
+      - reopened
+      - synchronize
+  workflow_run:
+    workflows:
+      - PR Check
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  automerge:
+    name: Automerge pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # These values are load-bearing, do not loosen them.
+      #   MERGE_METHOD "merge": rebase and squash rewrite commit SHAs, so the
+      #     next forward merge no longer sees the branches as related and the
+      #     same conflicts come back on every hop.
+      #   MERGE_READY_STATE "clean": with no required status checks, a PR reads
+      #     as "clean" only once every check passed; a broader value would
+      #     merge it while PR Check is still running.
+      #   MERGE_RETRIES / MERGE_RETRY_SLEEP: bridge the seconds right after PR
+      #     Check finishes, while GitHub recomputes the PR state and still
+      #     reports it as "unstable".
+      - name: Automerge pull request
+        uses: pascalgn/automerge-action@v0.16.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          MERGE_LABELS: automerge
+          MERGE_METHOD: merge
+          MERGE_DELETE_BRANCH: true
+          MERGE_READY_STATE: clean
+          MERGE_RETRIES: 6
+          MERGE_RETRY_SLEEP: 10000

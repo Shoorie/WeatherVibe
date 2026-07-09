@@ -1,21 +1,8 @@
 package com.weather.vibe.domain.weather.usecase
 
-import com.weather.vibe.domain.settings.model.BriefTone
-import com.weather.vibe.domain.weather.model.SimplifiedCondition
-import com.weather.vibe.domain.weather.model.TimeOfDay
-import com.weather.vibe.domain.weather.model.UserDispositionEntry
-import java.time.LocalDate
+import com.weather.vibe.domain.weather.model.WeatherSuggestionPromptInput
 
 interface BuildWeatherSuggestionPrompt {
 
-  operator fun invoke(
-    condition: SimplifiedCondition,
-    currentDate: LocalDate,
-    excludedGenres: Set<String>,
-    locationName: String,
-    temperatureCelsius: Double,
-    timeOfDay: TimeOfDay,
-    todayDispositionEntries: List<UserDispositionEntry>,
-    tone: BriefTone
-  ): String
+  operator fun invoke(input: WeatherSuggestionPromptInput): String
 }
